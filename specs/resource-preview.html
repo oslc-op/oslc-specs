@@ -1,0 +1,550 @@
+<p><html xmlns='http://www.w3.org/1999/xhtml'>
+ <head>
+ <meta charset='utf-8'/>
+<script src='http://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script class='remove'>
+  var respecConfig = {
+      // specification status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
+      specStatus:           "CS",
+      edDraftURI:           "resource-preview.html",
+      
+      // the specification's short name, as in http://www.w3.org/TR/short-name/
+      shortName:            "OSLC 3.0 Resource Preview",
+
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+      // subtitle   :  "an excellent document",
+
+      // if you wish the publication date to be other than the last modification, set this
+      // publishDate:  "2009-08-06",
+
+      // if the specification's copyright date is a range of years, specify
+      // the start date here:
+      // copyrightStart: "2005"
+
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+
+      // if there a publicly available Editor's Draft, this is the link
+      // edDraftURI:           "http://berjon.com/",
+
+      // if this is a LCWD, uncomment and set the end of its review period
+      // lcEnd: "2009-08-05",
+
+      // editors, add as many as you like
+      // only "name" is required
+      editors:  [
+          {
+              name:       "Samuel Padgett"
+          ,   mailto:     "spadgett@us.ibm.com"
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          },
+          { 
+              name:       "Steve Speicher"
+          ,   url:        "http://stevespeicher.me/"
+          ,   mailto:     "sspeiche@us.ibm.com"
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          }
+      ],
+
+      previousURI: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+      prevED: "http://open-services.net/wiki/core/User-Interface-Previews-3.0/",
+      
+      // name of the WG
+      wg:           "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+      
+      // URI of the public WG page
+      wgURI:        "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
+      
+      // name (without the @w3c.org) of the public mailing to which comments are due
+      wgPublicList: "oslc-core",
+      
+      // URI of the patent status for this WG, for Rec-track documents
+      // !!!! IMPORTANT !!!!
+      // This is important for Rec-track documents, do not copy a patent URI from a random
+      // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+      // Team Contact.
+      wgPatentURI:  "",
+      // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
+  };
+</script>
+<title>Open Services for Lifecycle Collaboration Resource Preview Specification 3.0</title>
+</head>
+<body>
+
+<section>
+<p><strong>Notation and Conventions</strong></p>
+
+<p>The key words &#8220;MUST&#8221;, &#8220;MUST NOT&#8221;, &#8220;REQUIRED, SHALL&#8221;, &#8220;SHALL NOT&#8221;, &#8220;SHOULD&#8221;, &#8220;SHOULD NOT&#8221;, &#8220;RECOMMENDED&#8221;, &#8220;MAY&#8221;, and &#8220;OPTIONAL&#8221; in this document are to be interpreted as described in <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC&#8211;2119</a>. This document is a mixture of normative and informative text.</p>
+</section>
+
+<section class='informative'>
+<h2 id="introduction">Introduction</h2>
+<p>This document outlines a technique that <em>MAY</em> (see <a href="http://open-services.net/bin/view/main/OslcCoreSpecification#User_Interface_Previews">OSLC Core: UI Previews</a>) be used to show a user in-context information when displaying a link to a resource, and to show more information when the user&#8217;s mouse lingers over the link. For example, when a lifecycle resource is being presented to a user, a descriptive title can be used (rather than a URI) to display a link to a related resource . Since a descriptive title alone might not provide the user with sufficient context to decide whether the link is worth navigating at that moment, the user may linger over the link and cause the user interface to provide additional rich previews revealing even more information about the related resource (in advance of actually navigating the link).</p>
+
+<p>This specification describes a mechanism that enables client applications, given only the URI of a resource, to discover helpful information for presenting in-context links and previews of that resource. The approach (1) acknowledges that a lifecycle resource may refer to other resources of arbitrary types, and (2) does not require the client to know much about the particular details of those resources.</p>
+</section>
+
+<section id="sotd">
+Early Working Draft
+</section>
+
+<section class='informative'>
+<h3 id="terminology">Terminology</h3>
+
+<p>The following terms are used in discussions of previews:</p>
+
+<ul>
+<li><strong>Consumer</strong> - a web application displaying a link to a resource.</li>
+<li><strong>Provider</strong> - a Service Provider that offers Consumers information for displaying the link to a resource and rich previews of the resource.</li>
+</ul>
+</section>
+
+<section>
+<h2 id="conceptualmodel"  class='informative'>Conceptual Model</h2>
+
+<p>To enable previews of a target resource, a Provider needs to supply the Consumer with a representation of the resource as defined in this specification (referred to as a Compact representation). The Consumer fetches the representation with an HTTP GET request to the target resource&#8217;s URI, using the <code>application/x-oslc-compact+json</code> media-type in the request header. If the Provider supports the preview mechanism, it responds with a Compact representation that includes information helpful to the Consumer in displaying a link and previews of the target resource.</p>
+
+<p>The Compact representation <em>MUST</em> be in the JSON format described in this document (see <a href="#JSON_Representation_Format">JSON Representation Format</a> below). The media-type ( <code>application/x-oslc-compact+json</code>) <em>MUST</em> be included in HTTP accept and response headers for successful negotiation of the Compact representation.</p>
+</section>
+
+<section>
+<h3 id="representingaresourceforuipreview">Representing a Resource for UI Preview</h3>
+
+<p>As mentioned, a referenced resource may be of any arbitrary type, however the information in a Compact representation of that resource is expected to contain specific information. For clarity and convenience, we&#8217;ve described that information below using the same terminology and format used in describing OSLC resources and properties. The locale for Strings is negotiated using HTTP-defined mechanisms.</p>
+
+<h4 id="representation:compact">Representation: Compact</h4>
+
+<p><strong>Media-type</strong>: <code>application/x-oslc-compact+json</code></p>
+
+<p>The Compact document is a JSON-LD document. The typical rendering client of the Compact document and UI Preview is a Web browser.</p>
+
+<p><strong>Properties</strong>:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Property</th>
+	<th style="text-align:left;">Value-type</th>
+	<th style="text-align:left;">Occurs</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>dcterms:title</code></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">Title which may be used in the display of a link to the resource. The value SHOULD include only content that is valid inside an HTML &lt;span&gt; element. Providers SHOULD include a dcterms:title property with an informative label for the resource. The title is typically shown to a user as a hyperlink. For a resource with no obvious title, Providers SHOULD omit the dcterms:title property. Providers MUST first HTML escape the contents of the dcterms:title before sending the response.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>oslc:shortTitle</code></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">Abbreviated title which may be used in the display of a link to the resource. The value SHOULD include only content that is valid inside an HTML &lt;span&gt; element. Providers SHOULD include an abbreviated title for the resource when possible. The abbreviated title is typically shown to a user as a hyperlink in presentations where visual space is limited. As a general guideline, the length of the abbreviated title SHOULD be 5 characters or less. A user-visible identifier that ordinarily appears in the dcterms:title, such as a defect number, makes for a good oslc:shortTitle value. When a resource has no obvious identifier or handle, Providers SHOULD omit the oslc:shortTitle property. Providers MUST first HTML escape the contents of the oslc:shortTitle before sending the response.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>oslc:icon</code></td>
+	<td style="text-align:left;">Resource</td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">URI of an image which may be used in the display of a link to the resource. The image SHOULD be 16x16 pixels in size.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>oslc:iconAltLabel</code></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">Alternative label used in association with the <code>oslc:icon</code>, such as HTML <code>img</code> tag&#8217;s <code>alt</code> attribute.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>oslc:iconTitle</code></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">Title used in association with the <code>oslc:icon</code>, such as HTML <code>img</code> tag&#8217;s <code>title</code> attribute.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>oslc:smallPreview</code></td>
+	<td style="text-align:left;">Local Inline Resource of type <code>oslc:Preview</code></td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">URI and sizing properties for an HTML document to be used for a small preview.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>oslc:largePreview</code></td>
+	<td style="text-align:left;">Local Inline Resource of type <code>oslc:Preview</code></td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">URI and sizing properties for an HTML document to be used for a large preview.</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="resource:preview">Resource: Preview</h4>
+
+<p><strong>Name</strong>: Preview</p>
+
+<p><strong>Type URI</strong>: <a href="http://open-services.net/ns/core#Preview">http://open-services.net/ns/core#Preview</a></p>
+
+<p><strong>Properties</strong>:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Property</th>
+	<th style="text-align:left;">Value-type</th>
+	<th style="text-align:left;">Occurs</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>oslc:document</code></td>
+	<td style="text-align:left;">Resource</td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">The URI of an HTML document to be used for the preview.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>oslc:hintWidth</code></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">Recommended width of the preview. Values <em>MUST</em> be expressed in <strong><em>relative length units</em></strong> as defined in the<a href="http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#length-units">W3C Cascading Style Sheets Specification (CSS 2.1)</a>. Em and ex units are interpreted relative to the default system font (at 100% size).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>oslc:hintHeight</code></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">Recommended height of the preview. Values <em>MUST</em> be expressed in <strong><em>relative length units</em></strong> as defined in the <a href="http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#length-units">W3C Cascading Style Sheets Specification (CSS 2.1)</a>. Em and ex units are interpreted relative to the default system font (at 100% size).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>oslc:initialHeight</code></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;">zero-or-one</td>
+	<td style="text-align:left;">Recommended initial height of the preview. The presence of this property indicates that the preview supports dynamically computing its size. Values <em>MUST</em> be expressed in <strong><em>relative length units</em></strong> as defined in the <a href="http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#length-units">W3C Cascading Style Sheets Specification (CSS 2.1)</a>. Em and ex units are interpreted relative to the default system font (at 100% size).</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section>
+<h2 id="providerresponsibilities">Provider Responsibilities</h2>
+
+<p>Providers that support previews will examine the HTTP Accept header for each incoming GET and HEAD request for a resource. If the header indicates that the client has requested a Compact representation, and if the representation is available for the resource, the Provider responds with a Compact representation. The following constraints apply to Providers:</p>
+
+<ul>
+<li>Providers that support the preview mechanism need not do so for every resource. Providers <strong>SHOULD</strong> provide Compact representations of the resources that other applications or resources ordinarily refer to. This is left to individual Providers to decide.</li>
+<li>If the resource does not exist or is not accessible to the requesting Consumer, the Provider <strong>SHOULD</strong> return the same 4xx status code that it would have returned had the Consumer instead requested the default representation of the resource.</li>
+<li>If the resource exists and is accessible to the Consumer, but does not have a Compact representation (in other words, does not support the preview mechanism), the Provider <strong>SHOULD</strong> respond with a status code of <em>406 Not Acceptable</em> <em>(<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1">Section 14.1 of HTTP 1.1 specification</a></em> says that a server &#8220;SHOULD&#8221; respond with a 406 status code if it cannot serve up the media-type specified in the accept header)._
+
+<ul>
+<li>Otherwise, the Provider <strong>SHOULD</strong> respond with a Compact representation of the resource and a response header including a <em>200 OK</em> status code and the <em>compact media-type</em>. The representation <strong>MUST</strong> follow conventions outlined in this document (see <a href="#JSON_Representation_Format">JSON Representation Format</a>).</li>
+</ul></li>
+<li>Providers <strong>SHOULD</strong> include a Vary field in the response header when returning a Compact representation of the resource. Experience has shown that for subsequent requests on the URL, some browser caching algorithms ignore the media-type and return a cached representation of the URL request (which may be the default target resource representation or the Compact representation). Use of the Vary field allows a cache to properly interpret future requests on the resource and informs the browser that the cacheable response is subject to server-driven negotiation (see <em><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">Section 14.44 of the HTTP 1.1 specification</a></em>).</li>
+<li>Providers <strong>MAY</strong> consult the Accept-Language field on requests for a Compact representation of the resource (and on requests for rich preview documents) and return a representation for the requested natural language.</li>
+</ul>
+</section>
+
+<section>
+<h2 id="responsibilitiesforconsumers">Responsibilities for Consumers</h2>
+
+<p>Though Consumer implementations will vary, tool users will benefit if the preview mechanism is used consistently. Previews are a valuable added benefit to tool users and not a necessary element for users to perform tasks. As such, Consumers should gracefully handle unsuccessful attempts to use the preview mechanism; unsuccessful attempts should never result in failure in the way a Consumer application operates or performs. Consumers <em>SHOULD</em> anticipate that the preview mechanism may not be supported for a resource, or that the the preview mechanism may not work due to security or service availability issues, or even that preview capability once supported by a Provider has been phased out.</p>
+
+<blockquote>
+<p><em>Important:</em> In order to properly recognize when a Provider supports the preview mechanism, Consumers <strong>MUST</strong> perform two checks on the response from a Compact representation request. Only a response header including a <em>200 OK</em> status code and <em>compact-media-type</em> assures the Consumer that the preview protocol is understood by the Provider. Though Providers should respond with a <em>406 Not Acceptable</em> status code when they do not recognize the media-type, Consumers <strong>MUST NOT</strong> rely on this behavior. Some servers simply ignore an unrecognized media-type and respond with <em>200 OK</em> and a default representation of the resource. If either the status code or media-type conditions are not met, then Consumers <strong>MUST</strong> conclude that the Provider does not support the preview mechanism.</p>
+</blockquote>
+
+<p>The following guidance is suggested for Consumer display of a resource link and rich previews. For purposes of this discussion, assume source resource A has a URI property that refers to target resource B:</p>
+
+<h5 id="navigationtothetargetresource">Navigation to the target resource</h5>
+
+<p>At any time, the user <strong>SHOULD</strong> be able to gesture that they would like to navigate the link to the target resource, regardless of how the link to the target resource happens to be rendered. </p>
+
+<h5 id="defaultwaytodisplaythelinktothetargetresource">Default way to display the link to the target resource</h5>
+
+<p>The typical way for forming and displaying the hyperlink <strong>SHOULD</strong> be based on information that is stored locally in source resource A (or that is generally known to the Consumer). Generally, link text can be derived from property values of resource A, and potentially from a string or literal property value in the reference to the target resource B, if such a property exists. Because these property values are part of the representation of the source resource A, they are available without consulting the target resource, and will be available even if the target resource B cannot be fetched. When available, Consumers <strong>SHOULD</strong> display this string (as opposed to the URI) when presenting resource A to indicate a potential navigation to resource B. This is the basic presentation of a link to target resource B.</p>
+
+<p>The default display of the link from A to B is visible to any user authorized to access resource A. The use of Compact representation information described below is only viable for users who are also authorized to access resource B.</p>
+
+<h5 id="usingthecompactrepresentationtitleshorttitleandicon">Using the Compact representation title, short title, and icon</h5>
+
+<p>A Compact representation of the resource may contain a more accurate and slightly richer label for a target resource ( <code>dcterms:title</code> element), a short-form title for the resource ( <code>oslc:shortTitle</code>), and a corresponding image ( <code>oslc:icon</code>), all of which may be based on the current state of the target resource. If this becomes known to the Consumer, the Consumer <strong>SHOULD</strong> assume that this information is better and use it in forming the hyperlink that is displayed to the user. When available, <code>oslc:shortTitle</code> MAY be used instead of <code>dcterms:title</code> in presentations where visual space is severely limited.</p>
+
+<p>Consumers <strong>SHOULD NOT</strong> fetch Compact representations when there is perfectly usable default display information available. When designing a Consumer application, consideration should be given to the potential benefits of obtaining an improved title and icon for the target resource against the costs of preemptively fetching the Compact representation in terms of added load on servers and networks (which might only be apparent to users on slow networks or heavily loaded servers).</p>
+
+<p>Consumers <strong>SHOULD</strong> be wary of material obtained from non-trusted sources; in particular, the Consumer <em>SHOULD</em> check that the dcterms:title and oslc:shortTitle property values do not contain HTML markup beyond the specified set of simple elements.</p>
+
+<h5 id="displayingasmallpreview">Displaying a small preview</h5>
+
+<p>If a user mouses or hovers over a displayed link, the Consumer <strong>SHOULD</strong> determine whether the target resource has a small preview (<code>oslc:smallPreview</code>). If it does, the Consumer <strong>SHOULD</strong> present the small preview document in a hovering widget. Since preview documents may contain arbitrary content, including HTML and scripts, Consumers <strong>MUST</strong> use iframes if embedding the preview document inside another HTML-based presentation.</p>
+
+<p>The Consumer <strong>SHOULD NOT</strong> attempt to prefetch a Compact representation just to have the preview URIs in hand so that the hover can come up faster. There is a low chance that the user will make a gesture that would call for the display of a small preview. It would generally be a poor tradeoff to increase overall system load just to decrease UI latency for low probability eventualities.</p>
+
+<h5 id="displayingalargepreview">Displaying a large preview</h5>
+
+<p>If the user then gestures that they want to see a bit more of the resource, the Consumer should determine whether the target resource has a large preview ( <code>oslc:largePreview</code>). If it does, the Consumer <strong>SHOULD</strong> present the large preview document in a stationary widget that permits further user interaction. Again, since preview documents may contain arbitrary content, including HTML and scripts, Consumers <strong>MUST</strong> use iframes if embedding the preview document inside another HTML-based presentation.</p>
+</section>
+
+<section>
+<h2 id="previewsizing">Preview sizing</h2>
+
+<p>Small and large previews are designed to be sized statically by the client. The Compact representation <strong>MAY</strong> include <code>oslc:hintHeight</code> and/or <code>oslc:hintWidth</code> properties for each of the previews. When the resource does not supply preferred sizing for a preview, the Consumer <strong>SHOULD</strong> use a reasonably generous default value large enough to display previews without scroll bars or truncation. When the resource supplies preferred sizing, the Consumer <strong>SHOULD</strong> use the preferred value instead.</p>
+
+<p>Small and large previews <strong>MAY</strong> also support dynamic resizing. For a preview that supports dynamic resizing, the Compact representation <strong>MUST</strong> include the <code>oslc:initialHeight</code> property to indicate the initial height. A Provider MAY use dynamic resizing previews on some of their resources but not others. Moreover, dynamic resizing applies to the small and large previews independently.</p>
+
+<p>Values for the <code>oslc:hintWidth</code>, <code>oslc:hintHeight</code>, and <code>oslc:initialHeight</code> properties may be valid <strong><em>relative length units</em></strong> as specified in the <a href="http://www.w3.org/TR/2009/CR-CSS2-20090423/syndata.html#length-units">W3C Cascading Style Sheets Specification (CSS 2.1)</a>. Consumers are expected to use these relative length values in combination with other client system settings to scale a rich preview to a size that fits a user&#8217;s display characteristics. Specifically, em and ex units are meant to be relative to 100% of the default system font size, giving Consumers and Providers a common basis for interpreting em- and ex-value hints. For example, an <code>oslc:hintHeight</code> value of &#8220;20em&#8221; means &#8220;I recommend you allow for 20 character&#8217;s worth of normal-sized text for my preview.&#8221;</p>
+
+<p>The communication of dynamic preview size information happens within a web browser. JavaScript code running in the preview iframe sends a message that is received and acted upon by JavaScript code running in the iframe&#8217;s parenting window. This cross-frame communication is done using HTML 5 postMessage. While many major web browsers support HTML 5 postMessage, support is not yet universal. In browsers that do not support postMessage, there is no way to implement dynamic resizing. In this case, everything falls back on static sizing.</p>
+
+<p>A dynamic preview resize message consists of the characters &#8220;oslc-preview-height:&#8221; followed by the representation of the desired height of the preview in pixels. Whitespace characters are not allowed.</p>
+
+<p>Example showing desired preview height of 277 pixels:</p>
+
+<pre class="example" id="oslcPreviewHeightExample">
+oslc-preview-height:277
+</pre>
+
+<p>The source of the event <strong>MUST</strong> be the preview&#8217;s window.</p>
+
+<p>Providers <strong>SHOULD</strong> make a preview dynamically resizeable where that suits their needs, but are under no obligation to do so. A Provider that chooses to offer dynamic resizing for a particular resource preview <strong>MUST</strong> (a) supply a static <code>oslc:initialHeight</code> value, and (b) send one or more preview resize messages when the preview is shown in an iframe. When the preview is shown in a web browser that does not support HTML 5 postMessage (e.g., Internet Explorer 7), everything falls back on static sizing.</p>
+
+<p>JavaScript snippet for a typical resource preview to report a preview resize event to its parent window:</p>
+
+<pre class="example" id="postMessageExample">
+var newPreviewHeight = ...; // desired height of preview (hard!)
+
+if (window.postMessage &amp;&amp; window.parent)  {
+  var PREVIEW_RESIZE_MESSAGE_PREFIX = "oslc-preview-height:";
+  var resizeMessage = PREVIEW_RESIZE_MESSAGE_PREFIX + newPreviewHeight;
+  window.parent.postMessage(resizeMessage, "*");
+}
+</pre>
+
+<p>Note that postMessage for a preview resize message <strong>MUST</strong> be executed in the context of the preview&#8217;s window so that the source of the event is set correctly.</p>
+
+<p>Warning: Reliably computing the height of a document (newPreviewHeight above) is non-trivial owing to severe incompatibilities between browsers. Caveat emptor.</p>
+
+<p>Consumers <strong>SHOULD</strong> honor a preview&#8217;s ability to dynamic resize, but are under no obligation to do so. A Consumer that chooses to honor dynamic resizing for a particular preview <strong>MUST</strong> (a) use the oslc:initialHeight value instead of any static height, and (b) register a handler to receive preview resize messages sent by the preview and adjust the size of the preview accordingly. Since a preview is allowed to resize itself any number of times, the Consumer <strong>MUST</strong> keep a handler registered and react appropriately each time it received a preview resize message from that preview. When the preview is not shown in an iframe, or shown in a browser that does not support HTML 5 postMessage, everything falls back on static sizing.</p>
+
+<p>Consumers that honor dynamic preview resizing <strong>SHOULD</strong> make an effort to minimize the amount of resizing behavior that the user actually sees. Consumers <strong>SHOULD</strong> locally cache the last known dynamic height for recently shown preview URLs, and use a cached height for a preview in preference to its oslc:initialHeight value.</p>
+
+<p>JavaScript snippet for a typical Consumer to show a preview in an iframe:</p>
+
+<pre class="example" id="consumerExample">var previewURL = ...; // from oscl:document attribute for preview 
+var previewPreferredPixelHeight = ...; // from oslc:hintHeight property for preview normalized to pixels, or empty string if none 
+var previewPreferredPixelWidth = ...; // from oslc:hintWidth property for preview normalized to pixels, or empty string if none 
+var previewInitialPixelHeight = ...; // from oslc:initialHeight property for preview normalized to pixels, or empty string if none  
+
+var previewFrame = document.createElement("iframe");  // create iframe for preview 
+previewFrame.src = previewURL;
+previewFrame.height = (previewPreferredPixelHeight || DEFAULT_PREVIEW_HEIGHT); 
+previewFrame.width = (previewPreferredPixelWidth || DEFAULT_PREVIEW_WIDTH);  
+
+if (window.postMessage &amp;&amp; previewInitialPixelHeight) {
+   previewFrame.height = previewInitialPixelHeight;
+
+   var handlePreviewResize = function(event) { 
+      if (event.source !== previewFrame.contentWindow) return;
+
+      var data = event.data;  
+      var PREVIEW_RESIZE_MESSAGE_PREFIX = "oslc-preview-height:"; 
+
+      if (data &amp;&amp; data.indexOf(PREVIEW_RESIZE_MESSAGE_PREFIX) === 0) {    
+         var newHeight = data.substring(PREVIEW_RESIZE_MESSAGE_PREFIX.length);   
+         previewFrame.height = newHeight;    
+      } 
+
+   } 
+
+   dojo.connect(window, "onmessage", window, handlePreviewResize);
+} 
+
+document.body.appendChild(previewFrame); // make preview iframe visible
+</pre>
+
+</section>
+
+<section>
+<h2 name="JSON_Representation_Format">JSON Representation Format</h2>
+
+<p>A representation of a Compact Resource is a JSON document that looks like the following (for the target resource URL http://example.com/bugs/12345):</p>
+
+<pre class="example" id="compactExample">{
+  "title": "12345: Need a &amp;quot;fix&amp;quot; &amp;lt;em&amp;gt;NOW&amp;lt;/em&amp;gt;",
+  "shortTitle": "12345",
+  "icon": "http://example.com/icons/defect.jpg",
+  "iconTitle": "Defect",
+  "iconAltLabel": "Defect",
+  "largePreview": {
+    "document": "http://example.com/bugs/12345?hover=large",
+    "hintHeight": "20em",
+    "hintWidth": "60em"
+  },
+  "smallPreview": {
+    "document": "http://example.com/bugs/12345?hover=small"
+  },
+  "compacts": "http://example.com/bugs/12345",
+  "@id": "http://example.com/bugs/12345?compact"
+}
+</pre>
+
+<p>The JSON is intended to primarily be consumed from a browser, so the compacted document JSON-LD form is used. The JSON representation has the following syntactic and semantic constraints:</p>
+
+<ul>
+<li><p>It <strong>MAY</strong> be JSON-LD in <a href="http://www.w3.org/TR/json-ld/#compacted-document-form">compacted document form</a> with a JSON-LD context that defines the following terms:</p>
+
+<pre id="jsonldContext">{
+  "@context": {
+    "title": "http://purl.org/dc/terms/title",
+    "shortTitle": "http://open-services.net/ns/core#shortTitle",
+    "iconTitle": "http://open-services.net/ns/core#iconTitle",
+    "iconAltLabel": "http://open-services.net/ns/core#iconAltLabel",
+    "compacts": {
+      "@id": "http://open-services.net/ns/core#compacts",
+      "@type": "@id"
+    },
+    "hintHeight": "http://open-services.net/ns/core#hintHeight",
+    "hintWidth": "http://open-services.net/ns/core#hintWidth"
+    "icon": {
+      "@id": "http://open-services.net/ns/core#img",
+      "@type": "@id"
+    },
+    "src": {
+      "@id": "http://open-services.net/ns/core#src",
+      "@type": "@id"
+    },
+    "largePreview": {
+      "@id": "http://open-services.net/ns/core#largePreview",
+      "@type": "http://open-services.net/ns/core#Preview"
+    },
+    "smallPreview": {
+      "@id": "http://open-services.net/ns/core#smallPreview",
+      "@type": "http://open-services.net/ns/core#Preview"
+    },
+    "document": {
+      "@id": "http://open-services.net/ns/core#document",
+      "@type": "@id"
+    },
+    "hintHeight": "http://open-services.net/ns/core#hintHeight",
+    "hintWidth": "http://open-services.net/ns/core#hintWidth"
+  }
+}
+</pre>
+
+A response using this context might look like
+
+<pre class="example" id="jsonldExample">
+{
+  "title": "12345: Need a "fix" &lt;em&gt;NOW&lt;/em&gt;",
+  "shortTitle": "12345",
+  "icon": "http://example.com/icons/defect.jpg",
+  "iconTitle": "Defect",
+  "iconAltLabel": "Defect",
+  "largePreview": {
+    "document": "http://example.com/bugs/12345?hover=large",
+    "hintHeight": "20em",
+    "hintWidth": "60em"
+  },
+  "smallPreview": {
+    "document": "http://example.com/bugs/12345?hover=small"
+  },
+  "compacts": "http://example.com/bugs/12345",
+  "@id": "http://example.com/bugs/12345?compact",
+  "@context": {
+    "title": "http://purl.org/dc/terms/title",
+    "shortTitle": "http://open-services.net/ns/core#shortTitle",
+    "iconTitle": "http://open-services.net/ns/core#iconTitle",
+    "iconAltLabel": "http://open-services.net/ns/core#iconAltLabel",
+    "compacts": {
+      "@id": "http://open-services.net/ns/core#compacts",
+      "@type": "@id"
+    },
+    "hintHeight": "http://open-services.net/ns/core#hintHeight",
+    "hintWidth": "http://open-services.net/ns/core#hintWidth",
+    "icon": {
+      "@id": "http://open-services.net/ns/core#img",
+      "@type": "@id"
+    },
+    "src": {
+      "@id": "http://open-services.net/ns/core#src",
+      "@type": "@id"
+    },
+    "largePreview": {
+      "@id": "http://open-services.net/ns/core#largePreview",
+      "@type": "http://open-services.net/ns/core#Preview"
+    },
+    "smallPreview": {
+      "@id": "http://open-services.net/ns/core#smallPreview",
+      "@type": "http://open-services.net/ns/core#Preview"
+    },
+    "document": {
+      "@id": "http://open-services.net/ns/core#document",
+      "@type": "@id"
+    },
+    "hintHeight": "http://open-services.net/ns/core#hintHeight",
+    "hintWidth": "http://open-services.net/ns/core#hintWidth"
+  }
+}
+</pre></li>
+<li><p>The context <strong>MAY</strong> include other terms specific to the provider.</p></li>
+<li>The <code>oslc:Compact</code> JSON representation <strong>MUST</strong> have a <code>compacts</code> property whose value is the URI of the target resource.
+
+<ul>
+<li>The value of the <code>title</code> or <code>shortTitle</code> properties <strong>MUST</strong> be limited to any HTML &lt;span&gt; element. To afford clients the greatest flexibility to style the text to match the context in which it is being displayed, the titles <strong>SHOULD</strong> be plain text with HTML markup used only to emphasize words or phrases or to convey additional information about the target resource.</li>
+<li>An <code>icon</code> <strong>MUST</strong> be the URI of an image. The image <strong>SHOULD</strong> be square. A consumer <strong>MAY</strong> scale the image as needed.</li>
+<li><code>iconAltLabel</code> and <code>iconTitle</code> <strong>MUST</strong> only have string content.</li>
+<li><code>smallPreview</code> and <code>largePreview</code> <strong>MAY</strong> have any number of properties, including none.
+
+<ul>
+<li>The value of <code>smallPreview</code> and <code>largePreview</code>, if present, <strong>MUST</strong> be the JSON representation of an oslc:Preview.
+
+<ul>
+<li>A <code>Preview</code> <strong>MAY</strong> have any number of properties, including none.</li>
+<li><code>document</code> <strong>MUST</strong> be the URI of a document containing a preview of the resource.</li>
+<li><code>hintWidth</code>, <code>hintHeight</code>, or <code>initialHeight</code> <strong>MUST</strong> be a valid relative length value.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p>All resources <strong>MAY</strong> have additional properties not specified here. Consumers <strong>MUST</strong> quietly ignore unknown elements and attributes encountered in a Compact representation.</p></li>
+</ul>
+</section>
+
+<section class="appendix">
+<h2 id="backwardscompatibility">Backwards Compatibility</h2>
+
+<p>Providers <strong>MAY</strong> continue to support to OSLC 2.0 <code>application/x-oslc-compact+xml</code> representation for compatibility with OSLC 2.0 consumers. See <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview">OSLC 2.0 UI Preview</a>.</p>
+</section>
+
+<section class="appendix">
+<h2 id="references">References</h2>
+
+<ul>
+<li>Previous UI Preview Specification - <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview">OSLC 2.0 UI Preview</a></li>
+<li>JSON-LD - <a href="http://www.w3.org/TR/json-ld/">JSON-LD 1.0</a></li>
+<li>CSS - <a href="http://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 2 v2.1</a></li>
+<li>Dublin Core - <a href="http://dublincore.org/documents/dces/">Dublin Core Metadata Element Set, Version 1.1</a></li>
+<li>HTML5 Posting Message - <a href="http://www.w3.org/TR/html5/comms.html#posting-messages">W3C HTML5 postMessage</a></li>
+<li>HTTP - <a href="http://tools.ietf.org/html/rfc2616">Hyper-text Transfer Protocol (HTTP/1.1)</a></li>
+<li>Strawman Proposal - <a href="https://jazz.net/wiki/bin/view/Main/LinkRendering">IBM Jazz Compact Rendering 1.0</a></li>
+<li>Window Object - <a href="http://www.w3.org/TR/Window/#window-embedding">Window Object 1.0 Window.name</a></li>
+<li>XSD Datatypes - <a href="http://www.w3.org/TR/xmlschema-2/">XML Schema Part 2: Datatypes Second Edition</a></li>
+</ul>
+</section>
+
+<p></body>
+</html></p>
