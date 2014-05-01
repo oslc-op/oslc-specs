@@ -1,4 +1,5 @@
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<!DOCTYPE html>
+<html>
  <head>
  <meta charset='utf-8'/>
 <script src='http://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
@@ -88,14 +89,14 @@ min-width: 100px;
 </head>
 <body>
 
-<section>
-<p><strong>Notation and Conventions</strong></p>
-
-<p>The key words &#8220;MUST&#8221;, &#8220;MUST NOT&#8221;, &#8220;REQUIRED, SHALL&#8221;, &#8220;SHALL NOT&#8221;, &#8220;SHOULD&#8221;, &#8220;SHOULD NOT&#8221;, &#8220;RECOMMENDED&#8221;, &#8220;MAY&#8221;, and &#8220;OPTIONAL&#8221; in this document are to be interpreted as described in <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC&#8211;2119</a>. This document is a mixture of normative and informative text.</p>
+<section id='abstract'>
+<p>This document outlines a technique that can be used to show a user in-context
+information when displaying a link to a resource and then show more detailed
+preview when the user gestures.</p>
 </section>
 
-<section class='informative'>
-<h2 id="introduction">Introduction</h2>
+<section class='informative' id="introduction">
+<h2>Introduction</h2>
 <p>This document outlines a technique that can be used to show a user in-context
 information when displaying a link to a resource and then show more detailed
 preview when the user gestures. What gesture triggers a preview is up to the
@@ -108,16 +109,17 @@ in-context links and previews of that resource. The approach
 <ol>
 <li>Acknowledges that a resource may refer to other resources of arbitrary types, and
 <li>Does not require the client to know much about the particular details of
-those resources.</p>
+those resources.
 </ol>
+</p>
 </section>
 
 <section id="sotd">
 Early Working Draft
 </section>
 
-<section class='informative'>
-<h3 id="terminology">Terminology</h3>
+<section class='informative' id="terminology">
+<h2>Terminology</h2>
 
 <p>The following terms are used in discussions of previews:</p>
 
@@ -130,8 +132,8 @@ resource.</li>
 </ul>
 </section>
 
-<section class='informative'>
-<h2 id="conceptualmodel">Conceptual Model</h2>
+<section class='informative' id="conceptualmodel">
+<h2>Conceptual Model</h2>
 
 <p>To enable previews of a target resource, a Provider needs to supply the
 Consumer with a Compact resource describing the preview as defined in this
@@ -142,8 +144,8 @@ mechanism, it responds with a Compact resource that includes information helpful
 to the Consumer in displaying a link and previews of the target resource.</p>
 </section>
 
-<section>
-<h3 id="representingaresourceforuipreview">Representing a Resource for UI Preview</h3>
+<section id="compact">
+<h2>Compact Resources</h2>
 
 <p>Providers <strong>MUST</strong> support the <code>application/json</code> and
 <code>text/turtle</code> media types for the Compact resource. They
@@ -154,7 +156,7 @@ in the JSON format described in <a href="#JSON_Representation_Format">JSON
 Representation Format</a> below. The JSON property names for the
 <code>application/json</code> responses are included in the table below.</p>
 
-<h4 id="resource:compact">Resource: Compact</h4>
+<h2 id="resourceCompact">Resource: Compact</h2>
 
 <p><strong>Name</strong>: Compact</p>
 
@@ -245,7 +247,7 @@ HTML <code>img</code> tag&#8217;s <code>title</code> attribute.</td>
 </tbody>
 </table>
 
-<h4 id="resource:preview">Resource: Preview</h4>
+<h2 id="resourcePreview">Resource: Preview</h2>
 
 <p><strong>Name</strong>: Preview</p>
 
@@ -311,8 +313,8 @@ interpreted relative to the default system font (at 100% size).</td>
 </table>
 </section>
 
-<section>
-<h2 id="discovery">Compact Resource Discovery</h2>
+<section id="discovery">
+<h2>Compact Resource Discovery</h2>
 
 Consumers <strong>MAY</strong> discover Compact resources in one of two ways:
 
@@ -321,8 +323,8 @@ Consumers <strong>MAY</strong> discover Compact resources in one of two ways:
 <li><a href="#linkHeader">Discovering Compact Resources Using the HTTP Link Header</a>
 </ol>
 
-<section>
-<h2 id="prefer">Discovering Compact Resources Using the HTTP Prefer Header</h2>
+<section id="prefer">
+<h2>Discovering Compact Resources Using the HTTP Prefer Header</h2>
 
 <p>Consumers <strong>MAY</strong> request the preview of a resource by making an
 HTTP GET request with <code>Prefer</code> header value
@@ -356,7 +358,7 @@ compacts.
 HTTP/1.1 209 Contents of Related
 Transfer-Encoding: chunked
 Location: http://example.com/bugs/324?compact
-Content-Type: application/ld+json; charset=UTF-8
+Content-Type: application/json; charset=UTF-8
 Preference-Applied: type=oslc-compact
 
 {
@@ -373,9 +375,7 @@ Preference-Applied: type=oslc-compact
   "smallPreview": {
     "document": "http://example.com/bugs/324?hover=small"
   },
-  "compacts": "http://example.com/bugs/324",
-  "@id": "http://example.com/bugs/324?compact",
-  "@context": "http://example.com/contexts/compact.jsonld"
+  "compacts": "http://example.com/bugs/324"
 }
 </pre>
 
@@ -393,14 +393,13 @@ Consumer, the Provider <strong>MUST</strong> return the same 4xx status code
 that it would have returned had the Consumer instead requested the default
 representation of the resource.</p>
 
-Consumers <strong>SHOULD</strong> gracefully handle unsuccessful attempts to use
+<p>Consumers <strong>SHOULD</strong> gracefully handle unsuccessful attempts to use
 the preview mechanism; unsuccessful attempts should never result in failure in
 the way a Consumer application operates or performs.  Consumers
 <strong>SHOULD</strong> anticipate that the preview mechanism may not be
 supported for a resource, or that the the preview mechanism may not work due to
 security or service availability issues, or even that preview capability once
 supported by a Provider has been phased out.</p>
-
 
 <p>Providers <strong>SHOULD</strong> include a <code>Vary</code> response header
 that includes <code>Prefer</code> for requests on any resource that supports
@@ -413,8 +412,8 @@ on requests for a Compact representation of the resource (and on requests for
 rich preview documents) and return a representation for the requested natural
 language.</p> </section>
 
-<section>
-<h2 id="linkHeader">Discovering Compact Resources Using the HTTP Link Header</h2>
+<section id="linkHeader">
+<h2>Discovering Compact Resources Using the HTTP Link Header</h2>
 
 <p>Providers <strong>MAY</strong> also provide a <code>Link</code> response
 header with target URI of the Compact resource and <code>rel</code> value
@@ -439,23 +438,26 @@ Link: &lt;http://example.com/bugs/324?compact&gt;; rel="http://open-services.net
 
 <p>Consumers <strong>MAY</strong> then request the Compact resource using the
 target URI of the <code>Link</code> header.
-
+</section>
 </section>
 
-<section>
-<h2 id="display">Displaying a Preview</h2>
+<section id="display">
+<h2>Displaying a Preview</h2>
 
 <p>The following guidance is suggested for Consumer display of a resource link
 and rich previews. For purposes of this discussion, assume source resource A has
 a URI property that refers to target resource B:</p>
 
-<h5 id="navigationtothetargetresource">Navigation to the target resource</h5>
+<section id="navigating">
+<h2>Navigation to the target resource</h2>
 
 <p>At any time, the user <strong>SHOULD</strong> be able to gesture that they
 would like to navigate the link to the target resource, regardless of how the
 link to the target resource happens to be rendered. </p>
+</section>
 
-<h5 id="defaultwaytodisplaythelinktothetargetresource">Default way to display the link to the target resource</h5>
+<section id="displayingLinks">
+<h2>Default way to display the link to the target resource</h2>
 
 <p>The typical way for forming and displaying the hyperlink
 <strong>SHOULD</strong> be based on information that is stored locally in source
@@ -473,8 +475,10 @@ resource B.</p>
 <p>The default display of the link from A to B is visible to any user authorized
 to access resource A. The use of Compact representation information described
 below is only viable for users who are also authorized to access resource B.</p>
+</section>
 
-<h5 id="usingthecompactrepresentationtitleshorttitleandicon">Using the Compact representation title, short title, and icon</h5>
+<section id="usingTitle">
+<h2>Using the Compact representation title, short title, and icon</h2>
 
 <p>A Compact representation of the resource may contain a more accurate and
 slightly richer label for a target resource ( <code>dcterms:title</code>
@@ -499,8 +503,10 @@ or heavily loaded servers).</p>
 non-trusted sources; in particular, the Consumer <em>SHOULD</em> check that the
 dcterms:title and oslc:shortTitle property values do not contain HTML markup
 beyond the specified set of simple elements.</p>
+</section>
 
-<h5 id="displayingasmallpreview">Displaying a small preview</h5>
+<section id="smallPreview">
+<h2>Displaying a small preview</h2>
 
 <p>If a user mouses or hovers over a displayed link, the Consumer
 <strong>SHOULD</strong> determine whether the target resource has a small
@@ -516,8 +522,10 @@ up faster. There is a low chance that the user will make a gesture that would
 call for the display of a small preview. It would generally be a poor tradeoff
 to increase overall system load just to decrease UI latency for low probability
 eventualities.</p>
+</section>
 
-<h5 id="displayingalargepreview">Displaying a large preview</h5>
+<section id="largePreview">
+<h2>Displaying a large preview</h2>
 
 <p>If the user then gestures that they want to see a bit more of the resource,
 the Consumer should determine whether the target resource has a large preview (
@@ -529,8 +537,8 @@ contain arbitrary content, including HTML and scripts, Consumers
 another HTML-based presentation.</p>
 </section>
 
-<section>
-<h2 id="previewsizing">Preview sizing</h2>
+<section id="sizing">
+<h2>Preview sizing</h2>
 
 <p>Small and large previews are designed to be sized statically by the client.
 The Compact representation <strong>MAY</strong> include
@@ -663,10 +671,11 @@ if (window.postMessage &amp;&amp; previewInitialPixelHeight) {
 
 document.body.appendChild(previewFrame); // make preview iframe visible
 </pre>
+</section>
 
 </section>
 
-<section>
+<section id="jsonFormat">
 <h2 name="JSON_Representation_Format">JSON Representation Format</h2>
 
 <p>A Compact resource in JSON document might look like the
@@ -823,5 +832,5 @@ with OSLC 2.0 consumers. See <a
 </ul>
 </section>
 
-<p></body>
+</body>
 </html>
