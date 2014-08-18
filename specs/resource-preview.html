@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
- <head>
- <meta charset='utf-8'/>
+<head>
+<meta charset='utf-8'/>
 <script src='http://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
 <script class='remove'>
   var respecConfig = {
@@ -189,20 +189,22 @@ min-width: 100px;
         <td><code>dcterms:title</code></td>
         <td><code>title</code></td>
         <td>String</td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>Title that may be used in the display of a link to the resource.
-The value SHOULD include only content that is valid inside an HTML &lt;span&gt;
-element. Providers SHOULD include a <code>dcterms:title</code> property with an
-informative label for the resource. The title is typically shown to a user as a
-hyperlink.  For a resource with no obvious title, Providers SHOULD omit the
-<code>dcterms:title</code> property. Providers MUST first HTML escape the
-contents of the <code>dcterms:title</code> before sending the response.</td>
+            The value SHOULD include only content that is valid inside an HTML
+            &lt;span&gt; element. Providers SHOULD include a
+            <code>dcterms:title</code> property with an informative label for
+            the resource. The title is typically shown to a user as a
+            hyperlink.  For a resource with no obvious title, Providers SHOULD
+            omit the <code>dcterms:title</code> property. Providers MUST first
+            HTML escape the contents of the <code>dcterms:title</code> before
+            sending the response.</td>
 </tr>
 <tr>
         <td><code>oslc:shortTitle</code></td>
         <td><code>shortTitle</code></td>
         <td>String</td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>Abbreviated title which may be used in the display of a link to the
             resource. The value SHOULD include only content that is valid
             inside an HTML &lt;span&gt; element. Providers SHOULD include an
@@ -222,14 +224,14 @@ contents of the <code>dcterms:title</code> before sending the response.</td>
         <td><code>oslc:compacts</code></td>
         <td><code>compacts</code></td>
         <td>Resource</td>
-        <td>exactly-one</td>
+        <td>Zero-or-one</td>
         <td>The resource being compacted.</td>
 </tr>
 <tr>
         <td><code>oslc:icon</code></td>
         <td><code>icon</code></td>
         <td>Resource</td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>URI of an image which may be used in the display of a link to the
             resource.</td>
 </tr>
@@ -237,7 +239,7 @@ contents of the <code>dcterms:title</code> before sending the response.</td>
         <td><code>oslc:iconAltLabel</code></td>
         <td><code>iconAltLabel</code></td>
         <td>String</td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>Alternative label used in association with the
             <code>oslc:icon</code>, such as HTML <code>img</code> tag's
             <code>alt</code> attribute.</td>
@@ -246,7 +248,7 @@ contents of the <code>dcterms:title</code> before sending the response.</td>
         <td><code>oslc:iconTitle</code></td>
         <td><code>iconTitle</code></td>
         <td>String</td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>Title used in association with the <code>oslc:icon</code>, such as
             HTML <code>img</code> tag's <code>title</code>
             attribute.</td>
@@ -255,7 +257,7 @@ contents of the <code>dcterms:title</code> before sending the response.</td>
         <td><code>oslc:smallPreview</code></td>
         <td><code>smallPreview</code></td>
         <td>Local Inline Resource of type <code>oslc:Preview</code></td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>URI and sizing properties for an HTML document to be used for a
             small preview.</td>
 </tr>
@@ -263,7 +265,7 @@ contents of the <code>dcterms:title</code> before sending the response.</td>
         <td><code>oslc:largePreview</code></td>
         <td><code>largePreview</code></td>
         <td>Local Inline Resource of type <code>oslc:Preview</code></td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>URI and sizing properties for an HTML document to be used for a
             large preview.</td>
 </tr>
@@ -294,14 +296,14 @@ contents of the <code>dcterms:title</code> before sending the response.</td>
         <td><code>oslc:document</code></td>
         <td><code>document</code></td>
         <td>Resource</td>
-        <td>exactly-one</td>
+        <td>Exactly-one</td>
         <td>The URI of an HTML document to be used for the preview.</td>
 </tr>
 <tr>
         <td><code>oslc:hintWidth</code></td>
         <td><code>hintWidth</code></td>
         <td>String</td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>Recommended width of the preview. Values <strong>MUST</strong> expressed
             using <strong><em>length units</em></strong> as specified in the <a
                     href="http://www.w3.org/TR/CSS2/">W3C Cascading Style
@@ -311,7 +313,7 @@ contents of the <code>dcterms:title</code> before sending the response.</td>
         <td><code>oslc:hintHeight</code></td>
         <td><code>hintHeight</code></td>
         <td>String</td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>Recommended height of the preview. Values <strong>MUST</strong> expressed
             using <strong><em>length units</em></strong> as specified in the <a
                     href="http://www.w3.org/TR/CSS2/">W3C Cascading Style
@@ -365,15 +367,40 @@ Prefer: type=oslc-compact
         Representation Format</a>. The JSON <strong>MAY</strong> include other
     properties.</p>
 
+<strong>Example JSON Response:</strong>
+
+<pre class="example" id="preferenceAppliedExample">
+HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+Content-Type: application/json; charset=UTF-8
+ETag: W/"f9d76afe5fbed1655c5768906db8958a"
+Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Preference-Applied: type=oslc-compact
+Vary: Accept,Prefer
+Allow: GET,HEAD,OPTIONS,PUT,DELETE
+
+{
+    "compact": {
+        "title": "324: Need a fix &lt;em&gt;NOW&lt;/em&gt;",
+        "icon": "http://example.com/icons/defect.jpg",
+        "largePreview": {
+            "document": "http://example.com/bugs/324?preview=large",
+            "hintHeight": "250px",
+            "hintWidth": "400px"
+        }
+    }
+}
+</pre>
+
 <p>Including a JSON-LD context in an <code>application/json</code> response is
     <strong>OPTIONAL</strong>. Consumers who prefer RDF <strong>SHOULD</strong>
     request <code>text/turtle</code> or <code>application/ld+json</code> using
     the HTTP <code>Accept</code> request header rather than
     <code>application/json</code>.</p>
 
-<strong>Example Response:</strong>
+<strong>Example JSON Response with JSON-LD Context:</strong>
 
-<pre class="example" id="preferenceAppliedExample">
+<pre class="example" id="preferenceAppliedJsonLDExample">
 HTTP/1.1 200 OK
 Transfer-Encoding: chunked
 Content-Type: application/json; charset=UTF-8
@@ -402,16 +429,15 @@ Allow: GET,HEAD,OPTIONS,PUT,DELETE
         },
         "smallPreview": {
             "document": "http://example.com/bugs/324?preview=small"
-        },
-        "compacts": "http://example.com/bugs/324"
+        }
     }
 }
 </pre>
 
 <p>Consumers <strong>MUST NOT</strong> assume a successful status code such as
-    200 OK means the returned resource is a Compact resource. They
-    <strong>SHOULD</strong> check the <code>Preference-Applied</code> response
-    header for <code>type=oslc-compact</code>.
+    200 OK means the returned resource is a Compact resource. Consumers
+    <strong>SHOULD</strong> instead check the <code>Preference-Applied</code>
+    response header for <code>type=oslc-compact</code>.</p>
 
 <p>Providers <strong>MAY</strong> choose to only provide previews for some
     resources and not others.  Providers <strong>SHOULD</strong> provide
@@ -426,21 +452,22 @@ Allow: GET,HEAD,OPTIONS,PUT,DELETE
     use the preview mechanism; unsuccessful attempts should never result in
     failure in the way a Consumer application operates or performs.  Consumers
     <strong>SHOULD</strong> anticipate that the preview mechanism may not be
-    supported for a resource, or that the the preview mechanism may not work
-    due to security or service availability issues, or even that preview
-    capability once supported by a Provider has been phased out.</p>
+    supported for a resource, or that the preview mechanism may not work due to
+    security or service availability issues, or even that preview capability
+    once supported by a Provider has been phased out.</p>
 
 <p>Providers <strong>SHOULD</strong> include a <code>Vary</code> response
     header that includes both <code>Accept</code> and <code>Prefer</code> for
-    requests on any resource that supports preview.  Use of the
-    <code>Vary</code> field allows a cache to properly interpret future
-    requests on the resource and informs the browser that the cacheable
-    response is subject to server-driven negotiation.</p>
+    requests on any resource that supports preview.  <code>Vary</code> allows a
+    cache to properly interpret future requests on the resource and informs the
+    browser that the cacheable response is subject to server-driven
+    negotiation.</p>
 
 <p>Providers <strong>MAY</strong> consult the <code>Accept-Language</code>
     field on requests for a Compact representation of the resource (and on
     requests for rich preview documents) and return a representation for the
-    requested natural language.</p> </section>
+    requested natural language.</p>
+</section>
 
 <section id="linkHeader"> <h2>Discovering Compact Resources Using the HTTP Link
         Header</h2>
@@ -660,7 +687,7 @@ Allow: GET,HEAD,OPTIONS
 <tr>
         <td><code>oslc:hintHeight</code></td>
         <td>String</td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>Preferred height of the preview. Values <strong>MUST</strong> expressed
             using <strong><em>length units</em></strong> as specified in the <a
                     href="http://www.w3.org/TR/CSS2/">W3C Cascading Style
@@ -669,7 +696,7 @@ Allow: GET,HEAD,OPTIONS
 <tr>
         <td><code>oslc:hintWidth</code></td>
         <td>String</td>
-        <td>zero-or-one</td>
+        <td>Zero-or-one</td>
         <td>Preferred width of the preview. Values <strong>MUST</strong> expressed
             using <strong><em>length units</em></strong> as specified in the <a
                     href="http://www.w3.org/TR/CSS2/">W3C Cascading Style
@@ -739,9 +766,6 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <p>The JSON representation has the following constraints:</p>
 
 <ul>
-    <li>The JSON representation <strong>MUST</strong> have a
-        <code>compacts</code> property whose value is the URI of the target
-        resource. All other properties are <strong>OPTIONAL</strong>.</li>
     <li>The value of the <code>title</code> or <code>shortTitle</code>
         properties <strong>MUST</strong>, if present, only contain markup valid
         in an HTML <code>span</code> element. To afford clients the greatest
@@ -818,9 +842,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
     "document": {
         "@id": "http://open-services.net/ns/core#document",
         "@type": "@id"
-    },
-    "hintHeight": "http://open-services.net/ns/core#hintHeight",
-    "hintWidth": "http://open-services.net/ns/core#hintWidth"
+    }
 }
 </pre>
 </p>
@@ -841,7 +863,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
 
 <ul>
     <li>Previous UI Preview Specification - <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview">OSLC 2.0 UI Preview</a></li>
-    <li>LDP - <a href="http://www.w3.org/TR/ldp/">Linked Data Platform 1.0 (Candidate Recommendation)</li>
+    <li>LDP - <a href="http://www.w3.org/TR/ldp/">Linked Data Platform 1.0 (Candidate Recommendation)</a></li>
     <li>CSS - <a href="http://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 2 v2.1</a></li>
     <li>Dublin Core - <a href="http://dublincore.org/documents/dces/">Dublin Core Metadata Element Set, Version 1.1</a></li>
     <li>HTML5 Posting Message - <a href="http://www.w3.org/TR/html5/comms.html#posting-messages">W3C HTML5 postMessage</a></li>
