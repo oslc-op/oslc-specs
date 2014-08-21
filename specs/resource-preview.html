@@ -7,7 +7,7 @@
   var respecConfig = {
       specStatus:           "CS",
       edDraftURI:           "resource-preview.html",
-      
+
       // the specification's short name, as in http://www.w3.org/TR/short-name/
       shortName:            "OSLC 3.0 Resource Preview",
 
@@ -42,7 +42,7 @@
           ,   company:    "IBM"
           ,   companyURL: "http://ibm.com/"
           },
-          { 
+          {
               name:       "Steve Speicher"
           ,   url:        "http://stevespeicher.me/"
           ,   mailto:     "sspeiche@us.ibm.com"
@@ -53,16 +53,16 @@
 
       previousURI: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
       prevED: "http://open-services.net/wiki/core/User-Interface-Previews-3.0/",
-      
+
       // name of the WG
       wg:           "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
-      
+
       // URI of the public WG page
       wgURI:        "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
-      
+
       // name (without the @w3c.org) of the public mailing to which comments are due
       wgPublicList: "oslc-core",
-      
+
       // URI of the patent status for this WG, for Rec-track documents
       // !!!! IMPORTANT !!!!
       // This is important for Rec-track documents, do not copy a patent URI from a random
@@ -70,67 +70,67 @@
       // Team Contact.
       wgPatentURI:  "",
       // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
-      	localBiblio:  {
-		"OSLCUIPreview20": {
-			title:    "OSLC Core 2.0 - UI Preview",
-			href:     "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
-			authors:  [
-				"S. Bosworth"
-			],
-			status:   "Finalized",
-			publisher:  "http://open-services.net"
-		 }
-      	}
+        localBiblio:  {
+                "OSLCUIPreview20": {
+                        title:    "OSLC Core 2.0 - UI Preview",
+                        href:     "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+                        authors:  [
+                                "S. Bosworth"
+                        ],
+                        status:   "Finalized",
+                        publisher:  "http://open-services.net"
+                 }
+        }
   };
 </script>
 <title>Open Services for Lifecycle Collaboration Resource Preview Specification 3.0</title>
 <style type="text/css">
 table, thead, tr, td {
-padding: 5px;
-border-width: 1px;
-border-spacing: 0px;
-border-style: solid;
-border-collapse: collapse;
+    padding: 5px;
+    border-width: 1px;
+    border-spacing: 0px;
+    border-style: solid;
+    border-collapse: collapse;
 }
 
 td {
-min-width: 100px;
+    min-width: 100px;
 }
 
 div.review {
-border-color: #E05252;
-background: #FBE9E9;
-padding: 0.5em;
-			margin: 1em 0;
-			position: relative;
-			clear: both;
-			border-left-width: .5em;
-			border-left-style: solid;
+    border-color: #E05252;
+    background: #FBE9E9;
+    padding: 0.5em;
+    margin: 1em 0;
+    position: relative;
+    clear: both;
+    border-left-width: .5em;
+    border-left-style: solid;
 }
 </style>
 </head>
 <body>
 
 <section id="abstract">
-<p>This document outlines a technique that can be used to show a user
-    in-context information when displaying a link to a resource and then show
-    more detailed preview when the user gestures.</p>
+<p>This document outlines a technique used to show a user in-context
+    information when displaying a link to a resource and then show more
+    detailed preview when the user gestures.</p>
 </section>
 
 <section class="informative" id="introduction">
 
 <h2>Introduction</h2>
 
-<p>This document outlines a technique that can be used to show a user
-    in-context information when displaying a link to a resource and then show
-    more detailed preview when the user gestures. What gesture triggers a
-    preview is up to the client and can vary by implementation or device. For
-    example, it might be triggered by the user hovering his mouse cursor over
-    the link in a web application.</p>
+<p>This document outlines a technique used to show a user in-context
+    information when displaying a link to a resource and then show more
+    detailed preview when the user gestures. What gesture triggers a preview is
+    up to the client and can vary by implementation or device. For example, it
+    might be triggered by the user hovering his mouse cursor over the link in a
+    web application.</p>
 
 <p>This specification describes a mechanism that enables client applications,
     given only the URI of a resource, to discover helpful information for
-    presenting in-context links and previews of that resource. The approach 
+    presenting in-context links and previews of that resource. The approach
 
     <ol>
         <li>Acknowledges that a resource may refer to other resources of
@@ -175,14 +175,13 @@ We are experimenting with some changes to the specification, based on current go
 <section class='informative' id="conceptualmodel">
 <h2>Conceptual Model</h2>
 
-<p>To enable previews of a target resource, a Provider needs to supply the
-    Consumer with a Compact resource describing the preview as defined in this
-    specification. The Consumer typically fetches the representation with an
-    HTTP GET request to the target resource's URI using the <code>Prefer:
-        type="oslc-compact"</code> request header [[!RFC7240]]. If the Provider supports
-    previews, it responds with a Compact resource that includes information
-    helpful to the Consumer in displaying a link and previews of the target
-    resource.</p>
+<p>To enable previews of a target resource, a Provider supplies a Compact
+    resource describing the preview. The Consumer performs an HTTP GET request
+    to the target resource's URI using the HTTP Prefer header
+    <code>return=representation</code> preference [[!RFC7240]] and an
+    <code>include</code> parameter [[!LDP]] asking for the Compact resource. If
+    the Provider supports previews, it inlines a Compact resource in the
+    response.</p>
 </section>
 
 <section id="resources">
@@ -197,7 +196,7 @@ We are experimenting with some changes to the specification, based on current go
             href="#JSON_Representation_Format">JSON Representation Format</a>
     below. The JSON property names for the <code>application/json</code>
     responses are included in the table below.</p>
-    
+
 <section id="vocab">
 <h2>Terms</h2>
 <p>This section highlights the new RDF vocabulary terms defined in this specification.</p>
@@ -466,11 +465,12 @@ Consumers <strong>MAY</strong> discover Compact resources in one of two ways:
         Header</h2>
 
 <p>Consumers <strong>MAY</strong> request the preview of a resource by making
-    an HTTP GET request with <code>Prefer</code> header value
-    <code>type="oslc-compact"</code> (see <a
-            href="http://tools.ietf.org/html/draft-snell-http-prefer-18">Prefer
-        Header for HTTP</a>). Providers supporting resource preview
-    <strong>MUST</strong> support this method of discovery.</p>
+    an HTTP GET request to the target resource's URI using the
+    <code>return=representation</code> preference of the HTTP Prefer request
+    header [[!RFC7240]] and <code>include</code> parameter [[LDP]] value
+    <code>http://open-services.net/ns/core#PreferCompact</code>.  Providers
+    supporting resource preview <strong>MUST</strong> support this method of
+    discovery.</p>
 
 <strong>Example Request:</strong>
 
@@ -478,14 +478,12 @@ Consumers <strong>MAY</strong> discover Compact resources in one of two ways:
 GET /bugs/324 HTTP/1.1
 Host: example.com
 Accept: application/json
-Prefer: type=oslc-compact
+Prefer: return=representation; include="http://open-services.net/ns/core#PreferCompact"
 </pre>
 
 <p>If the provider supports a preview for this resource and the request is
-    successful, the response <strong>MUST</strong> include a
-    <code>Preference-Applied</code> response header with value
-    <code>type=oslc-compact</code>. The response <strong>MUST</strong> include
-    the Compact resource in its body.</p>
+    successful, the response <strong>MUST</strong> include the Compact resource
+    in its body.</p>
 
 <p>The response content type is negotiated using the HTTP <code>Accept</code>
     request header. If the negotiated content type is
@@ -504,7 +502,7 @@ Transfer-Encoding: chunked
 Content-Type: application/json; charset=UTF-8
 ETag: W/"f9d76afe5fbed1655c5768906db8958a"
 Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
-Preference-Applied: type=oslc-compact
+Preference-Applied: return=representation
 Vary: Accept,Prefer
 Allow: GET,HEAD,OPTIONS,PUT,DELETE
 
@@ -535,7 +533,7 @@ Transfer-Encoding: chunked
 Content-Type: application/json; charset=UTF-8
 ETag: W/"d53d19be87fa9c61043c70bd91413dab"
 Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
-Preference-Applied: type=oslc-compact
+Preference-Applied: return=representation
 Vary: Accept,Prefer
 Allow: GET,HEAD,OPTIONS,PUT,DELETE
 
@@ -563,10 +561,11 @@ Allow: GET,HEAD,OPTIONS,PUT,DELETE
 }
 </pre>
 
-<p>Consumers <strong>MUST NOT</strong> assume a successful status code such as
-    200 OK means the returned resource is a Compact resource. Consumers
-    <strong>SHOULD</strong> instead check the <code>Preference-Applied</code>
-    response header for <code>type=oslc-compact</code>.</p>
+<p>Including a <code>Preference-Applied</code> response header with value
+    <code>return=representation</code> is <strong>OPTIONAL</strong>. Consumers
+    <strong>SHOULD</strong> simply look for the Compact resource in the
+    response instead of relying on the <code>Preference-Applied</code>
+    header.</p>
 
 <p>Providers <strong>MAY</strong> choose to only provide previews for some
     resources and not others.  Providers <strong>SHOULD</strong> provide
@@ -936,7 +935,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
             href="http://www.w3.org/TR/json-ld/#compacted-document-form">compacted
         document form</a> when consumers request the
     <code>application/json</code> media type as long as the response meets the
-    above requirements for the JSON format.<p> 
+    above requirements for the JSON format.<p>
 
 <p>Here is an example JSON-LD context for a Compact resource:</p>
 
@@ -988,7 +987,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
         2.0 UI Preview</a> [[OSLCUIPreview20]].</p>
 </section>
 
-<!-- 
+<!--
 <section class="appendix">
 <h2 id="references">References</h2>
 
@@ -1007,14 +1006,15 @@ if (window.postMessage &amp;&amp; window.parent)  {
 </ul>
 </section>
  -->
- 
+
 <section class="appendix informative" id="history">
 <h2>Change History</h2>
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
-	<li>2014-08-20 Started to convert to respec-style references. (SS)</li>
-	<li>2014-08-19 Added sections for separate terms and shapes, also proposed doc structure changes. (SS)</li>
+        <li>2014-08-21 Use Prefer: return=representation with an include parameter instead of type=oslc-compact. (SP)</li>
+        <li>2014-08-20 Started to convert to respec-style references. (SS)</li>
+        <li>2014-08-19 Added sections for separate terms and shapes, also proposed doc structure changes. (SS)</li>
 </ul>
 </section>
 
