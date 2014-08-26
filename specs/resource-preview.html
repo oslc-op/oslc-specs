@@ -212,6 +212,11 @@ We are experimenting with some changes to the specification, based on current go
 
 <tbody>
 <tr>
+        <td><code>oslc:compact</code></td>
+        <td>Resource</td>
+        <td>An associated <code>oslc:Compact</code> resource that describes how
+            to display a preview.</td>
+</tr>
 <tr>
         <td><code>oslc:shortTitle</code></td>
         <td>String</td>
@@ -229,11 +234,6 @@ We are experimenting with some changes to the specification, based on current go
             <code>oslc:shortTitle</code> property. Providers MUST first HTML
             escape the contents of the <code>oslc:shortTitle</code> before
             sending the response.</td>
-</tr>
-<tr>
-        <td><code>oslc:compacts</code></td>
-        <td>Resource</td>
-        <td>The resource being compacted.</td>
 </tr>
 <tr>
         <td><code>oslc:icon</code></td>
@@ -347,13 +347,6 @@ We are experimenting with some changes to the specification, based on current go
             sending the response.</td>
 </tr>
 <tr>
-        <td><code>oslc:compacts</code></td>
-        <td><code>compacts</code></td>
-        <td>Resource</td>
-        <td>Zero-or-one</td>
-        <td>The resource being compacted.</td>
-</tr>
-<tr>
         <td><code>oslc:icon</code></td>
         <td><code>icon</code></td>
         <td>Resource</td>
@@ -458,7 +451,7 @@ Consumers <strong>MAY</strong> discover Compact resources in one of two ways:
 
 <ol>
 <li><a href="#prefer">Discovering Compact Resources Using the HTTP Prefer Header</a>, or</li>
-<li><a href="#linkHeader">Discovering Compact Resources Using the HTTP Link Header [[RFC5988]]</a></li>
+<li><a href="#linkHeader">Discovering Compact Resources Using the HTTP Link Header</a></li>
 </ol>
 
 <section id="prefer"> <h2>Discovering Compact Resources Using the HTTP Prefer
@@ -470,7 +463,7 @@ Consumers <strong>MAY</strong> discover Compact resources in one of two ways:
     header [[!RFC7240]] and <code>include</code> parameter [[LDP]] value
     <code>http://open-services.net/ns/core#PreferCompact</code>.  Providers
     supporting resource preview <strong>MUST</strong> support this method of
-    discovery.</p>
+    discovery for resources with RDF or JSON representations.</p>
 
 <strong>Example Request:</strong>
 
@@ -601,17 +594,15 @@ Allow: GET,HEAD,OPTIONS,PUT,DELETE
         Header</h2>
 
 <p>Providers <strong>MAY</strong> also provide a <code>Link</code> response
-    header with target URI of the Compact resource and <code>rel</code> value
+    header [[RFC5988]] with target URI of the Compact resource and <code>rel</code> value
     <code>http://open-services.net/ns/oslc#Compact</code> on HTTP GET, HEAD,
-    and OPTIONS requests for resources that support preview (see <a
-            href="http://www.ietf.org/rfc/rfc5988.txt">RFC 5988: Web
-        Linking</a>) [[RFC5988]]. Consumers <strong>MAY</strong> use the link header as
-    another way to discover the Compact resource.</p>
+    and OPTIONS requests for resources that support preview, but don't have RDF
+    or JSON representations.</p>
 
 <strong>Example Request:</strong>
 
 <pre class="example" id="linkHeaderRequest">
-HEAD /bugs/324 HTTP/1.1
+HEAD /bugs/324/screenshot HTTP/1.1
 Host: example.com
 </pre>
 
@@ -620,9 +611,9 @@ Host: example.com
 <pre class="example" id="linkHeaderResponse">
 HTTP/1.1 200 OK
 Transfer-Encoding: chunked
-Content-Type: text/turtle; charset=UTF-8
+Content-Type: image/png
 ETag: W/"678609cdee68e0fb8aea5f252b84a511"
-Link: &lt;http://example.com/bugs/324?compact&gt;; rel="http://open-services.net/ns/oslc#Compact",
+Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/oslc#Compact",
       &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
 Vary: Accept,Prefer
 Allow: GET,HEAD,OPTIONS,PUT,DELETE
@@ -634,7 +625,7 @@ Allow: GET,HEAD,OPTIONS,PUT,DELETE
 <strong>Example Request:</strong>
 
 <pre class="example" id="linkHeaderRequest">
-GET /bugs/324?compact HTTP/1.1
+GET /bugs/324/screenshot?compact HTTP/1.1
 Host: example.com
 Accept: application/json
 </pre>
@@ -651,22 +642,10 @@ Vary: Accept
 Allow: GET,HEAD,OPTIONS
 
 {
-    "@context": "http://example.com/contexts/preview.jsonld",
-    "@id": "http://example.com/bugs/324?compact",
-    "@type": "http://open-services.net/ns/core#Compact",
-    "compacts": "http://example.com/bugs/324",
-    "title": "324: Need a fix &lt;em&gt;NOW&lt;/em&gt;",
-    "shortTitle": "324",
-    "icon": "http://example.com/icons/defect.jpg",
-    "iconTitle": "Defect",
-    "iconAltLabel": "Defect",
-    "largePreview": {
-        "document": "http://example.com/bugs/324?preview=large",
-        "hintHeight": "250px",
-        "hintWidth": "400px"
-    },
+    "title": "Screenshot of the problem",
+    "shortTitle": "screenshot.png",
     "smallPreview": {
-        "document": "http://example.com/bugs/324?preview=small"
+        "document": "http://example.com/bugs/324/screenshot?preview=small"
     }
 }
 </pre>
@@ -886,8 +865,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
     },
     "smallPreview": {
         "document": "http://example.com/bugs/324?preview=small"
-    },
-    "compacts": "http://example.com/bugs/324"
+    }
 }
 </pre>
 
@@ -945,8 +923,8 @@ if (window.postMessage &amp;&amp; window.parent)  {
     "shortTitle": "http://open-services.net/ns/core#shortTitle",
     "iconTitle": "http://open-services.net/ns/core#iconTitle",
     "iconAltLabel": "http://open-services.net/ns/core#iconAltLabel",
-    "compacts": {
-        "@id": "http://open-services.net/ns/core#compacts",
+    "compact": {
+        "@id": "http://open-services.net/ns/core#compact",
         "@type": "@id"
     },
     "hintHeight": "http://open-services.net/ns/core#hintHeight",
