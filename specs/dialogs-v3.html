@@ -132,26 +132,23 @@ min-width: 100px;
   <p><img alt="Delegated UI Dialogs" src="oslc-delegated.png"></p>
 </section>
 
-<section class="informative" id="terminology">
+<section class="glossary" id="terminology">
   <h2>Terminology</h2>
 
   <p>The following terms are used in discussions of Delegated UI Dialogs:</p>
 
-  <ul>
-    <li>
-      <p><em>UI Consumer</em> - a web application that is embedding a Delegated
-          UI Dialog from an OSLC Service Provider. This consumer could be a web
-          page, with the Delegated UI Dialog loaded into an iframe or a native
-          application, e.g. an IDE like Eclipse, that is embedding a web
-          browser component.</p>
-    </li>
+  <dl>
+    <dt>UI Consumer</dt>
+    <dd>A web application that is embedding a Delegated UI Dialog from an OSLC
+        Service Provider. This consumer could be a web page, with the Delegated
+        UI Dialog loaded into an iframe or a native application, e.g. an IDE
+        like Eclipse, that is embedding a web browser component.</dd>
 
-    <li>
-      <p><em>UI Provider</em> - an OSLC Service provider that offers one or
-          more Delegated UI Dialogs. These dialogs will be specified in the
-          provider's Service Provider resource.</p>
-    </li>
-  </ul>
+    <dt>UI Provider</dt>
+    <dd>An OSLC Service provider that offers one or more Delegated UI Dialogs.
+        These dialogs will be specified in the provider's Service Provider
+        resource.</dd>
+  </dl>
 </section>
 
 <section class="informative" id="protocols">
@@ -211,10 +208,11 @@ if (window.location.hash == '#oslc-core-windowName-1.0') {
   <h2>Post Message Protocol</h2>
 
   <p>The Post Message protocol relies on the HTML5 function
-      <code>window.postMessage()</code> (reference: HTML5), available in the
+      <code>window.postMessage()</code> [[webmessaging]], available in the
       latest or pending releases of most browsers. UI Consumers
-      <strong>MUST</strong> anticipate other, unrelated uses of postMessage()
-      and ignore messages not conforming to this protocol.</p>
+      <strong>MUST</strong> anticipate other, unrelated uses of
+      <code>postMessage()</code> and ignore messages not conforming to this
+      protocol.</p>
 
   <p>Typically, the embedded page will be loaded in a window inside another
       window, such as a iframe inside some surrounding web page. In such cases,
@@ -232,14 +230,14 @@ if (window.location.hash == '#oslc-core-windowName-1.0') {
   <ol>
     <li>Include the Delegated UI Dialog via iframe (i.e., setting iframe src to
         the URI of the Delegated UI Dialog) or via an embedded browser. Append
-        the fragment identifier #oslc-core-postMessage-1.0 to the URL to
-        indicate that Post Message is the desired protocol.</li>
+        the fragment identifier <code>#oslc-core-postMessage-1.0</code> to the
+        URL to indicate that Post Message is the desired protocol.</li>
 
-    <li>Add a 'message' listener to the outer window to receive messages from
-        the Delegated UI Dialog.</li>
+    <li>Add a <code>'message'</code> listener to the outer window to receive
+        messages from the Delegated UI Dialog.</li>
 
-    <li>Listen for window 'message' events, ignoring events from other sources
-        or not prefixed with "oslc-response:"</li>
+    <li>Listen for window <code>'message'</code> events, ignoring events from
+        other sources or not prefixed with <code>"oslc-response:"</code></li>
 
     <li>When message from Delegated UI Dialog indicates user completed action,
         free resources and handle action.</li>
@@ -255,9 +253,9 @@ if (window.location.hash == '#oslc-core-windowName-1.0') {
 
     <li>Once the user has created, selected or canceled, send notification
         using <code>postMessage()</code> to the page's parent window, passed in
-        <code>event.data</code> string, that is prefixed with "oslc-response:"
-        See below for the two possible response formats, one for resource
-        selection and one for creation.</li>
+        <code>event.data</code> string, that is prefixed with
+        <code>"oslc-response:"</code> See below for the two possible response
+        formats, one for resource selection and one for creation.</li>
 
     <li>If the page is not parented, then the message is posted to the page's
         own window.  The page <strong>MUST</strong> ignore this message to
@@ -301,15 +299,17 @@ function respondWithPostMessage(/*string*/ response) {
   <ol>
     <li>Include the Delegated UI Dialog via iframe (i.e setting iframe src to
         the URI of the Delegated UI Dialog) or via an embedded browser. Append
-        the fragment identifier #oslc-core-windowName-1.0 to the URL to
-        indicate that Window Name is the desired protocol.</li>
+        the fragment identifier <code>#oslc-core-windowName-1.0</code> to the
+        URL to indicate that Window Name is the desired protocol.</li>
 
-    <li>On the iframe, set the frame's <code>window.name</code> to indicate the Return URL.</li>
+    <li>On the iframe, set the frame's <code>window.name</code> to
+    indicate the Return URL.</li>
 
-    <li>On the iframe, Listen for 'onload' events</li>
+    <li>On the iframe, Listen for <code>onload</code> events</li>
 
-    <li>When an 'onload' event occures an the frame's location is equal to the Return URL
-    then read the response from the window.name.</li>
+    <li>When an <code>onload</code> event occurs and the frame's location is
+        equal to the Return URL then read the response from the
+        window.name.</li>
   </ol>
 
   <p>The following Javascript code illustrates the protocol. The code for the
@@ -539,9 +539,8 @@ function respondWithWindowName(/*string*/ response) {
       each time it received a dialog resize message from that dialog.</p>
 
   <p>UI Providers <em>SHOULD NOT</em> request sizes larger than 95% of the
-      current <a
-              href="http://www.w3.org/TR/CSS2/visuren.html#viewport][viewport">http://www.w3.org/TR/CSS2/visuren.html#viewport][viewport</a>,
-      to avoid covering the entire viewport with the dialog.</p>
+      current viewport [[CSS2]], to avoid covering the entire viewport with the
+      dialog.</p>
 
   <p>Here are the responsibilities of the UI Consumer and UI Provider in dialog
       resizing.</p>
@@ -552,12 +551,13 @@ function respondWithWindowName(/*string*/ response) {
     <li>Include the Delegated UI Dialog via iframe (i.e setting iframe src to
         the URI of the Delegated UI Dialog) or via an embedded browser.</li>
 
-    <li>Add a 'message' listener to the outer window to receive messages from
-        the Delegated UI Dialog.</li>
+    <li>Add a <code>'message'</code> listener to the outer window to receive
+        messages from the Delegated UI Dialog.</li>
 
-    <li>Listen for window 'message' events, ignoring events from other sources
-        or not prefixed with "oslc-resize:". Multiple resize 'message' events
-        may be sent while the dialog is visible.</li>
+    <li>Listen for window <code>'message'</code> events, ignoring events from
+        other sources or not prefixed with <code>"oslc-resize:"</code>.
+        Multiple resize <code>'message'</code> events may be sent while the
+        dialog is visible.</li>
 
     <li>When message from Delegated UI Dialog indicates user completed action,
         free resources and handle action.</li>
@@ -573,9 +573,9 @@ function respondWithWindowName(/*string*/ response) {
 
     <li>Once the Provider needs to resize the dialog, send notification using
         <code>postMessage()</code> to the page's parent window, passed in
-        <code>event.data</code> string, that is prefixed with "oslc-resize:".
-        Multiple resize messages may be sent. See below for the response
-        format.</li>
+        <code>event.data</code> string, that is prefixed with
+        <code>"oslc-resize:"</code>.  Multiple resize messages may be sent. See
+        below for the response format.</li>
 
     <li>If the page is not parented, then the message is posted to the page's
         own window.  The page must ignore this message to itself.</li>
@@ -609,19 +609,17 @@ function respondWithPostMessage(/*string*/ resize_response) {
               <td><code>oslc:hintHeight</code></td>
               <td>String</td>
               <td>zero-or-one</td>
-              <td>Preferred height of the preview. Values <strong>MUST</strong> expressed
-                  using <strong><em>length units</em></strong> as specified in the <a
-                          href="http://www.w3.org/TR/CSS2/">W3C Cascading Style
-                      Sheets Specification (CSS 2.1)</a>.</td>
+              <td>Preferred height of the preview. Values <strong>MUST</strong>
+                  be expressed using Cascading Style Sheet Level 2 length units
+                  [[!CSS2]].</td>
           </tr>
           <tr>
               <td><code>oslc:hintWidth</code></td>
               <td>String</td>
               <td>zero-or-one</td>
-              <td>Preferred width of the preview. Values <strong>MUST</strong> expressed
-                  using <strong><em>length units</em></strong> as specified in the <a
-                          href="http://www.w3.org/TR/CSS2/">W3C Cascading Style
-                      Sheets Specification (CSS 2.1)</a>.</td>
+              <td>Preferred width of the preview. Values <strong>MUST</strong>
+                  be expressed using Cascading Style Sheet Level 2
+                  length units [[!CSS2]].</td>
           </tr>
       </tbody>
   </table>
@@ -635,6 +633,17 @@ function respondWithPostMessage(/*string*/ resize_response) {
     "oslc:hintWidth": "400px"
 }
 </pre>
+
+<section class="appendix informative" id="history">
+<h2>Change History</h2>
+<p>Below is a summary of some of the changes in this draft</p>
+
+<ul>
+    <li>2014-08-28 Add Change History and References. (SP)</li>
+    <li>2014-08-27 Initial draft, contributed from open-services.net. (SP)</li>
+</ul>
+</section>
+
 </body>
 </html>
 
