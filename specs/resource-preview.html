@@ -557,20 +557,18 @@ Allow: GET,HEAD,OPTIONS,PUT,DELETE
 }
 </pre>
 
-<p>Including a <code>Preference-Applied</code> response header with value
-    <code>return=representation</code> is <strong>OPTIONAL</strong>. Consumers
-    <strong>SHOULD</strong> simply look for the Compact resource in the
-    response instead of relying on the <code>Preference-Applied</code>
-    header.</p>
+<p>Consumers <strong>SHOULD</strong> inspect the response body for the Compact
+    resource even if the <code>Preference-Applied</code> response header is
+    missing. Some providers might omit the <code>Preference-Applied</code>
+    header as discussed in [[RFC7240]].</p>
 
 <p>Providers <strong>MAY</strong> choose to only provide previews for some
-    resources and not others.  Providers <strong>SHOULD</strong> provide
-    Compact representations of the resources that other applications or
-    resources ordinarily refer to, however.  If a resource does not exist or is
-    not accessible to the requesting Consumer, the Provider
-    <strong>MUST</strong> return the same 4xx status code that it would have
-    returned had the Consumer instead requested the default representation of
-    the resource.</p>
+    resources and not others. Providers <strong>SHOULD</strong> provide
+    Compact resources for resources that other applications or resources
+    ordinarily refer to, however. If a resource does not exist or is not
+    accessible to the requesting Consumer, the Provider <strong>MUST</strong>
+    return the same 4xx status code that it would have returned had the
+    Consumer instead requested the resource itself.</p>
 
 <p>Consumers <strong>SHOULD</strong> gracefully handle unsuccessful attempts to
     use the preview mechanism; unsuccessful attempts should never result in
@@ -596,11 +594,21 @@ Allow: GET,HEAD,OPTIONS,PUT,DELETE
 <section id="linkHeader"> <h2>Discovering Compact Resources Using the HTTP Link
         Header</h2>
 
-<p>Providers <strong>MAY</strong> also provide a <code>Link</code> response
-    header [[RFC5988]] with target URI of the Compact resource and <code>rel</code> value
-    <code>http://open-services.net/ns/oslc#Compact</code> on HTTP GET, HEAD,
-    and OPTIONS requests for resources that support preview, but don't have RDF
-    or JSON representations.</p>
+<p>On responses to HTTP GET requests, Providers <strong>MAY</strong> include a
+    <code>Link</code> header [[RFC5988]] for resources that support preview
+    where
+
+    <ul>
+        <li>The context URI is the effective request URI,</li>
+        <li>The link relation is
+            <code>http://open-services.net/ns/oslc#Compact</code>, and</li>
+        <li>The target URI is the URI of the Compact resource.</li>
+    </ul>
+
+    The <code>Link</code> header allows providers to support preview for
+    resources that have neither RDF nor JSON representations such as binary
+    resources, although it can be used for any resource that supports
+    preview.</p>
 
 <strong>Example Request:</strong>
 
@@ -622,8 +630,8 @@ Vary: Accept,Prefer
 Allow: GET,HEAD,OPTIONS,PUT,DELETE
 </pre>
 
-<p>Consumers <strong>MAY</strong> then request the Compact resource using the
-    target URI of the <code>Link</code> header.</p>
+<p>Consumers can request the Compact resource using the target URI of the
+    <code>Link</code> header.</p>
 
 <strong>Example Request:</strong>
 
@@ -651,6 +659,43 @@ Allow: GET,HEAD,OPTIONS
         "document": "http://example.com/bugs/324/screenshot?preview=small"
     }
 }
+</pre>
+
+<p>Providers <strong>MAY</strong> return a <code>Link</code> header in
+    responses to newly-created resources where
+
+    <ul>
+        <li>The context URI is the URI of the newly created resource,</li>
+        <li>The link relation is
+            <code>http://open-services.net/ns/oslc#Compact</code>, and</li>
+        <li>The target URI is the URI of the Compact resource.</li>
+    </ul>
+
+    This allows the consumers to discover the associated Compact resource URI
+    without making additional requests.</p>
+
+<strong>Example Request:</strong>
+
+<pre class="example" id="postLinkHeaderRequest">
+POST /bugs HTTP/1.1
+HOST: example.com
+Content-Type: text/turtle
+Content-Length: 153
+
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;&gt;      a              &lt;http://example.com/ns#Bug&gt; ;
+        dcterms:title  "Something went wrong" .
+</pre>
+
+<strong>Example Response:</strong>
+
+<pre class="example" id="postLinkHeaderResponse">
+HTTP/1.1 201 Created
+Location: http://example.com/bugs/478
+Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/oslc#Compact",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Content-Length: 0
 </pre>
 </section>
 
@@ -993,6 +1038,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2014-08-29 Clarify use of Preference-Applied and Link headers. (SP)</li>
     <li>2014-08-26 Discuss preview for resources with no RDF. (SP)</li>
     <li>2014-08-21 Use Prefer: return=representation with an include parameter
         instead of type=oslc-compact. (SP)</li>
