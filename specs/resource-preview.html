@@ -490,13 +490,11 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferC
 
 <pre class="example" id="preferenceAppliedExample">
 HTTP/1.1 200 OK
-Transfer-Encoding: chunked
+Content-Length: 315
 Content-Type: application/json; charset=UTF-8
 ETag: W/"f9d76afe5fbed1655c5768906db8958a"
-Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
 Preference-Applied: return=representation
 Vary: Accept,Prefer
-Allow: GET,HEAD,OPTIONS,PUT,DELETE
 
 {
     "compact": {
@@ -521,13 +519,11 @@ Allow: GET,HEAD,OPTIONS,PUT,DELETE
 
 <pre class="example" id="preferenceAppliedJsonLDExample">
 HTTP/1.1 200 OK
-Transfer-Encoding: chunked
+Content-Length: 788
 Content-Type: application/json; charset=UTF-8
 ETag: W/"d53d19be87fa9c61043c70bd91413dab"
-Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
 Preference-Applied: return=representation
 Vary: Accept,Prefer
-Allow: GET,HEAD,OPTIONS,PUT,DELETE
 
 {
     "@id": "http://example.com/bugs/324",
@@ -617,13 +613,11 @@ Host: example.com
 
 <pre class="example" id="linkHeaderResponse">
 HTTP/1.1 200 OK
-Transfer-Encoding: chunked
+Content-Length: 45789
 Content-Type: image/png
 ETag: W/"678609cdee68e0fb8aea5f252b84a511"
-Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/oslc#Compact",
-      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/oslc#Compact"
 Vary: Accept,Prefer
-Allow: GET,HEAD,OPTIONS,PUT,DELETE
 </pre>
 
 <p>Consumers can request the Compact resource using the target URI of the
@@ -641,12 +635,10 @@ Accept: application/json
 
 <pre class="example" id="linkHeaderResponse">
 HTTP/1.1 200 OK
-Transfer-Encoding: chunked
+Content-Length: 192
 Content-Type: application/json; charset=UTF-8
 ETag: W/"3bf6fbc90e11b3c2cc30acb534b452ea"
-Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
 Vary: Accept
-Allow: GET,HEAD,OPTIONS
 
 {
     "title": "Screenshot of the problem",
@@ -674,9 +666,9 @@ Allow: GET,HEAD,OPTIONS
 
 <pre class="example" id="postLinkHeaderRequest">
 POST /bugs HTTP/1.1
-HOST: example.com
-Content-Type: text/turtle
+Host: example.com
 Content-Length: 153
+Content-Type: text/turtle
 
 @prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
 
@@ -688,10 +680,9 @@ Content-Length: 153
 
 <pre class="example" id="postLinkHeaderResponse">
 HTTP/1.1 201 Created
-Location: http://example.com/bugs/478
-Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/oslc#Compact"; anchor="http://example.com/bugs/478",
-      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
 Content-Length: 0
+Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/oslc#Compact"; anchor="http://example.com/bugs/478"
+Location: http://example.com/bugs/478
 </pre>
 </section>
 
@@ -1030,6 +1021,10 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2014-09-02 Remove some unnecessary response headers to simplify
+        examples.  (SP)</li>
+    <li>2014-09-02 Include anchor in Link response header for POST example.
+        (SP)</li>
     <li>2014-08-29 Clarify use of Preference-Applied and Link headers. (SP)</li>
     <li>2014-08-26 Discuss preview for resources with no RDF. (SP)</li>
     <li>2014-08-21 Use Prefer: return=representation with an include parameter
