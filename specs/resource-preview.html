@@ -590,9 +590,9 @@ Allow: GET,HEAD,OPTIONS,PUT,DELETE
 <section id="linkHeader"> <h2>Discovering Compact Resources Using the HTTP Link
         Header</h2>
 
-<p>On responses to HTTP GET requests, Providers <strong>MAY</strong> include a
-    <code>Link</code> header [[RFC5988]] for resources that support preview
-    where
+<p>On responses to HTTP requests for existing resources, such as GET requests,
+    Providers <strong>MAY</strong> include a <code>Link</code> header
+    [[RFC5988]] for resources that support preview where
 
     <ul>
         <li>The context URI is the effective request URI,</li>
@@ -658,10 +658,10 @@ Allow: GET,HEAD,OPTIONS
 </pre>
 
 <p>Providers <strong>MAY</strong> return a <code>Link</code> header in
-    responses to newly-created resources where
+    successful responses to creation requests where
 
     <ul>
-        <li>The context URI is the URI of the newly created resource,</li>
+        <li>The context URI is the URI of the newly-created resource,</li>
         <li>The link relation is
             <code>http://open-services.net/ns/oslc#Compact</code>, and</li>
         <li>The target URI is the URI of the Compact resource.</li>
@@ -689,7 +689,7 @@ Content-Length: 153
 <pre class="example" id="postLinkHeaderResponse">
 HTTP/1.1 201 Created
 Location: http://example.com/bugs/478
-Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/oslc#Compact",
+Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/oslc#Compact"; anchor="http://example.com/bugs/478",
       &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
 Content-Length: 0
 </pre>
