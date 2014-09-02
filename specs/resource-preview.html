@@ -492,9 +492,9 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferC
 HTTP/1.1 200 OK
 Content-Length: 315
 Content-Type: application/json; charset=UTF-8
-ETag: W/"f9d76afe5fbed1655c5768906db8958a"
+ETag: "f9d76afe5fbed1655c5768906db8958a"
 Preference-Applied: return=representation
-Vary: Accept,Prefer
+Vary: Accept,Accept-Language,Prefer
 
 {
     "compact": {
@@ -521,9 +521,9 @@ Vary: Accept,Prefer
 HTTP/1.1 200 OK
 Content-Length: 788
 Content-Type: application/json; charset=UTF-8
-ETag: W/"d53d19be87fa9c61043c70bd91413dab"
+ETag: "d53d19be87fa9c61043c70bd91413dab"
 Preference-Applied: return=representation
-Vary: Accept,Prefer
+Vary: Accept,Accept-Language,Prefer
 
 {
     "@id": "http://example.com/bugs/324",
@@ -570,17 +570,21 @@ Vary: Accept,Prefer
     security or service availability issues, or even that preview capability
     once supported by a Provider has been phased out.</p>
 
-<p>Providers <strong>SHOULD</strong> include a <code>Vary</code> response
-    header that includes both <code>Accept</code> and <code>Prefer</code> for
-    requests on any resource that supports preview.  <code>Vary</code> allows a
-    cache to properly interpret future requests on the resource and informs the
-    browser that the cacheable response is subject to server-driven
+<p>In responses to HTTP GET requests targeting resources that support preview,
+    Providers <strong>SHOULD</strong> include a <code>Vary</code> response
+    header with <code>Accept</code> and <code>Prefer</code> field values or
+    <code>"*"</code> indicating a resource is not cacheable.  <code>Vary</code>
+    allows a cache to properly interpret future requests on the resource and
+    informs the browser that the cacheable response is subject to server-driven
     negotiation.</p>
 
 <p>Providers <strong>MAY</strong> consult the <code>Accept-Language</code>
-    field on requests for a Compact representation of the resource (and on
-    requests for rich preview documents) and return a representation for the
-    requested natural language.</p>
+    header on requests for a Compact representation of the resource (and on
+    requests for rich preview documents) and return a resource for the
+    requested natural language. If a Provider honors the
+    <code>Accept-Language</code> request header, it <strong>SHOULD</strong>
+    also include an <code>Accept-Language</code> field value in the
+    <code>Vary</code> response header when appropriate.</p>
 </section>
 
 <section id="linkHeader"> <h2>Discovering Compact Resources Using the HTTP Link
@@ -615,9 +619,8 @@ Host: example.com
 HTTP/1.1 200 OK
 Content-Length: 45789
 Content-Type: image/png
-ETag: W/"678609cdee68e0fb8aea5f252b84a511"
+ETag: "678609cdee68e0fb8aea5f252b84a511"
 Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/oslc#Compact"
-Vary: Accept,Prefer
 </pre>
 
 <p>Consumers can request the Compact resource using the target URI of the
@@ -637,8 +640,8 @@ Accept: application/json
 HTTP/1.1 200 OK
 Content-Length: 192
 Content-Type: application/json; charset=UTF-8
-ETag: W/"3bf6fbc90e11b3c2cc30acb534b452ea"
-Vary: Accept
+ETag: "3bf6fbc90e11b3c2cc30acb534b452ea"
+Vary: Accept,Accept-Language
 
 {
     "title": "Screenshot of the problem",
@@ -1021,8 +1024,10 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2014-09-02 Recommend adding Accept-Language to the Vary response header
+        when appropriate. (SP)</li>
     <li>2014-09-02 Remove some unnecessary response headers to simplify
-        examples.  (SP)</li>
+        examples. (SP)</li>
     <li>2014-09-02 Include anchor in Link response header for POST example.
         (SP)</li>
     <li>2014-08-29 Clarify use of Preference-Applied and Link headers. (SP)</li>
