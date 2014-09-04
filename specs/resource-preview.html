@@ -169,6 +169,8 @@ div.review {
 
 <section id="sotd">Early Working Draft</section>
 
+<section id='conformance'></section>
+
 <section id="terminology">
 <h2>Terminology</h2>
 
@@ -698,104 +700,6 @@ Location: http://example.com/bugs/478
 </pre>
 </section>
 
-<section id="display">
-<h2>Displaying a Preview</h2>
-
-<p>The following guidance is suggested for Consumer display of a resource link
-    and rich previews. For purposes of this discussion, assume source resource
-    A has a URI property that refers to target resource B:</p>
-
-<section id="navigating">
-<h2>Navigation to the target resource</h2>
-
-<p>At any time, the user <strong>SHOULD</strong> be able to gesture that they
-    would like to navigate the link to the target resource, regardless of how
-    the link to the target resource happens to be rendered. </p>
-</section>
-
-<section id="displayingLinks">
-<h2>Default way to display the link to the target resource</h2>
-
-<p>The typical way for forming and displaying the hyperlink
-    <strong>SHOULD</strong> be based on information that is stored locally in
-    source resource A (or that is generally known to the Consumer). Generally,
-    link text can be derived from property values of resource A, and
-    potentially from a string or literal property value in the reference to the
-    target resource B, if such a property exists. Because these property values
-    are part of the representation of the source resource A, they are available
-    without consulting the target resource, and will be available even if the
-    target resource B cannot be fetched.  When available, Consumers
-    <strong>SHOULD</strong> display this string (as opposed to the URI) when
-    presenting resource A to indicate a potential navigation to resource B.
-    This is the basic presentation of a link to target resource B.</p>
-
-<p>The default display of the link from A to B is visible to any user
-    authorized to access resource A. The use of Compact representation
-    information described below is only viable for users who are also
-    authorized to access resource B.</p>
-</section>
-
-<section id="usingTitle">
-<h2>Using the Compact representation title, short title, and icon</h2>
-
-<p>A Compact representation of the resource may contain a more accurate and
-    slightly richer label for a target resource ( <code>dcterms:title</code>
-    element), a short-form title for the resource (
-    <code>oslc:shortTitle</code>), and a corresponding image (
-    <code>oslc:icon</code>), all of which may be based on the current state of
-    the target resource. If this becomes known to the Consumer, the Consumer
-    <strong>SHOULD</strong> assume that this information is better and use it
-    in forming the hyperlink that is displayed to the user. When available,
-    <code>oslc:shortTitle</code> MAY be used instead of
-    <code>dcterms:title</code> in presentations where visual space is severely
-    limited.</p>
-
-<p>Consumers <strong>SHOULD NOT</strong> fetch Compact representations when
-    there is perfectly usable default display information available. When
-    designing a Consumer application, consideration should be given to the
-    potential benefits of obtaining an improved title and icon for the target
-    resource against the costs of preemptively fetching the Compact
-    representation in terms of added load on servers and networks (which might
-    only be apparent to users on slow networks or heavily loaded servers).</p>
-
-<p>Consumers <strong>SHOULD</strong> be wary of material obtained from
-    non-trusted sources; in particular, the Consumer <strong>SHOULD</strong> check that
-    the dcterms:title and oslc:shortTitle property values do not contain HTML
-    markup beyond the specified set of simple elements.</p>
-</section>
-
-<section id="smallPreview">
-<h2>Displaying a small preview</h2>
-
-<p>If a user mouses or hovers over a displayed link, the Consumer
-    <strong>SHOULD</strong> determine whether the target resource has a small
-    preview (<code>oslc:smallPreview</code>). If it does, the Consumer
-    <strong>SHOULD</strong> present the small preview document in a hovering
-    widget.  Since preview documents may contain arbitrary content, including
-    HTML and scripts, Consumers <strong>MUST</strong> use iframes if embedding
-    the preview document inside another HTML-based presentation.</p>
-
-<p>The Consumer <strong>SHOULD NOT</strong> attempt to prefetch a Compact
-    representation just to have the preview URIs in hand so that the hover can
-    come up faster. There is a low chance that the user will make a gesture
-    that would call for the display of a small preview. It would generally be a
-    poor tradeoff to increase overall system load just to decrease UI latency
-    for low probability eventualities.</p>
-</section>
-
-<section id="largePreview">
-<h2>Displaying a large preview</h2>
-
-<p>If the user then gestures that they want to see a bit more of the resource,
-    the Consumer should determine whether the target resource has a large
-    preview ( <code>oslc:largePreview</code>). If it does, the Consumer
-    <strong>SHOULD</strong> present the large preview document in a stationary
-    widget that permits further user interaction. Again, since preview
-    documents may contain arbitrary content, including HTML and scripts,
-    Consumers <strong>MUST</strong> use iframes if embedding the preview
-    document inside another HTML-based presentation.</p>
-</section>
-
 <section id="sizing">
 <h2>Preview sizing</h2>
 
@@ -884,8 +788,6 @@ if (window.postMessage &amp;&amp; window.parent)  {
     URLs and use the cached dimensions for a preview in preference to its
     <code>oslc:hintHeight</code> and <code>oslc:hintWidth</code> to minimize
     redraw.</p>
-</section>
-
 </section>
 
 <section id="jsonFormat">
@@ -1033,6 +935,8 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2014-09-04 Move "Displaying a Preview" sections to non-standards track
+        committee note. (SP)</li>
     <li>2014-09-02 Recommend adding Accept-Language to the Vary response header
         when appropriate. (SP)</li>
     <li>2014-09-02 Remove some unnecessary response headers to simplify
