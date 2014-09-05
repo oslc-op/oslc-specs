@@ -96,20 +96,12 @@ div.review {
 
 <section id="abstract">
 <p>This document outlines a technique used to show a user in-context
-    information when displaying a link to a resource and then show more
-    detailed preview when the user gestures.</p>
+    information when displaying a link to a resource.</p>
 </section>
 
 <section class="informative" id="introduction">
 
 <h2>Introduction</h2>
-
-<p>This document outlines a technique used to show a user in-context
-    information when displaying a link to a resource and then show more
-    detailed preview when the user gestures. What gesture triggers a preview is
-    up to the client and can vary by implementation or device. For example, it
-    might be triggered by the user hovering his mouse cursor over the link in a
-    web application.</p>
 
 <p>This specification describes a mechanism that enables client applications,
     given only the URI of a resource, to discover helpful information for
@@ -154,8 +146,11 @@ div.review {
     <dt>Consumer</dt>
     <dd>A web application displaying a link to a resource.</dd>
     <dt>Provider</dt>
-    <dd>A server that offers Consumers information for displaying the
-        link to a resource and rich previews of the resource.</dd>
+    <dd>A server that offers Consumers information for displaying the link to a
+        resource and rich previews of the resource.</dd>
+    <dt>Preview</dt>
+    <dd>An HTML representation of a resource that can be embedded in another
+        user interface.</dd>
 </dl>
 
 </section>
@@ -163,25 +158,147 @@ div.review {
 <section class='informative' id="conceptualmodel">
 <h2>Conceptual Model</h2>
 
-<p>To enable previews of a target resource, a Provider supplies a Compact
-    resource describing the preview. The Consumer performs an HTTP GET request
-    to the target resource's URI using the HTTP Prefer header
-    <code>return=representation</code> preference [[!RFC7240]] and an
-    <code>include</code> parameter [[!LDP]] asking for the Compact resource. If
-    the Provider supports previews, it inlines a Compact resource in the
-    response.</p>
-</section>
+<p>To enable previews of a resource, Providers supply an associated Compact
+    resource describing the preview. The Compact resource can contain
+    information about displaying the link in a user interface, such as a link
+    label and icon, as well as small or large previews of the resource.</p>
 
+<p>When a user gestures to see more information about a resource, perhaps by
+    hovering his mouse over a link, the Consumer requests the associated
+    Compact resource. The Compact resource may contain small or large previews.
+    Each preview can have size hints and a link to an HTML representation
+    designed to be embedded in other user interfaces. To display the preview,
+    the Consumer creates an HTML iframe element in its user interface and sets
+    the iframe element's <code>src</code> to the preview document URI.</p>
+</section>
 
 <section id="discovery">
 <h2>Compact Resource Discovery</h2>
 
-Consumers <strong>MAY</strong> discover Compact resources in one of two ways:
+<p>Consumers can discover Compact resources in two ways:</p>
 
 <ol>
-<li><a href="#prefer">Discovering Compact Resources Using the HTTP Prefer Header</a>, or</li>
-<li><a href="#linkHeader">Discovering Compact Resources Using the HTTP Link Header</a></li>
+    <li><a href="#linkHeader">Discovering Compact Resources Using the HTTP Link Header</a></li>
+    <li><a href="#prefer">Discovering Compact Resources Using the HTTP Prefer Header</a></li>
 </ol>
+
+<p>The HTTP <code>Link</code> header allows Providers to offer previews for any
+    resource, even binary resources with no RDF or JSON representations. To
+    discover previews using the <code>Link</code> header, a Consumer typically
+    performs an HTTP HEAD request on the resource URI. The response contains a
+    <code>Link</code> header with the URI of the Compact resource.  The
+    Consumer then performs a GET request on the Compact URI to retrieve the
+    Compact resource.</p>
+
+<p>Consumers might instead use the HTTP <code>Prefer</code> header to get a
+    Compact resource in a single HTTP request. If the Consumer is confident
+    that the resource has a preview, it makes an HTTP GET request on the
+    resource URI using the <code>return=representation</code> preference
+    [[RFC7240]] and an <code>include</code> parameter [[LDP]] asking for the
+    Compact resource to be included in the response. The provider responds with
+    a minimal representation of the resource and the Compact resource in the
+    HTTP response body.</p>
+
+<p>The <code>Link</code> header is the only way to discover the associated
+    Compact resource for resources that don't have RDF or JSON representations,
+    such as binary files.</p>
+
+<section id="linkHeader">
+<h2>Discovering Compact Resources Using the HTTP Link Header</h2>
+
+<p>In responses to HTTP requests for resources that have a preview, Providers
+    <strong>MUST</strong> include a <code>Link</code> header [[RFC5988]] where
+
+    <ul>
+        <li>The context URI is the effective request URI,</li>
+        <li>The link relation is
+            <code>http://open-services.net/ns/oslc#Compact</code>, and</li>
+        <li>The target URI is the URI of the Compact resource.</li>
+    </ul>
+</p>
+
+<strong>Example Request:</strong>
+
+<pre class="example" id="linkHeaderRequest">
+HEAD /bugs/324/screenshot HTTP/1.1
+Host: example.com
+</pre>
+
+<strong>Example Response:</strong>
+
+<pre class="example" id="linkHeaderResponse">
+HTTP/1.1 200 OK
+Content-Length: 45789
+Content-Type: image/png
+ETag: "678609cdee68e0fb8aea5f252b84a511"
+Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/oslc#Compact"
+</pre>
+
+<p>Consumers can request the Compact resource using the target URI of the
+    <code>Link</code> header.</p>
+
+<strong>Example Request:</strong>
+
+<pre class="example" id="linkHeaderRequest">
+GET /bugs/324/screenshot?compact HTTP/1.1
+Host: example.com
+Accept: application/json
+</pre>
+
+<strong>Example Response:</strong>
+
+<pre class="example" id="linkHeaderResponse">
+HTTP/1.1 200 OK
+Content-Length: 192
+Content-Type: application/json; charset=UTF-8
+ETag: "3bf6fbc90e11b3c2cc30acb534b452ea"
+Vary: Accept,Accept-Language
+
+{
+    "title": "Screenshot of the problem",
+    "shortTitle": "screenshot.png",
+    "smallPreview": {
+        "document": "http://example.com/bugs/324/screenshot?preview=small"
+    }
+}
+</pre>
+
+<p>Providers <strong>MAY</strong> return a <code>Link</code> header in
+    successful responses to creation requests where
+
+    <ul>
+        <li>The context URI is the URI of the newly-created resource,</li>
+        <li>The link relation is
+            <code>http://open-services.net/ns/oslc#Compact</code>, and</li>
+        <li>The target URI is the URI of the Compact resource.</li>
+    </ul>
+
+    This allows the consumers to discover the associated Compact resource URI
+    without making additional requests.</p>
+
+<strong>Example Request:</strong>
+
+<pre class="example" id="postLinkHeaderRequest">
+POST /bugs HTTP/1.1
+Host: example.com
+Content-Length: 153
+Content-Type: text/turtle
+
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;&gt;      a              &lt;http://example.com/ns#Bug&gt; ;
+        dcterms:title  "Something went wrong" .
+</pre>
+
+<strong>Example Response:</strong>
+
+<pre class="example" id="postLinkHeaderResponse">
+HTTP/1.1 201 Created
+Content-Length: 0
+Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/oslc#Compact"; anchor="http://example.com/bugs/478"
+Location: http://example.com/bugs/478
+</pre>
+</section>
 
 <section id="prefer"> <h2>Discovering Compact Resources Using the HTTP Prefer
         Header</h2>
@@ -189,7 +306,7 @@ Consumers <strong>MAY</strong> discover Compact resources in one of two ways:
 <p>Consumers <strong>MAY</strong> request the preview of a resource by making
     an HTTP GET request to the target resource's URI using the
     <code>return=representation</code> preference of the HTTP Prefer request
-    header [[!RFC7240]] and <code>include</code> parameter [[LDP]] value
+    header [[!RFC7240]] and <code>include</code> parameter [[!LDP]] value
     <code>http://open-services.net/ns/core#PreferCompact</code>.  Providers
     supporting resource preview <strong>MUST</strong> support this method of
     discovery for resources with RDF or JSON representations.</p>
@@ -315,107 +432,6 @@ Vary: Accept,Accept-Language,Prefer
     <code>Accept-Language</code> request header, it <strong>SHOULD</strong>
     also include an <code>Accept-Language</code> field value in the
     <code>Vary</code> response header when appropriate.</p>
-</section>
-
-<section id="linkHeader"> <h2>Discovering Compact Resources Using the HTTP Link
-        Header</h2>
-
-<p>On responses to HTTP requests for existing resources, such as GET requests,
-    Providers <strong>MUST</strong> include a <code>Link</code> header
-    [[RFC5988]] for resources that support preview where
-
-    <ul>
-        <li>The context URI is the effective request URI,</li>
-        <li>The link relation is
-            <code>http://open-services.net/ns/oslc#Compact</code>, and</li>
-        <li>The target URI is the URI of the Compact resource.</li>
-    </ul>
-
-    The <code>Link</code> header gives Consumers a consistent way to find
-    previews for both RDF and non-RDF resources, including binary
-    resources.</p>
-
-<strong>Example Request:</strong>
-
-<pre class="example" id="linkHeaderRequest">
-HEAD /bugs/324/screenshot HTTP/1.1
-Host: example.com
-</pre>
-
-<strong>Example Response:</strong>
-
-<pre class="example" id="linkHeaderResponse">
-HTTP/1.1 200 OK
-Content-Length: 45789
-Content-Type: image/png
-ETag: "678609cdee68e0fb8aea5f252b84a511"
-Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/oslc#Compact"
-</pre>
-
-<p>Consumers can request the Compact resource using the target URI of the
-    <code>Link</code> header.</p>
-
-<strong>Example Request:</strong>
-
-<pre class="example" id="linkHeaderRequest">
-GET /bugs/324/screenshot?compact HTTP/1.1
-Host: example.com
-Accept: application/json
-</pre>
-
-<strong>Example Response:</strong>
-
-<pre class="example" id="linkHeaderResponse">
-HTTP/1.1 200 OK
-Content-Length: 192
-Content-Type: application/json; charset=UTF-8
-ETag: "3bf6fbc90e11b3c2cc30acb534b452ea"
-Vary: Accept,Accept-Language
-
-{
-    "title": "Screenshot of the problem",
-    "shortTitle": "screenshot.png",
-    "smallPreview": {
-        "document": "http://example.com/bugs/324/screenshot?preview=small"
-    }
-}
-</pre>
-
-<p>Providers <strong>MAY</strong> return a <code>Link</code> header in
-    successful responses to creation requests where
-
-    <ul>
-        <li>The context URI is the URI of the newly-created resource,</li>
-        <li>The link relation is
-            <code>http://open-services.net/ns/oslc#Compact</code>, and</li>
-        <li>The target URI is the URI of the Compact resource.</li>
-    </ul>
-
-    This allows the consumers to discover the associated Compact resource URI
-    without making additional requests.</p>
-
-<strong>Example Request:</strong>
-
-<pre class="example" id="postLinkHeaderRequest">
-POST /bugs HTTP/1.1
-Host: example.com
-Content-Length: 153
-Content-Type: text/turtle
-
-@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
-
-&lt;&gt;      a              &lt;http://example.com/ns#Bug&gt; ;
-        dcterms:title  "Something went wrong" .
-</pre>
-
-<strong>Example Response:</strong>
-
-<pre class="example" id="postLinkHeaderResponse">
-HTTP/1.1 201 Created
-Content-Length: 0
-Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/oslc#Compact"; anchor="http://example.com/bugs/478"
-Location: http://example.com/bugs/478
-</pre>
 </section>
 
 <!-- END Compact Resource Discovery -->
@@ -911,6 +927,9 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2014-09-05 Add additional informative descriptions of how previews work
+        and give more guidance on when to use Link or Prefer discovery.
+        (SP)</li>
     <li>2014-09-05 Move "Resources" section near the bottom. (SP)</li>
     <li>2014-09-04 Move "Displaying a Preview" sections to non-standards track
         committee note. (SP)</li>
@@ -918,9 +937,10 @@ if (window.postMessage &amp;&amp; window.parent)  {
         when appropriate. (SP)</li>
     <li>2014-09-02 Remove some unnecessary response headers to simplify
         examples. (SP)</li>
-    <li>2014-09-02 Include anchor in Link response header for POST example.
-        (SP)</li>
-    <li>2014-08-29 Clarify use of Preference-Applied and Link headers. (SP)</li>
+    <li>2014-09-02 Include anchor in <code>Link</code> response header for POST
+        example.  (SP)</li>
+    <li>2014-08-29 Clarify use of Preference-Applied and <code>Link</code>
+        headers. (SP)</li>
     <li>2014-08-26 Discuss preview for resources with no RDF. (SP)</li>
     <li>2014-08-21 Use Prefer: return=representation with an include parameter
         instead of type=oslc-compact. (SP)</li>
