@@ -7,6 +7,7 @@
   var respecConfig = {
       specStatus:           "WD",
       edDraftURI:           "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html",
+      shortName:            "resource-preview",
 
       // editors, add as many as you like
       // only "name" is required
@@ -168,12 +169,13 @@ div.review {
     Compact resource. The Compact resource may contain small or large previews.
     Each preview can have size hints and a link to an HTML representation
     designed to be embedded in other user interfaces. To display the preview,
-    the Consumer creates an HTML iframe element in its user interface and sets
-    the iframe element's <code>src</code> to the preview document URI.</p>
+    the Consumer creates an HTML <code>iframe</code> element in its user
+    interface and sets the <code>iframe</code> element's <code>src</code> to
+    the preview document URI.</p>
 </section>
 
-<section id="discovery">
-<h2>Compact Resource Discovery</h2>
+<section id="get_compact">
+<h2>Getting the Compact Resource</h2>
 
 <p>Consumers can discover Compact resources in two ways:</p>
 
@@ -401,21 +403,14 @@ Vary: Accept,Accept-Language,Prefer
     missing. Some providers might omit the <code>Preference-Applied</code>
     header as discussed in [[RFC7240]].</p>
 
-<p>Providers <strong>MAY</strong> choose to only provide previews for some
-    resources and not others. Providers <strong>SHOULD</strong> provide
-    Compact resources for resources that other applications or resources
-    ordinarily refer to, however. If a resource does not exist or is not
-    accessible to the requesting Consumer, the Provider <strong>MUST</strong>
-    return the same 4xx status code that it would have returned had the
-    Consumer instead requested the resource itself.</p>
+<p>If a resource does not exist or is not accessible to the requesting
+    Consumer, the Provider <strong>MUST</strong> return the same status
+    code that it would have returned had the Consumer not included the
+    <code>Prefer</code> header in the request.</p>
+</section>
 
-<p>Consumers <strong>SHOULD</strong> gracefully handle unsuccessful attempts to
-    use the preview mechanism; unsuccessful attempts should never result in
-    failure in the way a Consumer application operates or performs.  Consumers
-    <strong>SHOULD</strong> anticipate that the preview mechanism may not be
-    supported for a resource, or that the preview mechanism may not work due to
-    security or service availability issues, or even that preview capability
-    once supported by a Provider has been phased out.</p>
+<section id="other_considerations">
+<h2>Other Considerations</h2>
 
 <p>In responses to HTTP GET requests targeting resources that support preview,
     Providers <strong>SHOULD</strong> include a <code>Vary</code> response
@@ -427,28 +422,47 @@ Vary: Accept,Accept-Language,Prefer
 
 <p>Providers <strong>MAY</strong> consult the <code>Accept-Language</code>
     header on requests for a Compact representation of the resource (and on
-    requests for rich preview documents) and return a resource for the
-    requested natural language. If a Provider honors the
-    <code>Accept-Language</code> request header, it <strong>SHOULD</strong>
-    also include an <code>Accept-Language</code> field value in the
-    <code>Vary</code> response header when appropriate.</p>
+    requests for preview documents) and return a resource for the requested
+    natural language.</p>
+
+<p>Providers <strong>MAY</strong> choose to provide previews for some resources
+    and not others. Providers <strong>SHOULD</strong> provide Compact resources
+    for resources that other applications or resources ordinarily refer to,
+    however.</p>
 </section>
 
-<!-- END Compact Resource Discovery -->
+</section> <!-- END Getting the Compact Resource -->
+
+<section id="displaying">
+<h2>Displaying a Preview</h2>
+
+<p>When displaying a preview inside another HTML-based presentation, Consumers
+    <strong>MUST</strong> use an <code>iframe</code> element, setting its
+    <code>src</code> attribute to the preview's document URI. Previews can
+    contain HTML, stylesheets, and scripts and might not render properly
+    outside of an <code>iframe</code>. Using the <code>iframe</code> element
+    also sandboxes the preview, avoiding cross-site scripting
+    vulnerabilities.</p>
+
+<p>Consumers <strong>SHOULD</strong> gracefully handle unsuccessful attempts to
+    use the preview mechanism; unsuccessful attempts should never result in
+    failure in the way a Consumer application operates or performs.  Consumers
+    <strong>SHOULD</strong> anticipate that the preview mechanism may not be
+    supported for a resource, or that the preview mechanism may not work due to
+    security or service availability issues, or even that preview capability
+    once supported by a Provider has been removed.</p>
 </section>
 
 <section id="sizing">
-<h2>Preview sizing</h2>
+<h2>Preview Sizing</h2>
 
 <p>The Compact resource <strong>MAY</strong> include
     <code>oslc:hintHeight</code> and <code>oslc:hintWidth</code> properties for
     each preview. Values for <code>oslc:hintWidth</code> and
     <code>oslc:hintHeight</code> MUST be expressed in <strong><em>length
-            units</em></strong> as specified in the <a
-                    href="http://www.w3.org/TR/CSS2/">W3C Cascading Style
-                Sheets Specification (CSS 2.1)</a>. Providers
-    <strong>MAY</strong> support dynamic resizing for small and large
-    previews in addition to <code>oslc:hintHeight</code> and
+            units</em></strong> as specified in [[!CSS21]]. Providers
+    <strong>MAY</strong> use dynamic resizing for small and large previews in
+    addition to <code>oslc:hintHeight</code> and
     <code>oslc:hintWidth</code>.</p>
 
 <p>When the resource does not supply preferred sizing for a preview, the
@@ -457,11 +471,11 @@ Vary: Accept,Accept-Language,Prefer
     different window and screen sizes.</p>
 
 <p>The communication of dynamic preview size information happens within a web
-    browser. JavaScript code running in the preview iframe sends a message that
-    is received and acted upon by JavaScript code running in the iframe's
-    parenting window. This cross-frame communication is done using HTML 5
-    <code>postMessage</code>. Dyanmic resizing will not work inside browsers
-    that do not support <code>postMessage</code>.</p>
+    browser. JavaScript code running in the preview <code>iframe</code> sends a
+    message that is received and acted upon by JavaScript code running in the
+    <code>iframe</code>'s parenting window. This cross-frame communication is
+    done using HTML 5 <code>postMessage</code>. Dyanmic resizing will not work
+    inside browsers that do not support <code>postMessage</code>.</p>
 
 <p>A dynamic preview resize message consists of the characters
     <code>oslc-resize:</code> followed by a JSON object describing the
@@ -484,14 +498,14 @@ Vary: Accept,Accept-Language,Prefer
         <td>String</td>
         <td>Zero-or-one</td>
         <td>Preferred height of the preview. Values <strong>MUST</strong>
-            be expressed using length units as specified in [[CSS21]].</td>
+            be expressed using length units as specified in [[!CSS21]].</td>
 </tr>
 <tr>
         <td><code>oslc:hintWidth</code></td>
         <td>String</td>
         <td>Zero-or-one</td>
         <td>Preferred width of the preview. Values <strong>MUST</strong>
-            be expressed using length units as specified in [[CSS21]].</td>
+            be expressed using length units as specified in [[!CSS21]].</td>
 </tr>
 </tbody>
 </table>
@@ -519,124 +533,14 @@ if (window.postMessage &amp;&amp; window.parent)  {
 </pre>
 
 <p>Consumers <strong>SHOULD</strong> honor a preview's ability to dynamic
-    resize, but are under no obligation to do so. Provider <strong>MAY</strong>
-    send more than one resize request. Consumers <strong>MAY</strong> locally
-    cache the last known dynamic height and width for recently shown preview
-    URLs and use the cached dimensions for a preview in preference to its
-    <code>oslc:hintHeight</code> and <code>oslc:hintWidth</code> to minimize
-    redraw.</p>
+    resize. Providers <strong>MAY</strong> send more than one resize request.
+    Consumers <strong>MAY</strong> locally cache the last known dynamic height
+    and width for recently shown preview URLs and use the cached dimensions for
+    a preview in preference to its <code>oslc:hintHeight</code> and
+    <code>oslc:hintWidth</code> to minimize redraw.</p>
 </section>
 
-<section id="jsonFormat">
-<h2 id="JSON_Representation_Format">JSON Representation Format</h2>
-
-<p>A Compact resource JSON representation might look like the following for the
-    target resource <code>http://example.com/bugs/324</code>:</p>
-
-<pre class="example" id="compactExample">
-{
-    "title": "324: Need a fix &lt;em&gt;NOW&lt;/em&gt;",
-    "shortTitle": "324",
-    "icon": "http://example.com/icons/defect.jpg",
-    "iconTitle": "Defect",
-    "iconAltLabel": "Defect",
-    "largePreview": {
-        "document": "http://example.com/bugs/324?preview=large",
-        "hintHeight": "250px",
-        "hintWidth": "400px"
-    },
-    "smallPreview": {
-        "document": "http://example.com/bugs/324?preview=small"
-    }
-}
-</pre>
-
-<p>The JSON representation has the following constraints:</p>
-
-<ul>
-    <li>The value of the <code>title</code> or <code>shortTitle</code>
-        properties <strong>MUST</strong>, if present, only contain markup valid
-        in an HTML <code>span</code> element. To afford clients the greatest
-        flexibility to style the text to match the context in which it is being
-        displayed, the titles <strong>SHOULD</strong> be plain text with HTML
-        markup used only to emphasize words or phrases or to convey additional
-        information about the target resource.</li>
-    <li><code>icon</code>, if present, <strong>MUST</strong> be the URI of an image. The
-        image <strong>SHOULD</strong> be square. A consumer
-        <strong>MAY</strong> scale the image as needed.</li>
-    <li><code>iconAltLabel</code> and <code>iconTitle</code>, if present,
-        <strong>MUST</strong> only have string content with no markup.</li>
-    <li><code>smallPreview</code> and <code>largePreview</code>, if present,
-        <strong>MAY</strong> have any number of properties, including none.
-        <ul>
-            <li>The value of <code>smallPreview</code> and <code>largePreview</code>, if
-                present, <strong>MUST</strong> be the JSON representation of an
-                <code>oslc:Preview.</code>
-
-                <ul>
-                    <li>A <code>Preview</code> <strong>MAY</strong> have any
-                        number of properties, but must include a
-                        <code>document</code> property.</li>
-                    <li><code>document</code> <strong>MUST</strong> be the URI of a document
-                        containing a preview of the resource.</li>
-                    <li><code>hintWidth</code> and <code>hintHeight</code>, if
-                        present, <strong>MUST</strong> be expressed using
-                        length units as specified in [[CSS21]].</li>
-                </ul>
-            </li>
-        </ul>
-    </li>
-    <li><p>All resources <strong>MAY</strong> have additional properties not
-        specified here. Consumers <strong>MUST</strong> quietly ignore unknown elements
-        and attributes encountered in a Compact representation.</p></li>
-</ul>
-
-<p>Providers <strong>MAY</strong> respond with JSON-LD in <a
-            href="http://www.w3.org/TR/json-ld/#compacted-document-form">compacted
-        document form</a> when consumers request the
-    <code>application/json</code> media type as long as the response meets the
-    above requirements for the JSON format.<p>
-
-<p>Here is an example JSON-LD context for a Compact resource:</p>
-
-<pre class="example" id="jsonldExample">
-{
-    "title": "http://purl.org/dc/terms/title",
-    "shortTitle": "http://open-services.net/ns/core#shortTitle",
-    "iconTitle": "http://open-services.net/ns/core#iconTitle",
-    "iconAltLabel": "http://open-services.net/ns/core#iconAltLabel",
-    "compact": {
-        "@id": "http://open-services.net/ns/core#compact",
-        "@type": "@id"
-    },
-    "hintHeight": "http://open-services.net/ns/core#hintHeight",
-    "hintWidth": "http://open-services.net/ns/core#hintWidth",
-    "icon": {
-        "@id": "http://open-services.net/ns/core#img",
-        "@type": "@id"
-    },
-    "src": {
-        "@id": "http://open-services.net/ns/core#src",
-        "@type": "@id"
-    },
-    "largePreview": {
-        "@id": "http://open-services.net/ns/core#largePreview",
-        "@type": "http://open-services.net/ns/core#Preview"
-    },
-    "smallPreview": {
-        "@id": "http://open-services.net/ns/core#smallPreview",
-        "@type": "http://open-services.net/ns/core#Preview"
-    },
-    "document": {
-        "@id": "http://open-services.net/ns/core#document",
-        "@type": "@id"
-    }
-}
-</pre>
-</p>
-</section>
-
-<section id="resources">
+<section id="resources" class="appendix">
 <h2>Resources</h2>
 
 <p>Providers <strong>MUST</strong> support the <code>application/json</code> [[RFC4627]]
@@ -649,7 +553,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
     below. The JSON property names for the <code>application/json</code>
     responses are included in the table below.</p>
 
-<section id="vocab">
+<section id="vocab" class="appendix">
 <h2>Terms</h2>
 <p>This section highlights the new RDF vocabulary terms defined in this specification.</p>
 <h3>Properties:</h3>
@@ -890,16 +794,116 @@ if (window.postMessage &amp;&amp; window.parent)  {
 </table>
 
 </section>
+
+<section id="jsonFormat" class="appendix">
+<h2 id="JSON_Representation_Format">JSON Representation Format</h2>
+
+<p>A Compact resource JSON representation might look like the following for the
+    target resource <code>http://example.com/bugs/324</code>:</p>
+
+<pre class="example" id="compactExample">
+{
+    "title": "324: Need a fix &lt;em&gt;NOW&lt;/em&gt;",
+    "shortTitle": "324",
+    "icon": "http://example.com/icons/defect.jpg",
+    "iconTitle": "Defect",
+    "iconAltLabel": "Defect",
+    "largePreview": {
+        "document": "http://example.com/bugs/324?preview=large",
+        "hintHeight": "250px",
+        "hintWidth": "400px"
+    },
+    "smallPreview": {
+        "document": "http://example.com/bugs/324?preview=small"
+    }
+}
+</pre>
+
+<p>The JSON representation has the following constraints:</p>
+
+<ul>
+    <li>The value of the <code>title</code> or <code>shortTitle</code>
+        properties <strong>MUST</strong>, if present, only contain markup valid
+        in an HTML <code>span</code> element. To afford clients the greatest
+        flexibility to style the text to match the context in which it is being
+        displayed, the titles <strong>SHOULD</strong> be plain text with HTML
+        markup used only to emphasize words or phrases or to convey additional
+        information about the target resource.</li>
+    <li><code>icon</code>, if present, <strong>MUST</strong> be the URI of an image. The
+        image <strong>SHOULD</strong> be square. A consumer
+        <strong>MAY</strong> scale the image as needed.</li>
+    <li><code>iconAltLabel</code> and <code>iconTitle</code>, if present,
+        <strong>MUST</strong> only have string content with no markup.</li>
+    <li><code>smallPreview</code> and <code>largePreview</code>, if present,
+        <strong>MAY</strong> have any number of properties, including none.
+        <ul>
+            <li>The value of <code>smallPreview</code> and <code>largePreview</code>, if
+                present, <strong>MUST</strong> be the JSON representation of an
+                <code>oslc:Preview.</code>
+
+                <ul>
+                    <li>A <code>Preview</code> <strong>MAY</strong> have any
+                        number of properties, but must include a
+                        <code>document</code> property.</li>
+                    <li><code>document</code> <strong>MUST</strong> be the URI of a document
+                        containing a preview of the resource.</li>
+                    <li><code>hintWidth</code> and <code>hintHeight</code>, if
+                        present, <strong>MUST</strong> be expressed using
+                        length units as specified in [[CSS21]].</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><p>All resources <strong>MAY</strong> have additional properties not
+        specified here. Consumers <strong>MUST</strong> quietly ignore unknown elements
+        and attributes encountered in a Compact representation.</p></li>
+</ul>
+
+<p>Providers <strong>MAY</strong> respond with JSON-LD in <a
+            href="http://www.w3.org/TR/json-ld/#compacted-document-form">compacted
+        document form</a> when consumers request the
+    <code>application/json</code> media type as long as the response meets the
+    above requirements for the JSON format.<p>
+
+<p>Here is an example JSON-LD context for a Compact resource:</p>
+
+<pre class="example" id="jsonldExample">
+{
+    "title": "http://purl.org/dc/terms/title",
+    "shortTitle": "http://open-services.net/ns/core#shortTitle",
+    "iconTitle": "http://open-services.net/ns/core#iconTitle",
+    "iconAltLabel": "http://open-services.net/ns/core#iconAltLabel",
+    "compact": {
+        "@id": "http://open-services.net/ns/core#compact",
+        "@type": "@id"
+    },
+    "hintHeight": "http://open-services.net/ns/core#hintHeight",
+    "hintWidth": "http://open-services.net/ns/core#hintWidth",
+    "icon": {
+        "@id": "http://open-services.net/ns/core#img",
+        "@type": "@id"
+    },
+    "src": {
+        "@id": "http://open-services.net/ns/core#src",
+        "@type": "@id"
+    },
+    "largePreview": {
+        "@id": "http://open-services.net/ns/core#largePreview",
+        "@type": "http://open-services.net/ns/core#Preview"
+    },
+    "smallPreview": {
+        "@id": "http://open-services.net/ns/core#smallPreview",
+        "@type": "http://open-services.net/ns/core#Preview"
+    },
+    "document": {
+        "@id": "http://open-services.net/ns/core#document",
+        "@type": "@id"
+    }
+}
+</pre>
+</p>
 </section>
 
-<section class="appendix">
-<h2 id="backwardscompatibility">Backwards Compatibility</h2>
-
-<p>Providers <strong>MAY</strong> continue to support to OSLC 2.0
-    <code>application/x-oslc-compact+xml</code> media type and Compact
-    representation for compatibility with OSLC 2.0 consumers. See <a
-            href="http://open-services.net/bin/view/Main/OslcCoreUiPreview">OSLC
-        2.0 UI Preview</a> [[OSLCUIPreview20]].</p>
 </section>
 
 <!--
@@ -927,6 +931,11 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2014-09-08 Reorder some document sections. (SP)
+    <li>2014-09-08 Restore the <code>iframe</code> requirement for displaying
+        previews. (SP)</li>
+    <li>2014-09-08 Remove statement on backwards compatibility since it will be
+        moved to a separate committee note. (SP)</li>
     <li>2014-09-05 Add additional informative descriptions of how previews work
         and give more guidance on when to use Link or Prefer discovery.
         (SP)</li>
@@ -944,8 +953,8 @@ if (window.postMessage &amp;&amp; window.parent)  {
     <li>2014-08-26 Discuss preview for resources with no RDF. (SP)</li>
     <li>2014-08-21 Use Prefer: return=representation with an include parameter
         instead of type=oslc-compact. (SP)</li>
-    <li>2014-08-20 Started to convert to respec-style references. (SS)</li>
-    <li>2014-08-19 Added sections for separate terms and shapes, also proposed
+    <li>2014-08-20 Start to convert to respec-style references. (SS)</li>
+    <li>2014-08-19 Add sections for separate terms and shapes, also propose
         doc structure changes. (SS)</li>
     <li>2014-08-18 Add a minimal JSON example. (SP)</li>
     <li>2014-08-15 Update Prefer discovery method and use oslc:resize.
