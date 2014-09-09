@@ -359,10 +359,10 @@ Vary: Accept,Accept-Language,Prefer
 </pre>
 
 <p>Including a JSON-LD context in an <code>application/json</code> response is
-    <strong>OPTIONAL</strong>. Consumers who prefer RDF <strong>SHOULD</strong>
-    request <code>text/turtle</code> or <code>application/ld+json</code> using
-    the HTTP <code>Accept</code> request header rather than
-    <code>application/json</code>.</p>
+    <strong>OPTIONAL</strong>. Consumers who prefer RDF
+    <strong>SHOULD</strong> request <code>text/turtle</code> or
+    <code>application/ld+json</code> using the HTTP <code>Accept</code>
+    request header rather than <code>application/json</code>.</p>
 
 <strong>Example JSON Response with JSON-LD Context:</strong>
 
@@ -457,18 +457,14 @@ Vary: Accept,Accept-Language,Prefer
 <h2>Preview Sizing</h2>
 
 <p>The Compact resource <strong>MAY</strong> include
-    <code>oslc:hintHeight</code> and <code>oslc:hintWidth</code> properties for
-    each preview. Values for <code>oslc:hintWidth</code> and
-    <code>oslc:hintHeight</code> MUST be expressed in <strong><em>length
-            units</em></strong> as specified in [[!CSS21]]. Providers
-    <strong>MAY</strong> use dynamic resizing for small and large previews in
-    addition to <code>oslc:hintHeight</code> and
-    <code>oslc:hintWidth</code>.</p>
+    <code>oslc:hintHeight</code> and <code>oslc:hintWidth</code> properties
+    for each preview. Values for <code>oslc:hintWidth</code> and
+    <code>oslc:hintHeight</code> <strong>MUST</strong> be expressed in
+    <strong><em>length units</em></strong> as specified in [[!CSS21]].</p>
 
-<p>When the resource does not supply preferred sizing for a preview, the
-    Consumer <strong>SHOULD</strong> default to a reasonably generous value.
-    The default value a Consumer uses <strong>MAY</strong> be different for
-    different window and screen sizes.</p>
+<p>Providers <strong>MAY</strong> use dynamic resizing for small and large
+    previews in addition to <code>oslc:hintHeight</code> and
+    <code>oslc:hintWidth</code>.</p>
 
 <p>The communication of dynamic preview size information happens within a web
     browser. JavaScript code running in the preview <code>iframe</code> sends a
@@ -533,11 +529,11 @@ if (window.postMessage &amp;&amp; window.parent)  {
 </pre>
 
 <p>Consumers <strong>SHOULD</strong> honor a preview's ability to dynamic
-    resize. Providers <strong>MAY</strong> send more than one resize request.
-    Consumers <strong>MAY</strong> locally cache the last known dynamic height
-    and width for recently shown preview URLs and use the cached dimensions for
-    a preview in preference to its <code>oslc:hintHeight</code> and
-    <code>oslc:hintWidth</code> to minimize redraw.</p>
+    resize. Providers <strong>MAY</strong> send more than one resize request.</p>
+
+<p>Consumers <strong>MAY</strong> ignore a Provider's size hints and use other
+    values.  For instance, a Consumer might choose another size if the preview
+    is too large for the window.</p>
 </section>
 
 <section id="resources" class="appendix">
@@ -576,20 +572,21 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <tr>
         <td><code>oslc:shortTitle</code></td>
         <td>String</td>
-        <td>Abbreviated title which may be used in the display of a link to the
-            resource. The value SHOULD include only content that is valid
-            inside an HTML &lt;span&gt; element [[HTML5]]. Providers SHOULD include an
+        <td>Abbreviated title which may be used in the display of a link to
+            the resource. The value <strong>SHOULD</strong> include only
+            content that is valid inside an HTML &lt;span&gt; element
+            [[HTML5]]. Providers <strong>SHOULD</strong> include an
             abbreviated title for the resource when possible. The abbreviated
             title is typically shown to a user as a hyperlink in presentations
             where visual space is limited. As a general guideline, the length
-            of the abbreviated title SHOULD be 5 characters or less. A
-            user-visible identifier that ordinarily appears in the
+            of the abbreviated title <strong>SHOULD</strong> be 5 characters
+            or less. A user-visible identifier that ordinarily appears in the
             dcterms:title, such as a defect number, makes for a good
             <code>oslc:shortTitle</code> value. When a resource has no obvious
-            identifier or handle, Providers SHOULD omit the
-            <code>oslc:shortTitle</code> property. Providers MUST first HTML
-            escape the contents of the <code>oslc:shortTitle</code> before
-            sending the response.</td>
+            identifier or handle, Providers <strong>SHOULD</strong> omit the
+            <code>oslc:shortTitle</code> property. Providers
+            <strong>MUST</strong> first HTML escape the contents of the
+            <code>oslc:shortTitle</code> before sending the response.</td>
 </tr>
 <tr>
         <td><code>oslc:icon</code></td>
@@ -673,13 +670,14 @@ if (window.postMessage &amp;&amp; window.parent)  {
         <td>String</td>
         <td>Zero-or-one</td>
         <td>Title that may be used in the display of a link to the resource.
-            The value SHOULD include only content that is valid inside an HTML
-            &lt;span&gt; element. Providers SHOULD include a
-            <code>dcterms:title</code> property with an informative label for
-            the resource. The title is typically shown to a user as a
-            hyperlink.  For a resource with no obvious title, Providers SHOULD
-            omit the <code>dcterms:title</code> property. Providers MUST first
-            HTML escape the contents of the <code>dcterms:title</code> before
+            The value <strong>SHOULD</strong> include only content that is
+            valid inside an HTML &lt;span&gt; element. Providers
+            <strong>SHOULD</strong> include a <code>dcterms:title</code>
+            property with an informative label for the resource. The title is
+            typically shown to a user as a hyperlink.  For a resource with no
+            obvious title, Providers <strong>SHOULD</strong> omit the
+            <code>dcterms:title</code> property. Providers MUST first HTML
+            escape the contents of the <code>dcterms:title</code> before
             sending the response.</td>
 </tr>
 <tr>
@@ -687,17 +685,18 @@ if (window.postMessage &amp;&amp; window.parent)  {
         <td><code>shortTitle</code></td>
         <td>String</td>
         <td>Zero-or-one</td>
-        <td>Abbreviated title which may be used in the display of a link to the
-            resource. The value SHOULD include only content that is valid
-            inside an HTML &lt;span&gt; element. Providers SHOULD include an
-            abbreviated title for the resource when possible. The abbreviated
-            title is typically shown to a user as a hyperlink in presentations
-            where visual space is limited. As a general guideline, the length
-            of the abbreviated title SHOULD be 5 characters or less. A
+        <td>Abbreviated title which may be used in the display of a link to
+            the resource. The value <strong>SHOULD</strong> include only
+            content that is valid inside an HTML &lt;span&gt; element.
+            Providers <strong>SHOULD</strong> include an abbreviated title for
+            the resource when possible. The abbreviated title is typically
+            shown to a user as a hyperlink in presentations where visual space
+            is limited. As a general guideline, the length of the abbreviated
+            title <strong>SHOULD</strong> be 5 characters or less. A
             user-visible identifier that ordinarily appears in the
             dcterms:title, such as a defect number, makes for a good
             <code>oslc:shortTitle</code> value. When a resource has no obvious
-            identifier or handle, Providers SHOULD omit the
+            identifier or handle, Providers <strong>SHOULD</strong> omit the
             <code>oslc:shortTitle</code> property. Providers MUST first HTML
             escape the contents of the <code>oslc:shortTitle</code> before
             sending the response.</td>
@@ -823,14 +822,14 @@ if (window.postMessage &amp;&amp; window.parent)  {
 
 <ul>
     <li>The value of the <code>title</code> or <code>shortTitle</code>
-        properties <strong>MUST</strong>, if present, only contain markup valid
-        in an HTML <code>span</code> element. To afford clients the greatest
-        flexibility to style the text to match the context in which it is being
-        displayed, the titles <strong>SHOULD</strong> be plain text with HTML
-        markup used only to emphasize words or phrases or to convey additional
-        information about the target resource.</li>
-    <li><code>icon</code>, if present, <strong>MUST</strong> be the URI of an image. The
-        image <strong>SHOULD</strong> be square. A consumer
+        properties <strong>MUST</strong>, if present, only contain markup
+        valid in an HTML <code>span</code> element. To afford clients the
+        greatest flexibility to style the text to match the context in which
+        it is being displayed, the titles <strong>SHOULD</strong> be plain
+        text with HTML markup used only to emphasize words or phrases or to
+        convey additional information about the target resource.</li>
+    <li><code>icon</code>, if present, <strong>MUST</strong> be the URI of an
+        image. The image <strong>SHOULD</strong> be square. A consumer
         <strong>MAY</strong> scale the image as needed.</li>
     <li><code>iconAltLabel</code> and <code>iconTitle</code>, if present,
         <strong>MUST</strong> only have string content with no markup.</li>
@@ -906,32 +905,14 @@ if (window.postMessage &amp;&amp; window.parent)  {
 
 </section>
 
-<!--
-<section class="appendix">
-<h2 id="references">References</h2>
-
-<ul>
-    <li>Previous UI Preview Specification - <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview">OSLC 2.0 UI Preview</a></li>
-    <li>LDP - <a href="http://www.w3.org/TR/ldp/">Linked Data Platform 1.0 (Candidate Recommendation)</a></li>
-    <li>CSS - <a href="http://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 2 v2.1</a></li>
-    <li>Dublin Core - <a href="http://dublincore.org/documents/dces/">Dublin Core Metadata Element Set, Version 1.1</a></li>
-    <li>HTML5 Posting Message - <a href="http://www.w3.org/TR/html5/comms.html#posting-messages">W3C HTML5 postMessage</a></li>
-    <li>HTTP - <a href="http://tools.ietf.org/html/rfc2616">Hyper-text Transfer Protocol (HTTP/1.1)</a></li>
-    <li>JSON-LD - <a href="http://www.w3.org/TR/json-ld/">JSON-LD 1.0</a></li>
-    <li>Prefer - <a href="http://tools.ietf.org/html/draft-snell-http-prefer-18">Prefer Header for HTTP</a></li>
-    <li>Strawman Proposal - <a href="https://jazz.net/wiki/bin/view/Main/LinkRendering">IBM Jazz Compact Rendering 1.0</a></li>
-    <li>Window Object - <a href="http://www.w3.org/TR/Window/#window-embedding">Window Object 1.0 Window.name</a></li>
-    <li>XSD Datatypes - <a href="http://www.w3.org/TR/xmlschema-2/">XML Schema Part 2: Datatypes Second Edition</a></li>
-</ul>
-</section>
- -->
-
 <section class="appendix informative" id="history">
 <h2>Change History</h2>
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
-    <li>2014-09-08 Reorder some document sections. (SP)
+    <li>2014-09-09 Move some statements on preview sizing to guidance
+        document. Allow Consumers to ignore a Providers size hints. (SP)</li>
+    <li>2014-09-08 Reorder some document sections. (SP)</li>
     <li>2014-09-08 Restore the <code>iframe</code> requirement for displaying
         previews. (SP)</li>
     <li>2014-09-08 Remove statement on backwards compatibility since it will be
