@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'/>
+<script src='https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script class='remove'>
+  var respecConfig = {
+      // specification status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
+      specStatus:           "CS",
+      edDraftURI:           "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/attachments-v3.html",
+
+      // the specification's short name, as in http://www.w3.org/TR/short-name/
+      shortName:            "OSLC Attachments 3.0",
+
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+      // subtitle   :  "an excellent document",
+
+      // if you wish the publication date to be other than the last modification, set this
+      // publishDate:  "2009-08-06",
+
+      // if the specification's copyright date is a range of years, specify
+      // the start date here:
+      // copyrightStart: "2005"
+
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+
+      // if there a publicly available Editor's Draft, this is the link
+      // edDraftURI:           "http://berjon.com/",
+
+      // if this is a LCWD, uncomment and set the end of its review period
+      // lcEnd: "2009-08-05",
+
+      // editors, add as many as you like
+      // only "name" is required
+      editors:  [
+          {
+              name:       "Samuel Padgett"
+          ,   url:        "http://open-services.net/bin/view/Main/SamPadgett"
+          ,   mailto:     "spadgett@us.ibm.com"
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          },
+          {
+              name:       "Steve Speicher"
+          ,   url:        "http://stevespeicher.me/"
+          ,   mailto:     "sspeiche@us.ibm.com"
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          }
+      ],
+
+      maxTocLevel: 2,
+
+      // previousURI: "http://open-services.net/wiki/change-management/Specification-3.0/",
+      // prevED: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+
+      // name of the WG
+      wg:           "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+
+      // URI of the public WG page
+      wgURI:        "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
+
+      // name (without the @w3c.org) of the public mailing to which comments are due
+      wgPublicList: "oslc-core",
+
+      // URI of the patent status for this WG, for Rec-track documents
+      // !!!! IMPORTANT !!!!
+      // This is important for Rec-track documents, do not copy a patent URI from a random
+      // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+      // Team Contact.
+      wgPatentURI:  "",
+      // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
+  };
+</script>
+<title>Open Services for Lifecycle Collaboration Attachments Specification 3.0</title>
+<style type="text/css">
+    table, thead, tr, td {
+        padding: 5px;
+        border-width: 1px;
+        border-spacing: 0px;
+        border-style: solid;
+        border-collapse: collapse;
+    }
+
+    td {
+        min-width: 100px;
+    }
+
+    .normal { 
+        font-weight: normal;
+        font-size: 100%;
+    }
+
+    code {
+        font-weight:bold;
+    }
+    /* ReSpec uses color ff4500 for code elements, which does not print well on
+     some black & white printers and is a little hard to read for some folks
+     even on-line.  The default code font size was also somewhat too small/hard
+     to read.  */
+</style>
+</head>
+<body>
+<section id="abstract">
+<p>Binary or text documents are often attached to records in a change
+    management system and in other domains. This specification describes how to
+    manage attachments for OSLC resources like Change Requests using
+    LDP-Containers and Non-RDF Source [[LDP]].</p>
+</section>
+
+<section id="sotd">
+Early Working Draft
+</section>
+
+<section id="model" class="informative">
+<h2>Conceptual Model</h2>
+<p>An attachment is added to a resource via a simple POST request to the
+    appropriate LDP-Container resource. The entity body becomes the content of
+    the attachment resource. The attachment is automatically associated with
+    the resource via an <code>oslc:attachment</code> statement.
+    Statements are also automatically added to the
+    <code>oslc:AttachmentDescriptor</code> resource. The property values are
+    assigned by the server or can be determined from standard headers of
+    the POST.  The following table maps the HTTP request headers from the POST
+    request to create the attachment resource to what <strong>SHOULD</strong>
+    be used as the initial values in the indicated
+    <code>oslc:AttachmentDescriptor</code> resource:</p>
+
+<table>
+<thead>
+<tr>
+  <th><strong>HTTP Request Header</strong></th>
+  <th><strong>Prefixed Name</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>Slug</code> [[RFC5023]]</td>
+  <td><code>dcterms:title</code></td>
+</tr>
+<tr>
+  <td><code>Content-Type</code></td>
+  <td><code>dcterms:format</code></td>
+</tr>
+<tr>
+  <td><code>Content-Length</code></td>
+  <td><code>oslc:attachmentSize</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>When a server successfully creates an attachment resource, it
+    responds with an HTTP status code of 201 (created)
+    with the URI of the newly created attachment resource in the HTTP response
+    <code>Location</code> header.  Additional, if the server created an
+    associated <code>oslc:AttachmentDescriptor</code> resource, the URI for
+    this resource should be listed in the HTTP response <code>Link</code>
+    header [[RFC5988]] with <code>rel="describedby"</code> [[powder-dr]].</p>
+
+<p>A server can include an <code>Slug</code> header in the
+    attachment-creating POST to specify a hint for a name for the resource as
+    part of that single request. This can be important as some systems
+    require a name at the time the attachment is created. Different systems may
+    have different requirements for valid attachment names, so the value of the
+    <code>Slug</code> header should be interpreted as a hint in this context.
+    If the given name can not be used as specified, it is transformed into a
+    valid name. If that is not possible or the header is not specified, an
+    arbitrary value is assigned. Failure due to an invalid name is undesirable
+    because of the potentially large size of an attachment resource.</p>
+
+<p>A <code>Slug</code> header can also be included by a server in the
+    response to a GET on an attachment resource. If a consumer wishes to store
+    the content as a file, this value provides a hint as to the file name to
+    use (subject, of course, to any file system restrictions). In the absence
+    of an <code>Slug</code> header, the consumer may use the last segment of
+    the resource's URI as a hint, or just choose an arbitrary file name.</p>
+</section>
+
+<section id='conformance'>
+    Attachment servers and clients are conformant if they follow the
+    requirements in <a href="#requirements" class="sectionRef"></a>.
+</section>
+
+<section id="conventions">
+<h2>Conventions Used in This Document</h2>
+
+<p>The namespace for OSLC Core is
+    <code>http://open-services.net/ns/oslc#</code>.</p>
+
+<p>Sample resource representations are provided in <code>text/turtle</code>
+    format [[turtle]].</p>
+
+<p>Commonly used namespace prefixes:</p>
+<pre style="word-wrap: break-word; white-space: pre-wrap;">
+    @prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+    @prefix ldp:     &lt;http://www.w3.org/ns/ldp#&gt;.
+    @prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
+    @prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+    @prefix wdrs:    &lt;http://www.w3.org/2007/05/powder-s#&gt; .
+    @prefix xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt;.
+</pre>
+</section>
+
+<section id="requirements">
+    <h2>Requirements</h2>
+
+    <section id="gen_requirements">
+        <h2>General</h2>
+
+        <section id="gen_ldp_conformance">
+            <h2 class="normal">Attachment servers <strong>MUST</strong> be at
+                least Linked Data Platform 1.0 conformant servers
+                [[!LDP]].</h2>
+        </section>
+    </section>
+
+    <section id="resources_with_attachments">
+        <h2>Resources with Attachments</h2>
+
+        <section id="res_attachment_container">
+            <h2 class="normal">Each resource that has attachments
+                <strong>MUST</strong> have at least one
+                <code>oslc:AttachmentContainer</code> that holds attachments
+                for only that resource.</h2>
+        </section>
+
+        <strong>TBD: How does the client discover the attachment container?</strong>
+    </section>
+
+    <section id="attachments">
+        <h2>Attachments</h2>
+
+        <section id="attachment_ldpnr">
+            <h2 class="normal">An attachment <strong>MUST</strong> be a
+                conformant Linked Data Platform Non-RDF Source (LDP-NR).</h2>
+        </section>
+
+        <section id="attachment_descriedby">
+            <h2 class="normal">If an attachment has an associated
+                <code>oslc:AttachmentDescriptor</code>, responses to HTTP
+                requests for the attachment URI <strong>MUST</strong> include a
+                Link header [[!RFC5988]] where the context URI is the
+                attachment URI, the Link relation is <code>describedby</code>,
+                and the target URI is the URI of the
+                <code>oslc:AttachmentDescriptor</code>.</h2>
+        </section>
+
+        <section id="attachment_put">
+            <h2 class="normal">Servers <strong>MAY</strong> allow clients to
+                update attachment content by performing an HTTP PUT on the
+                attachment URI. A successful HTTP PUT request
+                <strong>MUST</strong> completely replace the attachment
+                content with the request entity.</h2>
+        </section>
+
+        <section id="attachment_update_meta">
+            <h2 class="normal">When servers update an attachment, they
+                <strong>MUST</strong> also update any associated
+                <code>oslc:AttachmentDescriptor</code>.... .</h2>
+        </section>
+
+        <section id="attachment_delete">
+            <h2 class="normal">Servers <strong>MAY</strong> allow clients to
+                delete the attachment by performing an HTTP DELETE on
+                the attachment URI.</h2>
+        </section>
+
+        <section id="attachment_delete">
+            <h2 class="normal">When deleting attachments, servers
+                <strong>MUST</strong> also delete any associated
+                <code>oslc:AttachmentDescriptor</code> resources.</h2>
+        </section>
+    </section>
+
+    <section id="attchment_containers">
+        <h2>Attachment Containers</h2>
+
+        <section id="attachment_containers_ldpc">
+            <h2 class="normal">Each <code>oslc:AttachmentContainer</code>
+                <strong>MUST</strong> be a conformant Linked Data Platform
+                Container (LDPC).</h2>
+        </section>
+
+        <section id="attachment_containers_post">
+            <h2 class="normal">Servers <strong>MAY</strong> allow clients to
+                create attachments by making an HTTP POST request to an
+                <code>oslc:AttachmentContainer</code> where the request
+                entity is the attachment content.</h2>
+        </section>
+
+        <section id="attachment_containers_post_slug">
+            <h2 class="normal">Clients <strong>MAY</strong> provide servers
+                with a name hint when creating attachments using the HTTP
+                <code>Slug</code> request header [[RFC5023]].</h2>
+        </section>
+
+        <section id="attachment_containers_post_no_slug">
+            <h2 class="normal">Servers <strong>MUST NOT</strong> reject an
+                attachment creation request solely because it does not contain
+                a <code>Slug</code> header.</h2>
+        </section>
+
+        <section id="attachment_containers_slug_failure">
+            <h2 class="normal">Servers <strong>SHOULD NOT</strong> reject an
+                attachment creation request solely because they cannot use the
+                <code>Slug</code> value unchanged. Servers <strong>SHOULD</strong>
+                instead modify the <code>Slug</code> value as needed or assign a
+                different name.</h2>
+        </section>
+
+        <section id="attachment_containers_post_link">
+            <h2 class="normal">In response to a successful POST request that
+                creates an attachment with an associated
+                <code>oslc:AttachmentDescriptor</code>, the server
+                <strong>MUST</strong> include an HTTP Link header in the
+                response where the context URI is the newly-created attachment
+                URI, the link relation is <code>describedby</code>, and the
+                link target is the <code>oslc:AttachmentDescriptor</code>
+                URI.</h2>
+        </section>
+    </section>
+
+    <section id="attachment_descriptors">
+        <h2>Attachment Descriptors</h2>
+
+        <section id="assoc_descriptors">
+            <h2 class="normal">Servers <strong>MAY</strong> create an
+                associated <code>oslc:AttachmentDescriptor</code> for each
+                attachment to describe properties of the attachment such as its
+                name, media type, and size.</h2>
+        </section>
+
+        <section id="assoc_descriptors_type">
+            <h2 class="normal">An <code>oslc:AttachmentDescriptor</code>
+                <strong>MUST</strong> have an explicit <code>rdf:type</code>
+                set to
+                <code>http://open-services.net/ns/cm#AttachmentDescriptor</code>
+                in its RDF representations.  It <strong>MAY</strong> have
+                additional <code>rdf:type</code> values.</h2>
+        </section>
+
+        <section id="assoc_descriptors_ldpnr">
+            <h2 class="normal">An <code>oslc:AttachmentDescriptor</code>
+                <strong>MUST</strong> be a conforming Linked Data Platform RDF
+                Source (LDPR).</h2>
+        </section>
+
+        <section id="create_slug_title">
+            <h2 class="normal">Servers <strong>SHOULD</strong> use the
+                <code>Slug</code> [[!RFC5023]] header value from an attachment
+                creation request as the <code>dcterms:title</code> value in the
+                newly-created attachment's
+                <code>oslc:AttachmentDescriptor</code>.</h2>
+        </section>
+
+        <section id="create_slug_format">
+            <h2 class="normal">Servers <strong>SHOULD</strong> use the
+                <code>Content-Type</code> header value from an attachment
+                creation request to determine the <code>dcterms:format</code>
+                property value in the newly-created attachment's
+                <code>oslc:AttachmentDescriptor</code>.  The
+                <code>dcterms:format</code> value <strong>SHOULD</strong> be a
+                <a href="http://mediatypes.appspot.com/">PURL media-type
+                    resource</a>.</h2>
+        </section>
+    </section>
+</section>
+
+<section id="example" class="informative">
+<h2>Examples</h2>
+
+The following examples illustrate how a consumer can work with attachments.
+
+<section id="ex_get_attachment">
+<h2>Retrieve an Attachment for a Resource</h2>
+
+<p>This involves two GET requests (if you don't have the attachment URI
+    available and do have the resource URI): the first to find the URI
+    of the resource, the second is it fetch the attachment itself (based on
+    the resource property values).</p>
+
+<p><strong>Request #1</strong></p>
+
+<pre class="example">
+GET http://example.com/bugs/2314?oslc.properties=oslc:attachment
+Host: example.com
+Accept: text/turtle
+</pre>
+
+<p><strong>Response #1</strong></p>
+
+<pre class="example">
+HTTP/1.1 200 OK
+Allow: GET,HEAD,OPTIONS,PUT,DELETE
+Content-Length: 736
+Content-Type: text/turtle; charset=UTF-8
+ETag: W/"463efa17743d7cb14ee69f6be5230390"
+Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Vary: Accept
+
+@prefix oslc: &lt;http://open-services.net/ns/core#&gt; .
+@prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+@prefix ldp:   &lt;http://w3.org/ns/ldp#&gt; .
+
+&lt;http://example.com/bugs/2314/attachments&gt;
+        a                       ldp:DirectContainer ;
+        ldp:contains            &lt;http://example.com/bugs/2314/attachments/2&gt; , &lt;http://example.com/bugs/2314/attachments/1&gt; ;
+        ldp:hasMemberRelation   oslc:attachment ;
+        ldp:membershipResource  &lt;http://example.com/bugs/2314&gt; .
+
+&lt;http://example.com/bugs/2314&gt;
+        a                   oslc_cm:ChangeRequest ;
+        oslc:attachment  &lt;http://example.com/bugs/2314/attachments/2&gt; , &lt;http://example.com/bugs/2314/attachments/1&gt; ;
+        dcterms:title       "A serious bug!" .
+</pre>
+
+<p><strong>Request #2</strong></p>
+
+<pre class="example">
+GET http://example.com/bugs/2314/attachments/1
+Host: example.com
+</pre>
+
+<p><strong>Response #2</strong></p>
+
+<pre class="example">
+HTTP/1.1 200 OK
+Content-Length: 53622
+Content-Type: image/png
+ETag: W/"678609cdee68e0fb8aea5f252b84a511"
+Link: &lt;http://example.com/bugs/2314/attachments/meta/1&gt;; rel="describedby",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type",
+      &lt;http://www.w3.org/ns/ldp#NonRDFSource&gt;; rel="type"
+Allow: GET,HEAD,OPTIONS
+
+[binary content]
+</pre>
+</section>
+
+<section id="ex_get_container">
+<h2 id="fetchattachmentcontainer">Get an Attachment Container</h2>
+
+<p><strong>Request</strong></p>
+
+<pre class="example">
+GET http://example.com/bugs/2314/attachments
+Host: example.com
+Accept: text/turtle
+Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMembership"
+</pre>
+
+<p><strong>Response</strong></p>
+
+<pre class="example">
+HTTP/1.1 200 OK
+Content-Length: 1921
+Content-Type: text/turtle
+ETag: W/"2773fef2237e91273bde782a43925458"
+Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Preference-Applied: return=representation
+Vary: Accept,Prefer
+
+@prefix wdrs:  &lt;http://www.w3.org/2007/05/powder-s#&gt; .
+@prefix oslc: &lt;http://open-services.net/ns/oslc#&gt; .
+@prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+@prefix ldp:   &lt;http://w3.org/ns/ldp#&gt; .
+
+&lt;http://example.com/bugs/2314&gt;
+        oslc:attachment  &lt;http://example.com/bugs/2314/attachments/2&gt; , &lt;http://example.com/bugs/2314/attachments/1&gt; .
+
+&lt;http://example.com/bugs/2314/attachments/2&gt;
+        wdrs:describedBy  &lt;http://example.com/bugs/2314/attachments/meta/2&gt; .
+
+&lt;http://example.com/bugs/2314/attachments/meta/2&gt;
+        a                       oslc:AttachmentDescriptor ;
+        oslc:attachmentSize     "9196"^^&lt;http://www.w3.org/2001/XMLSchema#int&gt; ;
+        dcterms:created         "2011-07-19T15:03:54.00-05:00"^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt; ;
+        dcterms:creator         &lt;http://example.com/users/dave&gt; ;
+        dcterms:format          &lt;http://purl.org/NET/mediatypes/text/x-diff&gt; ;
+        dcterms:identifier      "2" ;
+        dcterms:title           "fix.patch" .
+
+&lt;http://example.com/bugs/2314/attachments/1&gt;
+        wdrs:describedBy  &lt;http://example.com/bugs/2314/attachments/meta/1&gt; .
+
+&lt;http://example.com/bugs/2314/attachments&gt;
+        a                       ldp:DirectContainer ;
+        ldp:hasMemberRelation   oslc:attachment ;
+        ldp:membershipResource  &lt;http://example.com/bugs/2314&gt; .
+
+&lt;http://example.com/bugs/2314/attachments/meta/1&gt;
+        a                       oslc:AttachmentDescriptor ;
+        oslc:attachmentSize     "53622"^^&lt;http://www.w3.org/2001/XMLSchema#int&gt; ;
+        dcterms:created         "2011-07-18T13:22:30.45-05:00"^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt; ;
+        dcterms:creator         &lt;http://example.com/users/steve&gt; ;
+        dcterms:format          &lt;http://purl.org/NET/mediatypes/image/png&gt; ;
+        dcterms:identifier      "1" ;
+        dcterms:title           "screenshot.png" .
+</pre>
+</section>
+
+<section id="ex_create_attachment">
+<h2>Create an Attachment</h2>
+
+<p>Once the attachment container URI for a resource is known, this is
+    accomplished with a single POST request.</p>
+
+<p><strong>Request</strong></p>
+
+<pre class="example">POST http://example.com/bugs/2314/attachments
+Slug: design
+Content-Type: application/vnd.oasis.opendocument.text
+Content-Length: 18124
+
+[binary content]
+</pre>
+
+<p><strong>Response</strong></p>
+
+<pre class="example">
+HTTP/1.1 201 CREATED
+Location: http://example.com/bugs/2314/attachments/3
+Link: &lt;http://example.com/bugs/2314/attachments/meta/3&gt;; rel="describedby"; anchor="http://example.com/bugs/2314/attachments/3",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Content-Length: 0
+</pre>
+</section>
+
+</section>
+
+<section id="resources">
+<h2>Resources</h2>
+
+<h3>Resource: AttachmentDescriptor</h3>
+
+<p>AttachmentDescriptor resource type used to describe the binary resource (or
+    non-LDP-Resource) associated with a particular resource. When a
+    client POSTs an attachment content to a server, the server stores the
+    attachment content and assigns a URI just like any other type of resource
+    creation but it may also create an AttachmentDescriptor resource to contain
+    data about the attachment.</p>
+
+<ul>
+<li><strong>Name:</strong> <code>AttachmentDescriptor</code></li>
+<li><strong>Type URI</strong> <code>http://open-services.net/ns/cm#AttachmentDescriptor</code></li>
+</ul>
+
+<p>There is no restriction on the content of each attachment resource. For
+    example, it could be a photo of a kitten, an installation manual, a log
+    file, or a source code patch. Since the attachment cannot be expected to
+    contain additional client or server supplied data, a typical set of
+    properties for each attachment is included with the AttachmentDescriptor
+    resource itself. Thus, the object of each <code>oslc:attachment</code>
+    statement is the binary attachment.  Issuing an HTTP HEAD or GET operation
+    on that binary attachment resource URL should produce an HTTP response with
+    a header value of <code>Link: rel='meta'</code> to indicate the URL of the
+    oslc:AttachmentDescriptor resource.  The properties for the
+    AttachmentDescriptor resource are indicated in the table below.</p>
+
+<table class="table-code-shrink">
+<thead>
+<tr>
+  <th><strong>Prefixed Name</strong></th>
+  <th><strong>Occurs</strong></th>
+  <th><strong>Read-only</strong></th>
+  <th><strong>Value-type</strong></th>
+  <th><strong>Representation</strong></th>
+  <th><strong>Range</strong></th>
+  <th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>dcterms:title</code></td>
+  <td>zero-or-one</td>
+  <td>unspecified</td>
+  <td>String</td>
+  <td>n/a</td>
+  <td>n/a</td>
+  <td>Client-specified file name or title.</td>
+</tr>
+<tr>
+  <td><code>dcterms:identifier</code></td>
+  <td>zero-or-one</td>
+  <td>True</td>
+  <td>String</td>
+  <td>n/a</td>
+  <td>n/a</td>
+  <td>System-assigned identifier.</td>
+</tr>
+<tr>
+  <td><code>dcterms:format</code></td>
+  <td>zero-or-one</td>
+  <td>unspecified</td>
+  <td>Resource</td>
+  <td>n/a</td>
+  <td>n/a</td>
+  <td>MIME type of the attachment content. <strong>SHOULD</strong> be a <a
+              href="http://mediatypes.appspot.com/">PURL media-type
+          resource</a>.</td>
+</tr>
+<tr>
+  <td><code>oslc:attachmentSize</code></td>
+  <td>zero-or-one</td>
+  <td>unspecified</td>
+  <td><code>Integer</code></td>
+  <td>n/a</td>
+  <td>n/a</td>
+  <td>Size in bytes of the attachment content.</td>
+</tr>
+<tr>
+  <td><code>dcterms:creator</code></td>
+  <td>zero-or-many</td>
+  <td>True</td>
+  <td>Either Resource or Local Resource</td>
+  <td>Either Reference or Inline</td>
+  <td><code>any</code></td>
+  <td>Creator or creators of the attachment. Likely a <a
+              href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#foaf_Person_Resource">
+          <code>foaf:Person</code> </a>, but not necessarily so.</td>
+</tr>
+<tr>
+  <td><code>dcterms:created</code></td>
+  <td>zero-or-one</td>
+  <td>True</td>
+  <td>DateTime</td>
+  <td>n/a</td>
+  <td>n/a</td>
+  <td>Timestamp of attachment creation.</td>
+</tr>
+<tr>
+  <td><code>dcterms:description</code></td>
+  <td>zero-or-one</td>
+  <td>unspecified</td>
+  <td>XML Literal</td>
+  <td>n/a</td>
+  <td>n/a</td>
+  <td>Descriptive text about the attachment. <strong>SHOULD</strong> include
+      only content that is valid and suitable inside an XHTML element.</td>
+</tr>
+<tr>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td><strong>Inverse properties:</strong> In addition to the properties listed
+      above, whose subject is the oslc:AttachmentDescriptor, the follow
+      properties have it as the object</td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td><code>wdrs:describedBy</code></td>
+  <td>zero-or-one</td>
+  <td>unspecified</td>
+  <td>Either</td>
+  <td>n/a</td>
+  <td>n/a</td>
+  <td>to relate the information about the attachment resource.</td>
+</tr>
+</tbody>
+</table>
+
+<p>AttachmentDescriptor properties that are not read-only MAY be updated via an
+    HTTP PUT or PATCH operation.</p>
+</section>
+
+<section class="appendix informative" id="history">
+<h2>Change History</h2>
+<p>Below is a summary of some of the changes in this draft</p>
+
+<ul>
+    <li>2014-10-26 Moved from OSLC CCM to OSLC Core. Changed namespace from
+        oslc_cm to oslc. (SP)</li>
+    <li>2014-09-03 Restructure document with separate normative sections
+        listing requirements. (SP)</li>
+    <li>2014-08-28 Add Change History and References. (SP)</li>
+    <li>2014-08-27 Use rel="describedby" instead of rel="describes". (SP)</li>
+    <li>2014-08-27 Initial draft, extracted from OSLC Change Management 3.0
+        specification. (SP)</li>
+</ul>
+
+</section>
+</body>
+</html>
