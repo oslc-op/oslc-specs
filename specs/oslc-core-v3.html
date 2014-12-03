@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta charset='utf-8' />
+<title>OSLC Core 3.0</title>
+<script
+	src='http://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js'
+	async class='remove'></script>
+<script class='remove'>
+	var respecConfig = {
+		specStatus : "WD",
+		shortName : "oslc-core",
+		chairs : [ {
+			name : "Arnaud Le Hors",
+			url : "http://www.ibm.com/"
+		} ],
+		editors : [ {
+			name : "Steve Speicher",
+			url : "http://stevespeicher.me/"
+		} ],
+		wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+		wgURI : "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
+		wgPublicList : "oslc-core-comment@lists.oasis-open.org",
+		wgPatentURI : "XXX",
+		edDraftURI : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core-v3.html",
+		localBiblio : {
+          "OSLCCore2": {
+              title:    "OSLC Core 2.0",
+              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+              authors:  ["S. Speicher", "D. Johnson"],
+              status:   "Finalized",
+              publisher:  "http://open-services.net"
+          },
+      },
+	};
+</script>
+</head>
+<body>
+	<section id='abstract'>
+		<p>Defines the overall approach to OSLC based specifications and
+			capabilities that extend and compliment W3C Linked Data Platform
+			[[LDP]].  OSLC Core 3.0 constitutes the approach outlined in this document
+			and capabilities referenced in othe documents.</p>
+	</section>
+	<section id='sotd'>
+		<p>Current in progress editor's draft, expect change.</p>
+	</section>
+	
+	<section id='toc'></section>	
+	<hr/>
+
+	<section id='intro' class='informative'>
+		<h2>Introduction</h2>
+<p>With strong demand for better support of integrated system and software processes, 
+enterprises want products from different vendors, open source projects and their own 
+homegrown components to work together. This level of integration, however, can become 
+quite challenging and unmanageable. In order to support integration between a 
+heterogeneous set of products and components from various sources, there is a need 
+for an architecture that is minimalist, loosely coupled, and standardized. OSLC 
+is based on World Wide Web and Linked Data principles, such as those defined in the W3C Linked Data Platform (LDP), 
+to create a cohesive set of specifications that can enable products, services and 
+other distributed network resources to interoperate successfully. [[LDP]]</p>
+
+<p>OSLC is motivated by domain scenarios such as change management, requirement 
+management, and quality management, as well as by cross-domain scenarios such as 
+Application Lifecycle Management (ALM) &amp; DevOps, Product Lifecycle Management (PLM), and 
+Integrated Service Management (ISM). Though the OSLC approach is may apply to many
+other domains and cross-domain scenarios, it focuses its efforts to ensure it meets
+a core set of requirements.</p>
+
+<p>The OSLC Core specifications are responsible for providing additional capabilities that
+expand W3C LDP concepts, as needed, to enable integration. It defines the essential 
+technical elements of OSLC specifications and offers guidance on common concerns for 
+creating, updating, retrieving, and linking to lifecycle resources based on W3C LDP [[LDP]]. 
+These specifications are motivated and sometimes based on best practices and on the work of 
+other OSLC MS-affiliated TCs, sometime referred to as OSLC domain TCs as the focus on a certain domain or topic. 
+The OSLC Lifecycle Integration Core TC develops technical specifications, create 
+best practices documents and formulate design principles that can be leveraged by 
+other OSLC MS-affiliated TCs to enable them to focus on domain-specific concerns.</p>
+
+<figure>
+  <img src="oslc3-overview.png" />
+  <figcaption>OSLC Core 3.0 Overview</figcaption>
+</figure>
+
+<p>As seen in <a href="#fig-oslc-core-3.0-overview"></a>, there are a number of capabilities developed in different
+standards organizations, TCs and working groups.  The arrows represent either dependencies or extensions to some specifications or
+capabilities.  It is recommended that OSLC MS-affiliated TC developed specifications depend on OSLC Core 3.0 specifications,
+though the real goal is to minimize dependencies, which may override the need to depend on OSLC Core 3.0 specifications.</p>
+
+<p>This work is an evolution from the OSLC Core 2.0 efforts, which takes the learning from that effort along
+with the common foundation on W3C LDP, to produce an updated set of specifications that are: simpler, have 
+layered capabilities and easier to adopt.</p>
+		
+	</section>
+
+	<section id="terms">
+		<h1>Terminology</h1>
+		<p>Terminology is based on W3C Linked Data Platform [[LDP]], W3C's
+			Architecture of the World Wide Web [[WEBARCH]] and Hyper-text
+			Transfer Protocol [[HTTP11]].</p>
+			
+		<dl class="glossary">
+			<dt>OSLC Server</dt>
+			<dd>LDP Server that also supports some OSLC-based specifications. See Server [[HTTP11]] and LDP Server [[LDP]].</dd>
+
+			<dt>OSLC Client</dt>
+			<dd>LDP Client that also supports some OSLC-based specifications. See Client [[HTTP11]] and LDP Client [[LDP]].</dd>
+
+			<dt>Domain</dt>
+			<dd>A topic area of a specific focus area and/or collection of disciplines.  Often OASIS OSLC-affiliated TCs are organized
+			around a domain.</dd>
+			<br/>
+			<p><strong>Some industry terms that are often referred to (not exhaustive):</strong></p>
+						
+			<dt><a href="http://en.wikipedia.org/wiki/Product_lifecycle_management">Product Lifecycle Management (PLM)</a></dt>
+			<dd>The process of managing the entire lifecycle of a product from its 
+			conception, through design and manufacture, to service and disposal.</dd>
+						
+			<dt><a href="http://en.wikipedia.org/wiki/Systems_engineering">Systems Engineering</a></dt>
+			<dd>an interdisciplinary field of engineering that focuses on how to design and manage complex 
+			engineering systems over their life cycles.</dd>
+			
+			<dt><a href="http://en.wikipedia.org/wiki/Application_lifecycle_management">Application Lifecycle Management (ALM)</a></dt>
+			<dd>The marriage of business management to software engineering made possible by tools that facilitate and integrate 
+			requirements management, architecture, coding, testing, tracking, and release management.</dd>
+
+			<dt><a href="http://en.wikipedia.org/wiki/DevOps">DevOps</a></dt>
+			<dd>A software development method that stresses communication, collaboration and integration between 
+			software developers and Information Technology(IT) professionals.</dd>
+			
+			<dt><a href="http://en.wikipedia.org/wiki/IT_service_management">IT Service Management (ITSM)</a></dt>
+			<dd>the implementation and management of quality information technology services. IT service management is 
+			performed by IT service providers through people, process and information technology.</dd>
+		</dl>
+
+		<section id='deprecatedterms'>
+		<h2>Deprecated terms</h2>
+		<p>In previous revisions of OSLC-based specifications [[OSLCCore2]], there was
+			terminology used based that may longer be relevant, accurate or
+			needed anymore. Some of those deprecated terms are:
+		<dl class="glossary">
+			<dt>Provider (<em>deprecated</em>)</dt>
+			<dd>See Server [[HTTP11]].</dd>
+
+			<dt>Consumer (<em>deprecated</em>)</dt>
+			<dd>See Client [[HTTP11]].</dd>
+		</dl>
+		</section>
+	</section>
+
+	<section class='informative'>
+		<h2>Goals/Motivation</h2>
+		
+		
+		<em class='loc-heading'>Scenario-driven</em>
+		<p>Every capability or vocabulary term should be linked back to
+			key integration scenarios that motivate its need. These are important
+			not only for knowing the correct specification content is being
+			developed but also to assist with implementers understanding the
+			intended usage.</p>
+
+		<em class='loc-heading'>Incremental</em>
+		<p>Specifications should be developed in an incremental fashion
+			that not only validates the technical approaches but also delivers
+			integration value sooner.</p>
+
+		<em class='loc-heading'>Loose-coupling</em>
+		<p>Specifications should support a model where clients have little
+			to no knowledge about server implementation-specific behaviors in
+			order to support key integration scenarios. As a result, clients
+			should be able to not be impacted by any server application software
+			or data model changes. Similarly, client software should be able to
+			be independently changed without.</p>
+
+		<em class='loc-heading'>Minimalistic</em>
+		<p>Specification developers should strive to find not only the
+			simplest solution that would work for a given scenario but allows for
+			easy adoption by defining solutions that are minimalistic in nature.</p>
+
+		<em class='loc-heading'>Capabilities</em>
+		<p>A collection of near independent capabilities. These
+			capabilities can incrementally defined as specifications and
+			independently discovered at runtime. Even though there may be some
+			generally agreed upon best practices for capability discovery, each
+			capability should define how a it is discovered.</p>
+
+		<em class='loc-heading'>Vocabularies</em>
+		<p>Various OASIS OSLC affiliated TCs, or any specification
+			development body that is defining working on a specific knowledge
+			domain, will primarily define vocabularies and the semantics behind
+			the various terms. Domain specifications should simply be domain
+			vocabularies, leveraging protocol capabilities defined by W3C Linked
+			Data Platform. Domain vocabulary terms should be developed with
+			global reuse in mind. Some global reuse considerations are when terms
+			are used for cross domain queries and within other domain resource
+			shape definitions. Domain resource shapes should be used to define
+			resources based on a set of terms, which introduces any domain
+			specific constraints on its usage.</p>
+	</section>
+
+	<section class='informative'>
+		<h2>Architecture</h2>
+		<p>In support of the previously stated goals and motivation, along with lifecycle integration scenario motivating 
+		requirements for specifications, it is desired to have a consistent and recommend architecture.  To support scenarios
+		where there needs to be a protocol to access, create, update and delete resources: which HTTP is the foundation for this [[HTTP11]]. 
+		These resources need to relate, or link,
+		to one another utilizing a consistent, standard and web-scale data model: which Resource Description Framework (RDF) [[rdf11-concepts]] is the foundation for this.  The
+		ability to work with these data models over HTTP protocols, is based on [[LDP]].  </p>
+		
+		<p>Some scenarios, require the need to integrate user interface components: either within a web-browser, mobile device,
+		rich desktop applications.  For these scenarios, the technology is rapidly evolving and changing.  Priority will be be
+		based on existing standards such as HTML5, with use of <code>iframe</code> and <code>postMessage()</code>. [[HTML5]</p>
+		
+		<p>Various OSLC Core specifications will elaborate on the conformance requirements leveraging these various technologies and
+		approaches.</p>
+
+		<p>As the primary goals have been outlined around lifecycle integration, some scenarios may require exploration of new (or different)
+		approaches and technologies.  As with all specification development efforts, the OSLC Core TC will advise, develop and approve
+		such efforts through the established processes for cross-TC and organization coordination.</p>
+	</section>
+	
+	<section>
+		<h2>OSLC Core 3.0</h2>
+		<p>The following documents compose the capabilities for OSLC Core 3.0:</p>
+		<ul>
+			<li>Discovery</li>
+			<li>Common Vocabulary Terms</li>
+			<li>Resource Preview</li>
+			<li>Delegated Dialogs</li>
+			<li>Attachments</li>
+			<li>Vocabulary Evolution Guidance</li>
+			<li>Link Guidance</li>
+			<li>Compatibility with previous version of OSLC</li>
+			<li>Actions (stretch goal)</li>
+			<li>Authentication (stretch goal)</li>
+		</ul>
+	</section>
+
+	<section class='informative'>
+		<h2>Specification outline</h2>
+		<div class="todo">TODO: Consider removing this and putting just in wiki or somewhere else.</div>
+		<p>Specifications follow the <a href="https://www.oasis-open.org/policies-guidelines/tc-process">OASIS TC process</a> towards standardization and each OSLC-affiliated TC will make the determination
+		which documents are needed and which should be on the standards-track.</p>
+		<p>Specifications developed by OSLC-affiliated TCs should follow consistent structure and style, based on OASIS requirements.
+		A <a href="http://sspeiche.github.io/respec/examples/oslc/template-spec.html">template</a> is available which provides the preferred structure and 
+		what is expected in various sections.</p>
+		<p>Some of the key sections are:</p>
+		<ol>
+			<li><strong>Introduction</strong> - plus a simple working example using the capability</li>
+			<li><strong>Terminology</strong> - new terms</li>
+			<li><strong>Motivation</strong> - reference to key background, use cases and
+				requirements</li>
+			<li><strong>Basic Concepts</strong> - elaboration of terms, summary of capabilities</li>
+			<li><strong>Capability</strong> - details of the capability
+				being defined, another title may be appropriate
+					<ul>
+						<li><strong>Shapes</strong> - types and their properties with
+							any constraints.</li>
+						<li><strong>Discovery</strong> - how does a client discover
+							this capability</li>
+					</ul></li>
+			<li><strong>Appendix: RDF Vocabulary</strong> - RDF terms defined
+				by this spec, should be have global context in mind and should</li>
+		</ol>
+		
+		<p>In addition to these, there may be need to be supporting material to address backwards and forwards
+		version compatibility.  These may be either in the form of additional content in the current document
+		or a supplemental document.</p> 
+	</section>
+	
+	<section class="appendix informative" id="history">
+	<h2>Change History</h2>
+	<p>Below is a summary of some of the changes in this draft</p>
+	
+	<ul>
+	    <li>2014-12-03 Renamed from overview and created list of capability specs/docs (SS)</li>
+	</ul>
+	</section>
+	
+	<section class='appendix informative'>
+		<h2>Acknowledgments</h2>
+		<p>Many thanks to OSLC Core TC for contributions and feedback.</p>
+	</section>
+</body>
+</html>
