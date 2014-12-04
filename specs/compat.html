@@ -6,8 +6,8 @@
 <script	src='http://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
 <script  type="text/javascript" >
 	var respecConfig = {
-			specStatus : "WD",
-			shortName : "compat",
+			specStatus : "CND",
+			shortName : "oslc-compat",
 			chairs : [ {
 				name : "Arnaud Le Hors",
 				url : "http://www.ibm.com/"
@@ -32,11 +32,23 @@
                   publisher:  "http://open-services.net"
 	          },
 	          "OSLCCore3": {
-	              title:    "OSLC Core Overview 3.0",
-	              href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core-overview-v3.html",
+	              title:    "OSLC Core 3.0",
+	              href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core-v3.html",
 	              authors:  ["S. Speicher"],
                   status:   "Draft",
                   publisher:  "OASIS"
+	          },
+	          "OSLCPreview3": {
+	              title:    "OSLC Resource Preview v3.0",
+	              href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html",
+	              authors:  [ "Samuel Padgett", "Steve Speicher"],
+	              publisher:  "OASIS",
+	          },
+	          "LDPPaging": {
+	              title:    "Linked Data Platform Paging 1.0",
+	              href:     "http://www.w3.org/TR/ldp-paging/",
+	              authors:  [ "Steve Speicher", "John Arwe", "Ashok Malhotra" ],
+	              publisher: "W3C"
 	          },
 	      },
 	};
@@ -45,7 +57,7 @@
 </head>
 <body>
 
-	<section id='abstract'>This document will address considerations with backwards compatibilty
+	<section id='abstract'>This document will address considerations with backwards compatibility
 	and co-existance considerations OSLC Core 2.0 when adopting 3.0.  It is intended to cover the
 	capabilities defined in OSLC Core 3.0.</section>
 			
@@ -60,12 +72,12 @@
 		interactions based on RESTful HTTP web services.  These were labeled "OSLC 1.0".  As a number of "1.0" specifications
 		emerged, common patterns and reuse opportunities emerged.  This then led to the creation of OSLC Core 2.0 [[OSLCCore2]].
 		From this, domain specifications were developed and other common specifications.  The OSLC Core 2.0 evolved from 
-		1.0 in that is strengthed its definition of the use of RESTful HTTP web services and adopted an existing standard-based
+		1.0 in that is strengthen its definition of the use of RESTful HTTP web services and adopted an existing standard-based
 		approach to representing a data model that was flexible and had multiple representation formats, namely RDF [[rdf11-concepts]].
 		Now that OSLC Core 3.0 specifications are based on [[LINKED-DATA]] and namely the Linked Data Platform [[LDP]], 
-		there is a less-distruptive change from 2.0 to 3.0, as conceptually they are built on the same foundation: HTTP and RDF.
+		there is a less-disruptive change from 2.0 to 3.0, as conceptually they are built on the same foundation: HTTP and RDF.
 		Some of the underlying concepts and vocabularies may have changed in some areas, which this document will address
-		how best to co-exist with 2.0 existing implemenations.  Which in the end, will mostly be able just producing a few more 
+		how best to co-exist with 2.0 existing implementations.  Which in the end, will mostly be able just producing a few more 
 		RDF triples (or statements) in some of the responses or additional HTTP response headers.</p>
 	</section>
 
@@ -81,30 +93,197 @@
 		<p>There will be a period of time to allow for both the adoption of the 3.0 specification and the deployment of those clients and servers.</p>
 	</section>
 	
-	<section>
-		<h2>Discovery</h2>
-		<p class="todo">TODO: How to align with: ServiceProvider, ServiceProviderCatalog, Service, CreationFactory, QueryCapability, domain</p>
-	</section>
+	<section id="diff-from-2" class="informative">
+<h2>Changes from OSLC Core 2.0</h2>
+<p>The table below summarizes the capabilities from OSLC Core 2.0 based specifications and 
+what changes have occurred within OSLC Core 3.0. <strong>It is not a complete list of all differences.</strong>
+As additional OSLC Core specifications are published, this table may be out of date and changes needed.  The 
+individual specifications and associated TCs will produce any needed backwards/forwards or cross dependency collateral.</p>
+    
+<p>Many capabilities are no longer specified in OSLC 3.0 because they are part of the W3C Linked Data
+    Platform 1.0 [[LDP]]. Servers can continue to support both 2.0 and 3.0
+    capabilities for backwards compatibility with 2.0 clients.</p>
 
-	<section>
-		<h2>OSLC-Core-Version</h2>
-		<p>Deprecated.  Technically, there is no to carry it forward in 3.0.  Each capability should be able to accurately describe
-		how to discover it using methods established by LDP such as HTTP response headers (Link relations, Accept-Post, ...).</p>
-		<p>Implementations that have previously tested for the value of this parameter, should ensure their logic properly accounts for
-		values that may not be "2.0".  As some may provide the value of "3.0", which shouldn't be seen as an error but instead as just
-		an informative header.</p>
-	</section>
-	
-	<section>
-		<h2>TODO more compat items</h2>
-		<p class="todo">TODO: complete the list of items that would should consider</p>
-	</section>
-	
+<p>Some capabilities are in both OSLC 2.0 and OSLC 3.0, but their
+    implementation has changed. One example is Resource Preview
+    [[OSLCPreview3]].</p>
 
-	<section class='appendix informative'>
-		<h2>Acknowledgements</h2>
-		<p><em>Call all key contributors, reviewers or general groups as needed.</em></p>
-		<p>Many thanks to Tim Berners-Lee for inventing the Web.</p>
-	</section>
+<p>Note that the required resource representations have changed. In 2.0, these were often specialized
+at a domain level, such as RDF/XML and  OSLC JSON representations may been required. Turtle [[turtle]] and JSON-LD
+    [[JSON-LD]] are required instead, this is a [[LDP]] requirement.</p>
+
+<table class="simple">
+<thead>
+<tr>
+  <th>Requirement</th>
+  <th>Typical 2.0 Level</th>
+  <th>3.0 Level</th>
+  <th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Unknown properties and content</td>
+  <td>MAY / MUST</td>
+  <td><span class="changed">MUST</span></td>
+  <td>Unknown properties and content MUST NOT be ignored by servers or clients [[LDP]].</td>
+</tr>
+<tr>
+  <td>Resource Operations</td>
+  <td>MUST</td>
+  <td>MUST</td>
+  <td>Resource operations are defined by [[LDP]].</td>
+</tr>
+<tr>
+  <td>Resource Paging</td>
+  <td>MAY</td>
+  <td>MAY</td>
+  <td>Paging in OSLC 3.0 will use Linked Data Platform Paging 1.0 [[LDPPaging]]</td>
+</tr>
+<tr>
+  <td>Partial Resource Representations</td>
+  <td>MAY / MUST</td>
+  <td>Not&nbsp;specified</td>
+  <td><code>oslc.properties</code> is not specified in OSLC 3.0.</td>
+</tr>
+<tr>
+  <td>Partial Update</td>
+  <td>MAY</td>
+  <td>Not&nbsp;specified</td>
+  <td>Partial update is not specified in OSLC 3.0. It will be replaced with
+      the Linked Data Patch Format [[LDPatch]].</td>
+</tr>
+<tr>
+  <td>Service Provider Resources</td>
+  <td>MAY / MUST</td>
+  <td>Not&nbsp;specified</td>
+  <td>Service provider resources are now simply discovery properties on LDP containers [[LDP]].</td>
+</tr>
+<tr>
+  <td>Creation Factories</td>
+  <td>MUST</td>
+  <td>Not&nbsp;specified</td>
+  <td>Creation factories are now simply LDP containers [[LDP]], some additional properties are added to indicate which type and shapes are supported.</td>
+</tr>
+<tr>
+  <td>Query Capabilities</td>
+  <td>MUST</td>
+  <td>Not&nbsp;specified</td>
+  <td>Query capabilities simply a way to filter LDP containers, using OSLC 2.0 Query Syntax [[LDP]].</td>
+</tr>
+<tr>
+  <td>Query Syntax</td>
+  <td>MUST</td>
+  <td>Not&nbsp;specified</td>
+  <td>Query syntax is not specified in OSLC 3.0.</td>
+</tr>
+<tr>
+  <td>Delegated UI Dialogs</td>
+  <td>MUST</td>
+  <td>MAY</td>
+  <td>Dialogs are no longer required. It's a capability servers MAY
+      implement, however.</td>
+</tr>
+<tr>
+  <td>UI Preview</td>
+  <td>SHOULD</td>
+  <td>SHOULD</td>
+  <td>The mechanics of resource previews have changed in 3.0 [[OSLCPreview3]]. The two versions can co-exist.</td>
+</tr>
+<tr>
+  <td>HTTP Basic Authentication</td>
+  <td>MAY</td>
+  <td>TBD</td>
+  <td>Evaluating requirements for authentication in OSLC 3.0.</td>
+</tr>
+<tr>
+  <td>OAuth Authentication</td>
+  <td>SHOULD</td>
+  <td>TBD</td>
+  <td>Evaluating requirements for authentication in OSLC 3.0.</td>
+</tr>
+<tr>
+  <td>Error Responses</td>
+  <td>MAY</td>
+  <td>MAY</td>
+  <td>OSLC Services MAY provide error responses using Core defined error formats</td>
+</tr>
+<tr>
+  <td>RDF/XML Representations</td>
+  <td>MUST / SHOULD</td>
+  <td>Not&nbsp;specified</td>
+  <td>XML and RDF/XML are not mentioned in OSLC 3.0. Servers can continue to support
+      RDF/XML for backwards compatibility.</td>
+</tr>
+<tr>
+  <td>XML Representations</td>
+  <td>MUST</td>
+  <td>Not&nbsp;specified</td>
+  <td>XML and RDF/XML are not mentioned in OSLC 3.0. Servers can continue to support
+      XML for backwards compatibility.</td>
+</tr>
+<tr>
+  <td>OSLC 2.0 JSON Representations</td>
+  <td>MUST</td>
+  <td>Not&nbsp;specified</td>
+  <td>The OSLC-specific JSON representation is not specified in OSLC 3.0.
+      Instead, JSON-LD is REQUIRED in OSLC 3.0. Servers can continue to support
+      the OSLC JSON format for backwards compatibility.</td>
+</tr>
+<tr>
+  <td>Turtle Representations</td>
+  <td>Not&nbsp;specified</td>
+  <td>MUST</td>
+  <td>Turtle is REQUIRED [[LDP]].</td>
+</tr>
+<tr>
+  <td>JSON-LD Representations</td>
+  <td>Not&nbsp;specified</td>
+  <td>MUST</td>
+  <td>JSON-LD is REQUIRED [[LDP]].</td>
+</tr>
+<tr>
+  <td>HTML Representations</td>
+  <td>SHOULD</td>
+  <td>SHOULD</td>
+  <td>OSLC services SHOULD provide HTML representations for HTTP GET requests</td>
+</tr>
+</tbody>
+</table>
+</section>
+	
+<section>
+	<h2>Discovery</h2>
+	<p class="todo">TODO: How to align with: ServiceProvider, ServiceProviderCatalog, Service, CreationFactory, QueryCapability, domain</p>
+</section>
+
+<section>
+	<h2>OSLC-Core-Version</h2>
+	<p>Deprecated.  Technically, there is no to carry it forward in 3.0.  Each capability should be able to accurately describe
+	how to discover it using methods established by LDP such as HTTP response headers (Link relations, Accept-Post, ...).</p>
+	<p>Implementations that have previously tested for the value of this parameter, should ensure their logic properly accounts for
+	values that may not be "2.0".  As some may provide the value of "3.0", which shouldn't be seen as an error but instead as just
+	an informative header.</p>
+</section>
+
+<section>
+	<h2>TODO more compat items</h2>
+	<p class="todo">TODO: complete the list of items that would should consider</p>
+</section>
+
+<section class="appendix informative" id="history">
+<h2>Change History</h2>
+<p>Below is a summary of some of the changes in this draft</p>
+
+<ul>
+    <li>2014-12-04 Adding in summary table of differences from 2.0 (SS)</li>
+</ul>
+</section>
+
+<section class='appendix informative'>
+	<h2>Acknowledgements</h2>
+	<p><em>Call all key contributors, reviewers or general groups as needed.</em></p>
+	<p>Many thanks to Tim Berners-Lee for inventing the Web.</p>
+</section>
 </body>
 </html>
