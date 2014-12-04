@@ -113,6 +113,19 @@ div.review {
     </ol>
 </p>
 
+<p>To enable previews of a resource, Providers supply an associated Compact
+    resource describing the preview. The Compact resource can contain
+    information about displaying the link in a user interface, such as a link
+    label and icon, as well as small or large previews of the resource.</p>
+
+<p>When a user gestures to see more information about a resource, perhaps by
+    hovering his mouse over a link, the Consumer requests the associated
+    Compact resource. The Compact resource may contain small or large previews.
+    Each preview can have size hints and a link to an HTML representation
+    designed to be embedded in other user interfaces. To display the preview,
+    the Consumer creates an HTML <code>iframe</code> element in its user
+    interface and sets the <code>iframe</code> element's <code>src</code> to
+    the preview document URI.</p>
 </section>
 
 <div class="review">
@@ -141,34 +154,47 @@ div.review {
 <p>The following terms are used in discussions of previews:</p>
 
 <dl class="glossary">
+    <dt>Compact</dt>
+    <dd>A resource describing how to display a link and Preview for another,
+        associated resource.</dd>
     <dt>Consumer</dt>
-    <dd>A web application displaying a link to a resource.</dd>
-    <dt>Provider</dt>
-    <dd>A server that offers Consumers information for displaying the link to a
-        resource and rich previews of the resource.</dd>
+    <dd>See Client [[HTTP11]].</dd>
     <dt>Preview</dt>
     <dd>An HTML representation of a resource that can be embedded in another
         user interface.</dd>
+    <dt>Provider</dt>
+    <dd>See Server [[HTTP11]].</dd>
 </dl>
 
 </section>
 
+<section class='informative' id="motivation">
+<h2>Motivation</h2>
+
+<p>When integrating applications, one application might need to link to a
+    resource in another and display the link in its user interface. Users want
+    to see information about the linked resource without leaving the
+    application they're using. In some cases, the linking application might
+    only have a URI pointing to the other resource.</p>
+
+<p>This specification offers a solution that allows the application, knowing only the URI of another resource, to
+
+    <ul>
+        <li>Show a link to a resource with a label and an icon, and</li>
+        <li>Embed an HTML fragment that shows a minimal or expanded
+            representation of the resource.</li>
+    </ul>
+</p>
+
+<p>Resource previews offer allow users to see information quickly
+without leaving the application they're in, but don't require that the
+application copy or cache data about a reosurce managed elsewhere.</p>
+</section>
+
 <section class='informative' id="conceptualmodel">
-<h2>Conceptual Model</h2>
+<h2>Basic Concepts</h2>
 
-<p>To enable previews of a resource, Providers supply an associated Compact
-    resource describing the preview. The Compact resource can contain
-    information about displaying the link in a user interface, such as a link
-    label and icon, as well as small or large previews of the resource.</p>
-
-<p>When a user gestures to see more information about a resource, perhaps by
-    hovering his mouse over a link, the Consumer requests the associated
-    Compact resource. The Compact resource may contain small or large previews.
-    Each preview can have size hints and a link to an HTML representation
-    designed to be embedded in other user interfaces. To display the preview,
-    the Consumer creates an HTML <code>iframe</code> element in its user
-    interface and sets the <code>iframe</code> element's <code>src</code> to
-    the preview document URI.</p>
+<p>...</p>
 </section>
 
 <section id="get_compact">
@@ -533,112 +559,6 @@ if (window.postMessage &amp;&amp; window.parent)  {
     is too large for the window.</p>
 </section>
 
-<section id="resources" class="appendix">
-<h2>Resources</h2>
-
-<p>Providers <strong>MUST</strong> support the <code>application/json</code> [[RFC4627]]
-    and <code>text/turtle</code> [[turtle]] media types for the Compact resource. They
-    <strong>SHOULD</strong> support the <code>application/ld+json</code> media
-    type [[JSON-LD]]. The
-    <code>application/json</code> Compact resource representation
-    <strong>MUST</strong> be in the JSON format described in <a
-            href="#JSON_Representation_Format">JSON Representation Format</a>
-    below. The JSON property names for the <code>application/json</code>
-    responses are included in the table below.</p>
-
-<section id="vocab" class="appendix">
-<h2>Terms</h2>
-<p>This section highlights the new RDF vocabulary terms defined in this specification.</p>
-<h3>Properties:</h3>
-<table>
-<thead>
-<tr>
-        <th>Property</th>
-        <th>Value-type</th>
-        <th>Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-        <td><code>oslc:compact</code></td>
-        <td>Resource</td>
-        <td>An associated <code>oslc:Compact</code> resource that describes how
-            to display a preview.</td>
-</tr>
-<tr>
-        <td><code>oslc:shortTitle</code></td>
-        <td>String</td>
-        <td>Abbreviated title which may be used in the display of a link to
-            the resource. The value <strong>SHOULD</strong> include only
-            content that is valid inside an HTML &lt;span&gt; element
-            [[HTML5]]. Providers <strong>SHOULD</strong> include an
-            abbreviated title for the resource when possible. The abbreviated
-            title is typically shown to a user as a hyperlink in presentations
-            where visual space is limited. As a general guideline, the length
-            of the abbreviated title <strong>SHOULD</strong> be 5 characters
-            or less. A user-visible identifier that ordinarily appears in the
-            dcterms:title, such as a defect number, makes for a good
-            <code>oslc:shortTitle</code> value. When a resource has no obvious
-            identifier or handle, Providers <strong>SHOULD</strong> omit the
-            <code>oslc:shortTitle</code> property. Providers
-            <strong>MUST</strong> first HTML escape the contents of the
-            <code>oslc:shortTitle</code> before sending the response.</td>
-</tr>
-<tr>
-        <td><code>oslc:icon</code></td>
-        <td>Resource</td>
-        <td>URI of an image which may be used in the display of a link to the
-            resource.</td>
-</tr>
-<tr>
-        <td><code>oslc:iconAltLabel</code></td>
-        <td>String</td>
-        <td>Alternative label used in association with the
-            <code>oslc:icon</code>, such as HTML <code>img</code> tag's
-            <code>alt</code> attribute.</td>
-</tr>
-<tr>
-        <td><code>oslc:iconTitle</code></td>
-        <td>String</td>
-        <td>Title used in association with the <code>oslc:icon</code>, such as
-            HTML <code>img</code> tag's <code>title</code>
-            attribute.</td>
-</tr>
-<tr>
-        <td><code>oslc:smallPreview</code></td>
-        <td>Local Inline Resource of type <code>oslc:Preview</code></td>
-        <td>URI and sizing properties for an HTML document to be used for a
-            small preview.</td>
-</tr>
-<tr>
-        <td><code>oslc:largePreview</code></td>
-        <td>Local Inline Resource of type <code>oslc:Preview</code></td>
-        <td>URI and sizing properties for an HTML document to be used for a
-            large preview.</td>
-</tr>
-</tbody>
-</table>
-
-<h3>Classes</h3>
-<table>
-<thead>
-<tr>
-        <th>Class</th>
-        <th>Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<tr>
-        <td><code>oslc:Compact</code></td>
-        <td>description</td>
-</tr>
-</tbody>
-</table>
-</section>
-
 <section id="shapes">
 <h2>Shapes</h2>
 
@@ -791,6 +711,113 @@ if (window.postMessage &amp;&amp; window.parent)  {
 
 </section>
 
+
+<section id="resources" class="appendix">
+<h2>Resources</h2>
+
+<p>Providers <strong>MUST</strong> support the <code>application/json</code> [[RFC4627]]
+    and <code>text/turtle</code> [[turtle]] media types for the Compact resource. They
+    <strong>SHOULD</strong> support the <code>application/ld+json</code> media
+    type [[JSON-LD]]. The
+    <code>application/json</code> Compact resource representation
+    <strong>MUST</strong> be in the JSON format described in <a
+            href="#JSON_Representation_Format">JSON Representation Format</a>
+    below. The JSON property names for the <code>application/json</code>
+    responses are included in the table below.</p>
+
+<section id="vocab" class="appendix">
+<h2>Terms</h2>
+<p>This section highlights the new RDF vocabulary terms defined in this specification.</p>
+<h3>Properties:</h3>
+<table>
+<thead>
+<tr>
+        <th>Property</th>
+        <th>Value-type</th>
+        <th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+        <td><code>oslc:compact</code></td>
+        <td>Resource</td>
+        <td>An associated <code>oslc:Compact</code> resource that describes how
+            to display a preview.</td>
+</tr>
+<tr>
+        <td><code>oslc:shortTitle</code></td>
+        <td>String</td>
+        <td>Abbreviated title which may be used in the display of a link to
+            the resource. The value <strong>SHOULD</strong> include only
+            content that is valid inside an HTML &lt;span&gt; element
+            [[HTML5]]. Providers <strong>SHOULD</strong> include an
+            abbreviated title for the resource when possible. The abbreviated
+            title is typically shown to a user as a hyperlink in presentations
+            where visual space is limited. As a general guideline, the length
+            of the abbreviated title <strong>SHOULD</strong> be 5 characters
+            or less. A user-visible identifier that ordinarily appears in the
+            dcterms:title, such as a defect number, makes for a good
+            <code>oslc:shortTitle</code> value. When a resource has no obvious
+            identifier or handle, Providers <strong>SHOULD</strong> omit the
+            <code>oslc:shortTitle</code> property. Providers
+            <strong>MUST</strong> first HTML escape the contents of the
+            <code>oslc:shortTitle</code> before sending the response.</td>
+</tr>
+<tr>
+        <td><code>oslc:icon</code></td>
+        <td>Resource</td>
+        <td>URI of an image which may be used in the display of a link to the
+            resource.</td>
+</tr>
+<tr>
+        <td><code>oslc:iconAltLabel</code></td>
+        <td>String</td>
+        <td>Alternative label used in association with the
+            <code>oslc:icon</code>, such as HTML <code>img</code> tag's
+            <code>alt</code> attribute.</td>
+</tr>
+<tr>
+        <td><code>oslc:iconTitle</code></td>
+        <td>String</td>
+        <td>Title used in association with the <code>oslc:icon</code>, such as
+            HTML <code>img</code> tag's <code>title</code>
+            attribute.</td>
+</tr>
+<tr>
+        <td><code>oslc:smallPreview</code></td>
+        <td>Local Inline Resource of type <code>oslc:Preview</code></td>
+        <td>URI and sizing properties for an HTML document to be used for a
+            small preview.</td>
+</tr>
+<tr>
+        <td><code>oslc:largePreview</code></td>
+        <td>Local Inline Resource of type <code>oslc:Preview</code></td>
+        <td>URI and sizing properties for an HTML document to be used for a
+            large preview.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Classes</h3>
+<table>
+<thead>
+<tr>
+        <th>Class</th>
+        <th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<tr>
+        <td><code>oslc:Compact</code></td>
+        <td>description</td>
+</tr>
+</tbody>
+</table>
+</section>
+
 <section id="jsonFormat" class="appendix">
 <h2 id="JSON_Representation_Format">JSON Representation Format</h2>
 
@@ -863,39 +890,9 @@ if (window.postMessage &amp;&amp; window.parent)  {
 
 <p>Here is an example JSON-LD context for a Compact resource:</p>
 
-<pre class="example" id="jsonldExample">
-{
-    "title": "http://purl.org/dc/terms/title",
-    "shortTitle": "http://open-services.net/ns/core#shortTitle",
-    "iconTitle": "http://open-services.net/ns/core#iconTitle",
-    "iconAltLabel": "http://open-services.net/ns/core#iconAltLabel",
-    "compact": {
-        "@id": "http://open-services.net/ns/core#compact",
-        "@type": "@id"
-    },
-    "hintHeight": "http://open-services.net/ns/core#hintHeight",
-    "hintWidth": "http://open-services.net/ns/core#hintWidth",
-    "icon": {
-        "@id": "http://open-services.net/ns/core#img",
-        "@type": "@id"
-    },
-    "src": {
-        "@id": "http://open-services.net/ns/core#src",
-        "@type": "@id"
-    },
-    "largePreview": {
-        "@id": "http://open-services.net/ns/core#largePreview",
-        "@type": "http://open-services.net/ns/core#Preview"
-    },
-    "smallPreview": {
-        "@id": "http://open-services.net/ns/core#smallPreview",
-        "@type": "http://open-services.net/ns/core#Preview"
-    },
-    "document": {
-        "@id": "http://open-services.net/ns/core#document",
-        "@type": "@id"
-    }
-}
+<pre class="example" id="jsonldExample"
+        data-include="contexts/preview.jsonld"
+        data-include-format="text">
 </pre>
 </p>
 </section>
@@ -907,8 +904,10 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2014-12-04 Include example JSON-LD context from a separate file.
+        (SP)</li>
     <li>2014-09-09 Move some statements on preview sizing to guidance
-        document. Allow Consumers to ignore a Providers size hints. (SP)</li>
+        document. Allow Consumers to ignore a Provider's size hints. (SP)</li>
     <li>2014-09-08 Reorder some document sections. (SP)</li>
     <li>2014-09-08 Restore the <code>iframe</code> requirement for displaying
         previews. (SP)</li>
