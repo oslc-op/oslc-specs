@@ -231,7 +231,7 @@ specific scenarios where this touches cross tool integration:</p>
     this resource should be listed in the HTTP response <code>Link</code>
     header [[RFC5988]] with <code>rel="describedby"</code> [[LDP]].</p>
 
-<p>A server can include an <code>Slug</code> header in the
+<p>A server can set an <code>Slug</code> header in the
     attachment-creating POST to specify a hint for a name for the resource as
     part of that single request. This can be important as some systems
     require a name at the time the attachment is created. Different systems may
@@ -288,21 +288,59 @@ specific scenarios where this touches cross tool integration:</p>
         <h2>Resources with Attachments</h2>
 
         <section id="res_attachment_container">
-            <h2 class="normal">Each resource that has attachments
+            <h2 class="normal">Each resource that supports attachments
                 MUST have at least one
                 <code>oslc:AttachmentContainer</code> that holds attachments
                 for only that resource.</h2>
         </section>
 
-        <strong>TBD: How does the client discover the attachment container?</strong>
+        <section id="res_attachment_link_header">
+            <h2 class="normal">Responses to HTTP requests for resources that support
+                attachments MUST contain a Link header [[!RFC5988]] where the
+                context URI is the resource URI, the Link relation is
+                <code>http://open-services.net/ns/core#AttachmentContainer</code>,
+                and the target URI is the URI of the
+                <code>oslc:AttachmentContainer</code> resource.</h2>
+        </section>
+
+        <section>
+            <h2 class="normal">Responses to HTTP GET requests for resources
+                that support attachments MAY include an
+                <code>oslc:AttachmentContainer</code> resource directly in the
+                response body.</h2>
+        </section>
     </section>
 
     <section id="attachments">
         <h2>Attachments</h2>
 
         <section id="attachment_ldpnr">
-            <h2 class="normal">An attachment MUST be a
-                conformant Linked Data Platform Non-RDF Source (LDP-NR).</h2>
+            <h2 class="normal">An attachment MUST be a conformant Linked Data
+                Platform Non-RDF Source (LDP-NR).</h2>
+        </section>
+
+        <section id="attachment_get_content">
+            <h2 class="normal">Successful responses to HTTP GET requests for an
+                attachment URI MUST return the attachment's binary content in
+                the response body.</h2>
+        </section>
+
+        <section id="attachment_get_content_type">
+            <h2 class="normal">Successful responses to HTTP GET requests for an
+                attachment URI SHOULD set a <code>Content-Type</code> header
+                describing the attachment's media type. This is often the
+                <code>Content-Type</code> value from an HTTP POST request that
+                created the attachment.</h2>
+        </section>
+
+        <section id="attachment_content_disposition">
+            <h2 class="normal">Successful responses to HTTP GET requests for an
+                attachment URI MAY include a <code>Content-Disposition</code>
+                header [[!RFC2183]] with disposition type
+                <code>attachment</code> and a filename parameter.  The filename
+                is often the <code>Slug</code> header value from an HTTP POST
+                request that created the attachment with an appropriate
+                file extension added for the attachment's media type.</h2>
         </section>
 
         <section id="attachment_descriedby">
@@ -323,15 +361,25 @@ specific scenarios where this touches cross tool integration:</p>
                 content with the request entity.</h2>
         </section>
 
+        <section id="attachment_put_content_type">
+            <h2 class="normal">Clients SHOULD set a <code>Content-Type</code>
+                request header defining the media type in HTTP PUT requests
+                that update an attachment, even if the media type has not
+                changed. If missing, servers SHOULD treat the content as type
+                <code>application/octet-stream</code>.</h2>
+        </section>
+
         <section id="attachment_update_meta">
-            <h2 class="normal">When servers update an attachment, they
-                MUST also update any associated
-                <code>oslc:AttachmentDescriptor</code>.... .</h2>
+            <h2 class="normal">When servers update an attachment, they MUST
+                also update any associated
+                <code>oslc:AttachmentDescriptor</code> properties that have
+                changed such as <code>oslc:attachmentSize</code> or
+                <code>dcterms:modified</code>.</h2>
         </section>
 
         <section id="attachment_delete">
             <h2 class="normal">Servers MAY allow clients to
-                delete the attachment by performing an HTTP DELETE on
+                delete an attachment by performing an HTTP DELETE on
                 the attachment URI.</h2>
         </section>
 
@@ -358,20 +406,29 @@ specific scenarios where this touches cross tool integration:</p>
                 entity is the attachment content.</h2>
         </section>
 
+        <section id="attachment_containers_post_content_type">
+            <h2 class="normal">Clients SHOULD set a <code>Content-Type</code>
+                request header describing the attachment's media type in HTTP
+                POST requests to the <code>oslc:AttachmentContainer</code>. If
+                missing, servers SHOULD treat the content as type
+                <code>application/octet-stream</code>.</h2>
+        </section>
+
         <section id="attachment_containers_post_slug">
-            <h2 class="normal">Clients MAY provide servers
-                with a name hint when creating attachments using the HTTP
-                <code>Slug</code> request header [[RFC5023]].</h2>
+            <h2 class="normal">Clients MAY use the HTTP <code>Slug</code>
+                request header [[RFC5023]] to suggest a name when creating an
+                attachment. If present, the <code>Slug</code> header SHOULD NOT
+                include a file extension.</h2>
         </section>
 
         <section id="attachment_containers_post_no_slug">
-            <h2 class="normal">Servers <strong>MUST NOT</strong> reject an
-                attachment creation request solely because it does not contain
-                a <code>Slug</code> header.</h2>
+            <h2 class="normal">Servers MUST NOT reject an attachment creation
+                request solely because it does not contain a <code>Slug</code>
+                header.</h2>
         </section>
 
         <section id="attachment_containers_slug_failure">
-            <h2 class="normal">Servers <strong>SHOULD NOT</strong> reject an
+            <h2 class="normal">Servers SHOULD NOT reject an
                 attachment creation request solely because they cannot use the
                 <code>Slug</code> value unchanged. Servers SHOULD
                 instead modify the <code>Slug</code> value as needed or assign a
@@ -452,7 +509,7 @@ The following examples illustrate how a consumer can work with attachments.
 <p><strong>Request #1</strong></p>
 
 <pre class="example">
-GET http://example.com/bugs/2314?oslc.properties=oslc:attachment
+GET http://example.com/bugs/2314
 Host: example.com
 Accept: text/turtle
 </pre>
@@ -465,7 +522,8 @@ Allow: GET,HEAD,OPTIONS,PUT,DELETE
 Content-Length: 736
 Content-Type: text/turtle; charset=UTF-8
 ETag: W/"463efa17743d7cb14ee69f6be5230390"
-Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type",
+      &lt;http://example.com/bugs/2314/attachments&gt;; rel="http://open-services.net/ns/core#AttachmentContainer"
 Vary: Accept
 
 @prefix oslc: &lt;http://open-services.net/ns/core#&gt; .
@@ -481,8 +539,9 @@ Vary: Accept
 
 &lt;http://example.com/bugs/2314&gt;
         a                   oslc_cm:ChangeRequest ;
-        oslc:attachment  &lt;http://example.com/bugs/2314/attachments/2&gt; , &lt;http://example.com/bugs/2314/attachments/1&gt; ;
-        dcterms:title       "A serious bug!" .
+        oslc:attachment     &lt;http://example.com/bugs/2314/attachments/2&gt; , &lt;http://example.com/bugs/2314/attachments/1&gt; ;
+        dcterms:title       "A serious bug!" ;
+        dcterms:identifier  "2314" .
 </pre>
 
 <p><strong>Request #2</strong></p>
