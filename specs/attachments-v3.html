@@ -243,10 +243,10 @@ specific scenarios where this touches cross tool integration:</p>
     because of the potentially large size of an attachment resource.</p>
 
 <p>A <code>Slug</code> header can also be included by a server in the
-    response to a GET on an attachment resource. If a consumer wishes to store
+    response to a GET on an attachment resource. If a client wishes to store
     the content as a file, this value provides a hint as to the file name to
     use (subject, of course, to any file system restrictions). In the absence
-    of an <code>Slug</code> header, the consumer may use the last segment of
+    of an <code>Slug</code> header, the client may use the last segment of
     the resource's URI as a hint, or just choose an arbitrary file name.</p>
 </section>
 
@@ -496,11 +496,255 @@ specific scenarios where this touches cross tool integration:</p>
 <section id="example" class="informative">
 <h2>Examples</h2>
 
-The following examples illustrate how a consumer can work with attachments.
+The following examples illustrate how a client can work with attachments.
 
 <section id="ex_get_attachment">
-<h2>Retrieve an Attachment for a Resource</h2>
+<h2>Find the Attachments for a Resource</h2>
 
+<p>Clients get the attachments for a resource by</p>
+
+<ol>
+<li>Finding the attachment container for a resource using an HTTP Link header</li>
+<li>Getting the container for the list of attachments</li>
+</ol>
+
+<p>Each resource that supports attachments has an attachment container, which
+    is an LDP container. Clients discover the attachment container through an
+    HTTP Link header. A client can use GET or HEAD to get the Link header, but
+    OPTIONS is often more efficient because the server does not have to
+    calculate the ETag or content length of the response. LDP resources must
+    support HTTP OPTIONS, and responses to all HTTP requests for resources that
+    support attachments must have the Link header.</p>
+
+<pre class="example">
+OPTIONS /bugs/2314 HTTP/1.1
+Host: example.com
+</pre>
+
+<p>The response contains a Link to the attachment container with Link relation
+    <code>http://open-services.net/ns/core#AttachmentContainer</code>. Note
+    that other Link headers are in the response. In fact, LDP requires
+    additional Link headers, which is why the response has a Link with relation
+    <code>type</code> and target URI
+    <code>http://www.w3.org/ns/ldp#Resource</code>.</p>
+
+<pre class="example">
+HTTP/1.1 200 OK
+Allow: GET,HEAD,OPTIONS,PUT,DELETE
+Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type",
+      &lt;http://example.com/bugs/2314/attachments&gt;; rel="http://open-services.net/ns/core#AttachmentContainer"
+</pre>
+
+<p>Now the client requests the attachment container to see the attachments for
+    this resource. It's a good practice to include an HTTP <code>Prefer</code>
+    header to explicitly ask the server for the LDP containment triples.</p>
+
+<pre class="example">
+GET /bugs/2314/attachments HTTP/1.1
+Host: example.com
+Accept: text/turtle
+Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferContainment"
+</pre>
+
+<p>The response is an LDP container for the attachments. It can be any LDP
+    container such as an <code>ldp:BasicContainer</code> or an
+    <code>ldp:DirectContainer.</code> This example uses an
+    <code>ldp:BasicContainer</code>. The attachment container only contains
+    attachments for a single resource.</p>
+
+<pre class="example">
+HTTP/1.1 200 OK
+Allow: GET,HEAD,OPTIONS,POST
+Content-Length: 323
+Content-Type: text/turtle
+ETag: W/"2773fef2237e91273bde782a43925458"
+Link: &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type",
+      &lt;http://www.w3.org/ns/ldp#Container&gt;; rel="type",
+Preference-Applied: return=representation
+Vary: Accept,Prefer
+
+@prefix oslc: &lt;http://open-services.net/ns/core#&gt; .
+@prefix ldp:   &lt;http://w3.org/ns/ldp#&gt; .
+
+&lt;http://example.com/bugs/2314/attachments&gt;
+        a             oslc:AttachmentContainer , ldp:BasicContainer ;
+        ldp:contains  &lt;http://example.com/bugs/2314/attachments/2&gt; , &lt;http://example.com/bugs/2314/attachments/1&gt; .
+</pre>
+
+<p>Clients can look at the <code>ldp:contains</code> property on the container
+    for the attachments.</p>
+</section>
+
+<section id="ex_get_attachment">
+<h2>Get the Attachment Content</h2>
+
+<p>Once clients have the attachment URI, they can get the attachment by simply
+    making an HTTP GET request to the attachment URI.</p>
+
+<pre class="example">
+GET /bugs/2314/attachments/1 HTTP/1.1
+Host: example.com
+</pre>
+
+<p>The response body is the attachment content. Servers should set the response
+    <code>Content-Type</code> to describe the media type of the attachment. The
+    response may have a <code>Content-Disposition</code> header with a filename
+    parameter, although this isn't required. This example also contains a Link
+    with relation <code>describedby</code>, which links to the
+    <code>oslc:AttachmentDescriptor</code> for the attachment.</p>
+
+<pre class="example">
+HTTP/1.1 200 OK
+Allow: GET,HEAD,OPTIONS,PUT,DELETE
+Content-Disposition: attachment; filename="screenshot.png"
+Content-Length: 53622
+Content-Type: image/png
+ETag: W/"678609cdee68e0fb8aea5f252b84a511"
+Link: &lt;http://example.com/bugs/2314/attachments/meta/1&gt;; rel="describedby",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type",
+      &lt;http://www.w3.org/ns/ldp#NonRDFSource&gt;; rel="type"
+
+[binary content]
+</pre>
+</section>
+
+<section id="ex_create_attachment">
+<h2>Create an Attachment</h2>
+
+<p>To create an attachment, POST the attachment content to the attachment
+    container for the resource. The request should have a
+    <code>Content-Type</code> header describing the attachment's media type.
+    The optional <code>Slug</code> header is used to give the attachment a
+    name.</p>
+
+<pre class="example">
+POST /bugs/2314/attachments HTTP/1.1
+Slug: design
+Content-Type: application/vnd.oasis.opendocument.text
+Content-Length: 18124
+
+[binary content]
+</pre>
+
+<p>The response contains a Link to the new attachment in the
+    <code>Location</code> header. This server has also included a Link to the
+    <code>oslc:AttachmentDescriptor</code> for the attachment in the HTTP
+    response, which contains metadata about the attachment.</p>
+
+<pre class="example">
+HTTP/1.1 201 Created
+Allow: GET,HEAD,OPTIONS,POST
+Location: http://example.com/bugs/2314/attachments/3
+Link: &lt;http://example.com/bugs/2314/attachments/meta/3&gt;; rel="describedby"; anchor="http://example.com/bugs/2314/attachments/3",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Content-Length: 0
+</pre>
+</section>
+
+<section id="ex_update_attachment">
+<h2>Update an Attachment</h2>
+
+<p>To update an attachment, PUT the attachment content to the attachment
+    container for the resource.</p>
+
+<pre class="example">
+PUT /bugs/2314/attachments/3 HTTP/1.1
+Content-Type: application/vnd.oasis.opendocument.text
+Content-Length: 19377
+
+[binary content]
+</pre>
+
+<p>The server typically responds with a 204 No Content status if the request
+    succeeds. It also updates an associated attachment metadata in the
+    <code>oslc:AttachmentDescriptor</code> in the <code>describedby</code>
+    link.</p>
+
+<pre class="example">
+HTTP/1.1 204 No Content
+Link: &lt;http://example.com/bugs/2314/attachments/meta/3&gt;; rel="describedby"; anchor="http://example.com/bugs/2314/attachments/3",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Content-Length: 0
+</pre>
+</section>
+
+<section id="ex_remove_attachment">
+<h2>Remove an Attachment</h2>
+
+<p>To remove an attachment, make a DELETE request on the attachment URI.  This
+    removes the attachment from the container and deletes the content from the
+    server.</p>
+
+<pre class="example">
+DELETE /bugs/2314/attachments HTTP/1.1
+Host: example.com
+</pre>
+
+<p>The server typically responds with 204 No Content status if the request was
+    successful.</p>
+
+<pre class="example">
+HTTP/1.1 204 No Content
+Content-Length: 0
+</pre>
+</section>
+
+<section id="ex_inline_attachment_container">
+<h2>Include Attachment Information Inline with Resources</h2>
+
+<p>Servers can choose to include the attachment information directly in the
+    HTTP response for a resource although this isn't required. Here is an
+    example defect resource that contains attachments. The attachment container
+    is an <code>ldp:DirectContainer</code> where the membership resource is the
+    defect itself. The membership predicate is <code>oslc:attachment</code>,
+    although this predicate is not required.</p>
+
+<pre class="example">
+@prefix oslc:     &lt;http://open-services.net/ns/core#&gt; .
+@prefix oslc_cm:  &lt;http://open-services.net/ns/cm#&gt; .
+@prefix dcterms:  &lt;http://purl.org/dc/terms/&gt; .
+@prefix ldp:      &lt;http://w3.org/ns/ldp#&gt; .
+@prefix wdrs:  &lt;http://www.w3.org/2007/05/powder-s#&gt; .
+
+&lt;http://example.com/bugs/2314&gt;
+        a                   oslc_cm:Defect ;
+        oslc:attachment     &lt;http://example.com/bugs/2314/attachments/2&gt; , &lt;http://example.com/bugs/2314/attachments/1&gt; ;
+        dcterms:title       "A serious bug!" ;
+        dcterms:identifier  "2314" .
+
+&lt;http://example.com/bugs/2314/attachments&gt;
+        a                       ldp:DirectContainer , oslc:AttachmentContainer ;
+        ldp:contains            &lt;http://example.com/bugs/2314/attachments/2&gt; , &lt;http://example.com/bugs/2314/attachments/1&gt; ;
+        ldp:hasMemberRelation   oslc:attachment ;
+        ldp:membershipResource  &lt;http://example.com/bugs/2314&gt; .
+
+&lt;http://example.com/bugs/2314/attachments/1&gt;
+        wdrs:describedBy  &lt;http://example.com/bugs/2314/attachments/meta/1&gt; .
+
+&lt;http://example.com/bugs/2314/attachments/meta/1&gt;
+        a                       oslc:AttachmentDescriptor ;
+        oslc:attachmentSize     "53622"^^&lt;http://www.w3.org/2001/XMLSchema#int&gt; ;
+        dcterms:created         "2011-07-18T13:22:30.45-05:00"^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt; ;
+        dcterms:creator         &lt;http://example.com/users/steve&gt; ;
+        dcterms:format          &lt;http://purl.org/NET/mediatypes/image/png&gt; ;
+        dcterms:identifier      "1" ;
+        dcterms:title           "screenshot.png" .
+
+&lt;http://example.com/bugs/2314/attachments/2&gt;
+        wdrs:describedBy  &lt;http://example.com/bugs/2314/attachments/meta/2&gt; .
+
+&lt;http://example.com/bugs/2314/attachments/meta/2&gt;
+        a                       oslc:AttachmentDescriptor ;
+        oslc:attachmentSize     "9196"^^&lt;http://www.w3.org/2001/XMLSchema#int&gt; ;
+        dcterms:created         "2011-07-19T15:03:54.00-05:00"^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt; ;
+        dcterms:creator         &lt;http://example.com/users/dave&gt; ;
+        dcterms:format          &lt;http://purl.org/NET/mediatypes/text/x-diff&gt; ;
+        dcterms:identifier      "2" ;
+        dcterms:title           "fix.patch" .
+</pre>
+</section>
+
+<!-- OLD EXAMPLES
 <p>This involves two GET requests (if you don't have the attachment URI
     available and do have the resource URI): the first to find the URI
     of the resource, the second is it fetch the attachment itself (based on
@@ -656,7 +900,7 @@ Link: &lt;http://example.com/bugs/2314/attachments/meta/3&gt;; rel="describedby"
 Content-Length: 0
 </pre>
 </section>
-
+-->
 </section>
 
 <section id="resources">
@@ -743,6 +987,7 @@ Content-Length: 0
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2014-12-10 Update examples. (SP)</li>
     <li>2014-12-10 Added RDF vocabulary terms. (SP)</li>
     <li>2014-12-10 Added additional conformance clauses. (SP)</li>
     <li>2014-11-24 Updated structure to latest changes (SS)</li>
