@@ -35,7 +35,7 @@
 
       // URI of the public WG page
       wgURI:        "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
-      
+
 	  // Namespaces defined by this TC
 	  namespaces : [ { href: "http://open-services.net/ns/core#", prefix: "oslc-core"} ],
 
@@ -103,48 +103,27 @@ div.review {
 
 <h2>Introduction</h2>
 
-<p>This specification describes a mechanism that enables client applications,
-    given only the URI of a resource, to discover helpful information for
-    presenting in-context links and previews of that resource. The approach
+<p>This specification describes how a client application can display links and
+    embed rich previews for resources from other applications. Links can have
+    an icon and a label. The preview is HTML markup to be displayed directly
+    inside the client application.</p>
 
-    <ol>
-        <li>Acknowledges that a resource may refer to other resources of
-            arbitrary types, and
-        <li>Does not require the client to know much about the particular
-            details of those resources.
-    </ol>
-</p>
+<p>A preview is often shown in a pop-up when a user mouses over a link.  A
+    client can display a preview differently, however, depending on the kind of
+    application, the size of the screen, and the capabilities of the device. A
+    desktop application on a PC might handle previews differently than a mobile
+    application running on a small touchscreen.</p>
 
-<p>To enable previews of a resource, Providers supply an associated Compact
-    resource describing the preview. The Compact resource can contain
-    information about displaying the link in a user interface, such as a link
-    label and icon, as well as small or large previews of the resource.</p>
+<p>Servers can offer both small and large previews. A client might show a small
+    preview first, then if the user gestures, show additional details from the
+    large preview. Servers can suggest sizes for previews, and the preview can
+    ask to be resized after it is displayed. Clients can choose to ignore size
+    hints, however.</p>
 
-<p>When a user gestures to see more information about a resource, perhaps by
-    hovering his mouse over a link, the Consumer requests the associated
-    Compact resource. The Compact resource may contain small or large previews.
-    Each preview can have size hints and a link to an HTML representation
-    designed to be embedded in other user interfaces. To display the preview,
-    the Consumer creates an HTML <code>iframe</code> element in its user
-    interface and sets the <code>iframe</code> element's <code>src</code> to
-    the preview document URI.</p>
+<p>A client only needs to know the URI of a resource to display a link and a
+    preview. It doesn't need to know anything else about the resource. Clients
+    don't need to copy, synchronize, or cache any data.</p>
 </section>
-
-<div class="review">
-    We are experimenting with some changes to the specification, based on current
-    goals of OSLC Core and experiences from previous specification development and
-    alignment with W3C LDP [[LDP]].
-    <ul>
-        <li>Separate <a href="#vocab">vocabulary terms</a> from <a
-                    href="#shapes">resource tables/shapes</a></li>
-        <li>A more comprehensive introduction, with samples, so readers "get the gist"
-            without having to consume the entire spec and depend on primer</li>
-        <li>A dedicated primer</li>
-        <li>Separating each requirement into its own numbered section like LDP 1.0</li>
-        <li>Separating "guidance" and "best practices" into a separate non-normative
-            document, allows for cleaner separation and ease of updating</li>
-    </ul>
-</div>
 
 <section id="sotd"></section>
 
@@ -156,16 +135,12 @@ div.review {
 <p>The following terms are used in discussions of previews:</p>
 
 <dl class="glossary">
-    <dt>Compact</dt>
-    <dd>A resource describing how to display a link and Preview for another,
+    <dt>Compact resource</dt>
+    <dd>A resource describing how to display a link and preview for another,
         associated resource.</dd>
-    <dt>Consumer</dt>
-    <dd>See Client [[HTTP11]].</dd>
     <dt>Preview</dt>
     <dd>An HTML representation of a resource that can be embedded in another
         user interface.</dd>
-    <dt>Provider</dt>
-    <dd>See Server [[HTTP11]].</dd>
 </dl>
 
 </section>
@@ -173,52 +148,76 @@ div.review {
 <section class='informative' id="motivation">
 <h2>Motivation</h2>
 
-<p>When integrating applications, one application might need to link to a
-    resource in another and display the link in its user interface. Users want
-    to see information about the linked resource without leaving the
-    application they're using. In some cases, the linking application might
-    only have a URI pointing to the other resource.</p>
+<p>Applications often display links to related resources from other
+    applications. For example, a quality management application might show a
+    link to a related defect when displaying a test result. Testers want to see
+    information about the linked defect without leaving the application they're
+    using. In some cases, the quality management application might only have a
+    URI pointing to the defect.</p>
 
-<p>This specification offers a solution that allows the application, knowing only the URI of another resource, to
-
-    <ul>
-        <li>Show a link to a resource with a label and an icon, and</li>
-        <li>Embed an HTML fragment that shows a minimal or expanded
-            representation of the resource.</li>
-    </ul>
-</p>
-
-<p>Resource previews offer allow users to see information quickly
-without leaving the application they're in, but don't require that the
-application copy or cache data about a resource managed elsewhere.</p>
+<p>Resource previews allow users to see information about related resources
+    quickly without leaving the application they're in, even when the resources
+    are from another server.</p>
 </section>
 
 <section class='informative' id="conceptualmodel">
 <h2>Basic Concepts</h2>
 
-<p>...</p>
+<p>To enable previews of a resource, servers supply an associated Compact
+    resource describing the preview. The Compact resource can contain a link
+    label, icon, and small or large previews of the resource. Compact resources
+    always have a JSON representation [[RFC4627]], but they can also have other
+    representations such as turtle [[turtle]] or JSON-LD [[JSON-LD]]. Here is a
+    simple example of a compact resource:</p>
+
+<pre class="example" id="simpleCompact">
+{
+    "title": "Screenshot of the problem",
+    "icon": "http://example.com/icons/attachment.jpg",
+    "smallPreview": {
+        "document": "http://example.com/bugs/324/screenshot?preview=small"
+    }
+}
+</pre>
+
+<p>To display a link with a label or a preview of a resource, clients request
+    the associated Compact resource. The URI of the Compact resource is found
+    through an HTTP <code>Link</code> header [[RFC5988]] in HTTP responses to
+    the resource URI.  Alternatively, a client can use a <code>Prefer</code>
+    header in HTTP requests for the resource to ask for the Compact resource.
+    The server can then inline the Compact resource directly in the response,
+    saving an HTTP request.</p>
+
+<p>The Compact resource may contain small or large previews. Each preview can
+    have size hints and a link to an HTML representation designed to be
+    embedded in other user interfaces. To display the preview, the client
+    creates an HTML <code>iframe</code> element in its user interface and sets
+    the <code>iframe</code> element's <code>src</code> to the preview document
+    URI. This sandboxes the preview from other content in the client
+    application and allows the preview to use its own stylesheets and
+    scripts.</p>
 </section>
 
 <section id="get_compact">
 <h2>Getting the Compact Resource</h2>
 
-<p>Consumers can discover Compact resources in two ways:</p>
+<p>Clients can discover Compact resources in two ways:</p>
 
 <ol>
     <li><a href="#linkHeader">Discovering Compact Resources Using the HTTP Link Header</a></li>
     <li><a href="#prefer">Discovering Compact Resources Using the HTTP Prefer Header</a></li>
 </ol>
 
-<p>The HTTP <code>Link</code> header allows Providers to offer previews for any
+<p>The HTTP <code>Link</code> header allows servers to offer previews for any
     resource, even binary resources with no RDF or JSON representations. To
-    discover previews using the <code>Link</code> header, a Consumer typically
+    discover previews using the <code>Link</code> header, a client typically
     performs an HTTP HEAD request on the resource URI. The response contains a
     <code>Link</code> header with the URI of the Compact resource.  The
-    Consumer then performs a GET request on the Compact URI to retrieve the
+    client then performs a GET request on the Compact URI to retrieve the
     Compact resource.</p>
 
-<p>Consumers might instead use the HTTP <code>Prefer</code> header to get a
-    Compact resource in a single HTTP request. If the Consumer is confident
+<p>Clients might instead use the HTTP <code>Prefer</code> header to get a
+    Compact resource in a single HTTP request. If the client is confident
     that the resource has a preview, it makes an HTTP GET request on the
     resource URI using the <code>return=representation</code> preference
     [[RFC7240]] and an <code>include</code> parameter [[LDP]] asking for the
@@ -233,7 +232,7 @@ application copy or cache data about a resource managed elsewhere.</p>
 <section id="linkHeader">
 <h2>Discovering Compact Resources Using the HTTP Link Header</h2>
 
-<p>In responses to HTTP requests for resources that have a preview, Providers
+<p>In responses to HTTP requests for resources that have a preview, servers
     <strong>MUST</strong> include a <code>Link</code> header [[RFC5988]] where
 
     <ul>
@@ -261,7 +260,7 @@ ETag: "678609cdee68e0fb8aea5f252b84a511"
 Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/core#Compact"
 </pre>
 
-<p>Consumers can request the Compact resource using the target URI of the
+<p>Clients can request the Compact resource using the target URI of the
     <code>Link</code> header.</p>
 
 <strong>Example Request:</strong>
@@ -290,7 +289,7 @@ Vary: Accept,Accept-Language
 }
 </pre>
 
-<p>Providers <strong>MAY</strong> return a <code>Link</code> header in
+<p>Servers <strong>MAY</strong> return a <code>Link</code> header in
     successful responses to creation requests where
 
     <ul>
@@ -300,7 +299,7 @@ Vary: Accept,Accept-Language
         <li>The target URI is the URI of the Compact resource.</li>
     </ul>
 
-    This allows the consumers to discover the associated Compact resource URI
+    This allows the client to discover the associated Compact resource URI
     without making additional requests.</p>
 
 <strong>Example Request:</strong>
@@ -330,11 +329,11 @@ Location: http://example.com/bugs/478
 <section id="prefer"> <h2>Discovering Compact Resources Using the HTTP Prefer
         Header</h2>
 
-<p>Consumers <strong>MAY</strong> request the preview of a resource by making
+<p>Clients <strong>MAY</strong> request the preview of a resource by making
     an HTTP GET request to the target resource's URI using the
     <code>return=representation</code> preference of the HTTP Prefer request
     header [[!RFC7240]] and <code>include</code> parameter [[!LDP]] value
-    <code>http://open-services.net/ns/core#PreferCompact</code>.  Providers
+    <code>http://open-services.net/ns/core#PreferCompact</code>.  Servers
     supporting resource preview <strong>MUST</strong> support this method of
     discovery for resources with RDF or JSON representations.</p>
 
@@ -384,7 +383,7 @@ Vary: Accept,Accept-Language,Prefer
 </pre>
 
 <p>Including a JSON-LD context in an <code>application/json</code> response is
-    <strong>OPTIONAL</strong>. Consumers who prefer RDF
+    <strong>OPTIONAL</strong>. Clients who prefer RDF
     <strong>SHOULD</strong> request <code>text/turtle</code> or
     <code>application/ld+json</code> using the HTTP <code>Accept</code>
     request header rather than <code>application/json</code>.</p>
@@ -423,14 +422,14 @@ Vary: Accept,Accept-Language,Prefer
 }
 </pre>
 
-<p>Consumers <strong>SHOULD</strong> inspect the response body for the Compact
+<p>Clients <strong>SHOULD</strong> inspect the response body for the Compact
     resource even if the <code>Preference-Applied</code> response header is
-    missing. Some providers might omit the <code>Preference-Applied</code>
+    missing. Some servers might omit the <code>Preference-Applied</code>
     header as discussed in [[RFC7240]].</p>
 
 <p>If a resource does not exist or is not accessible to the requesting
-    Consumer, the Provider <strong>MUST</strong> return the same status
-    code that it would have returned had the Consumer not included the
+    client, the server <strong>MUST</strong> return the same status
+    code that it would have returned had the client not included the
     <code>Prefer</code> header in the request.</p>
 </section>
 
@@ -438,20 +437,20 @@ Vary: Accept,Accept-Language,Prefer
 <h2>Other Considerations</h2>
 
 <p>In responses to HTTP GET requests targeting resources that support preview,
-    Providers <strong>SHOULD</strong> include a <code>Vary</code> response
+    servers <strong>SHOULD</strong> include a <code>Vary</code> response
     header with <code>Accept</code> and <code>Prefer</code> field values or
     <code>"*"</code> indicating a resource is not cacheable.  <code>Vary</code>
     allows a cache to properly interpret future requests on the resource and
     informs the browser that the cacheable response is subject to server-driven
     negotiation.</p>
 
-<p>Providers <strong>MAY</strong> consult the <code>Accept-Language</code>
+<p>Servers <strong>MAY</strong> consult the <code>Accept-Language</code>
     header on requests for a Compact representation of the resource (and on
     requests for preview documents) and return a resource for the requested
     natural language.</p>
 
-<p>Providers <strong>MAY</strong> choose to provide previews for some resources
-    and not others. Providers <strong>SHOULD</strong> provide Compact resources
+<p>Servers <strong>MAY</strong> choose to provide previews for some resources
+    and not others. Servers <strong>SHOULD</strong> provide Compact resources
     for resources that other applications or resources ordinarily refer to,
     however.</p>
 </section>
@@ -461,7 +460,7 @@ Vary: Accept,Accept-Language,Prefer
 <section id="displaying">
 <h2>Displaying a Preview</h2>
 
-<p>When displaying a preview inside another HTML-based presentation, Consumers
+<p>When displaying a preview inside another HTML-based presentation, clients
     <strong>MUST</strong> use an <code>iframe</code> element, setting its
     <code>src</code> attribute to the preview's document URI. Previews can
     contain HTML, stylesheets, and scripts and might not render properly
@@ -469,9 +468,9 @@ Vary: Accept,Accept-Language,Prefer
     also sandboxes the preview, avoiding cross-site scripting
     vulnerabilities.</p>
 
-<p>Consumers <strong>SHOULD</strong> gracefully handle unsuccessful attempts to
+<p>Clients <strong>SHOULD</strong> gracefully handle unsuccessful attempts to
     use the preview mechanism; unsuccessful attempts should never result in
-    failure in the way a Consumer application operates or performs.  Consumers
+    failure in the way a client application operates or performs.  Clients
     <strong>SHOULD</strong> anticipate that the preview mechanism may not be
     supported for a resource, or that the preview mechanism may not work due to
     security or service availability issues, or even that preview capability
@@ -487,7 +486,7 @@ Vary: Accept,Accept-Language,Prefer
     <code>oslc:hintHeight</code> <strong>MUST</strong> be expressed in
     <strong><em>length units</em></strong> as specified in [[!CSS21]].</p>
 
-<p>Providers <strong>MAY</strong> use dynamic resizing for small and large
+<p>Servers <strong>MAY</strong> use dynamic resizing for small and large
     previews in addition to <code>oslc:hintHeight</code> and
     <code>oslc:hintWidth</code>.</p>
 
@@ -553,11 +552,11 @@ if (window.postMessage &amp;&amp; window.parent)  {
 }
 </pre>
 
-<p>Consumers <strong>SHOULD</strong> honor a preview's ability to dynamic
-    resize. Providers <strong>MAY</strong> send more than one resize request.</p>
+<p>Clients <strong>SHOULD</strong> honor a preview's ability to dynamic
+    resize. Servers <strong>MAY</strong> send more than one resize request.</p>
 
-<p>Consumers <strong>MAY</strong> ignore a Provider's size hints and use other
-    values.  For instance, a Consumer might choose another size if the preview
+<p>Clients <strong>MAY</strong> ignore a Provider's size hints and use other
+    values.  For instance, a client might choose another size if the preview
     is too large for the window.</p>
 </section>
 
@@ -567,22 +566,22 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <section id="compactShape">
 <h2 id="resourcePreview">Resource: Compact</h2>
 
-<div title='Shape for oslc_cm:Compact' 
-        data-include='Compact-shape.ttl' 
-        data-oninclude='shapeToSpec' 
-        data-include-sync='true' 
-        data-include-replace='true' 
+<div title='Shape for oslc_cm:Compact'
+        data-include='Compact-shape.ttl'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
         data-include-format='html'></div>
 </section>
 
 <section id="previewShape">
 <h2 id="resourcePreview">Resource: Preview</h2>
 
-<div title='Shape for oslc_cm:Preview' 
-        data-include='Preview-shape.ttl' 
-        data-oninclude='shapeToSpec' 
-        data-include-sync='true' 
-        data-include-replace='true' 
+<div title='Shape for oslc_cm:Preview'
+        data-include='Preview-shape.ttl'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
         data-include-format='html'></div>
 </section>
 
@@ -592,7 +591,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <section id="resources" class="appendix">
 <h2>Resources</h2>
 
-<p>Providers <strong>MUST</strong> support the <code>application/json</code> [[RFC4627]]
+<p>Servers <strong>MUST</strong> support the <code>application/json</code> [[RFC4627]]
     and <code>text/turtle</code> [[turtle]] media types for the Compact resource. They
     <strong>SHOULD</strong> support the <code>application/ld+json</code> media
     type [[JSON-LD]]. The
@@ -605,11 +604,11 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <h2>Terms</h2>
 <p>This section highlights the new RDF vocabulary terms defined in this specification.</p>
 
-<div title='RDF Vocabulary for Resource Preview' 
-        data-include='preview-vocab.ttl' 
-        data-oninclude='vocabToSpec' 
-        data-include-sync='true' 
-        data-include-replace='true' 
+<div title='RDF Vocabulary for Resource Preview'
+        data-include='preview-vocab.ttl'
+        data-oninclude='vocabToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
         data-include-format='html'></div>
 </section>
 
@@ -648,7 +647,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
         text with HTML markup used only to emphasize words or phrases or to
         convey additional information about the target resource.</li>
     <li><code>icon</code>, if present, <strong>MUST</strong> be the URI of an
-        image. The image <strong>SHOULD</strong> be square. A consumer
+        image. The image <strong>SHOULD</strong> be square. A client
         <strong>MAY</strong> scale the image as needed.</li>
     <li><code>iconAltLabel</code> and <code>iconTitle</code>, if present,
         <strong>MUST</strong> only have string content with no markup.</li>
@@ -673,13 +672,13 @@ if (window.postMessage &amp;&amp; window.parent)  {
         </ul>
     </li>
     <li><p>All resources <strong>MAY</strong> have additional properties not
-        specified here. Consumers <strong>MUST</strong> quietly ignore unknown elements
+        specified here. Clients <strong>MUST</strong> quietly ignore unknown elements
         and attributes encountered in a Compact representation.</p></li>
 </ul>
 
-<p>Providers <strong>MAY</strong> respond with JSON-LD in <a
+<p>Servers <strong>MAY</strong> respond with JSON-LD in <a
             href="http://www.w3.org/TR/json-ld/#compacted-document-form">compacted
-        document form</a> when consumers request the
+        document form</a> when clients request the
     <code>application/json</code> media type as long as the response meets the
     above requirements for the JSON format.<p>
 
