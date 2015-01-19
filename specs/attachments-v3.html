@@ -140,13 +140,6 @@ The Linked Data Platform already defines a model by which it is possible to rela
 resources to another, even if they are not RDF-based.  This specification defines
 the method to create associated attachments to a given resource and understand if that
 resource supports the attaching of attachments.</p>
-<p>
-TODO: Here's a simple example to add an attachment
-</p>
-<p>
-TODO: Here's a simple example get information about attachments
-</p>
-
 </section>
 
 <section id="terms">
@@ -196,7 +189,7 @@ specific scenarios where this touches cross tool integration:</p>
     <code>oslc:AttachmentDescriptor</code> resource. The property values are
     assigned by the server or can be determined from standard headers of
     the POST.  The following table maps the HTTP request headers from the POST
-    request to create the attachment resource to what SHOULD
+    request to create the attachment resource to what can
     be used as the initial values in the indicated
     <code>oslc:AttachmentDescriptor</code> resource:</p>
 
@@ -209,7 +202,7 @@ specific scenarios where this touches cross tool integration:</p>
 </thead>
 <tbody>
 <tr>
-  <td><code>Slug</code> [[RFC5023]]</td>
+  <td><code>Slug</code></td>
   <td><code>dcterms:title</code></td>
 </tr>
 <tr>
@@ -231,7 +224,7 @@ specific scenarios where this touches cross tool integration:</p>
     this resource should be listed in the HTTP response <code>Link</code>
     header [[RFC5988]] with <code>rel="describedby"</code> [[LDP]].</p>
 
-<p>A server can set an <code>Slug</code> header in the
+<p>A server can set a <code>Slug</code> header in the
     attachment-creating POST to specify a hint for a name for the resource as
     part of that single request. This can be important as some systems
     require a name at the time the attachment is created. Different systems may
@@ -279,8 +272,7 @@ specific scenarios where this touches cross tool integration:</p>
 
         <section id="gen_ldp_conformance">
             <h2 class="normalFont">Servers that support OSLC attachments MUST
-                be at least Linked Data Platform 1.0 conformant servers
-                [[!LDP]].</h2>
+                be Linked Data Platform 1.0 conformant servers [[!LDP]].</h2>
         </section>
     </section>
 
@@ -291,7 +283,7 @@ specific scenarios where this touches cross tool integration:</p>
             <h2 class="normalFont">Each resource that supports attachments
                 MUST have at least one
                 <code>oslc:AttachmentContainer</code> that holds attachments
-                for only that resource.</h2>
+                for that resource.</h2>
         </section>
 
         <section id="res_attachment_link_header">
@@ -345,26 +337,12 @@ specific scenarios where this touches cross tool integration:</p>
                 <code>oslc:AttachmentDescriptor</code>.</h2>
         </section>
 
-        <section id="attachment_put_content_type">
-            <h2 class="normalFont">Clients SHOULD set a <code>Content-Type</code>
-                request header defining the media type in HTTP PUT requests
-                that update an attachment, even if the media type has not
-                changed. If missing, servers SHOULD treat the content as type
-                <code>application/octet-stream</code>.</h2>
-        </section>
-
         <section id="attachment_update_meta">
             <h2 class="normalFont">When servers update an attachment, they MUST
                 also update any associated
                 <code>oslc:AttachmentDescriptor</code> properties that have
                 changed such as <code>oslc:attachmentSize</code> or
                 <code>dcterms:modified</code>.</h2>
-        </section>
-
-        <section id="attachment_delete">
-            <h2 class="normalFont">Servers MAY allow clients to
-                delete an attachment by performing an HTTP DELETE on
-                the attachment URI.</h2>
         </section>
 
         <section id="attachment_delete">
@@ -381,14 +359,6 @@ specific scenarios where this touches cross tool integration:</p>
             <h2 class="normalFont">Each <code>oslc:AttachmentContainer</code>
                 MUST be a conformant Linked Data Platform
                 Container (LDPC).</h2>
-        </section>
-
-        <section id="attachment_containers_post_content_type">
-            <h2 class="normalFont">Clients SHOULD set a <code>Content-Type</code>
-                request header describing the attachment's media type in HTTP
-                POST requests to the <code>oslc:AttachmentContainer</code>. If
-                missing, servers SHOULD treat the content as type
-                <code>application/octet-stream</code>.</h2>
         </section>
 
         <section id="attachment_containers_post_slug">
@@ -909,35 +879,8 @@ Content-Length: 0
 		data-include-replace='true'
 		data-include-format='html'></div>
 
-<p><strong>Inverse properties:</strong> In addition to the properties listed
-      above, whose subject is the oslc:AttachmentDescriptor, the follow
-      properties have it as the object.</p>
-
-<table class="simple">
-<thead>
-<tr>
-  <th><strong>Prefixed Name</strong></th>
-  <th><strong>Occurs</strong></th>
-  <th><strong>Read-only</strong></th>
-  <th><strong>Value-type</strong></th>
-  <th><strong>Range</strong></th>
-  <th><strong>Description</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-  <td><code>wdrs:describedBy</code></td>
-  <td>zero-or-one</td>
-  <td>unspecified</td>
-  <td>Either</td>
-  <td>n/a</td>
-  <td>to relate the information about the attachment resource.</td>
-</tr>
-</tbody>
-</table>
-
-<p>AttachmentDescriptor properties that are not read-only MAY be updated via an
-    HTTP PUT or PATCH operation.</p>
+<p>AttachmentDescriptor properties that are not read-only MAY be updated
+    via an HTTP PUT or PATCH operation.</p>
 </section>
 
 <section id="vocab" class="appendix">
