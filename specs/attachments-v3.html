@@ -289,11 +289,11 @@ specific scenarios where this touches cross tool integration:</p>
 
         <section id="res_attachment_link_header">
             <h2 class="normalFont">Responses to HTTP requests for resources
-                that support attachments MUST contain a Link header
+                that support attachments MUST contain at least one Link header
                 [[!RFC5988]] where the context URI is the resource URI, the
                 Link relation is
                 <code>http://open-services.net/ns/core#AttachmentContainer</code>,
-                and the target URI is the URI of the
+                and the target URI is the URI of an
                 <code>oslc:AttachmentContainer</code> resource.</h2>
         </section>
     </section>
@@ -392,6 +392,17 @@ specific scenarios where this touches cross tool integration:</p>
                 URI, the link relation is <code>describedby</code>, and the
                 link target is the <code>oslc:AttachmentDescriptor</code>
                 URI.</h2>
+        </section>
+
+        <section id="attachment_containers_post_link">
+            <h2 class="normalFont">Clients MAY specify an LDP-NR interaction
+                model when POSTing RDF content to an
+                <code>oslc:AttachmentContainer</code> by including an HTTP Link
+                header where the target URI is
+                <code>http://www.w3.org/ns/ldp#NonRDFSource</code> and the link
+                relation is <code>type</code>. In this case, Servers MUST honor
+                the client's requested interaction model and treat the resource
+                as an LDP-NR.</h2>
         </section>
     </section>
 
