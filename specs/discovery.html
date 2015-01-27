@@ -124,24 +124,31 @@
 	</section>
 
 	<section>
-		<h2>Capability</h2>
-		<p><em>The title of this section is flexible.  Since the title of this spec should match what it does, it 
-		may not make sense to repeat it here.  This section is intended to capture the conformance clauses 
-		(ie, the 'meat' of the spec).</em></p>
+		<h2>Discovery Approaches</h2>
+		<p></p>
 		
-		<section id="clause">
-			<h2>Clause section</h2>
-			<p><em>Give your section title/id something meaningful and simple, don't include the actual section number.</em></p>
-			<p><em><strong>Writing conformance clauses/statements: </strong> Create individual sections for each conformance clause.
-			Each clause should cleanly map to a test case, see [[LDP]] spec and <a href="http://w3c.github.io/ldp-testsuite">LDP testsuite</a> for an example of this model.</em></p>
+		<section id="creation">
+			<h2>Determining if a LDP Container supports creation of a certain type of resource</h2>
 			
-			<section id="clausea"><h2 class="normal">
-				OSLC specifications MUST provide [[RFC2116]] keywords that SHOULD be in ALL CAPS and MAY include client and/or server needs.
+			<section id="doesCreate"><h2 class="normal">
+				The existence of an <code>Accept-Post</code> header on an HTTP response to a given Request-URI will
+				indicate that both an HTTP POST is accepted for authorized requests and which content types are support
+				in the entity body of an HTTP POST request.
 			</h2></section>
 
-			<section id="clauseb"><h2 class="normal">
-				It is RECOMMENDED that OSLC specifications include examples whenever possible.
-			</h2></section>
+			<section id="createsTypes"><h2 class="normal">
+				The existence of a triple where the subject is the Request-URI representing the LDP Container and predicate
+				is <code>oslc:creationType</code>, the objects represent the type URIs for the resources that can
+				be created against the LDP Container.
+				
+				TODO: Use headers, poll to see if needed a standard predicate for feeding indexes
+			</h2>
+			
+			<pre class='example'>
+			&lt;http://example.com/container&gt; oslc:creationType oslc-cm:ChangeRequest, oslc-cm:Bug, &lt;http://example.com/vocab#Feature&gt;
+			</pre>
+			
+			</section>
 
 <!-- 			
 			<div class="issue-open"><div class="issue-title">Issue title (open)</div>Some text about this issue</div>
@@ -187,6 +194,7 @@
 		<ul>
 		<li>Build outline for capability section</li>
 		<li>Validate scenarios in motivation section</li>
+		<li>When to use HTTP headers vs properties in content</li>
 		</ul>
 	</section>
 	
