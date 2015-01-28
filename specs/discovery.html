@@ -32,6 +32,8 @@
 
 		// if this is a LCWD, uncomment and set the end of its review period
 		// lcEnd: "2009-08-05",
+		
+		includePermalinks: true,
 
 		chairs : [ {
 			name : "Arnaud Le Hors",
@@ -128,28 +130,58 @@
 		<p></p>
 		
 		<section id="creation">
-			<h2>Determining if a LDP Container supports creation of a certain type of resource</h2>
+			<h2>Checking for creation of a certain type of resource</h2>
 			
 			<section id="doesCreate"><h2 class="normal">
 				The existence of an <code>Accept-Post</code> header on an HTTP response to a given Request-URI will
 				indicate that both an HTTP POST is accepted for authorized requests and which content types are support
-				in the entity body of an HTTP POST request.
+				in the entity body of an HTTP POST request. See [[LDP]] <a href="http://www.w3.org/TR/ldp/#header-accept-post">
+				section about <code>Accept-Post</code></a>.
+			</h2></section>
+			
+			<section id="isLDPC"><h2 class="normal">
+				The existence of a <code>Link: &lt;http://www.w3.org/ns/ldp#Container&gt;; rel="type"</code> header on 
+				an HTTP response to a given Request-URI will indicate that the resource is a LDP Container. See [[LDP]]
+				<a href="ldpc-linktypehdr">section about <code>Link</code> header and resource types</a>.
 			</h2></section>
 
 			<section id="createsTypes"><h2 class="normal">
-				The existence of a triple where the subject is the Request-URI representing the LDP Container and predicate
-				is <code>oslc:creationType</code>, the objects represent the type URIs for the resources that can
-				be created against the LDP Container.
-				
-				TODO: Use headers, poll to see if needed a standard predicate for feeding indexes
+				The target URI of a <code>Link: &lt;<em>type-URI</em>&lt;; rel="http://open-services.net/ns/core#creationType"</code> 
+				header on an HTTP response to a given Request-URI will indicate the <code><em>type-URI</em></code> 
+				(i.e. <code>rdf:type</code>) for the type of resources that SHOULD be able to be created for
+				authorized requests against the LDP Container.  Note: since there is always some time between when the
+				test is done and when the creation request is sent, and that there may additional server enforced constraints
+				on the creation resource representation, there is no guarantee that a future creation request will succeed.
 			</h2>
+			<div class='note'>TODO: Use headers, poll to see if needed a standard predicate for feeding indexes</div>
 			
 			<pre class='example'>
-			&lt;http://example.com/container&gt; oslc:creationType oslc-cm:ChangeRequest, oslc-cm:Bug, &lt;http://example.com/vocab#Feature&gt;
+			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
+			      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
 			</pre>
 			
 			</section>
-
+			
+			<section id="isCreateEx" class='informative'><h2 class='normal'>Example</h2>
+			<p>Complete example highlighting that POST is supported, which content types are supported on POST, 
+			the fact that the resource is a LDP Container and it advertises support for creating two types of
+			resources.  Here showing the request (OPTIONS) and then the response:</p>
+			<pre class='example'>
+			OPTIONS /bugs/ HTTP/1.1
+			Host: example.come
+			</pre>
+			<pre class='example'>
+			HTTP/1.1 204 No Content
+			Date: Thu, 12 Jun 2014 18:26:59 GMT
+			Allow: POST,GET,OPTIONS,HEAD,PUT
+			Accept-Post: text/turtle, application/ld+json
+			Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
+				  &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
+			      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
+			</pre>
+</section>
+			
 <!-- 			
 			<div class="issue-open"><div class="issue-title">Issue title (open)</div>Some text about this issue</div>
 			<div class="issue-closed"><div class="issue-title">Issue title (closed)</div>Some text about this issue</div>
