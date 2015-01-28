@@ -142,7 +142,7 @@
 			<section id="isLDPC"><h2 class="normal">
 				The existence of a <code>Link: &lt;http://www.w3.org/ns/ldp#Container&gt;; rel="type"</code> header on 
 				an HTTP response to a given Request-URI will indicate that the resource is a LDP Container. See [[LDP]]
-				<a href="ldpc-linktypehdr">section about <code>Link</code> header and resource types</a>.
+				<a href="http://www.w3.org/TR/ldp/#ldpc-linktypehdr">section about <code>Link</code> header and resource types</a>.
 			</h2></section>
 
 			<section id="createsTypes"><h2 class="normal">
@@ -153,7 +153,7 @@
 				test is done and when the creation request is sent, and that there may additional server enforced constraints
 				on the creation resource representation, there is no guarantee that a future creation request will succeed.
 			</h2>
-			<div class='note'>TODO: Use headers, poll to see if needed a standard predicate for feeding indexes</div>
+			<div class='note'>TODO: Poll to see if needed a standard predicate for feeding indexes</div>
 			
 			<pre class='example'>
 			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
@@ -180,7 +180,29 @@
 			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
 			      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
 			</pre>
-</section>
+		</section>
+		
+		<section id="creationShapes"><h2 class='normal'>Checking for constraints for creation</h2>
+		    <p>In addition to the ways one can discover if a given OSLC Server supports creation of resources
+		    and for which types, it is helpful to understand if there are server-enforced constraints on
+		    the resource representation.</p>
+		    
+			<section id="createsWithShapes"><h2 class="normal">
+				The target URI of a <code>Link: &lt;<em>constraints-URI</em>&lt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code> 
+				header on an HTTP response to a given Request-URI will indicate the <code><em>constraint-URI</em></code> 
+				for the resources that SHOULD be able to be created for
+				authorized requests against the LDP Container.  The resource defined by <code><em>constraint-URI</em></code>
+				SHOULD be an OSLC Resource Shape but MAY be some variant or other constraint document.
+				
+				See [[LDP]]
+				<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
+			</h2>
+			<div class='note'>TODO: Use headers, poll to see if needed a standard predicate for feeding indexes</div>
+			
+			<pre class='example'>
+			Link: &lt;http://example.com/shapes/bug&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"
+			</pre>
+			</section>
 			
 <!-- 			
 			<div class="issue-open"><div class="issue-title">Issue title (open)</div>Some text about this issue</div>
