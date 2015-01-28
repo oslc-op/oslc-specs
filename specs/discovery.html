@@ -33,29 +33,50 @@
 		// if this is a LCWD, uncomment and set the end of its review period
 		// lcEnd: "2009-08-05",
 		
-		includePermalinks: true,
+		// includePermalinks: true,
 
 		chairs : [ {
-			name : "Arnaud Le Hors",
-			url : "http://www.ibm.com/"
+			name : "Steve Speicher",
+			url : "http://stevespeicher.me/",
+			mailto : "sspeiche@us.ibm.com",
+			company : "IBM",
+			companyURL : "http://ibm.com/"
 		} ],
 		editors : [ {
 			name : "Steve Speicher",
-			url : "http://stevespeicher.me/"
+			url : "http://stevespeicher.me/",
+			mailto : "sspeiche@us.ibm.com",
+			company : "IBM",
+			companyURL : "http://ibm.com/"
 		} ],
 		wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
 		wgURI : "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
-		namespaces : [ { href: "http://open-services.net/ns/core#", prefix: "oslc" } ],
+		namespaces : [ {
+			href : "http://open-services.net/ns/core#",
+			prefix : "oslc"
+		} ],
 		wgPublicList : "oslc-core-comments",
-         
-		localBiblio:  {
-			"OSLCCore3": {
-				title:    "OSLC Core 3.0",
-				href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core-v3.html",
-				authors:  [	"Steve Speicher"],
-				publisher:  "OASIS",
+
+		localBiblio : {
+			"OSLCCore3" : {
+				title : "OSLC Core 3.0",
+				href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core-v3.html",
+				authors : [ "Steve Speicher" ],
+				publisher : "OASIS",
+			},
+			"ResourcePreview" : {
+				title : "OSLC Resource Preview 3.0",
+				href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html",
+				authors : [ "Samuel Padgett", "Steve Speicher" ],
+				publisher : "OASIS",
+			},
+			"Dialogs" : {
+				title : "OSLC Delegated Dialogs 3.0",
+				href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html",
+				authors : [ "Samuel Padgett", "Steve Speicher" ],
+				publisher : "OASIS",
 			}
-	    }
+		}
 	};
 </script>
 </head>
@@ -180,15 +201,16 @@
 			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
 			      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
 			</pre>
+			</section>
 		</section>
 		
-		<section id="creationShapes"><h2 class='normal'>Checking for constraints for creation</h2>
+		<section id="creationShapes"><h2>Checking for constraints for creation</h2>
 		    <p>In addition to the ways one can discover if a given OSLC Server supports creation of resources
 		    and for which types, it is helpful to understand if there are server-enforced constraints on
 		    the resource representation.</p>
 		    
 			<section id="createsWithShapes"><h2 class="normal">
-				The target URI of a <code>Link: &lt;<em>constraints-URI</em>&lt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code> 
+				The target URI of a <code>Link: &lt;<em>constraints-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code> 
 				header on an HTTP response to a given Request-URI will indicate the <code><em>constraint-URI</em></code> 
 				for the resources that SHOULD be able to be created for
 				authorized requests against the LDP Container.  The resource defined by <code><em>constraint-URI</em></code>
@@ -197,13 +219,110 @@
 				See [[LDP]]
 				<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
 			</h2>
-			<div class='note'>TODO: Use headers, poll to see if needed a standard predicate for feeding indexes</div>
+			<div class='note'>TODO Poll to see if needed a standard predicate for feeding indexes</div>
+			<div class='note'>TODO Should we introduce a shape-specific relationship type, thinking yes.</div>
 			
 			<pre class='example'>
 			Link: &lt;http://example.com/shapes/bug&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"
 			</pre>
 			</section>
 			
+		<section id="uiPreview"><h2>User interface resource previews</h2>
+		<p>See [[ResourcePreview]] sections on discovery using 
+		<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html#linkHeader">the <code>Link</code> header</a> or 
+		<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html#prefer">the <code>Prefer</code> header</a>.
+		</section>
+
+		<section id="dialogs"><h2>User interface dialogs</h2>
+		<p>See [[Dialogs]] sections on discovery
+		<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html#linkHeader">the <code>Link</code> header</a> or 
+		<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html#prefer">the <code>Prefer</code> header</a>.
+		
+		<div class=note><strong>TODO: Move this content to [[Dialogs]] and update links</strong>
+
+			<p>The following example shows a container that supports creation and selection dialogs:</p>
+			<pre class='example'>
+			OPTIONS /bugs/ HTTP/1.1
+			Host: example.com
+			</pre>
+			<pre class='example'>
+			HTTP/1.1 204 No Content
+			Date: Thu, 12 Jun 2014 18:26:59 GMT
+			Allow: POST,GET,OPTIONS,HEAD,PUT
+			Accept-Post: text/turtle, application/ld+json
+			Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
+				  &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+			Link: &lt;http://example.com/dialogs/bugCreator&gt;; rel="http://open-services.net/ns/core#creationDialog"
+			Link: &lt;http://example.com/dialogs/bugSelector&gt;; rel="http://open-services.net/ns/core#selectionDialog"
+			</pre>
+
+			<p>The following example shows a container that supports creation and selection dialogs:</p>
+			<pre class='example'>
+			GET /bugs/ HTTP/1.1
+			Host: example.com
+			Accept: text/turtle
+			Prefer: return=representation; 
+			        include="http://open-services.net/ns/core#PreferDialog http://www.w3.org/ns/ldp#PreferMinimalContainer"
+			</pre>
+			<pre class='example'>
+			HTTP/1.1 200 OK
+			Content-Type: text/turtle
+			ETag: "_87e52ce291112"
+			Link: &lt;http://www.w3.org/ns/ldp#DirectContainer&gt;; rel="type",
+				  &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+			Accept-Post: text/turtle, application/ld+json
+			Allow: POST,GET,OPTIONS,HEAD
+			Preference-Applied: return=representation
+			Transfer-Encoding: chunked
+
+			@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+			@prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
+			@prefix oslc: &lt;http://open-services.net/ns/core#&gt;
+			@prefix ex: &lt;http://example.com/vocab#&gt;.
+
+			&lt;http://example.com/bugs/&gt;
+			   a ldp:DirectContainer;
+			   dcterms:title "List of all records of bugs";
+			   ldp:membershipResource &lt;http://example.com/bugs/&gt;;
+			   ldp:hasMemberRelation ex:bug;
+			   ldp:insertedContentRelation ldp:MemberSubject;
+			   oslc:creationDialog &lt;#newDialog&gt;;
+			   oslc:selectionDialog &lt;#pickerDialog&gt;.
+			   
+			&lt;#newDialog&gt;
+			   a oslc:Dialog;
+			   dcterms:title "A new bug dialog";
+			   oslc:label "New bug";
+			   oslc:dialog &lt;http://example.com/dialogs/bugCreator?view=html&gt;;
+			   oslc:hintHeight "400 em";
+			   oslc:hintWidth "400 em";
+			   oslc:resourceType &lt;http://open-services.net/ns/cm#Bug&gt;.
+
+			&lt;#pickeRDialog&gt;
+			   a oslc:Dialog;
+			   dcterms:title "A bug selection dialog";
+			   oslc:label "Select existing bug";
+			   oslc:dialog &lt;http://example.com/dialogs/bugSelector?view=html&gt;;
+			   oslc:hintHeight "400 em";
+			   oslc:hintWidth "400 em";
+			   oslc:resourceType &lt;http://open-services.net/ns/cm#Bug&gt;.
+			</pre>
+			
+		<section>
+			<h2>Dialog Shape</h2>
+			<p>Descriptor of the dialogs</p>
+		
+			<div title='RDF Shape for Dialog' 
+				data-include='./Dialog-shape.ttl' 
+				data-oninclude='shapeToSpec' 
+				data-include-sync='true' 
+				data-include-replace='true' 
+				data-include-format='html'></div>
+			
+		</section>
+		
+		</div>
+
 <!-- 			
 			<div class="issue-open"><div class="issue-title">Issue title (open)</div>Some text about this issue</div>
 			<div class="issue-closed"><div class="issue-title">Issue title (closed)</div>Some text about this issue</div>
@@ -228,12 +347,12 @@
 		<h2>RDF Vocabulary</h2>
 		<p>TODO: do this</p>
 		
-<div title='RDF Vocabulary for Template' 
-	data-include='./template-spec-vocab.ttl' 
-	data-oninclude='vocabToSpec' 
-	data-include-sync='true' 
-	data-include-replace='true' 
-	data-include-format='html'></div>		
+		<div title='RDF Vocabulary for Template' 
+			data-include='./template-spec-vocab.ttl' 
+			data-oninclude='vocabToSpec' 
+			data-include-sync='true' 
+			data-include-replace='true' 
+			data-include-format='html'></div>		
 		
 	</section>
 
