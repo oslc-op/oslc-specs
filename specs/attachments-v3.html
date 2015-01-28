@@ -585,7 +585,7 @@ Allow: GET,HEAD,OPTIONS
 </section>
 
 <section id="ex_get_container">
-<h2 id="fetchattachmentcontainer">Get an Attachment Container</h2>
+<h2>Get an Attachment Container</h2>
 
 <p><strong>Request</strong></p>
 
@@ -680,10 +680,10 @@ Content-Length: 0
 <section id="implementation_conformance">
     <h2>Implementation Conformance</h2>
 
-    <section id="gen_requirements">
+    <section id="general_conformance">
         <h2>General</h2>
 
-        <section id="gen_ldp_conformance">
+        <section id="ldp_conformance">
             <h2 class="normalFont">Servers that support OSLC attachments MUST
                 be Linked Data Platform 1.0 conformant servers [[!LDP]].</h2>
         </section>
@@ -718,12 +718,6 @@ Content-Length: 0
                 Platform Non-RDF Source (LDP-NR).</h2>
         </section>
 
-        <section id="attachment_get_content_type">
-            <h2 class="normalFont">Successful responses to HTTP GET requests
-                for an attachment URI SHOULD set a <code>Content-Type</code>
-                header describing the attachment's media type.</h2>
-        </section>
-
         <section id="attachment_content_disposition">
             <h2 class="normalFont">Successful responses to HTTP GET requests
                 for an attachment URI SHOULD include a
@@ -744,7 +738,7 @@ Content-Length: 0
                 <code>oslc:AttachmentDescriptor</code>.</h2>
         </section>
 
-        <section id="attachment_update_meta">
+        <section id="attachment_update_descriptor">
             <h2 class="normalFont">When servers update an attachment, they MUST
                 also update any associated
                 <code>oslc:AttachmentDescriptor</code> properties that have
@@ -762,26 +756,26 @@ Content-Length: 0
     <section id="attchment_containers">
         <h2>Attachment Containers</h2>
 
-        <section id="attachment_containers_ldpc">
+        <section id="attachment_container_ldpc">
             <h2 class="normalFont">Each <code>oslc:AttachmentContainer</code>
                 MUST be a conformant Linked Data Platform
                 Container (LDPC).</h2>
         </section>
 
-        <section id="attachment_containers_post_slug">
+        <section id="attachment_container_post_slug">
             <h2 class="normalFont">Clients MAY use the HTTP <code>Slug</code>
                 request header [[RFC5023]] to suggest a name when creating an
                 attachment. If present, the <code>Slug</code> header SHOULD NOT
                 include a file extension.</h2>
         </section>
 
-        <section id="attachment_containers_post_no_slug">
+        <section id="attachment_container_post_no_slug">
             <h2 class="normalFont">Servers MUST NOT reject an HTTP POST request to
                 an <code>oslc:AttachmentContainer</code> solely because it does
                 not contain a <code>Slug</code> header.</h2>
         </section>
 
-        <section id="attachment_containers_slug_failure">
+        <section id="attachment_container_slug_failure">
             <h2 class="normalFont">Servers SHOULD NOT reject an an HTTP POST
                 request to an <code>oslc:AttachmentContainer</code> solely
                 because they cannot use the <code>Slug</code> value unchanged.
@@ -789,7 +783,7 @@ Content-Length: 0
                 needed or assign a different name.</h2>
         </section>
 
-        <section id="attachment_containers_post_link">
+        <section id="attachment_container_post_link">
             <h2 class="normalFont">In response to a successful HTTP POST
                 request that creates an attachment with an associated
                 <code>oslc:AttachmentDescriptor</code>, the server MUST include
@@ -821,7 +815,7 @@ Content-Length: 0
                 name, media type, and size.</h2>
         </section>
 
-        <section id="assoc_descriptors_type">
+        <section id="descriptor_type">
             <h2 class="normalFont">An <code>oslc:AttachmentDescriptor</code>
                 MUST have an explicit <code>rdf:type</code>
                 set to
@@ -830,7 +824,7 @@ Content-Length: 0
                 additional <code>rdf:type</code> values.</h2>
         </section>
 
-        <section id="assoc_descriptors_ldpnr">
+        <section id="descriptor_ldpnr">
             <h2 class="normalFont">An <code>oslc:AttachmentDescriptor</code>
                 MUST be a conforming Linked Data Platform RDF
                 Source (LDPR).</h2>
@@ -852,32 +846,48 @@ Content-Length: 0
                 <a href="http://mediatypes.appspot.com/">PURL media-type
                     resource</a>.</h2>
         </section>
+
+        <section id="descriptor_conform_to_shape">
+            <h2 class="normalFont">An <code>oslc:AttachmentDescriptor</code>
+                MUST conform to the shape defined in
+                <a href="#descriptor_shape"></a>.</h2>
+        </section>
+
+        <section id="put_patch_descriptor">
+            <h2 class="normalFont"><code>oslc:AttachmentDescriptor</code>
+                properties that are not read-only MAY be updated via an HTTP
+                PUT or PATCH operation.</h2>
+        </section>
     </section>
 </section>
 
-<section id="resources">
-<h2>Resources</h2>
+<section id="shapes" class="appendix">
+<h2>Shapes</h2>
 
-<h3>Resource: AttachmentDescriptor</h3>
+<section id="descriptor_shape">
+<h2>Resource: AttachmentDescriptor</h2>
 
-<p>AttachmentDescriptor resource type used to describe the binary resource (or
-    non-LDP-Resource) associated with a particular resource. When a
-    client POSTs an attachment content to a server, the server stores the
-    attachment content and assigns a URI just like any other type of resource
-    creation but it may also create an AttachmentDescriptor resource to contain
-    data about the attachment.</p>
+<p>The <code>oslc:AttachmentDescriptor</code> resource type is used to describe
+    the binary resource (or non-LDP-Resource) associated with a particular
+    resource. When a client POSTs an attachment content to a server, the server
+    stores the attachment content and assigns a URI just like any other type of
+    resource creation but it may also create an
+    <code>oslc:AttachmentDescriptor</code> resource to contain data about the
+    attachment.</p>
 
 <p>There is no restriction on the content of each attachment resource. For
     example, it could be a photo of a kitten, an installation manual, a log
     file, or a source code patch. Since the attachment cannot be expected to
     contain additional client or server supplied data, a typical set of
-    properties for each attachment is included with the AttachmentDescriptor
-    resource itself. Thus, the object of each <code>oslc:attachment</code>
-    statement is the binary attachment.  Issuing an HTTP HEAD or GET operation
-    on that binary attachment resource URL should produce an HTTP response with
-    a header value of <code>Link: rel='meta'</code> to indicate the URL of the
-    oslc:AttachmentDescriptor resource.  The properties for the
-    AttachmentDescriptor resource are indicated in the table below.</p>
+    properties for each attachment is included with the
+    <code>oslc:AttachmentDescriptor</code> resource itself. Thus, the object of
+    each <code>oslc:attachment</code> statement is the binary attachment.
+    Issuing an HTTP HEAD or GET operation on that binary attachment resource
+    URL should produce an HTTP response with a header value of <code>Link:
+        rel='meta'</code> to indicate the URL of the
+    <code>oslc:AttachmentDescriptor</code> resource.  The properties for the
+    <code>oslc:AttachmentDescriptor</code> resource are indicated in the table
+    below.</p>
 
     <div title='Shape for oslc:AttachmentDescriptor'
 		data-include='./AttachmentDescriptor-shape.ttl'
@@ -885,9 +895,7 @@ Content-Length: 0
 		data-include-sync='true'
 		data-include-replace='true'
 		data-include-format='html'></div>
-
-<p>AttachmentDescriptor properties that are not read-only MAY be updated
-    via an HTTP PUT or PATCH operation.</p>
+</section>
 </section>
 
 <section id="vocab" class="appendix">
@@ -912,11 +920,13 @@ Content-Length: 0
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2011-01-28 Update spec structure. (SP)</li>
+    <li>2011-01-23 Update for review feedback from Ian Green. (SP)</li>
     <li>2014-12-10 Update examples. (SP)</li>
-    <li>2014-12-10 Added RDF vocabulary terms. (SP)</li>
-    <li>2014-12-10 Added additional conformance clauses. (SP)</li>
-    <li>2014-11-24 Updated structure to latest changes (SS)</li>
-    <li>2014-10-26 Moved from OSLC CCM to OSLC Core. Changed namespace from
+    <li>2014-12-10 Add RDF vocabulary terms. (SP)</li>
+    <li>2014-12-10 Add additional conformance clauses. (SP)</li>
+    <li>2014-11-24 Update structure to latest changes. (SS)</li>
+    <li>2014-10-26 Move from OSLC CCM to OSLC Core. Change namespace from
         oslc_cm to oslc. (SP)</li>
     <li>2014-09-03 Restructure document with separate normative sections
         listing requirements. (SP)</li>
