@@ -48,11 +48,9 @@
           "OSLCUIPreview20": {
               title:    "OSLC Core 2.0 - UI Preview",
               href:     "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
-              authors:  [
-                  "S. Bosworth"
-                        ],
-                        status:   "Finalized",
-                        publisher:  "http://open-services.net"
+              authors:  [ "S. Bosworth" ],
+              status:   "Finalized",
+              publisher:  "http://open-services.net"
           }
       },
 
@@ -185,7 +183,7 @@ dd {
     are from another server.</p>
 </section>
 
-<section class='informative' id="conceptualmodel">
+<section class='informative' id="working_with_previews">
 <h2>Working with Previews</h2>
 
 <p>To enable previews of a resource, servers supply an associated Compact
@@ -195,7 +193,7 @@ dd {
     representations such as turtle [[turtle]] or JSON-LD [[JSON-LD]]. Here is a
     simple example of a Compact resource:</p>
 
-<pre class="example" id="simpleCompact">
+<pre class="example" id="ex_compact" title="A Compact Resource">
 {
     "title": "Screenshot of the problem",
     "icon": "http://example.com/icons/attachment.jpg",
@@ -204,6 +202,7 @@ dd {
     }
 }
 </pre>
+</div>
 
 <p>To display a link with a label or a preview of a resource, clients request
     its Compact resource. The URI of the Compact resource is found through an
@@ -261,16 +260,12 @@ dd {
     <code>http://open-services.net/ns/core#Compact</code> and the target URI is
     the URI of the Compact resource.</p>
 
-<strong>Example Request:</strong>
-
-<pre class="example" id="linkHeaderRequest">
+<pre class="example" id="ex_head_request" title="Requesting the Resource Headers">
 HEAD /bugs/324/screenshot HTTP/1.1
 Host: example.com
 </pre>
 
-<strong>Example Response:</strong>
-
-<pre class="example" id="linkHeaderResponse">
+<pre class="example" id="ex_compact_link_header" title="Response with a Compact Link">
 HTTP/1.1 200 OK
 Content-Length: 45789
 Content-Type: image/png
@@ -281,17 +276,13 @@ Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-s
 <p>Clients can request the Compact resource using the target URI of the
     <code>Link</code> header.</p>
 
-<strong>Example Request:</strong>
-
-<pre class="example" id="linkHeaderRequest">
+<pre class="example" id="ex_get_compact" title="Requesting the Compact Resource">
 GET /bugs/324/screenshot?compact HTTP/1.1
 Host: example.com
 Accept: application/json
 </pre>
 
-<strong>Example Response:</strong>
-
-<pre class="example" id="linkHeaderResponse">
+<pre class="example" id="ex_compact_response" title="JSON Compact Response">
 HTTP/1.1 200 OK
 Content-Length: 192
 Content-Type: application/json; charset=UTF-8
@@ -314,9 +305,7 @@ Vary: Accept,Accept-Language
     parameter if the request URI is not the same as the newly-created resource
     URI.</p>
 
-<strong>Example Request:</strong>
-
-<pre class="example" id="postLinkHeaderRequest">
+<pre class="example" id="ex_post_resource" title="Creating a Resource">
 POST /bugs HTTP/1.1
 Host: example.com
 Content-Length: 153
@@ -328,9 +317,7 @@ Content-Type: text/turtle
         dcterms:title  "Something went wrong" .
 </pre>
 
-<strong>Example Response:</strong>
-
-<pre class="example" id="postLinkHeaderResponse">
+<pre class="example" id="ex_created_response" title="Creation Response with a Compact Link">
 HTTP/1.1 201 Created
 Content-Length: 0
 Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/core#Compact"; anchor="http://example.com/bugs/478"
@@ -338,8 +325,8 @@ Location: http://example.com/bugs/478
 </pre>
 </section>
 
-<section class="informative" id="prefer"> <h2>Discovering Compact Resources Using the HTTP Prefer
-        Header</h2>
+<section class="informative" id="prefer">
+<h2>Discovering Compact Resources Using the HTTP Prefer Header</h2>
 
 <p>Clients can request a Compact resource by making an HTTP GET request to the
     target resource's URI using the <code>return=representation</code>
@@ -349,9 +336,8 @@ Location: http://example.com/bugs/478
     supporting resource preview must support this method of discovery for
     resources with RDF or JSON representations.</p>
 
-<strong>Example Request:</strong>
-
-<pre class="example" id="preferExample">
+<pre class="example" id="ex_prefer_request"
+        title="Requesting the Compact Resource Using the Prefer Header">
 GET /bugs/324 HTTP/1.1
 Host: example.com
 Accept: application/json
@@ -368,9 +354,8 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferC
     the JSON object describing the Compact resource in
     <a href="#jsonFormat"></a>. The JSON may include other properties.</p>
 
-<strong>Example JSON Response:</strong>
-
-<pre class="example" id="preferenceAppliedExample">
+<pre class="example" id="ex_preference_applied"
+        title="Preference-Applied Response">
 HTTP/1.1 200 OK
 Content-Length: 315
 Content-Type: application/json; charset=UTF-8
@@ -396,9 +381,8 @@ Vary: Accept,Accept-Language,Prefer
     or <code>application/ld+json</code> using the HTTP <code>Accept</code>
     request header, however, rather than <code>application/json</code>.</p>
 
-<strong>Example JSON Response with JSON-LD Context:</strong>
-
-<pre class="example" id="preferenceAppliedJsonLDExample">
+<pre class="example" id="ex_preference_applied_jsonld"
+        title="JSON Response with a JSON-LD Context">
 HTTP/1.1 200 OK
 Content-Length: 788
 Content-Type: application/json; charset=UTF-8
@@ -492,13 +476,15 @@ Vary: Accept,Accept-Language,Prefer
 <p>For example, the following message requests that the preview be resized to
     height of 277 pixels and a width of 400 pixels.</p>
 
-<pre class="example" id="oslcPreviewHeightExample">
+<pre class="example" id="ex_resize_message" title="Dyanmic Resize Message">
     oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 </pre>
 
-<p>Here is a JavaScript example that sends a preview resize request:</p>
+<p>The following JavaScript example sends a resize request to the parent
+    window.</p>
 
-<pre class="example highlight" id="postMessageExample">
+<pre class="example highlight" id="ex_post_message"
+        title="JavaScript postMessage Example">
 var size = {
     'oslc:hintHeight': '277px',
     'oslc:hintWidth': '400px'
@@ -509,7 +495,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
 }
 </pre>
 
-<p>Clients can ignore a Provider's size hints and use other values. For
+<p>Clients can ignore a server's size hints and use other values. For
     instance, a client might choose another size if the preview is too large
     for the window.</p>
 </section>
@@ -566,7 +552,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
                     <li>The target URI is the URI of the Compact resource.</li>
                 </ul>
 
-<pre class="example" id="compact_link_header_ex">
+<pre class="example" id="ex_compact_link_header" title="Example Link Header">
 Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/core#Compact"
 </pre>
             </h2>
@@ -586,7 +572,7 @@ Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-s
                         resource.</li>
                 </ul>
 
-<pre class="example" id="link_header_creation_ex">
+<pre class="example" id="ex_link_header_creation" title="Example Link Header with Anchor">
 Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/core#Compact"; anchor="http://example.com/bugs/478"
 </pre>
             </h2>
@@ -605,7 +591,7 @@ Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net
                         <code>http://open-services.net/ns/core#PreferCompact</code>.</li>
                 </ul>
 
-<pre class="example" id="prefer_compact_ex">
+<pre class="example" id="ex_prefer_compact" title="Example Prefer Header">
 Prefer: return=representation; include="http://open-services.net/ns/core#PreferCompact"
 </pre>
             </h2>
@@ -714,7 +700,7 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferC
                     <li><code>oslc:hintWidth</code>.</li>
                 </ul>
 
-<pre class="example" id="oslcPreviewHeightExample">
+<pre class="example" id="ex_resize_message" title="Example Resize Message">
 oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 </pre>
 
@@ -765,12 +751,12 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 </section>
 
 <section id="jsonFormat" class="appendix">
-<h2 id="JSON_Representation_Format">JSON Representation Format</h2>
+<h2>JSON Representation Format</h2>
 
 <p>A Compact resource JSON representation might look like the following for the
     target resource <code>http://example.com/bugs/324</code>:</p>
 
-<pre class="example" id="compactExample">
+<pre class="example" id="ex_compact_json" title="Compact Resource JSON">
 {
     "title": "324: Need a fix &lt;em&gt;NOW&lt;/em&gt;",
     "shortTitle": "324",
@@ -827,9 +813,10 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 
 <p>Here is an example JSON-LD context for a Compact resource:</p>
 
-<pre class="example" id="jsonldExample"
+<pre class="example" id="ex_jsonld_context"
         data-include="contexts/preview.jsonld"
-        data-include-format="text">
+        data-include-format="text"
+        title="JSON-LD Context for a Compact Resource">
 </pre>
 </p>
 </section>
@@ -853,7 +840,8 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
-    <li>2014-01-28 Create Implementation Conformance section with conformance
+    <li>2015-01-29 Add titles to examples. (SP)</li>
+    <li>2015-01-28 Create Implementation Conformance section with conformance
         clauses. (SP)</li>
     <li>2014-12-09 Generate terms from RDF vocabulary. (SP)</li>
     <li>2014-12-09 Generate shape tables from RDF resource shapes. (SP)</li>
