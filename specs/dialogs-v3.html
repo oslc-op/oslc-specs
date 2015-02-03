@@ -5,8 +5,8 @@
 <script src='https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
 <script class='remove'>
   var respecConfig = {
-      specStatus:           "CS",
-      edDraftURI:           "dialogs.html",
+      specStatus:           "WD",
+      edDraftURI:           "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html",
 
       // the specification's short name, as in http://www.w3.org/TR/short-name/
       shortName:            "OSLC Delegated Dialogs 3.0",
@@ -51,6 +51,8 @@
           }
       ],
 
+      maxTocLevel: 2,
+
       // previousURI: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
       prevED: "http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs",
 
@@ -70,577 +72,482 @@
       // Team Contact.
       wgPatentURI:  "",
       // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
+
+      localBiblio:  {
+          "OSLCPreview30": {
+              title:    "OSLC Resource Preview 3.0",
+              href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html",
+              authors:  [ "S. Padgett", "S. Speicher" ],
+              status:   "Working Draft",
+              publisher:  "https://www.oasis-open.org/"
+          }
+      }
   };
 </script>
 <title>OSLC Delegated Dialogs 3.0</title>
 <style type="text/css">
-table, thead, tr, td {
-padding: 5px;
-border-width: 1px;
-border-spacing: 0px;
-border-style: solid;
-border-collapse: collapse;
-}
+    table, thead, tr, td {
+        padding: 5px;
+        border-width: 1px;
+        border-spacing: 0px;
+        border-style: solid;
+        border-collapse: collapse;
+    }
 
-td {
-min-width: 100px;
-}
+    td {
+        min-width: 100px;
+    }
+
+    .conformance section {
+        margin-top: 1.33em;
+        margin-bottom: 1.33em;
+    }
+
+    .conformance h4 {
+        color: black;
+        font-family: inherit;
+        font-size: 100%;
+        font-weight: normal;
+        display: inline;
+    }
+
+    code {
+        font-weight:bold;
+    }
+
+    .rfc2119 {
+        font-weight:bold;
+    }
+
+    dd {
+        padding-top: 5px;
+        padding-bottom: 10px;
+    }
 </style>
 </head>
 
 <body>
 <section id="abstract">
-  <p>This document outlines a technique that can be used to show a user
-      in-context information when displaying a link to a resource and then show
-      more detailed preview when the user gestures.</p>
+  <p>Delegated dialogs allow one application to embed a creation or selection
+      UI into another using HTML iframe elements and JavaScript code.</p>
 </section>
 
-<section id="sotd">Early Working Draft</section>
+<section id="toc"></section>
+<hr>
 
 <section id="introduction">
-  <h2>Introduction</h2>
+    <h2>Introduction</h2>
 
-  <p>OSLC specifications target specific integration scenarios. In some cases,
-      allowing one product to delegate to a user interface defined in another
-      product is a more effective way to support a use case than an HTTP
-      interface that can only be accessed programmatically. There are two cases
-      where this is especially true:</p>
+    <p>OSLC specifications target specific integration scenarios. In some cases,
+        allowing one product to delegate to a user interface defined in another
+        product is a more effective way to support a use case than an HTTP
+        interface that can only be accessed programmatically. There are two cases
+        where this is especially true:</p>
 
-  <ul>
-      <li><em>Resource creation</em>: when a user of a web application needs
-          to create a new resource in an OSLC Service Provider. In this case the
-          web application asks the service provider to provide a UI for resource
-          creation and the provider notifies the application when the creation has
-          been completed or canceled by the user.</li>
+    <ul>
+        <li><em>Resource creation</em>: when a user of a web application needs
+            to create a new resource in another application. In this case, the
+            web application asks the other server to provide a UI for resource
+            creation, and the server notifies the application when the creation has
+            been completed or canceled by the user.</li>
 
-      <li><em>Resource selection</em>: when a user of a web application and needs
-          to pick a resource managed by a OSLC Service Provider. In this case the
-          web application asks the service provider to provide a UI for resource
-          selection and the provider notifies the application when a resource or
-          resources has been selected or if the selection was canceled.</li>
-  </ul>
+        <li><em>Resource selection</em>: when a user of a web application and
+            needs to pick a resource managed by another application. In this
+            case, the web application asks the other server to provide a UI for
+            resource selection, and the server notifies the application when a
+            resource or resources has been selected or if the selection was
+            canceled.</li>
+    </ul>
 
-  <p>To support these two cases, below we define OSLC Delegated User Interface
-      (UI) Dialogs. Delegated UI Dialogs are a technique where one provider can
-      embed a creation or selection UI into another using a combination of an
-      HTML iframe and JavaScript code. The diagram below illustrates how
-      delegated UI dialogs work in a scenario where Provider A wants to allow a
-      user to select or create a resource managed by Provider B.</p>
+    <p>Delegated dialogs support these two cases.  They allow one application to
+        embed a creation or selection UI into another using HTML iframe elements
+        and JavaScript code. The diagram below illustrates how delegated dialogs
+        work in a scenario where Provider A wants to allow a user to select or
+        create a resource managed by Provider B.</p>
+   <figure>
+      <img src="oslc-delegated.png" />
+      <figcaption>Delegated UI Dialogs</figcaption>
+   </figure>
 
-  <figure>
-     <img src="oslc-delegated.png" />
-     <figcaption>Delegated UI Dialogs</figcaption>
-  </figure>
-
+   <div class="note">Diagram is out of date.</dev>
 </section>
+
+<section id="sotd"></section>
+
+<section id='conformance'></section>
 
 <section class="glossary" id="terminology">
-  <h2>Terminology</h2>
+    <h2>Terminology</h2>
 
-  <p>The following terms are used in discussions of Delegated UI Dialogs:</p>
+    <p>This document uses terms as defined below.</p>
 
-  <dl>
-    <dt>UI Consumer</dt>
-    <dd>A web application that is embedding a Delegated UI Dialog from an OSLC
-        Service Provider. This consumer could be a web page, with the Delegated
-        UI Dialog loaded into an iframe or a native application, e.g. an IDE
-        like Eclipse, that is embedding a web browser component.</dd>
+    <dl>
+        <dt class="loc-heading">Delegated Dialog</dt>
+        <dd>A web page for creating or selecting resources to be embedded
+            inside another application.</dd>
 
-    <dt>UI Provider</dt>
-    <dd>An OSLC Service provider that offers one or more Delegated UI Dialogs.
-        These dialogs will be specified in the provider's Service Provider
-        resource.</dd>
-  </dl>
+        <dt class="loc-heading">Prefill</dt>
+        <dd>A method of populating initial field values in a creation
+            dialog.</dd>
+
+        <dt class="loc-heading">Client</dt>
+        <dd>An application that embeds a delegated dialog from another
+            application. A client could be a web page or a native application
+            that is embedding a web browser component.</dd>
+
+        <dt class="loc-heading">Server</dt>
+        <dd>An application that offers one or more delegated dialogs.</dd>
+    </dl>
 </section>
 
-<section class="informative" id="protocols">
-  <h2>Post Message and Window Name protocols</h2>
+<section class="informative" id="discovery">
+    <h2>Discovering Dialogs</h2>
 
-  <p>To support the widest range of web browsers, we define two different
-      protocols for communicating the information about the user's action from
-      the UI Provider and back to the UI Consumer. These are the Post Message
-      and Window Name protocols described below.</p>
-
-  <p>In both the Post Message and Window Name protocols, the way that a UI
-      Consumer includes a Delegated UI Dialog in an HTML page is to create an
-      <code>iframe</code> and specify the <code>src</code> as the URI of the
-      Delegated UI Dialog to be included. The UI Consumer indicates the
-      protocol to be used by appending one of the two fragment identifiers
-      below to the URI:</p>
-
-  <ul>
-    <li><code>#oslc-core-postMessage-1.0</code> - Indicates that the Post
-        Message protocol is to be used</li>
-
-    <li><code>#oslc-core-windowName-1.0</code> - Indicates that the Window Name
-        protocol is to be used</li>
-  </ul>
-
-  <p>The JavaScript code example below shows now a UI Provider can determine
-      which protocol is in use:</p>
-
-<pre class="example" id="determineProtocol">
-if (window.location.hash == '#oslc-core-windowName-1.0') {
-   // Window Name protocol in use
-} else if (window.location.hash == '#oslc-core-postMessage-1.0') {
-   // Post Message protocol in use
-}
-</pre>
+    See <a href="https://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/discovery.html?sc=1#dialogs">Discovery 3.0</a>. (To be moved into this document.)</div>
 </section>
 
-<section class="informative" id="creatingiframes">
-  <h2>iframe Creation Considerations</h2>
+<section class="informative" id="examples">
+<h2>Using Dialogs</h2>
 
-  <p>Regardless of the protocol in effect, it is recommended that UI Consumers
-      follow the below iframe creation guidelines to provide a more seamless
-      user experience:</p>
+  <p>Servers can offer two kinds of dialogs, selection dialogs and creation
+      dialogs. Clients use selection dialogs when they want a user to pick a
+      resource from another application. Clients use creation dialogs when they
+      want a user to create a new resource on another server.</p>
 
-  <ul>
-    <li>Embed the <code>iframe</code> within a <code>div</code> element, with
-        height and width set based on the length values specified in
-        the Service Resource that declares the Delegated UI Dialog.</li>
+    <p>A client shows a dialog in an HTML page by creating an
+        <code>iframe</code> element and setting the <code>src</code> attribute
+        to the URI of the dialog to be included. It is recommended that clients
+        follow the below iframe creation guidelines to provide a more seamless
+        user experience:</p>
 
-    <li>Set the <code>iframe</code> border size to '0'</li>
+    <ul>
+        <li>Append the <code>iframe</code> to a <code>div</code> element with
+            height and width set to the size hints for the dialog.</li>
 
-    <li>Set the <code>iframe</code> scrolling to 'auto'</li>
-  </ul>
-</section>
+        <li>Set the <code>iframe</code> border size to <code>0</code></li>
 
-<section id="postMessage">
-  <h2>Post Message Protocol</h2>
+        <li>Set the <code>iframe</code> scrolling to <code>auto</code></li>
+    </ul>
 
-  <p>The Post Message protocol relies on the HTML5 function
-      <code>window.postMessage()</code> [[webmessaging]], available in the
-      latest or pending releases of most browsers. UI Consumers
-      <strong>MUST</strong> anticipate other, unrelated uses of
-      <code>postMessage()</code> and ignore messages not conforming to this
-      protocol.</p>
-
-  <p>Typically, the embedded page will be loaded in a window inside another
-      window, such as a iframe inside some surrounding web page. In such cases,
-      <code>postMessage()</code> <strong>MUST</strong> be called on that parent
-      window. But in a native application, an outer page is not needed and the
+  <p>Dialogs send results back to the client using the HTML5 function
+      <code>window.postMessage</code> [[webmessaging]]. Typically, the embedded
+      page will be loaded in an <code>iframe</code> inside some surrounding web
+      page. In such cases, <code>postMessage</code> is called on that parent
+      window. In a native application, an outer page is not needed and the
       embedded page may be shown directly in the browser's "root" window. When
-      the embedded page has no parent window, it must call
-      <code>postMessage()</code> on its own window.</p>
+      the embedded page has no parent window, it calls <code>postMessage</code>
+      on its own window.</p>
 
-  <p>Here are the responsibilities of the UI Consumer and UI Provider in Post Message
-      protocol.</p>
-
-  <h3>The UI Consumer's responsibilities</h3>
+  <section id="client_responsibilities">
+  <h3>The Client's Responsibilities</h3>
 
   <ol>
-    <li>Include the Delegated UI Dialog via iframe (i.e., setting iframe src to
-        the URI of the Delegated UI Dialog) or via an embedded browser. Append
-        the fragment identifier <code>#oslc-core-postMessage-1.0</code> to the
-        URL to indicate that Post Message is the desired protocol.</li>
+      <li>Include the dialog via an <code>iframe</code>, setting
+          <code>iframe</code> <code>src</code> to the URI of the dialog, or via
+          an embedded browser.</li>
 
-    <li>Add a <code>'message'</code> listener to the outer window to receive
-        messages from the Delegated UI Dialog.</li>
+    <li>Add a <code>message</code> listener to the outer window to receive
+        messages from the dialog.</li>
 
-    <li>Listen for window <code>'message'</code> events, ignoring events from
-        other sources or not prefixed with <code>"oslc-response:"</code></li>
+    <li>Listen for window <code>message</code> events, ignoring unrecognized
+        events from other sources or those not prefixed with
+        <code>oslc-response:</code></li>
 
-    <li>When message from Delegated UI Dialog indicates user completed action,
-        free resources and handle action.</li>
+    <li>When message from the dialog indicates a completed action, free
+        resources and handle the action.</li>
   </ol>
-
-  <h3>The UI Provider's responsibilities</h3>
+</section>
+<section id="server_responsibilities">
+  <h3>The Server's Responsibilities</h3>
 
   <ol>
-    <li>Provide Delegated UI Dialog, an HTML page that provides a user
-        interface for resource creation or selection.</li>
+    <li>Provide the dialog, an HTML page for resource creation or
+        selection.</li>
 
     <li>Allow the user to perform resource creation or selection.</li>
 
-    <li>Once the user has created, selected or canceled, send notification
-        using <code>postMessage()</code> to the page's parent window, passed in
+    <li>Once the user has created, selected, or canceled, send notification
+        using <code>postMessage</code> to the page's parent window, passed in
         <code>event.data</code> string, that is prefixed with
-        <code>"oslc-response:"</code> See below for the two possible response
-        formats, one for resource selection and one for creation.</li>
+        <code>"oslc-response:"</code>.</li>
 
     <li>If the page is not parented, then the message is posted to the page's
-        own window.  The page <strong>MUST</strong> ignore this message to
-        itself.</li>
+        own window. The page must ignore this message to itself.</li>
   </ol>
 
-  <p>The below JavaScript code example shows how a UI Provider page would send
-      a response using <code>postMessage()</code> and taking into account the
-      fact that some pages are not parented.</p>
+  <p>The following JavaScript code example shows how a dialog would send
+      a response using <code>postMessage</code>, taking into account
+      pages that are not parented.</p>
 
-<pre class="example" id="respondWithPostMessage">
-function respondWithPostMessage(/*string*/ response) {
+<pre class="example highlight" id="ex_post_message">
+function respondWithPostMessage(response) {
     (window.parent || window).postMessage("oslc-response:" + response, "*");
 }
 </pre>
-
 </section>
 
+<section class="informative" id="prefill">
+  <h2>Prefilling Creation Dialogs</h2>
 
-<section id="windowName">
-  <h2>Window Name Protocol</h2>
-
-  <p>The Window Name protocol uses the HTML DOM <code>window.name</code>
-      property to communicate the response (reference: Window Object) from the
-      UI Provider to the UI Consumer. This special property of window maintains
-      its value even as the window navigates to a different origin, but the
-      ifame's <code>window.name</code> can only be read when the accessing
-      window shares the same origin. For this to happen, when the embedded page
-      is finished it must set the <code>window.name</code> and also change the
-      <code>window.location</code> to a page with the same origin as the outer
-      frame. This not only allows the UI Consumer to access the result, but
-      also fires an event telling the UI Consumer when to do so. This return
-      location is passed to the embedded page using the
-      <code>window.name</code> property.</p>
-
-  <p>Here are the responsibilities of the UI Consumer and UI Provider in Window Name
-  protocol.</p>
-
-  <h3>The UI Consumer's responsibilities</h3>
-
-  <ol>
-    <li>Include the Delegated UI Dialog via iframe (i.e., setting iframe src to
-        the URI of the Delegated UI Dialog) or via an embedded browser. Append
-        the fragment identifier <code>#oslc-core-windowName-1.0</code> to the
-        URL to indicate that Window Name is the desired protocol.</li>
-
-    <li>On the iframe, set the frame's <code>window.name</code> to
-    indicate the Return URL.</li>
-
-    <li>On the iframe, Listen for <code>onload</code> events</li>
-
-    <li>When an <code>onload</code> event occurs and the frame's location is
-        equal to the Return URL then read the response from the
-        window.name.</li>
-  </ol>
-
-  <p>The following JavaScript code illustrates the protocol. The code for the
-      <code>destroyFrame()</code>, <code>handleMessage()</code> and
-      <code>displayFrame()</code> methods are not provided in this example, but
-      should be obvious to a JavaScript developer. The UI Consumer must provide
-      these methods.</p>
-
-<pre class="example" id="consumeWindowName">
-var pickerURL = ... // URL of Provider's Delegated UI Dialog
-var returnURL = ... // Consumer's Return URL
-
-var frame = document.createElement('iframe');
-
-function windowNameProtocol() {
-
-    // Step #1: create iframe with fragment to indicate protocol
-    // Step #2: set the iframe's window.name to indicate the Return URL
-    if (ie &gt; 0) {
-        frame = document.createElement('&lt;iframe name=\'' + returnURL + '\'&gt;');
-    } else {
-        frame = document.createElement('iframe');
-        frame.name = returnURL;
-    }
-    frame.src = pickerURL + '#oslc-core-windowName-1.0';
-    frame.width = 450;
-    frame.height = 300;
-
-    displayFrame(frame);
-
-    // Step #3: listen for onload events on the iframe
-    var ie = window.navigator.userAgent.indexOf("MSIE");
-    if (ie &gt; 0) {
-        frame.attachEvent("onLoad", onFrameLoaded);
-    } else {
-        frame.onload = onFrameLoaded;
-    }
-}
-
-function onFrameLoaded() {
-    try { // May throw an exception if the frame's location is still a different origin
-
-        // Step #4: when frame's location is equal to the Return URL
-        // then read response and return.
-        if (frame.contentWindow.location == returnURL) {
-            var message = frame.contentWindow.name;
-            destroyFrame(frame);
-            handleMessage(message);
-        }
-
-    } catch (e) {
-        // ignore: access exception when trying to access window name
-    }
-}
-</pre>
-
-  <h3>The UI Provider's responsibilities</h3>
-
-  <p>As soon as the embedded page has loaded, perform the following:</p>
-
-  <ol>
-    <li>Provide Delegated UI Dialog, an HTML page that provides a user
-        interface for resource creation or selection.</li>
-
-    <li>Read the Return URL from the window.name variable</li>
-
-    <li>Allow user to perform resource creation or selection.</li>
-
-    <li>Once user has created, selected or canceled, communicate the user's
-        response by setting the window.name variable to the response. See below
-        for the two possible response formats, one for resource selection and
-        one for creation.</li>
-
-    <li>Indicate that user has responded by setting the window.location to the
-        Return URL specified by the UI Consumer.</li>
-  </ol>
-
-  <p>The JavaScript example below shows a UI Provider notifying its UI Consumer
-      after a user has responded.</p>
-
-<pre class="example" id="respondWithWindowName">
-function respondWithWindowName(/*string*/ response) {
-    // Step #2: read the return URL
-    var returnURL = window.name;
-
-    // Step #4: send the response via the window.name variable
-    window.name = response;
-
-    // Step #5: indicate that user has responded
-    window.location = returnURL;
-}
-</pre>
-
-  <h3>Resource Selection</h3>
-
-  <p>Resource Selection can be used when a UI Consumer wants to allow a user to
-      pick a resource that is managed by an OSLC Service. Using either the Post
-      Message or Window Name protocols defined above, the UI Consumer uses an
-      iframe to embed a selection dialog that is provided by the service, then
-      awaits notification that the user has selected a resource.</p>
-
-  <p>To enable Resource Selection, an OSLC Service <em>MUST</em> provide in its
-      Service Resource a value for the <code>oslc:selectionDialog</code>
-      property. The property value will include a <code>oslc:dialogURI</code>
-      property that indicates the URI of the selection dialog.</p>
-
-  <p>Regardless of how the response from the UI Provider is conveyed to the UI
-      Consumer, the response <em>SHOULD</em> be formatted as follows:</p>
-
-  <ul>
-    <li><em>Name:</em> <code>results</code></li>
-
-    <li>
-      <p><em>URI:</em>
-          <a href= "http://open-services.net/ns/core#results">http://open-services.net/ns/core#results</a></p>
-    </li>
-  </ul>
-
-  <table>
-      <thead>
-          <tr>
-              <th>JSON Property Name</th>
-              <th>Type</th>
-              <th>Occurs</th>
-              <th>Description</th>
-          </tr>
-      </thead>
-
-      <tbody>
-          <tr>
-              <td><code>rdf:resource</code></td>
-              <td>String</td>
-              <td>zero-or-one</td>
-              <td>URI of the resource selected or created</td>
-          </tr>
-          <tr>
-              <td><code>oslc:label</code></td>
-              <td>String</td>
-              <td>zero-or-one</td>
-              <td>Short label describing the resource selected</td>
-          </tr>
-      </tbody>
-  </table>
-
-  <p>An empty array indicates that the resource selector has been canceled.</p>
-
-  <p>An example Resource Selection response:</p>
-
-<pre class="example" id="oslcResultsSelection">
-{
-    "oslc:results": [
-        {
-            "oslc:label": "Bug 123: Server crash",
-            "rdf:resource": "http://example.com/bug123"
-        },
-        {
-            "oslc:label": "Bug 456: Client hangs on startup",
-            "rdf:resource": "http://example.com/bug456"
-        }
-    ]
-}
-</pre>
-
-  <h3>Resource Creation</h3>
-
-  <p>Resource Creation can be used when a UI Consumer wants to allow a user to
-      create a new resource that is managed by an OSLC Service. Using either
-      the Post Message or Window Name protocols defined above, the UI Consumer
-      uses an iframe to embed a creation dialog that is provided by the
-      service, then awaits notification that the user has created a
-      resource.</p>
-
-  <p>To enable Resource Creation, an OSLC Service <em>MUST</em> provide in its
-      Service Resource a value for the <code>oslc:creationDialog</code>
-      property. The property value will include a <code>oslc:dialogURI</code>
-      property that indicates the URI of the creation dialog.</p>
-
-  <p>Regardless of how the response from the UI Provider is conveyed to the UI
-      Consumer, the response <em>SHOULD</em> be formatted as defined by
-      <code>oslc:results</code></p>
-
-<pre class="example" id="oslcResultsCreation">
-{
-    "oslc:results": [
-        {
-            "oslc:label": "Bug 123: Server crash",
-            "rdf:resource": "http://example.com/bug123"
-        },
-        {
-            "oslc:label": "Bug 456: Client hangs on startup",
-            "rdf:resource": "http://example.com/bug456"
-        }
-    ]
-}
-</pre>
-
-  <h3>Prefilling Creation Dialogs</h3>
-
-  <p>Service providers <em>MAY</em> support receiving a POST request whose
-      content body is a resource representation to the Creation Dialog URI to
-      retrieve a URI that represents the embedded page to be used. Service
-      providers <em>MUST</em> respond with a response status of 201 (Created)
-      with the response header <code>Location</code> whose value is the URI to
-      request the newly created form. After some elapsed time, service
-      providers <em>MAY</em> respond with a 404 (Not Found), 410 (Gone) or 3xx
+  <p>Servers may support receiving a POST request whose content body is a
+      resource representation to the Creation Dialog URI to retrieve a URI that
+      represents the embedded page to be used. Service providers respond with
+      status 201 (Created) and response header <code>Location</code> whose
+      value is the URI to request the newly created form. After some elapsed
+      time, servers can respond with a 404 (Not Found), 410 (Gone) or 3xx
       (Redirect) to an HTTP GET request for these URIs.</p>
+</section>
+</section>
 
-  <h3>Dialog Resizing</h3>
+<!-- Conformance clauses have empty <h2></h2> tags for ReSpec to generate
+     section numbers. -->
+<section id="implementation_conformance" class="conformance">
+    <h2>Implementation Conformance</h2>
 
-  <p>Delegated UI dialogs receive their initial size (dimensions) based on the
-      <code>oslc:hintWidth</code> and <code>oslc:hintHeight</code> properties
-      described in <code>oslc:Dialog</code> resource description. There are
-      cases where UI Provider recognizes that the initial size of a Delegated
-      UI dialog is not sufficient and needs a way to ask the UI Consumer to
-      resize the dialog. In this section we specify a mechanism that enables
-      dialog resizing, but only when Post Message Protocol is used.</p>
+    <section id="discovery_conformance">
+        <h2>Discovery</h2>
 
-  <p>Consumers <em>MAY</em> honor a dialog's ability to dynamically resize.
-      Those that do (a) <em>MUST</em> use Post Message Protocol, (b)
-      <em>MUST</em> use the <code>oslc:resize</code> value instead of any
-      static width or height, and and (c) <em>MUST</em> register a handler to
-      receive dialog resize messages sent by the dialog Provider and adjust the
-      size of the dialog accordingly.</p>
+        TBD
+    </section>
 
-  <p>Since a dialog is allowed to resize itself any number of times, the
-      Consumer <em>MUST</em> keep a handler registered and react appropriately
-      each time it received a dialog resize message from that dialog.</p>
+    <section id="display_conformance">
+        <h2>Display</h2>
 
-  <p>UI Providers <em>SHOULD NOT</em> request sizes larger than 95% of the
-      current viewport [[CSS2]], to avoid covering the entire viewport with the
-      dialog.</p>
+        <section id="postmessage_parent_window">
+            <h2></h2>
 
-  <p>Here are the responsibilities of the UI Consumer and UI Provider in dialog
-      resizing.</p>
+            When presenting a dialog inside another web application, the client
+            MUST use an <code>iframe</code> element and set the its
+            <code>src</code> attribute to the URI of the dialog.
+        </section>
+    </section>
 
-  <h3>The UI Consumer's responsibilities</h3>
+    <section id="messaging_conformance">
+        <h2>Messaging</h2>
 
-  <ol>
-    <li>Include the Delegated UI Dialog via iframe (i.e setting iframe src to
-        the URI of the Delegated UI Dialog) or via an embedded browser.</li>
+        <section id="postmessage_parent_window">
+            <h2></h2>
 
-    <li>Add a <code>'message'</code> listener to the outer window to receive
-        messages from the Delegated UI Dialog.</li>
+            Dialogs MUST send their results to clients using the
+            <code>window.postMessage</code> method [[!webmessaging]].
+        </section>
+        <section id="message_contents">
+            <h2></h2>
 
-    <li>Listen for window <code>'message'</code> events, ignoring events from
-        other sources or not prefixed with <code>"oslc-resize:"</code>.
-        Multiple resize <code>'message'</code> events may be sent while the
-        dialog is visible.</li>
+            Messages describing dialog results MUST start with the characters
+            <code>oslc-response:</code> followed by JSON as specified in
+            <a href="#results_json"></a>.
 
-    <li>When message from Delegated UI Dialog indicates user completed action,
-        free resources and handle action.</li>
-  </ol>
+<pre class="example" id="ex_results_message">
+    oslc-response:{"oslc:results": [{ "oslc:label": "Bug 123: Server crash", "rdf:resource": "http://example.com/bug123" }]}
+</pre>
+        </section>
+        <section id="results_other_props">
+            <h2></h2>
 
-  <p>The UI Provider's responsibilities</p>
+            Servers MAY include additional server-specific properties in the
+            results JSON.
+        </section>
+        <section id="postmessage_canceled">
+            <h2></h2>
 
-  <ol>
-    <li>Provide Delegated UI Dialog, an HTML page that provides a user
-        interface for resource creation or selection.</li>
+            If the user cancels a dialog, the dialog MUST still send a message
+            with an empty <code>oslc:results</code> array.
 
-    <li>Allow the user to perform resource creation or selection.</li>
+<pre class="example" id="ex_results_message">
+    oslc-response:{"oslc:results": []}
+</pre>
+        </section>
+        <section id="postmessage_parent_window">
+            <h2></h2>
 
-    <li>Once the Provider needs to resize the dialog, send notification using
-        <code>postMessage()</code> to the page's parent window, passed in
-        <code>event.data</code> string, that is prefixed with
-        <code>"oslc-resize:"</code>.  Multiple resize messages may be sent. See
-        below for the response format.</li>
+            Calls to <code>postMessage</code> from within a dialog MUST be made
+            on <code>window.parent</code> unless <code>null</code> or
+            <code>undefined</code>.
+        </section>
+        <section id="postmessage_own_window">
+            <h2></h2>
 
-    <li>If the page is not parented, then the message is posted to the page's
-        own window.  The page must ignore this message to itself.</li>
-  </ol>
+            If <code>window.parent</code> is <code>null</code> or
+            <code>undefined</code>, calls to <code>postMessage</code> MUST be
+            made on the dialog's own window, allowing rich client applications
+            to handle the event. The page MUST ignore this <code>message</code>
+            to itself.
 
-  <p>The below JavaScript code example shows how a UI Provider page would send
-      a response using <code>postMessage()</code> and taking into account the
-      fact that some pages are not parented.</p>
-
-<pre class="example" id="requestResize">
-function respondWithPostMessage(/*string*/ resize_response) {
-    (window.parent || window).postMessage("oslc-resize:" + resize_response, "*");
+<pre class="example highlight" id="ex_postMessage">
+function respondWithPostMessage(response) {
+    (window.parent || window).postMessage("oslc-response:" + response, "*");
 }
 </pre>
+        </section>
+        <section id="message_origin">
+            <h2></h2>
 
-  <p>Regardless of how the response from the UI Provider is conveyed to the UI
-      Consumer, the response <em>SHOULD</em> be formatted as follows:</p>
+            Clients handling <code>message</code> events from dialogs MUST
+            verify that the event <code>origin</code> is the same as the
+            dialog.
 
-  <table>
-      <thead>
-          <tr>
-              <th>JSON Property Name</th>
-              <th>Type</th>
-              <th>Occurs</th>
-              <th>Description</th>
-          </tr>
-      </thead>
+            <p>For example, if the dialog is from example.com,
 
-      <tbody>
-          <tr>
-              <td><code>oslc:hintHeight</code></td>
-              <td>String</td>
-              <td>zero-or-one</td>
-              <td>Preferred height of the dialog. Values <strong>MUST</strong>
-                  be expressed using Cascading Style Sheet Level 2 length units
-                  [[!CSS2]].</td>
-          </tr>
-          <tr>
-              <td><code>oslc:hintWidth</code></td>
-              <td>String</td>
-              <td>zero-or-one</td>
-              <td>Preferred width of the dialog. Values <strong>MUST</strong>
-                  be expressed using Cascading Style Sheet Level 2
-                  length units [[!CSS2]].</td>
-          </tr>
-      </tbody>
-  </table>
+<pre class="example highlight" id="ex_verify_origin">
+function handleMessage(event) {
+    if (event.origin !== "http://example.com") {
+        return;
+    }
 
-  <p>An example Dialog Resize response with new height of '600px' and a width
-      of '400px':</p>
+    // Otherwise, process message...
+}
+</pre></p>
+        </section>
+        <section id="resize">
+            <h2></h2>
 
-<pre class="example" id="oslcResizeMessage">
+            Dialogs MAY support dynamic resizing as specified in
+            [[!OSLCPreview30]].
+        </section>
+        <section id="ignore_unrecognized_messages">
+            <h2></h2>
+
+            Clients MUST anticipate other, unrelated uses of
+            <code>postMessage</code> and ignore unrecognized messages not
+            conforming to the protocol.
+        </section>
+    </section>
+    <section id="prefill_conformance">
+        <h2>Prefill</h2>
+        <section id="allow_prefill">
+            <h2></h2>
+
+            Servers MAY allow clients to prefill creation dialogs by sending a
+            POST request to the dialog URI where the entity body is a
+            resource representation describing the initial values.
+        </section>
+        <section id="dialog_options">
+            <h2></h2>
+
+            Servers that support prefill SHOULD include the value
+            <code>POST</code> in the set of <code>Allow</code> header values
+            returned in response to HTTP OPTIONS requests for the dialog URI.
+
+<pre class="example" id="ex_verify_origin">
+Allow: GET,POST,HEAD,OPTIONS
+</pre>
+        </section>
+        <section id="partial_prefill">
+            <h2></h2>
+
+            Servers MUST NOT reject dialog prefill requests solely because they
+            are missing required fields for the resource. Users can fill in the
+            missing values in the dialog.
+        </section>
+        <section id="prefill_response">
+            <h2></h2>
+
+            On successful prefill requests, servers MUST respond with status
+            code 201 (Created) and a <code>Location</code> header whose value
+            is the URI of the prefilled dialog.
+        </section>
+        <section id="prefill_response">
+            <h2></h2>
+
+            After some elapsed time, servers MAY respond with a 404 (Not
+            Found), 410 (Gone), or 3xx (Redirect) to an HTTP GET request for
+            a prefilled dialog URI.
+        </section>
+    </section>
+</section>
+
+<section class="appendix" id="results_json">
+    <h2>Dialog Results JSON</h2>
+    <p>Dialog results are represented as JSON [[!RFC4627]], prefixed with the
+        characters <code>oslc-response:</code> when sent as a message in calls
+        to <code>postMessage</code>. The top-level JSON object has an
+        <code>oslc:results</code> property.</p>
+
+    <table style="width: 100%">
+        <colgroup>
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 46%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th>Occurs</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>oslc:results</code></td>
+                <td>JSON Array</td>
+                <td>Exactly-one</td>
+                <td>An array of zero or more results, each result a JSON
+                    object. An empty array means the user canceled the dialog
+                    or didn't select a resource.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Each result is a JSON object with the following properties.</p>
+
+    <table style="width: 100%">
+        <colgroup>
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 46%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th>Occurs</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>rdf:resource</code></td>
+                <td>String</td>
+                <td>Exactly-one</td>
+                <td>URI of the resource selected or created</td>
+            </tr>
+            <tr>
+                <td><code>oslc:label</code></td>
+                <td>String</td>
+                <td>Zero-or-one</td>
+                <td>Short label describing the resource selected</td>
+            </tr>
+        </tbody>
+    </table>
+
+<pre class="example highlight" id="ex_creation_message">
 {
-    "oslc:hintHeight": "600px",
-    "oslc:hintWidth": "400px"
+    "oslc:results": [
+        {
+            "oslc:label": "Bug 123: Server crash",
+            "rdf:resource": "http://example.com/bug123"
+        },
+        {
+            "oslc:label": "Bug 456: Client hangs on startup",
+            "rdf:resource": "http://example.com/bug456"
+        }
+    ]
 }
 </pre>
+</section>
 
 <section class="appendix informative" id="history">
 <h2>Change History</h2>
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2015-02-03 Move conformance clauses to numbered sections. Remove
+        windowName protocol. Refer to dynamic resizing in Resource Preview 3.0.
+        (SP)</li>
     <li>2014-12-04 Shorten spec title. (SP)</li>
     <li>2014-08-28 Add Change History and References. (SP)</li>
     <li>2014-08-27 Initial draft, contributed from open-services.net. (SP)</li>
