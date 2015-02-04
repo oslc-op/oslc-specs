@@ -346,7 +346,7 @@ Allow: GET,POST,HEAD,OPTIONS
 We might discuss resource shapes or Link rel="describedby"
 </div>
 
-<pre class="example" id="ex_prefill_request">
+<pre class="example" title="Prefilling a Bug Creation Dialog" id="ex_prefill_request">
 POST /bugs/dialog HTTP/1.1
 Host: example.com
 Content-Type: text/turtle
@@ -364,13 +364,15 @@ Content-Length: nnn
 The server's response contains a <code>Location</code> header with the
 prefilled dialog's URI. The client uses this as the <code>iframe src</code>.
 
-<pre class="example" id="ex_prefill_response">
+<pre class="example" title="The Server Responds with the Dialog Location" id="ex_prefill_response">
 HTTP/1.1 201 Created
 Location: http://example.com/bugs/dialog/2zFy45
 </pre>
 
-<p>The dialog URI is often temporary. After a reasonable time, the server might
-    respond with 404 Not Found or 410 Gone.</p>
+<p>The client then uses the dialog URI from the <code>Location</code> like any
+    other dialog. The dialog URI from a prefill request is often temporary.
+    After a reasonable time, the server might respond with 404 Not Found or 410
+    Gone.</p>
 
 </section>
 </section>
@@ -404,8 +406,22 @@ Location: http://example.com/bugs/dialog/2zFy45
         <section id="postmessage_parent_window">
             <h2></h2>
 
-            Dialogs MUST send their results to clients using the
-            <code>window.postMessage</code> method [[!webmessaging]].
+            Servers MUST support the <code>window.postMessage</code> method
+            [[!webmessaging]] for dialog responses.
+        </section>
+        <section id="other_protocols">
+            <h2></h2>
+
+            Servers MAY support other protocols for dialog responses, not
+            specified in this document, which clients request by appending a
+            fragment identifier describing the protocol to the end of the
+            dialog URI.
+        </section>
+        <section id="no_fragment_identifier">
+            <h2></h2>
+
+            Servers MUST use <code>postMessage</code> for dialog responses if
+            a client has not added a fragment identifier to the dialog URI.
         </section>
         <section id="message_contents">
             <h2></h2>
@@ -536,10 +552,12 @@ Allow: GET,POST,HEAD,OPTIONS
 
 <section class="appendix" id="results_json">
     <h2>Dialog Results JSON</h2>
-    <p>Dialog results are represented as JSON [[!RFC4627]], prefixed with the
-        characters <code>oslc-response:</code> when sent as a message in calls
-        to <code>postMessage</code>. The top-level JSON object has an
-        <code>oslc:results</code> property.</p>
+    <p>Dialog results are represented as JSON [[!RFC4627]]. When sent as a
+        message in calls to <code>postMessage</code>, the results are prefixed
+        with the characters <code>oslc-response:</code>.</p>
+
+    <p> The top-level JSON object has an <code>oslc:results</code>
+        property.</p>
 
     <table style="width: 100%">
         <colgroup>
@@ -561,9 +579,9 @@ Allow: GET,POST,HEAD,OPTIONS
                 <td><code>oslc:results</code></td>
                 <td>JSON Array</td>
                 <td>Exactly-one</td>
-                <td>An array of zero or more results, each result a JSON
-                    object. An empty array means the user canceled the dialog
-                    or didn't select a resource.</td>
+                <td>An array of results, each result a JSON object. An empty
+                    array means the user canceled the dialog or didn't select a
+                    resource.</td>
             </tr>
         </tbody>
     </table>
