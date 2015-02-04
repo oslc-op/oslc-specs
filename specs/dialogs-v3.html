@@ -534,7 +534,67 @@ Location: http://example.com/dialogs/createBug/form/2zFy45
     <section id="discovery_conformance">
         <h2>Discovery</h2>
 
-        TBD
+        <section id="selection_dialog_link">
+            <h2></h2>
+
+            In responses to HTTP requests for an LDP container has a selection dialog,
+            server MUST include a <code>Link</code> header [[!RFC5988]] where
+
+            <ul>
+                <li>The context URI is the effective request URI,</li>
+                <li>The link relation is
+                    <code>http://open-services.net/ns/core#selectionDialog</code>, and</li>
+                <li>The target URI is the URI of the Dialog resource.</li>
+            </ul>
+
+<pre class="example">
+Link: &lt;http://example.com/dialogs/selectBug&gt;; rel="http://open-services.net/ns/core#selectionDialog"
+</pre>
+        </section>
+
+        <section id="creation_dialog_link">
+            <h2></h2>
+
+            In responses to HTTP requests for an LDP container has a creation dialog,
+            server MUST include a <code>Link</code> header [[!RFC5988]] where
+
+            <ul>
+                <li>The context URI is the effective request URI,</li>
+                <li>The link relation is
+                    <code>http://open-services.net/ns/core#creationDialog</code>, and</li>
+                <li>The target URI is the URI of the Dialog resource.</li>
+            </ul>
+
+<pre class="example">
+Link: &lt;http://example.com/dialogs/createBug&gt;; rel="http://open-services.net/ns/core#creationDialog"
+</pre>
+        </section>
+
+        <section id="prefer_dialog">
+            <h2></h2>
+
+            Clients MAY request that the Dialog
+                resources for an LDP container are returned inline using
+                the <code>Prefer</code> request header [[!RFC7240]] and
+                <ul>
+                    <li>Preference <code>return</code>, value
+                        <code>representation</code></li>
+                    <li>Parameter <code>include</code> [[!LDP]], value
+                        <code>http://open-services.net/ns/core#PreferDialog</code>.</li>
+                </ul>
+
+<pre class="example" id="ex_prefer_compact" title="Example Prefer Header">
+Prefer: return=representation; include="http://open-services.net/ns/core#PreferDialog"
+</pre>
+        </section>
+
+        <section id="honor_prefer">
+            <h2></h2>
+
+            Servers MUST honor a client's request to inline Dialog resources if
+            the target resource has any Dialog resources and the request is
+            successful.
+        </section>
     </section>
 
     <section id="display_conformance">
@@ -798,6 +858,7 @@ Allow: GET,POST,HEAD,OPTIONS
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2015-02-04 Add discovery examples. (SP)
     <li>2015-02-03 Move conformance clauses to numbered sections. Remove
         windowName protocol. Refer to dynamic resizing in Resource Preview 3.0.
         (SP)</li>
