@@ -177,33 +177,182 @@
 <section id='conformance'></section>
 
 <section class="glossary" id="terminology">
-    <h2>Terminology</h2>
+<h2>Terminology</h2>
 
-    <p>This document uses terms as defined below.</p>
+<p>This document uses terms as defined below.</p>
 
-    <dl>
-        <dt class="loc-heading">Delegated Dialog</dt>
-        <dd>A web page for creating or selecting resources to be embedded
-            inside another application.</dd>
+<dl>
+    <dt class="loc-heading">Delegated Dialog</dt>
+    <dd>A web page for creating or selecting resources to be embedded
+        inside another application.</dd>
 
-        <dt class="loc-heading">Prefill</dt>
-        <dd>A method of populating initial field values in a creation
-            dialog.</dd>
+    <dt class="loc-heading">Prefill</dt>
+    <dd>A method of populating initial field values in a creation
+        dialog.</dd>
 
-        <dt class="loc-heading">Client</dt>
-        <dd>An application that embeds a delegated dialog from another
-            application. A client could be a web page or a native application
-            that is embedding a web browser component.</dd>
+    <dt class="loc-heading">Client</dt>
+    <dd>An application that embeds a delegated dialog from another
+        application. A client could be a web page or a native application
+        that is embedding a web browser component.</dd>
 
-        <dt class="loc-heading">Server</dt>
-        <dd>An application that offers one or more delegated dialogs.</dd>
-    </dl>
+    <dt class="loc-heading">Server</dt>
+    <dd>An application that offers one or more delegated dialogs.</dd>
+</dl>
 </section>
 
 <section class="informative" id="discovery">
-    <h2>Discovering Dialogs</h2>
+<h2>Discovering Dialogs</h2>
 
-    See <a href="https://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/discovery.html?sc=1#dialogs">Discovery 3.0</a>. (To be moved into this document.)</div>
+<p>Clients can discovery previews in two ways:</p>
+
+<ul>
+    <li><a href="#discovery_link"></a></li>
+    <li><a href="#discovery_prefer"></a></li>
+</ul>
+
+<section class="informative" id="discovery_link">
+<h2>Discovering Dialogs Using the Link Header</h2>
+
+<p>LDP containers [[LDP]] advertise their support for dialogs using the
+    HTTP <code>Link</code> header [[RFC5988]]. Each dialog type, creation
+    or selection, has its own link relation.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Dialog Type</th>
+            <th>Link Relation</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Creation</td>
+            <td><code>http://open-services.net/ns/core#creationDialog</code></td>
+        </tr>
+        <tr>
+            <td>Selection</td>
+            <td><code>http://open-services.net/ns/core#selectionDialog</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The client discovers the dialogs by making an HTTP OPTIONS request on
+    the container.</p>
+
+<pre class="example" title="An OPTIONS Request on the Container">
+OPTIONS /bugs/ HTTP/1.1
+Host: example.com
+</pre>
+
+<p>The server response contains <code>Link</code> headers describing the dialogs.</p>
+
+<pre class="example" title="Response with Dialog Link Headers">
+HTTP/1.1 204 No Content
+Date: Thu, 12 Jun 2014 18:26:59 GMT
+Allow: GET,POST,OPTIONS,HEAD
+Accept-Post: text/turtle,application/ld+json
+Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type",
+      &lt;http://example.com/dialogs/createBug&gt;; rel="http://open-services.net/ns/core#creationDialog",
+      &lt;http://example.com/dialogs/selectBug&gt;; rel="http://open-services.net/ns/core#selectionDialog"
+</pre>
+</section>
+
+<p>The client then requests the dialog.</p>
+
+<pre class="example">
+GET /dialogs/selectBug HTTP/1.1
+Host: example.com
+</pre>
+
+<pre class="example">
+HTTP/1.1 200 OK
+Content-Type: text/turtle
+Transfer-Encoding: chunked
+
+@prefix oslc:  &lt;http://open-services.net/ns/core#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;&gt;      a                  oslc:Dialog ;
+        oslc:dialog        &lt;http://example.com/dialogs/selectBug/form&gt; ;
+        oslc:hintHeight    &quot;600px&quot; ;
+        oslc:hintWidth     &quot;400px&quot; ;
+        oslc:label         &quot;Select Bug&quot; ;
+        oslc:resourceType  &lt;http://open-services.net/ns/cm#Bug&gt; ;
+        dcterms:title      &quot;Select Bug from Product Z&quot; .
+</pre>
+
+<p>A container can have any number of dialogs, including more than one creation
+    dialog and more than one selection dialogs.</p>
+
+<section class="informative" id="discovery_prefer">
+<h2>Discovering Dialogs Using the Prefer Header</h2>
+
+<p>Clients can also use the HTTP <code>Prefer</code> header to find the dialogs
+    for a container. The client makes an HTTP GET request on the resource URI
+    using the <code>return=representation</code> preference [[RFC7240]] and
+    <code>include</code> parameter [[LDP]] value
+    <code>http://open-services.net/ns/core#PreferDialog</code>. The server
+    responds with the dialog resources in the response body.  Clients should
+    also use <code>include</code> parameter value
+    <code>http://www.w3.org/ns/ldp#PreferMinimalContainer</code> so that the
+    response doesn't include unnecessary data.</p>
+
+<p>The following example shows a container that supports creation and selection
+    dialogs:</p>
+
+<pre class='example'>
+GET /bugs/ HTTP/1.1
+Host: example.com
+Accept: text/turtle
+Prefer: return=representation;
+        include="http://open-services.net/ns/core#PreferDialog http://www.w3.org/ns/ldp#PreferMinimalContainer"
+</pre>
+<pre class='example'>
+HTTP/1.1 200 OK
+Content-Type: text/turtle
+ETag: "_87e52ce291112"
+Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Accept-Post: text/turtle, application/ld+json
+Allow: POST,GET,OPTIONS,HEAD
+Preference-Applied: return=representation
+Transfer-Encoding: chunked
+
+@prefix ex:    &lt;http://example.com/vocab#&gt; .
+@prefix oslc:  &lt;http://open-services.net/ns/core#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+@prefix ldp:   &lt;http://www.w3.org/ns/ldp#&gt; .
+
+&lt;http://example.com/bugs/&gt;
+        a                     ldp:BasicContainer ;
+        oslc:creationDialog   &lt;http://example.com/dialogs/createBug&gt; ;
+        oslc:selectionDialog  &lt;http://example.com/dialogs/selectBug&gt; ;
+        dcterms:title         &quot;Bugs Records for Product Z&quot; .
+
+&lt;http://example.com/dialogs/createBug&gt;
+        a                  oslc:Dialog ;
+        oslc:dialog        &lt;http://example.com/dialogs/createBug/form&gt; ;
+        oslc:hintHeight    &quot;600px&quot; ;
+        oslc:hintWidth     &quot;400px&quot; ;
+        oslc:label         &quot;New Bug&quot; ;
+        oslc:resourceType  &lt;http://open-services.net/ns/cm#Bug&gt; ;
+        dcterms:title      &quot;Report Bug (Product Z)&quot; .
+
+&lt;http://example.com/dialogs/selectBug&gt;
+        a                  oslc:Dialog ;
+        oslc:dialog        &lt;http://example.com/dialogs/selectBug/form&gt; ;
+        oslc:hintHeight    &quot;600px&quot; ;
+        oslc:hintWidth     &quot;400px&quot; ;
+        oslc:label         &quot;Select Bug&quot; ;
+        oslc:resourceType  &lt;http://open-services.net/ns/cm#Bug&gt; ;
+        dcterms:title      &quot;Select Bug (Product Z)&quot; .
+</pre>
+</section>
+
+</div>
+</section>
+
 </section>
 
 <section class="informative" id="examples">
@@ -223,7 +372,7 @@
     iframe.seamless = "true";
     iframe.style.width = "600px";  // or preferred dialog width
     iframe.style.height = "400px"; // or preferred dialog height
-    iframe.src = "http://example.com/bugs/dialog";
+    iframe.src = "http://example.com/dialogs/createBug";
     document.getElementById("dialogContainer").appendChild(iframe);
 </pre>
 
@@ -326,7 +475,7 @@
       client can test if a dialog supports prefill using HTTP OPTIONS.</p>
 
 <pre class="example" id="ex_options_dialog">
-HEAD /bugs/dialog HTTP/1.1
+HEAD /dialogs/createBug HTTP/1.1
 Host: example.com
 </pre>
 
@@ -347,10 +496,10 @@ We might discuss resource shapes or Link rel="describedby"
 </div>
 
 <pre class="example" title="Prefilling a Bug Creation Dialog" id="ex_prefill_request">
-POST /bugs/dialog HTTP/1.1
+POST /dialogs/createBug HTTP/1.1
 Host: example.com
 Content-Type: text/turtle
-Content-Length: nnn
+Transfer-Encoding: chunked
 
 @prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt; .
 @prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
@@ -366,7 +515,7 @@ prefilled dialog's URI. The client uses this as the <code>iframe src</code>.
 
 <pre class="example" title="The Server Responds with the Dialog Location" id="ex_prefill_response">
 HTTP/1.1 201 Created
-Location: http://example.com/bugs/dialog/2zFy45
+Location: http://example.com/dialogs/createBug/form/2zFy45
 </pre>
 
 <p>The client then uses the dialog URI from the <code>Location</code> like any
@@ -412,7 +561,7 @@ Location: http://example.com/bugs/dialog/2zFy45
         <section id="other_protocols">
             <h2></h2>
 
-            Servers MAY support other protocols for dialog responses, not
+            Servers MAY support other protocols for dialog responses not
             specified in this document, which clients request by appending a
             fragment identifier describing the protocol to the end of the
             dialog URI.
@@ -467,9 +616,7 @@ Location: http://example.com/bugs/dialog/2zFy45
             to itself.
 
 <pre class="example highlight" id="ex_postMessage">
-function respondWithPostMessage(response) {
-    (window.parent || window).postMessage("oslc-response:" + response, "*");
-}
+(window.parent || window).postMessage("oslc-response:" + response, "*");
 </pre>
         </section>
         <section id="message_origin">
@@ -548,6 +695,17 @@ Allow: GET,POST,HEAD,OPTIONS
             they are often temporary.
         </section>
     </section>
+</section>
+
+<section class="appendix" id="dialog_shape">
+    <h2>Dialog Shape</h2>
+
+    <div title='RDF Shape for Dialog'
+            data-include='./Dialog-shape.ttl'
+            data-oninclude='shapeToSpec'
+            data-include-sync='true'
+            data-include-replace='true'
+            data-include-format='html'></div>
 </section>
 
 <section class="appendix" id="results_json">
