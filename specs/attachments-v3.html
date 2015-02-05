@@ -132,7 +132,7 @@
 <body>
 <section id="abstract">
 <p>Binary or text documents are considered attachments to other resources.
-	This specification describes how to manage attachments related to web resources using
+	This specification describes a minimal way to manage attachments related to web resources using
     LDP-Containers and Non-RDF Source [[LDP]].</p>
 </section>
 
@@ -147,11 +147,43 @@ Early Working Draft
 <h2>Introduction</h2>
 <p>Various tools handle the association and creation of related resources in
     conceptually similar ways, but often differ in details on how it is
-    accomplished.  The Linked Data Platform already defines a model by which it
+    accomplished.  The Linked Data Platform (LDP) already defines a model by which it
     is possible to relate resources to another, even if they are not RDF-based.
     This specification defines the method to create associated attachments to a
     given resource and understand if that resource supports the attaching of
     attachments.</p>
+<p>As an example of how to create an attachment, simply HTTP POST the attachment content to the attachment
+    container for the resource. The request should have a
+    <code>Content-Type</code> header describing the attachment's media type.
+    The optional <code>Slug</code> header is used to give the attachment a
+    name.</p>
+
+<pre class="example">
+POST /bugs/2314/attachments HTTP/1.1
+Slug: design
+Content-Type: application/vnd.oasis.opendocument.text
+Content-Length: 18124
+
+[binary content]
+</pre>
+
+<p>The response contains a Link to the new attachment in the
+    <code>Location</code> header. This server has also included a Link to the
+    <code>oslc:AttachmentDescriptor</code> for the attachment in the HTTP
+    response, which contains metadata about the attachment.</p>
+
+<pre class="example">
+HTTP/1.1 201 Created
+Allow: GET,HEAD,OPTIONS,POST
+Location: http://example.com/bugs/2314/attachments/3
+Link: &lt;http://example.com/bugs/2314/attachments/meta/3&gt;; rel="describedby"; anchor="http://example.com/bugs/2314/attachments/3",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Content-Length: 0
+</pre>
+
+<p>The following sections detail how to leverage LDP to accomplish the ways in which to
+discovery, get, create, update or delete attachments and associate with a web resource.</p>
+
 </section>
 
 <section id="terms">
@@ -163,7 +195,7 @@ Early Working Draft
 	<dt class='loc-heading'><dfn>Attachment</dfn></dt>
 	<dd>A LDP-NR whose lifecycle is coupled with the attaching resource.</dd>
 	<dt class='loc-heading'><dfn>Attachment Container</dfn></dt>
-	<dd>A LDPC that holds Attachments for a resource.</dd>
+	<dd>A LDPC that contains Attachments for a resource.</dd>
 	<dt class='loc-heading'><dfn>Attachment Descriptor</dfn></dt>
 	<dd>A LDP-RS that contains additional data about an Attachment.</dd>
 </dl>
@@ -197,8 +229,8 @@ Early Working Draft
 
 <section class='informative'>
 <h2>Motivation</h2>
-<p>Most users of lifecycle tools have experienced the need to create attachments within a given tool.  Some
-specific scenarios where this touches cross tool integration:</p>
+<p>Most users of lifecycle tools have the need to easily create attachments across a variety of integrated tools and associate them
+to some lifecycle resource in context to some scenario.  Some specific scenarios where this touches cross tool integration:</p>
 <ul>
 	<li><strong>Running application scanning</strong> : automatically creating a defect or task to track a problem,
 	attaching a log file that outlines the details of the problem.</li>
@@ -210,6 +242,7 @@ specific scenarios where this touches cross tool integration:</p>
 
 <section id='concepts' class='informative'>
 <h2>Basic Concepts</h2>
+<!-- TODO: Consider adding a simple diagram showing relationship from: resource->(container & member properties)->attachdescriptor -->
 <p>An attachment is added to a resource via a simple POST request to the
     appropriate LDP-Container resource. The entity body becomes the content of
     the attachment resource. The attachment is automatically associated with
