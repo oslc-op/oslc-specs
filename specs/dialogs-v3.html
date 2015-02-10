@@ -182,21 +182,25 @@
 <p>This document uses terms as defined below.</p>
 
 <dl>
-    <dt class="loc-heading">Delegated Dialog</dt>
-    <dd>A web page for creating or selecting resources to be embedded
-        inside another application.</dd>
+    <dt class="loc-heading">Dialog</dt>
+    <dd>A web page for creating or selecting resources to be embedded inside
+        another application.</dd>
+
+    <dt class="loc-heading">Dialog Descriptor</dt>
+    <dd>A resource that describes information about a dialog such as its title
+        and dimensions. In RDF representations, the dialog descriptor has RDF
+        type <code>oslc:Dialog</code>. See <a href="#dialog_shape"></a>.</dd>
 
     <dt class="loc-heading">Prefill</dt>
-    <dd>A method of populating initial field values in a creation
-        dialog.</dd>
+    <dd>A method of setting initial field values in a creation dialog.</dd>
 
     <dt class="loc-heading">Client</dt>
-    <dd>An application that embeds a delegated dialog from another
-        application. A client could be a web page or a native application
-        that is embedding a web browser component.</dd>
+    <dd>An application that embeds a dialog from another application. A client
+        could be a web page or a native application that is embedding a web
+        browser component.</dd>
 
     <dt class="loc-heading">Server</dt>
-    <dd>An application that offers one or more delegated dialogs.</dd>
+    <dd>An application that offers one or more dialogs.</dd>
 </dl>
 </section>
 
@@ -244,7 +248,8 @@ OPTIONS /bugs/ HTTP/1.1
 Host: example.com
 </pre>
 
-<p>The server response contains <code>Link</code> headers describing the dialogs.</p>
+<p>The server response contains <code>Link</code> to the dialog
+    descriptors.</p>
 
 <pre class="example" title="Response with Dialog Link Headers">
 HTTP/1.1 204 No Content
@@ -258,7 +263,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
 </pre>
 </section>
 
-<p>The client then requests the dialog.</p>
+<p>The client then requests the dialog descriptor.</p>
 
 <pre class="example">
 GET /dialogs/selectBug HTTP/1.1
@@ -282,9 +287,6 @@ Transfer-Encoding: chunked
         dcterms:title      &quot;Select Bug from Product Z&quot; .
 </pre>
 
-<p>A container can have any number of dialogs, including more than one creation
-    dialog and more than one selection dialogs.</p>
-
 <section class="informative" id="discovery_prefer">
 <h2>Discovering Dialogs Using the Prefer Header</h2>
 
@@ -293,7 +295,7 @@ Transfer-Encoding: chunked
     using the <code>return=representation</code> preference [[RFC7240]] and
     <code>include</code> parameter [[LDP]] value
     <code>http://open-services.net/ns/core#PreferDialog</code>. The server
-    responds with the dialog resources in the response body.  Clients should
+    responds with the dialog descriptors in the response body.  Clients should
     also use <code>include</code> parameter value
     <code>http://www.w3.org/ns/ldp#PreferMinimalContainer</code> so that the
     response doesn't include unnecessary data.</p>
@@ -562,7 +564,7 @@ Link: &lt;http://example.com/dialogs/selectBug&gt;; rel="http://open-services.ne
                 <li>The context URI is the effective request URI,</li>
                 <li>The link relation is
                     <code>http://open-services.net/ns/core#creationDialog</code>, and</li>
-                <li>The target URI is the URI of the Dialog resource.</li>
+                <li>The target URI is the URI of the dialog descriptor.</li>
             </ul>
 
 <pre class="example">
@@ -573,9 +575,10 @@ Link: &lt;http://example.com/dialogs/createBug&gt;; rel="http://open-services.ne
         <section id="prefer_dialog">
             <h2></h2>
 
-            Clients MAY request that the Dialog
-                resources for an LDP container are returned inline using
-                the <code>Prefer</code> request header [[!RFC7240]] and
+            Clients MAY request that the dialog descriptors for an LDP
+            container are returned inline using the <code>Prefer</code> request
+            header [[!RFC7240]] and
+
                 <ul>
                     <li>Preference <code>return</code>, value
                         <code>representation</code></li>
@@ -591,8 +594,8 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferD
         <section id="honor_prefer">
             <h2></h2>
 
-            Servers MUST honor a client's request to inline Dialog resources if
-            the target resource has any Dialog resources and the request is
+            Servers MUST honor a client's request to inline dialog descriptors
+            if the target resource has any Dialog resources and the request is
             successful.
         </section>
     </section>
@@ -718,15 +721,16 @@ function handleMessage(event) {
             <h2></h2>
 
             Servers MAY allow clients to prefill creation dialogs by sending a
-            POST request to the dialog URI where the entity body is a
-            resource representation describing the initial values.
+            POST request to the dialog descriptor URI where the entity body is
+            a resource representation describing the initial values.
         </section>
         <section id="dialog_options">
             <h2></h2>
 
             Servers that support prefill SHOULD include the value
             <code>POST</code> in the set of <code>Allow</code> header values
-            returned in response to HTTP OPTIONS requests for the dialog URI.
+            returned in response to HTTP OPTIONS requests for the dialog
+            descriptor URI.
 
 <pre class="example" id="ex_verify_origin">
 Allow: GET,POST,HEAD,OPTIONS
@@ -774,8 +778,7 @@ Allow: GET,POST,HEAD,OPTIONS
         message in calls to <code>postMessage</code>, the results are prefixed
         with the characters <code>oslc-response:</code>.</p>
 
-    <p> The top-level JSON object has an <code>oslc:results</code>
-        property.</p>
+    <p>The top-level JSON object has an <code>oslc:results</code> property.</p>
 
     <table style="width: 100%">
         <colgroup>
@@ -858,7 +861,10 @@ Allow: GET,POST,HEAD,OPTIONS
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
-    <li>2015-02-04 Add discovery examples. (SP)
+    <li>2015-02-10 Clearly distinguish between dialogs and dialog descriptors.
+        (SP)</li>
+    <li>2015-02-04 Add discovery conformance clauses. (SP)</li>
+    <li>2015-02-04 Add discovery examples. (SP)</li>
     <li>2015-02-03 Move conformance clauses to numbered sections. Remove
         windowName protocol. Refer to dynamic resizing in Resource Preview 3.0.
         (SP)</li>
