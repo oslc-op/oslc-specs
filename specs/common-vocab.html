@@ -105,22 +105,25 @@
 
 	<section class='informative'>
 		<h2>Motivation</h2>
-		<p><em>Call out some key problems, use cases, scenarios that have
-			motivated this specification. References are good, especially to
-			some Use Case and Requirements.</em></p>
-	</section>
-	
-	<section id='concepts' class='informative'>
-		<h2>Basic Concepts</h2>
-		
 		<p><a title="">Archived Resource</a>s are typically found in large systems in which an immutable copy of the state of a resource at a given time is captured.
 		The purpose may vary in that it could be simply a way to provide a backup or snapshot in time of a resource, which gives ease of access to it through typical
 		means.  Having a consistent way to indicate that a resource, or a set of them, has been archived helps when defining certain views of the resources or queries.
 		Archived Resources are identified by having a triple in their resource representations as: <code>archivedResourceURI oslc:archived true</code>.</p>
+		
+		<p>Error responses from HTTP request often take the form of HTML pages intended for a human to read.  Though often times these requests are initiated from applications
+		that don't have a human actively monitoring it.  Therefore having a consistent way to request error responses for a certain format and follow a prescribed model can
+		help clients better handle errors automatically.</p>
 	</section>
 
+<!-- Need to determine if needed	
+	<section id='concepts' class='informative'>
+		<h2>Basic Concepts</h2>
+		
+	</section>
+-->
+
 	<section>
-		<h2>Common Properties and Resources</h2>
+		<h2>Implementation Conformance</h2>
 
 		<section id="commonprops">
 			<h2>Common Properties</h2>
@@ -138,11 +141,25 @@
 			[[FOAF]], [[skos-reference]] and OSLC.  New vocabulary terms should only be created when there is no clear 
 			existing choice available. See [[LDP]] <a href="http://www.w3.org/TR/ldp/#ldprs-gen-reusevocabsuchas">similar clause on reuse</a>.</h2>
 			</section>
+			
+			<p>See <a href="#rdfvocab" class="sectionRef"></a> for details on common property terms.</p>
 
-			<div title='RDF Vocabulary for OSLC Core Common'
-				data-include='./core-common-vocab.ttl' data-oninclude='vocabToSpec'
-				data-include-sync='true' data-include-replace='true'
-				data-include-format='html'></div>
+		</section>
+
+		<section id="errorresponses">
+			<h2>Error Responses</h2>
+			
+			<section id="errUseful"><h2 class="normal">When an OSLC Server incurs an error, useful information can be provided to clients in the body of the response.</h2>
+			</section>
+
+			<section id="errMsg"><h2 class="normal">OSLC Servers SHOULD use the <a href="shapeError">Error resource</a> defined below as the basis for forming error responses.</h2>
+			</section>
+
+			<section id="errFormat"><h2 class="normal">OSLC Servers SHOULD return an <a href="shapeError">Error resource</a> using the same representation format requested by the client via the HTTP <code>Accept</code> request header. [[HTTP11]]</h2>
+			</section>
+			
+			<div class="note">TODO: Need to determine if this is the right place for this.</div>
+
 		</section>
 		
 		<section id="shapes"><h2>Shapes</h2>
@@ -161,38 +178,65 @@
 					data-include-format='html'></div>
 				
 			</section>
-			
-			
+				
 			<section id="shapeComment">
 				<h2>Shape: Comment</h2>
 				<p>Used in conjunction with <a href="#shapeDiscussion" title=""></a> to provide a minimal resource definition for a collection
 				of comments.</p>
 			
 				<div title='RDF Shape for Comment' 
-					data-include='./comment-shape.ttl' 
+					data-include='./Comment-shape.ttl' 
 					data-oninclude='shapeToSpec' 
 					data-include-sync='true' 
 					data-include-replace='true' 
 					data-include-format='html'></div>
 				
 			</section>
+
+			<section id="shapeError">
+				<h2>Shape: Error</h2>
+				<p>Used when servers may need a consistent shape to communicate error messages.</p>
+			
+				<div title='RDF Shape for Error' 
+					data-include='./Error-shape.ttl' 
+					data-oninclude='shapeToSpec' 
+					data-include-sync='true' 
+					data-include-replace='true' 
+					data-include-format='html'></div>
+				
+			</section>
+
+			<section id="shapeExtendedError">
+				<h2>Shape: ExtendedError</h2>
+				<p>Additional details about an error the server had when processing the request.</p>
+			
+				<div title='RDF Shape for ExtendedError' 
+					data-include='./ExtendedError-shape.ttl' 
+					data-oninclude='shapeToSpec' 
+					data-include-sync='true' 
+					data-include-replace='true' 
+					data-include-format='html'></div>
+				
+			</section>
+
 		</section>
 		
 		<section>
 			<h2>Discovery</h2>
-			<p>Not additional discovery needs.  Vocabulary terms are discovered via published vocabulary documents at the OSLC Core namespace and shapes
+			<p>No additional discovery needs.  Vocabulary terms are discovered via published vocabulary documents at the OSLC Core namespace and shapes
 			at advertised URLs.</p>
 		</section>
 	</section>
 	
-	<!--  See above
-	<section class='appendix'>
+	<section class='appendix' id="rdfvocab">
 		<h2>RDF Vocabulary</h2>
-		<p><em>Each specification may define new vocabulary terms.  These should be defined with consideration for global use (not within a specific type
-		of resource).  Other domains and resource types will be encouraged to reuse these.</em></p>
+
+			<div title='RDF Vocabulary for OSLC Core Common'
+				data-include='./core-common-vocab.ttl' data-oninclude='vocabToSpec'
+				data-include-sync='true' data-include-replace='true'
+				data-include-format='html'></div>
 		
 	</section>
-	 -->
 
 	<section class='appendix informative'>
 		<h2>Acknowledgements</h2>
