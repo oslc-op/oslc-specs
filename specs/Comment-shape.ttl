@@ -4,56 +4,50 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 <http://open-services.net/ns/core/shapes/Comment>
-        a               oslc:ResourceShape ;
-        oslc:describes  oslc:Comment ;
-        oslc:name       "Comment" ;
-        oslc:property   [ a                        oslc:Property ;
-                          oslc:name                "title" ;
-                          oslc:occurs              oslc:Zero-or-one ;
-                          oslc:propertyDefinition  dcterms:title ;
-                          oslc:valueType           rdf:XMLLiteral
-                        ] ;
-        oslc:property   [ a                        oslc:Property ;
-                          oslc:name                "description" ;
-                          oslc:occurs              oslc:Exactly-one ;
-                          oslc:propertyDefinition  dcterms:description ;
-                          oslc:valueType           rdf:XMLLiteral
-                        ] ;
-        oslc:property   [ a                        oslc:Property ;
-                          oslc:name                "creator" ;
-                          oslc:occurs              oslc:Exactly-one ;
-                          oslc:propertyDefinition  dcterms:creator ;
-                          oslc:range               foaf:Person ;
-                          oslc:representation      oslc:Either ;
-                          oslc:valueShape          <http://example.com/oslc/shapes/Person> ;
-                          oslc:valueType           oslc:AnyResource
-                        ] ;
-        oslc:property   [ a                        oslc:Property ;
-                          oslc:name                "identifier" ;
-                          oslc:occurs              oslc:Exactly-one ;
-                          oslc:propertyDefinition  dcterms:identifier ;
-                          oslc:valueType           <http://www.w3.org/2001/XMLSchema#string>
-                        ] ;
-        oslc:property   [ a                        oslc:Property ;
-                          oslc:name                "inReplyTo" ;
-                          oslc:occurs              oslc:Zero-or-one ;
-                          oslc:propertyDefinition  oslc:inReplyTo ;
-                          oslc:range               oslc:Comment ;
-                          oslc:representation      oslc:Reference ;
-                          oslc:valueType           oslc:Reference
-                        ] ;
-        oslc:property   [ a                        oslc:Property ;
-                          oslc:name                "partOfDiscussion" ;
-                          oslc:occurs              oslc:Exactly-one ;
-                          oslc:propertyDefinition  oslc:partOfDiscussion ;
-                          oslc:range               oslc:Discussion ;
-                          oslc:representation      oslc:Reference ;
-                          oslc:valueType           oslc:Resource
-                        ] ;
-        oslc:property   [ a                        oslc:Property ;
-                          oslc:name                "created" ;
-                          oslc:occurs              oslc:Exactly-one ;
-                          oslc:propertyDefinition  dcterms:created ;
-                          oslc:valueType           <http://www.w3.org/2001/XMLSchema#dateTime>
-                        ] ;
-        dcterms:title   "OSLC Core Comment Shape" .
+	a               oslc:ResourceShape ;
+	oslc:describes  oslc:Comment ;
+	oslc:name       "Comment" ;
+	dcterms:title   "OSLC Core Comment Shape" ;
+	oslc:property  <#dcterms-title>, <#dcterms-desc>, <#dcterms-creator>, 
+		<#dcterms-desc>, <#oslc-inReplyTo>, <#dcterms-created>.
+        
+<#dcterms-title> a  oslc:Property ;
+	oslc:name                "title" ;
+	oslc:occurs              oslc:Zero-or-one ;
+	oslc:propertyDefinition  dcterms:title ;
+	oslc:valueType           rdf:XMLLiteral.
+
+<#dcterms-desc> a                        oslc:Property ;
+	oslc:name                "description" ;
+	oslc:occurs              oslc:Exactly-one ;
+	oslc:propertyDefinition  dcterms:description ;
+	oslc:valueType           rdf:XMLLiteral.
+
+<#dcterms-creator> a                        oslc:Property ;
+	oslc:name                "creator" ;
+	oslc:occurs              oslc:Exactly-one ;
+	oslc:propertyDefinition  dcterms:creator ;
+	oslc:range               foaf:Person ;
+	oslc:representation      oslc:Either ;
+	oslc:valueShape          <http://example.com/oslc/shapes/Person> ;
+	oslc:valueType           oslc:AnyResource.
+
+<#dcterms-id> a                        oslc:Property ;
+	oslc:name                "identifier" ;
+	oslc:occurs              oslc:Exactly-one ;
+	oslc:propertyDefinition  dcterms:identifier ;
+	oslc:valueType           <http://www.w3.org/2001/XMLSchema#string>.
+
+<#oslc-inReplyTo> a  oslc:Property ;
+	oslc:name                "inReplyTo" ;
+	oslc:occurs              oslc:Zero-or-one ;
+	oslc:propertyDefinition  oslc:inReplyTo ;
+	oslc:range               oslc:Comment ;
+	oslc:representation      oslc:Reference ;
+	oslc:valueType           oslc:Reference.
+
+<#dcterms-created> a   oslc:Property ;
+	oslc:name                "created" ;
+	oslc:occurs              oslc:Exactly-one ;
+	oslc:propertyDefinition  dcterms:created ;
+	oslc:valueType           <http://www.w3.org/2001/XMLSchema#dateTime>.
