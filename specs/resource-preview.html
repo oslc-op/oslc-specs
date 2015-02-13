@@ -116,7 +116,12 @@ dd {
     an icon and a label. The preview is HTML markup to be displayed directly
     inside the client application.</p>
 
-<p>A preview is often shown in a pop-up when a user mouses over a link.  A
+<figure id="ex_preview">
+  <img src="preview-example.png" />
+  <figcaption>A Preview for a Link</figcaption>
+</figure>
+
+<p>Previews are often shown as a pop-up when a user mouses over a link as in <a href="#ex_preview"></a>. A
     client can display a preview differently, however, depending on the kind of
     application, the size of the screen, and the capabilities of the device. A
     desktop application on a PC might handle previews differently than a mobile
@@ -427,6 +432,16 @@ Vary: Accept,Accept-Language,Prefer
     Using the <code>iframe</code> element also sandboxes the preview, avoiding
     cross-site scripting vulnerabilities.</p>
 
+<figure id="preview_iframe">
+  <img src="preview-iframe.png" />
+  <figcaption>Preview iframe</figcaption>
+</figure>
+
+<p>Typically, the server does not include the icon or title in the preview
+    itself. The client can display these as needed. In
+    <a href="#preview_iframe"></a>, the preview itself is the content inside the
+    yellow, dashed lines.</p>
+
 <p>The Compact resource can include <code>oslc:hintHeight</code> and
     <code>oslc:hintWidth</code> properties for each preview. Values for
     <code>oslc:hintWidth</code> and <code>oslc:hintHeight</code> are
@@ -543,7 +558,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
         <section id="compact_link_header">
             <h2 class="normalFont">In responses to HTTP requests for a target
                 resource that has a Compact resource, servers MUST include
-                a <code>Link</code> header [[RFC5988]] where
+                a <code>Link</code> header [[!RFC5988]] where
 
                 <ul>
                     <li>The context URI is the effective request URI,</li>
@@ -773,6 +788,43 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
     }
 }
 </pre>
+
+<!--
+<section id="json_constraints">
+    <h2>JSON Representation Constraints</h2>
+
+    <section id="compact_json_object">
+        <h2 class="normalFont">The Compact JSON representation MUST be a JSON
+            object.</h2>
+    </section>
+    <section id="compact_json_title">
+        <h2 class="normalFont">The Compact resource MAY have a
+            <code>title</code> property. The value MUST be a string.</h2>
+    </section>
+    <section id="compact_json_shortTitle">
+        <h2 class="normalFont">The Compact resource MAY have a
+            <code>shortTitle</code> property. The value MUST be a string.</h2>
+    </section>
+    <section id="compact_json_markup">
+        <h2 class="normalFont">The values of the <code>title</code> and
+            <code>shortTitle</code> MAY contain markup valid in an HTML
+            <code>span</code> element. To afford clients the greatest
+            flexibility to style the text to match the context in which it is
+            being displayed, the titles SHOULD be plain text with HTML markup
+            used only to emphasize words or phrases or to convey additional
+            information about the target resource.</h2>
+    </section>
+    <section id="compact_json_icon">
+        <h2 class="normalFont">The Compact resource MAY have an
+            <code>icon</code> property. The value MUST be a string that is the
+            absolute URL of an image.</h2>
+    </section>
+    <section id="compact_json_icon_title">
+        <h2 class="normalFont">The Compact resource MAY have an
+            <code>iconTitle</code> property. The value MUST be a string.</h2>
+    </section>
+</section>
+-->
 
 <p>The JSON representation has the following constraints:</p>
 
