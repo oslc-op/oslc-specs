@@ -112,26 +112,26 @@ dd {
 <h2>Introduction</h2>
 
 <p>This specification describes how a client application can display links and
-    embed rich previews for resources from other applications. Links can have
-    an icon and a label. The preview is HTML markup to be displayed directly
-    inside the client application.</p>
+    embed rich previews for resources from other applications. Links may have a
+    label and an icon, and previews are HTML markup displayed directly inside
+    the client application.</p>
 
 <figure id="ex_preview">
   <img src="preview-example.png" />
-  <figcaption>A Preview for a Link</figcaption>
+  <figcaption>Preview for a Link</figcaption>
 </figure>
 
-<p>Previews are often shown as a pop-up when a user mouses over a link as in <a href="#ex_preview"></a>. A
-    client can display a preview differently, however, depending on the kind of
-    application, the size of the screen, and the capabilities of the device. A
-    desktop application on a PC might handle previews differently than a mobile
-    application running on a small touchscreen.</p>
+<p>Previews often appear as a pop-up when a user mouses over a link as in
+    <a href="#ex_preview"></a>. A client can display a preview differently,
+    however, depending on the kind of application, the size of the screen, and
+    the capabilities of the device. A desktop application on a PC might handle
+    previews differently than a mobile application running on a small
+    touchscreen.</p>
 
-<p>Servers can offer both small and large previews. A client might show a small
-    preview first, then if the user gestures, show additional details from the
-    large preview. Servers can suggest sizes for previews, and the preview can
-    ask to be resized after it is displayed. Clients can choose to ignore size
-    hints, however.</p>
+<p>Servers can provide both small and large previews. A client might show a
+    small preview first, then if the user gestures, show additional details
+    from the large preview. Servers suggest sizes for previews, and previews
+    can ask to be resized after they are displayed.</p>
 
 <p>A client only needs to know the URI of a resource to display a link and a
     preview. It doesn't need to know anything else about the resource. Clients
@@ -178,14 +178,17 @@ dd {
 
 <p>Applications often display links to related resources from other
     applications. For example, a quality management application might show a
-    link to a related defect when displaying a test result. Testers want to see
-    information about the linked defect without leaving the application they're
-    using. In some cases, the quality management application might only have a
-    URI pointing to the defect.</p>
+    link to a related defect when displaying a test result. In some cases, the
+    quality management application only has a URI pointing to the defect. How
+    can it show the link with an appropriate label? How can testers find out
+    the status of the defect without leaving the quality management
+    application?</p>
 
-<p>Resource previews allow users to see information about related resources
-    quickly without leaving the application they're in, even when the resources
-    are from another server.</p>
+<p>Compact resources and resource preview solve both problems. Clients can
+    discover the link label and a resource icon given only the resource URI.
+    Previews allow users to see see information about related resources quickly
+    without leaving the application they're in, even when the resources are
+    from another server.</p>
 </section>
 
 <section class='informative' id="working_with_previews">
@@ -439,8 +442,12 @@ Vary: Accept,Accept-Language,Prefer
 
 <p>Typically, the server does not include the icon or title in the preview
     itself. The client can display these as needed. In
-    <a href="#preview_iframe"></a>, the preview is the content inside the
-    yellow, dashed lines.</p>
+    <a href="#preview_iframe"></a>, the preview document is the content inside
+    the yellow, dashed lines.</p>
+
+<p>Resources can have both a small and large preview, and clients can choose
+    which to display. Some clients display the small preview initially and let
+    users expand to the large preview using a button or "Show more" link.</p>
 
 <p>The Compact resource can include <code>oslc:hintHeight</code> and
     <code>oslc:hintWidth</code> properties for each preview. Values for
