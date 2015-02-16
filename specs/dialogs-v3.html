@@ -129,7 +129,9 @@
 <body>
 <section id="abstract">
   <p>Delegated dialogs allow one application to embed a creation or selection
-      UI into another using HTML iframe elements and JavaScript code.</p>
+  UI into another using HTML <code>iframe</code> elements and JavaScript code.
+  The embedded dialog notifies the parent page of events using HTML5
+  <code>postMessage</code>.</p>
 </section>
 
 <section id="toc"></section>
@@ -174,6 +176,10 @@
    management tool, running on another server. The dialog displays seamlessly
    inside the quality management application, however, while retaining the
    change management tool's look and feel and capabilities.</p>
+
+   <p>Delegated dialogs provide a simple way for an end user to create or
+   select resources from another application, thus eliminating the need to
+   rebuild the other application's dialog and its application logic.</p>
 </section>
 
 <section id="sotd"></section>
@@ -182,8 +188,6 @@
 
 <section class="glossary" id="terminology">
 <h2>Terminology</h2>
-
-<p>This document uses terms as defined below.</p>
 
 <dl>
     <dt class="loc-heading">Dialog</dt>
@@ -197,14 +201,6 @@
 
     <dt class="loc-heading">Prefill</dt>
     <dd>A method of setting initial field values in a creation dialog.</dd>
-
-    <dt class="loc-heading">Client</dt>
-    <dd>An application that embeds a dialog from another application. A client
-        could be a web page or a native application that is embedding a web
-        browser component.</dd>
-
-    <dt class="loc-heading">Server</dt>
-    <dd>An application that offers one or more dialogs.</dd>
 </dl>
 </section>
 
@@ -481,7 +477,7 @@ Transfer-Encoding: chunked
       client can test if a dialog supports prefill using HTTP OPTIONS.</p>
 
 <pre class="example" id="ex_options_dialog">
-HEAD /dialogs/createBug HTTP/1.1
+OPTIONS /dialogs/createBug HTTP/1.1
 Host: example.com
 </pre>
 
@@ -550,7 +546,7 @@ Location: http://example.com/dialogs/createBug/form/2zFy45
                 <li>The context URI is the effective request URI,</li>
                 <li>The link relation is
                     <code>http://open-services.net/ns/core#selectionDialog</code>, and</li>
-                <li>The target URI is the URI of the Dialog resource.</li>
+                <li>The target URI is the URI of the dialog descriptor.</li>
             </ul>
 
 <pre class="example">
@@ -599,8 +595,8 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferD
             <h2></h2>
 
             Servers MUST honor a client's request to inline dialog descriptors
-            if the target resource has any Dialog resources and the request is
-            successful.
+            if the target resource has any dialog descriptors and the request
+            is successful.
         </section>
     </section>
 
@@ -724,9 +720,9 @@ function handleMessage(event) {
         <section id="allow_prefill">
             <h2></h2>
 
-            Servers MAY allow clients to prefill creation dialogs by sending a
-            POST request to the dialog descriptor URI where the entity body is
-            a resource representation describing the initial values.
+            Servers MAY allow clients to prefill creation dialogs by sending an
+            HTTP POST request to the dialog descriptor URI where the entity
+            body is a resource representation describing the initial values.
         </section>
         <section id="dialog_options">
             <h2></h2>
@@ -761,6 +757,13 @@ Allow: GET,POST,HEAD,OPTIONS
             or 410 (Gone) to an HTTP GET request for a prefilled dialog URI.
             Clients SHOULD NOT cache dialog URIs from prefill requests since
             they are often temporary.
+        </section>
+        <section id="prefill_query_params">
+            <h2></h2>
+
+            Servers MAY support prefill by adding initial values as query
+            parameters to the prefilled dialog URI. Clients SHOULD NOT assume
+            any specific URL format, however.
         </section>
     </section>
 </section>
@@ -865,6 +868,7 @@ Allow: GET,POST,HEAD,OPTIONS
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2015-02-16 Add example dialog screenshot. (SP)</li>
     <li>2015-02-10 Clearly distinguish between dialogs and dialog descriptors.
         (SP)</li>
     <li>2015-02-04 Add discovery conformance clauses. (SP)</li>
