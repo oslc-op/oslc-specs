@@ -48,7 +48,13 @@
 			mailto : "sspeiche@us.ibm.com",
 			company : "IBM",
 			companyURL : "http://ibm.com/"
-		} ],
+		},
+        {
+            name:       "Samuel Padgett"
+        ,   mailto:     "spadgett@us.ibm.com"
+        ,   company:    "IBM"
+        ,   companyURL: "http://ibm.com/"
+        } ],
 		wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
 		wgURI : "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
 		namespaces : [ {
@@ -99,7 +105,7 @@
 		be able to do a number of things on behalf of the user and provide an optional integrated experience to streamline the
 		users workflow.  Therefore the discovery needs include: authenticating, knowing that the target tool is capable of 
 		receiving creation requests for bugs, whether it can be handled via a user interface, what fields are required and
-		types of data, and also if the bug record can be prefilled with some data from the test currently being executed.</p>
+		types of data, and also if the bug record can be pre-filled with some data from the test currently being executed.</p>
 		<p></p>
 	</section>
 
@@ -141,14 +147,36 @@
 		
 	</section>
 	
+<!-- 	
 	<section id='concepts' class='informative'>
 		<h2>Basic Concepts</h2>
 		<p>TODO: determine if needed</p>
-	</section>
+	</section>   -->
 
 	<section>
 		<h2>Discovery Approaches</h2>
-		<p></p>
+		<p>There are various approaches for both specifications to define how their capabilities
+		could be advertised and how clients can efficiently discover what is needed.  The follow sections
+		will provide guidance on approaches that should be used.</p>
+		
+		<section id="differentApproaches">
+			<h2>Choosing most effective methods</h2>
+			
+			<section id="discOptions"><h2 class="normal">
+				Clients SHOULD use <code>HTTP OPTIONS</code> to fetch various headers and other configurations
+				information that MAY BE exposed in the response content body.
+			</h2></section>
+			
+			<section id="discHeaders"><h2 class="normal">
+				Servers SHOULD minimize the use of HTTP response headers on various HTTP operations as to not provide
+				unnecessary additional response content and complexity on server implementations to provide it.
+			</h2></section>
+
+			<section id="discContent"><h2 class="normal">
+				Servers SHOULD only use of LDPRs representations for discovery details unless there are scenarios where
+				it would be valuable to have that data readily available for purposes such as query.
+			</h2></section>
+		</section>
 		
 		<section id="creation">
 			<h2>Checking for creation of a certain type of resource</h2>
@@ -174,7 +202,7 @@
 				test is done and when the creation request is sent, and that there may additional server enforced constraints
 				on the creation resource representation, there is no guarantee that a future creation request will succeed.
 			</h2>
-			<div class='note'>TODO: Poll to see if needed a standard predicate for feeding indexes</div>
+			<div class='note'>TODO <em>PROPOSED</em>: Poll to see if needed a standard predicate for feeding indexes</div>
 			
 			<pre class='example'>
 			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
@@ -219,8 +247,8 @@
 				See [[LDP]]
 				<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
 			</h2>
-			<div class='note'>TODO Poll to see if needed a standard predicate for feeding indexes</div>
-			<div class='note'>TODO Should we introduce a shape-specific relationship type, thinking yes.</div>
+			<div class='note'>TODO <em>PROPOSED</em>: define a standard predicate for feeding indexes</div>
+			<div class='note'>TODO <em>PROPOSED</em>: define a shape-specific relationship type, thinking yes.</div>
 			
 			<pre class='example'>
 			Link: &lt;http://example.com/shapes/bug&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"
@@ -243,9 +271,9 @@
 		
 		<section id="authMethods"><h2 class='normal'>Checking authentication options</h2>
 		
-			<div class='note'>TODO: What do we need to say here?  Just articulate that we use HTTP-REST, therefore
-			various web-based authentication mechanisms exist.  Here are some to consider: OAuth2, HTTP Basic Auth, ...
-			Perhaps best just to defer to a "auth" spec, whenever it is created.</div>
+			<div class='note'>This specification doesn't prescribe any specific authentication, authorization or
+			transport encryption.  It is expected that future versions or various capability specifications will
+			define such mechanisms.</div>
 		
 		</section>
 <!-- 			
