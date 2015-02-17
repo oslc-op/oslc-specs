@@ -231,7 +231,7 @@
 		<section id="uiPreview"><h2>User interface resource previews</h2>
 			<p>See [[ResourcePreview]] sections on discovery using 
 			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html#linkHeader">the <code>Link</code> header</a> or 
-			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html#prefer">the <code>Prefer</code> header</a>.
+			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html#prefer">the <code>Prefer</code> header</a>.</p>
 		</section>
 
 		<section id="dialogs"><h2>User interface dialogs</h2>
@@ -239,100 +239,6 @@
 			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html#linkHeader">the <code>Link</code> header</a> or 
 			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html#prefer">the <code>Prefer</code> header</a>.
 			</p>
-		
-		
-		<div class=note><strong>TODO: Move this content to [[Dialogs]] and update links</strong>
-<p>Here are the list of things to do in dialogs spec:</p>
-<ul>
-<li>define link relation for creationDialog and selectionDialog</li>
-<li>define usage of Prefer preference</li>
-<li>define Dialog resource and properties</li>
-<li>define how to use <code>&lt;dialog-uri&gt; oslc:resourceShape &lt;shape-uri&gt;</code> to link dialog->shape</li>
-</ul>
-
-			<p>The following example shows a container that supports creation and selection dialogs:</p>
-			<pre class='example'>
-			OPTIONS /bugs/ HTTP/1.1
-			Host: example.com
-			</pre>
-			<pre class='example'>
-			HTTP/1.1 204 No Content
-			Date: Thu, 12 Jun 2014 18:26:59 GMT
-			Allow: POST,GET,OPTIONS,HEAD,PUT
-			Accept-Post: text/turtle, application/ld+json
-			Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
-				  &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
-			Link: &lt;http://example.com/dialogs/bugCreator&gt;; rel="http://open-services.net/ns/core#creationDialog"
-			Link: &lt;http://example.com/dialogs/bugSelector&gt;; rel="http://open-services.net/ns/core#selectionDialog"
-			</pre>
-
-			<p>The following example shows a container that supports creation and selection dialogs:</p>
-			<pre class='example'>
-			GET /bugs/ HTTP/1.1
-			Host: example.com
-			Accept: text/turtle
-			Prefer: return=representation; 
-			        include="http://open-services.net/ns/core#PreferDialog http://www.w3.org/ns/ldp#PreferMinimalContainer"
-			</pre>
-			<pre class='example'>
-			HTTP/1.1 200 OK
-			Content-Type: text/turtle
-			ETag: "_87e52ce291112"
-			Link: &lt;http://www.w3.org/ns/ldp#DirectContainer&gt;; rel="type",
-				  &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
-			Accept-Post: text/turtle, application/ld+json
-			Allow: POST,GET,OPTIONS,HEAD
-			Preference-Applied: return=representation
-			Transfer-Encoding: chunked
-
-			@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
-			@prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
-			@prefix oslc: &lt;http://open-services.net/ns/core#&gt;
-			@prefix ex: &lt;http://example.com/vocab#&gt;.
-
-			&lt;http://example.com/bugs/&gt;
-			   a ldp:DirectContainer;
-			   dcterms:title "List of all records of bugs";
-			   ldp:membershipResource &lt;http://example.com/bugs/&gt;;
-			   ldp:hasMemberRelation ex:bug;
-			   ldp:insertedContentRelation ldp:MemberSubject;
-			   oslc:creationDialog &lt;#newDialog&gt;;
-			   oslc:selectionDialog &lt;#pickerDialog&gt;.
-			   
-			&lt;#newDialog&gt;
-			   a oslc:Dialog;
-			   dcterms:title "A new bug dialog";
-			   oslc:label "New bug";
-			   oslc:dialog &lt;http://example.com/dialogs/bugCreator?view=html&gt;;
-			   oslc:hintHeight "400 em";
-			   oslc:hintWidth "400 em";
-			   oslc:resourceType &lt;http://open-services.net/ns/cm#Bug&gt;.
-
-			&lt;#pickeRDialog&gt;
-			   a oslc:Dialog;
-			   dcterms:title "A bug selection dialog";
-			   oslc:label "Select existing bug";
-			   oslc:dialog &lt;http://example.com/dialogs/bugSelector?view=html&gt;;
-			   oslc:hintHeight "400 em";
-			   oslc:hintWidth "400 em";
-			   oslc:resourceType &lt;http://open-services.net/ns/cm#Bug&gt;.
-			</pre>
-			
-			
-		<section>
-			<h2>Dialog Shape</h2>
-			<p>Descriptor of the dialogs</p>
-		
-			<div title='RDF Shape for Dialog' 
-				data-include='./Dialog-shape.ttl' 
-				data-oninclude='shapeToSpec' 
-				data-include-sync='true' 
-				data-include-replace='true' 
-				data-include-format='html'></div>
-			
-		</section>
-		
-		</div>
 		</section>
 		
 		<section id="authMethods"><h2 class='normal'>Checking authentication options</h2>
@@ -357,7 +263,6 @@
 	
 	<section class='appendix'>
 		<h2>RDF Vocabulary</h2>
-		<p class=note>TODO: still evolving</p>
 		
 		<div title='RDF Vocabulary for Discovery' 
 			data-include='./discovery-vocab.ttl' 
@@ -370,16 +275,14 @@
 
 	<section class='appendix informative'>
 		<h2>Acknowledgements</h2>
-		<p><em>Call all key contributors, reviewers or general groups as needed.</em></p>
-		<p>Many thanks to Tim Berners-Lee for inventing the Web.</p>
+		<p>Many thanks to the various OASIS Core TC members and other key contributors and reviewers.</p>
 	</section>
 
 	<section class='appendix informative'>
 		<h2>ToDo List - items to complete this document</h2>
 		<ul>
-		<li>Build outline for capability section</li>
+		<li>Determine if predicates are needed to dupe the link rel headers</li>
 		<li>Validate scenarios in motivation section</li>
-		<li>When to use HTTP headers vs properties in content</li>
 		</ul>
 	</section>
 	
