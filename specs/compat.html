@@ -14,8 +14,17 @@
 			} ],
 			editors : [ {
 				name : "Steve Speicher",
-				url : "http://stevespeicher.me/"
-			} ],
+				url : "http://stevespeicher.me/",
+				mailto : "sspeiche@us.ibm.com",
+				company : "IBM",
+				companyURL : "http://ibm.com/"
+			},
+	        {
+	            name:       "Samuel Padgett",
+	            mailto:     "spadgett@us.ibm.com",
+	            company:    "IBM",
+	            companyURL: "http://ibm.com/"
+	        } ],
 			wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
 			wgURI : "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
 			wgPublicList : "oslc-core-comment@lists.oasis-open.org",
@@ -44,6 +53,24 @@
 	              authors:  [ "Samuel Padgett", "Steve Speicher"],
 	              publisher:  "OASIS",
 	          },
+	          "OSLCDialogs3": {
+	              title:    "OSLC Delegated Dialogs v3.0",
+	              href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html",
+	              authors:  [ "Samuel Padgett", "Steve Speicher"],
+	              publisher:  "OASIS",
+	          },
+	          "OSLCDiscovery3": {
+	              title:    "OSLC Discovery v3.0",
+	              href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/discovery.html",
+	              authors:  [ "Samuel Padgett", "Steve Speicher"],
+	              publisher:  "OASIS",
+	          },
+	          "OSLCVocab3": {
+	              title:    "OSLC Common Vocabulary v3.0",
+	              href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/common-vocab.html",
+	              authors:  [ "Samuel Padgett", "Steve Speicher"],
+	              publisher:  "OASIS",
+	          },
 	          "LDPPaging": {
 	              title:    "Linked Data Platform Paging 1.0",
 	              href:     "http://www.w3.org/TR/ldp-paging/",
@@ -58,7 +85,7 @@
 <body>
 
 	<section id='abstract'>This document will address considerations with backwards compatibility
-	and co-existance considerations OSLC Core 2.0 when adopting 3.0.  It is intended to cover the
+	and coexistence considerations OSLC Core 2.0 when adopting 3.0.  It is intended to cover the
 	capabilities defined in OSLC Core 3.0.</section>
 			
 	<section id='sotd'>This is an early working draft, working on outline and needs.</section>
@@ -75,10 +102,12 @@
 		1.0 in that is strengthen its definition of the use of RESTful HTTP web services and adopted an existing standard-based
 		approach to representing a data model that was flexible and had multiple representation formats, namely RDF [[rdf11-concepts]].
 		Now that OSLC Core 3.0 specifications are based on [[LINKED-DATA]] and namely the Linked Data Platform [[LDP]], 
-		there is a less-disruptive change from 2.0 to 3.0, as conceptually they are built on the same foundation: HTTP and RDF.
-		Some of the underlying concepts and vocabularies may have changed in some areas, which this document will address
+		there is a less-disruptive change from 2.0 to 3.0, as conceptually they are built on the same foundation: Linked Data (HTTP and RDF).
+		Some of the underlying concepts and vocabularies may have changed in some areas, this document will address
 		how best to co-exist with 2.0 existing implementations.  Which in the end, will mostly be able just producing a few more 
 		RDF triples (or statements) in some of the responses or additional HTTP response headers.</p>
+		<p>The goals are not to define how to future proof tools or define a comprehensive versioning model.  Though the
+		approach follows established best practices based on Web Architecture [[webarch]] and evolving RDF data models [[rdf11-concepts]].</p>
 	</section>
 
 	<section id="terms">
@@ -157,13 +186,13 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
   <td>Service Provider Resources</td>
   <td>MAY / MUST</td>
   <td>Not&nbsp;specified</td>
-  <td>Service provider resources are now simply discovery properties on LDP containers [[LDP]].</td>
+  <td>Service provider resources are now simply discovery headers and properties on LDP containers [[LDP]], [[OSLCDiscovery3]].</td>
 </tr>
 <tr>
   <td>Creation Factories</td>
   <td>MUST</td>
   <td>Not&nbsp;specified</td>
-  <td>Creation factories are now simply LDP containers [[LDP]], some additional properties are added to indicate which type and shapes are supported.</td>
+  <td>Creation factories are now simply LDP containers [[LDP]], some additional parameters and properties are added to indicate which type and shapes are supported [[OSLCDiscovery3]].</td>
 </tr>
 <tr>
   <td>Query Capabilities</td>
@@ -194,33 +223,35 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
   <td>HTTP Basic Authentication</td>
   <td>MAY</td>
   <td>TBD</td>
-  <td>Evaluating requirements for authentication in OSLC 3.0.</td>
+  <td>Evaluating requirements for authentication in OSLC 3.0.
+  <div class="note">TODO: <em>PROPOSED:</em> make HTTPS + BASIC a minimum requirement.</div></td>
 </tr>
 <tr>
   <td>OAuth Authentication</td>
   <td>SHOULD</td>
   <td>TBD</td>
-  <td>Evaluating requirements for authentication in OSLC 3.0.</td>
+  <td>Evaluating requirements for authentication in OSLC 3.0.
+  <div class="note">TODO: <em>PROPOSED:</em> Make OAuth2, specifically OpenID Connect, a SHOULD</div></td>
 </tr>
 <tr>
   <td>Error Responses</td>
   <td>MAY</td>
   <td>MAY</td>
-  <td>OSLC Services MAY provide error responses using Core defined error formats</td>
+  <td>OSLC Services MAY provide error responses using Core defined error formats [[OSLCVocab3]]</td>
 </tr>
 <tr>
   <td>RDF/XML Representations</td>
   <td>MUST / SHOULD</td>
   <td>Not&nbsp;specified</td>
-  <td>XML and RDF/XML are not mentioned in OSLC 3.0. Servers can continue to support
-      RDF/XML for backwards compatibility.</td>
+  <td>Need for RDF/XML is left open in OSLC 3.0. Servers can continue to support
+      RDF/XML for backwards compatibility using HTTP content negotiation.</td>
 </tr>
 <tr>
   <td>XML Representations</td>
   <td>MUST</td>
   <td>Not&nbsp;specified</td>
-  <td>XML and RDF/XML are not mentioned in OSLC 3.0. Servers can continue to support
-      XML for backwards compatibility.</td>
+  <td>Need for XML is left open in OSLC 3.0. Servers can continue to support
+      XML for backwards compatibility using HTTP content negotiation.</td>
 </tr>
 <tr>
   <td>OSLC 2.0 JSON Representations</td>
@@ -228,7 +259,7 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
   <td>Not&nbsp;specified</td>
   <td>The OSLC-specific JSON representation is not specified in OSLC 3.0.
       Instead, JSON-LD is REQUIRED in OSLC 3.0. Servers can continue to support
-      the OSLC JSON format for backwards compatibility.</td>
+      the OSLC JSON format for backwards compatibility using HTTP content negotiation.</td>
 </tr>
 <tr>
   <td>Turtle Representations</td>
@@ -245,26 +276,97 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
 <tr>
   <td>HTML Representations</td>
   <td>SHOULD</td>
-  <td>SHOULD</td>
-  <td>OSLC services SHOULD provide HTML representations for HTTP GET requests</td>
+  <td>Not specified</td>
+  <td>OSLC Core 3.0 doesn't require HTML, though it does promote the Linked Data principles that doing an HTTP GET request on a
+  URL should return some useful data about the resource.</td>
 </tr>
 </tbody>
 </table>
 </section>
 	
+<section><h2>Making client that works with either 2.0 or 3.0 servers</h2>
+
+	<section><h2>Server/endpoint discovery</h2>
+		<p>In order for a client to work with as many possible combinations of servers, it will need be written to be
+		flexible and tolerant of changes.  It should be expected that if a server returns URLs from 3.0 discovery mechanisms, that the
+		client shouldn't expect to see that server switch back to 2.0 mechanisms.</p>
+		
+		<p>3.0 clients should not send the <code>OSLC-Core-Version</code> header, if they do, use the value of "3.0".</p>
+		
+		<p>When clients are expecting a URL that is an OSLC 2.0 Service Provider document, they will clearly find a resource of type 
+		<code>oslc:ServiceProvider</code> and inlined resources of type <code>oslc:Service</code>.</p>
+		<p>When clients are expecting a URL that is an OSLC 3.0 server, they will clearly find a resource of type or subtype of <code>ldp:Container</code>.</p>
+	</section>
+	
+	<section><h2>Creation of resources of a certain type</h2>
+		<p>Based on the approach illustrated in the previous section to determine which version of server you are connected to:</p>
+		<p>In 2.0, the client will look into an oslc:Server resource, then domain type, then creation factory and finally the type associated with it.</p>
+		<p>In 3.0, the client will <a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/discovery.html#creation">inspect the response headers</a>.</p>
+	</section>
+	
+</section>
+
+<section><h2>Making server that works with either 2.0 or 3.0 clients</h2>
+
+	<section><h2>Server/endpoint discovery</h2>
+		<p>OSLC 2.0 clients should provide a HTTP request header of <code>OSLC-Core-Version: 2.0</code> which servers can respond with a 2.0 only response.</p>
+		<p>If the <code>OSLC-Core-Version</code> header is not provided on HTTP requests or the value is "3.0", servers can assume the client is at least a 3.0 client and
+		prefer 3.0-only responses.</p>
+		
+		<p>Optionally, a server can detect when a client uses a URL to make a request for a different version of a resource than the server is expecting.  The
+		server can redirect the client to the appropriate URL, using the appropriate HTTP 3xx range redirect codes such as 301 (Moved permanently).</p>
+			
+		<p>Additionally, servers could decide to expose additional HTTP response headers, RDF triples and HTTP OPTIONS responses to provide a
+		single view of a given resource URL that may have been reserved for a given 2.0 or 3.0 concept.  There may be advantages to reusing URLs say
+		for 2.0 creation factories and 3.0 LDP Containers, though in some cases there may be some drawbacks.</p>
+		
+		<div class='note'>NOTE: Do we need to articulate every resource type?</div>
+	</section>
+
+</section>
+
+<section><h2>Gracefully upgrading server from 2.0 to 3.0</h2>
+	<p>This only applies to client's that support 3.0.  As in the case if the client only supported 2.0, it would only request that and use that.
+	Client applications has stored these references:</p>
+	<ul>
+		<li>Service Provider Catalog</li>
+		<li>Service Provider</li>
+		<li>Linked to Resource</li>
+	</ul>
+	<p>2.0 client applications shouldn't store other URLs or data, other than for caching purposes.</p> 
+</section>
+
+
 <section>
 	<h2>Discovery</h2>
 	<p class="todo">TODO: How to align with: ServiceProvider, ServiceProviderCatalog, Service, CreationFactory, QueryCapability, domain</p>
+
+    <section><h2>Find v2 oslc:ServiceProvider document</h2>
+	    <p>In OSLC Core 2.0 based specifications, OSLC Servers (Providers) would be required to expose a resource which has an <code>rdf:type</code>
+	    of <code>oslc:ServiceProvider</code>.</p>
+    </section>
+	
 </section>
 
 <section>
 	<h2>OSLC-Core-Version</h2>
-	<p>Deprecated.  Technically, there is no to carry it forward in 3.0.  Each capability should be able to accurately describe
-	how to discover it using methods established by LDP such as HTTP response headers (Link relations, Accept-Post, ...).</p>
+	<p>Deprecated.  Technically, there is no reason to carry it forward in 3.0.  Each capability should be able to independently describe
+	how to discover it using methods established by LDP such as HTTP response headers (Link relations, Accept-Post, ...) [[OSLCDiscovery3]].</p>
 	<p>Implementations that have previously tested for the value of this parameter, should ensure their logic properly accounts for
 	values that may not be "2.0".  As some may provide the value of "3.0", which shouldn't be seen as an error but instead as just
 	an informative header.</p>
 </section>
+
+<section>
+	<h2>Dialogs</h2>
+	<p class="todo">TODO: complete the list of items that would should consider</p>
+</section>
+
+<section>
+	<h2>Resource Preview</h2>
+	<p class="todo">TODO: complete the list of items that would should consider</p>
+</section>
+
 
 <section>
 	<h2>TODO more compat items</h2>
