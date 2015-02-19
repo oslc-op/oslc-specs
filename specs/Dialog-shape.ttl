@@ -5,14 +5,20 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 # TODO: What stable URL to use for this shape?
-<http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/Dialog-shape.ttl> 
+<http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/Dialog-shape.ttl>
 	a oslc:ResourceShape ;
-	dcterms:title "Information about user interface delegated dialogs." ;
+	dcterms:title "Describes a delegated dialog." ;
 	oslc:name "Dialog" ;
 	oslc:describes oslc:Dialog ;
 	rdfs:seeAlso <http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html>;
-	oslc:property <#dcterms-title>, <#oslc-label>, <#oslc-dialog>, <#oslc-hintWidth>, <#oslc-hintHeight>,
-				<#oslc-resourceType>.
+	oslc:property
+            <#dcterms-title>,
+            <#oslc-label>,
+            <#oslc-dialog>,
+            <#oslc-hintWidth>,
+            <#oslc-hintHeight>,
+	    <#oslc-resourceType>,
+            <#oslc-resourceShape>.
 
 <#dcterms-title> a oslc:Property ;
 	oslc:name "title" ;
@@ -56,6 +62,14 @@
 	oslc:propertyDefinition oslc:resourceType;
 	oslc:occurs oslc:Zero-or-more;
 	oslc:readOnly true;
-	dcterms:description "The expected resource type URI for the resources that will be returned when using this dialog. 
+	dcterms:description "The expected resource type URI for the resources that will be returned when using this dialog.
 	These would be the URIs found in the result resource's <code>rdf:type</code> property."^^rdf:XMLLiteral ;
 	oslc:valueType oslc:Resource .
+
+<#oslc-resourceShape> a oslc:Property;
+	oslc:name "resourceShape";
+	oslc:propertyDefinition oslc:resourceType;
+	oslc:occurs oslc:Zero-or-more;
+	oslc:readOnly true;
+	dcterms:description "Describes constraints on dialog prefill requests."^^rdf:XMLLiteral ;
+	oslc:valueType oslc:ResourceShape .

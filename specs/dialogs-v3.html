@@ -86,6 +86,13 @@
               authors:  [ "S. Padgett", "S. Speicher" ],
               status:   "Working Draft",
               publisher:  "https://www.oasis-open.org/"
+          },
+          "OSLCCore2": {
+              title:    "OSLC Core 2.0",
+              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+              authors:  ["S. Speicher", "D. Johnson"],
+              status:   "Finalized",
+              publisher:  "http://open-services.net"
           }
       }
   };
@@ -146,11 +153,11 @@
 <section id="introduction">
     <h2>Introduction</h2>
 
-    <p>OSLC specifications target specific integration scenarios. In some cases,
-        allowing one product to delegate to a user interface defined in another
-        product is a more effective way to support a use case than an HTTP
-        interface that can only be accessed programmatically. There are two cases
-        where this is especially true:</p>
+    <p>OSLC specifications target specific integration scenarios. In some
+        cases, allowing one application to delegate to a user interface defined
+        in another application is a more effective way to support a use case
+        than an HTTP interface that can only be accessed programmatically.
+        There are two cases where this is especially true:</p>
 
     <ul>
         <li><em>Resource creation</em>: when a user of a web application needs
@@ -383,7 +390,7 @@ Transfer-Encoding: chunked
 
 <pre class="example highlight" title="Display a Dialog">
     var iframe = document.createElement("iframe");
-    iframe.seamless = "true";
+    iframe.style.border = 0;
     iframe.style.width = "600px";  // or preferred dialog width
     iframe.style.height = "400px"; // or preferred dialog height
     iframe.src = "http://example.com/dialogs/createBug";
@@ -404,12 +411,12 @@ Transfer-Encoding: chunked
 
   <p>Dialogs send results back to the client using the HTML5 function
       <code>window.postMessage</code> [[webmessaging]]. Typically, the embedded
-      page will be loaded in an <code>iframe</code> inside some surrounding web
-      page. In such cases, <code>postMessage</code> is called on that parent
-      window. In a native application, an outer page is not needed and the
-      embedded page may be shown directly in the browser's "root" window. When
-      the embedded page has no parent window, it calls <code>postMessage</code>
-      on its own window.</p>
+      page will be loaded in an <code>iframe</code>. In such cases,
+      <code>postMessage</code> is called on that parent window. In a native
+      application, an outer page is not needed and the embedded page may be
+      shown directly in the browser's root window. When the embedded page has
+      no parent window, it calls <code>postMessage</code> on its own
+      window.</p>
 
 <section class="informative" id="client_responsibilities">
   <h3>The Client's Responsibilities</h3>
@@ -515,13 +522,12 @@ Allow: GET,POST,HEAD,OPTIONS
 
 <p>To prefill content, clients POST the resource representation with the
     desired initial values. The actual content depends on the type of resource
-    and the server.</p>
+    and the server. Servers can describe constraints on POST content using
+    Resource Shapes [[OSLCCore2]]. The dialog descriptor uses property
+    <code>oslc:resourceShape</code> for the shape.</p>
 
-<div class="note">
-We might discuss resource shapes or Link rel="describedby"
-</div>
-
-<pre class="example" title="Prefilling a Bug Creation Dialog" id="ex_prefill_request">
+<pre class="example" title="Prefilling a Bug Creation Dialog"
+        id="ex_prefill_request">
 POST /dialogs/createBug HTTP/1.1
 Host: example.com
 Content-Type: text/turtle
@@ -760,6 +766,13 @@ function handleMessage(event) {
 Allow: GET,POST,HEAD,OPTIONS
 </pre>
         </section>
+        <section id="partial_shape">
+            <h2></h2>
+
+            Servers MAY describe prefill constraints by adding an
+            <code>oslc:resourceShape</code> property to the dialog descriptor
+            whose value is a resource shape [[!OSLCCore2]].
+        </section>
         <section id="partial_prefill">
             <h2></h2>
 
@@ -905,6 +918,7 @@ Allow: GET,POST,HEAD,OPTIONS
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2015-02-19 Add resource shapes for prefill. (SP)</li>
     <li>2015-02-18 Add dialog vocabulary. (SP)</li>
     <li>2015-02-18 Add references to Terminology section. (SP)</li>
     <li>2015-02-16 Cite RFC 3986 for fragment identifier. (SP)</li>
