@@ -206,35 +206,39 @@
 				header on an HTTP response to a given Request-URI to indicate the type-URI (i.e.<code>rdf:type</code>) for the type of resources
 				that can be created by the LDP Container. Note: since there is always some time between when the
 				test is done and when the creation request is sent, and that there may additional server enforced constraints
-				on the creation resource representation, there is no guarantee that a future creation request will succeed.
-			</h2>
-			<div class='note'>TODO <em>PROPOSED</em>: Poll to see if needed a standard predicate for feeding indexes</div>
-			
-			<pre class='example'>
-			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
-			      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
-			</pre>
-			
+				on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
+				<pre class='example'>
+				Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
+				      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
+				</pre>			
 			</section>
 			
+			<section id="createTypesPred"><h2 class="normal">
+				Servers MAY include a RDF triple in resource response body of the form:<br/>
+				<code>&lt;container-URI&gt; oslc:creationType &lt;type-URI&gt;</code>.</h2>
+				Clients SHOULD use the predicate <code>oslc:creationType</code> when converting HTTP response headers for the same Link-relation type, into
+				an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query
+				to locate LDP Containers that can be used to create the same resource types.
+			</section>
+						
 			<section id="isCreateEx" class='informative'><h2 class='normal'>Example</h2>
-			<p>Complete example highlighting that POST is supported, which content types are supported on POST, 
-			the fact that the resource is a LDP Container and it advertises support for creating two types of
-			resources.  Here showing the request (OPTIONS) and then the response:</p>
-			<pre class='example'>
-			OPTIONS /bugs/ HTTP/1.1
-			Host: example.come
-			</pre>
-			<pre class='example'>
-			HTTP/1.1 204 No Content
-			Date: Thu, 12 Jun 2014 18:26:59 GMT
-			Allow: POST,GET,OPTIONS,HEAD,PUT
-			Accept-Post: text/turtle, application/ld+json
-			Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
-				  &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
-			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
-			      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
-			</pre>
+				<p>Complete example highlighting that POST is supported, which content types are supported on POST, 
+				the fact that the resource is a LDP Container and it advertises support for creating two types of
+				resources.  Here showing the request (OPTIONS) and then the response:</p>
+				<pre class='example'>
+				OPTIONS /bugs/ HTTP/1.1
+				Host: example.come
+				</pre>
+				<pre class='example'>
+				HTTP/1.1 204 No Content
+				Date: Thu, 12 Jun 2014 18:26:59 GMT
+				Allow: POST,GET,OPTIONS,HEAD,PUT
+				Accept-Post: text/turtle, application/ld+json
+				Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
+					  &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+				Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
+				      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
+				</pre>
 			</section>
 		</section>
 		
@@ -248,16 +252,20 @@
 				header on an HTTP response to a given Request-URI to indicate the <code><em>constraint-URI</em></code> 
 				of a resource that defines the constraints about the to-be created resource representation against a LDP Container.
 				The resource defined by <code><em>constraint-URI</em></code> is RECOMMENDED to be a machine-readible representation
-				such as OSLC Resource Shape but MAY be some variant or other constraint document [[OSLCShapes2]].
-				
-				See [[LDP]]
-				<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
+				such as OSLC Resource Shape but MAY be some variant or other constraint document [[OSLCShapes2]].			
+				See [[LDP]]	<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
 			</h2>
-			<div class='note'>TODO <em>PROPOSED</em>: define a standard predicate for feeding indexes</div>
-			
 			<pre class='example'>
 			Link: &lt;http://example.com/shapes/bug&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"
 			</pre>
+			</section>
+			
+			<section id="createWithShapesPred"><h2 class="normal">
+				Servers MAY include a RDF triple in resource response body of the form:<br/>
+				<code>&lt;container-URI&gt; ldp:constrainedBy &lt;shape-URI&gt;</code>.</h2>
+				Clients SHOULD use the predicate <code>ldp:constrainedBy</code> when converting HTTP response headers for the same Link-relation type, into
+				an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query
+				to locate LDP Containers that are constraints by the same resource.
 			</section>
 		</section>
 			
@@ -309,14 +317,6 @@
 	<section class='appendix informative'>
 		<h2>Acknowledgements</h2>
 		<p>Many thanks to the various OASIS Core TC members and other key contributors and reviewers.</p>
-	</section>
-
-	<section class='appendix informative'>
-		<h2>ToDo List - items to complete this document</h2>
-		<ul>
-		<li>Determine if predicates are needed to dupe the link rel headers</li>
-		<li>Validate scenarios in motivation section</li>
-		</ul>
 	</section>
 	
 	<section class='appendix informative'>
