@@ -81,6 +81,12 @@
 				href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html",
 				authors : [ "Samuel Padgett", "Steve Speicher" ],
 				publisher : "OASIS",
+			},
+			"OSLCShapes2" : {
+				title : "OSLC Resource Shapes 2.0",
+				href : "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#oslc_ResourceShape_Resource",
+				authors : [ "Dave Johnson" ],
+				publisher : "open-services.net",
 			}
 		}
 	};
@@ -88,8 +94,8 @@
 </head>
 <body>
 
-	<section id='abstract'>This document outlines a common approach for server to be able to
-	publish their capabilities and how clients can discover and use them.</section>
+	<section id='abstract'>This document outlines a common approach for HTTP/LDP-based server to be able to
+	publish their RESTful API capabilities and how clients can discover and use them.</section>
 			
 	<section id='sotd'><em>Early editor's working draft: organization and content will change, feedback always welcome.</em></section>
 	
@@ -100,7 +106,7 @@
 		<h2>Introduction</h2>
 		<p>A common problem to building interoperable solutions is having a mechanism for a client to introspect an API or end-point
 		to learn if the target application supports a set of capabilities.  Sometimes the client applications may provide limited
-		or no features based on what is discovered.  An example of discover needs includes a person using a quality management tool 
+		or no features based on what is discovered.  An example of discovery needs includes a person using a quality management tool 
 		that wants to be able to record a bug in a bug tracking tool.  The integration from the quality management tool will want to
 		be able to do a number of things on behalf of the user and provide an optional integrated experience to streamline the
 		users workflow.  Therefore the discovery needs include: authenticating, knowing that the target tool is capable of 
@@ -173,8 +179,8 @@
 			</h2></section>
 
 			<section id="discContent"><h2 class="normal">
-				Servers SHOULD only use of LDPRs representations for discovery details unless there are scenarios where
-				it would be valuable to have that data readily available for purposes such as query.
+				Servers SHOULD only use LDPR representations for discovery details.  It is also useful for scenarios where
+				it would be valuable to have the discovery data readily available for purposes such as query.
 			</h2></section>
 		</section>
 		
@@ -184,21 +190,21 @@
 			<section id="doesCreate"><h2 class="normal">
 				The existence of an <code>Accept-Post</code> header on an HTTP response to a given Request-URI will
 				indicate that both an HTTP POST is accepted for authorized requests and which content types are support
-				in the entity body of an HTTP POST request. See [[LDP]] <a href="http://www.w3.org/TR/ldp/#header-accept-post">
-				section about <code>Accept-Post</code></a>.
+				in the entity body of an HTTP POST request. Restating of [[LDP]] <a href="http://www.w3.org/TR/ldp/#header-accept-post">
+				conformance clause about <code>Accept-Post</code></a>.
 			</h2></section>
 			
 			<section id="isLDPC"><h2 class="normal">
 				The existence of a <code>Link: &lt;http://www.w3.org/ns/ldp#Container&gt;; rel="type"</code> header on 
-				an HTTP response to a given Request-URI will indicate that the resource is a LDP Container. See [[LDP]]
-				<a href="http://www.w3.org/TR/ldp/#ldpc-linktypehdr">section about <code>Link</code> header and resource types</a>.
+				an HTTP response to a given Request-URI will indicate that the resource is a LDP Container. Restating
+				conformance clause for [[LDP]]
+				<a href="http://www.w3.org/TR/ldp/#ldpc-linktypehdr"><code>Link</code> header and resource types</a>.
 			</h2></section>
 
 			<section id="createsTypes"><h2 class="normal">
-				The target URI of a <code>Link: &lt;<em>type-URI</em>&gt;; rel="http://open-services.net/ns/core#creationType"</code> 
-				header on an HTTP response to a given Request-URI will indicate the <code><em>type-URI</em></code> 
-				(i.e. <code>rdf:type</code>) for the type of resources that SHOULD be able to be created for
-				authorized requests against the LDP Container.  Note: since there is always some time between when the
+				Servers SHOULD include the target URI of a <code>Link: &lt;type-URI&gt;; rel="http://open-services.net/ns/core#creationType"</code> 
+				header on an HTTP response to a given Request-URI to indicate the type-URI (i.e.<code>rdf:type</code>) for the type of resources
+				that can be created by the LDP Container. Note: since there is always some time between when the
 				test is done and when the creation request is sent, and that there may additional server enforced constraints
 				on the creation resource representation, there is no guarantee that a future creation request will succeed.
 			</h2>
@@ -238,17 +244,16 @@
 		    the resource representation.</p>
 		    
 			<section id="createsWithShapes"><h2 class="normal">
-				The target URI of a <code>Link: &lt;<em>constraints-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code> 
-				header on an HTTP response to a given Request-URI will indicate the <code><em>constraint-URI</em></code> 
-				for the resources that SHOULD be able to be created for
-				authorized requests against the LDP Container.  The resource defined by <code><em>constraint-URI</em></code>
-				SHOULD be an OSLC Resource Shape but MAY be some variant or other constraint document.
+				Servers SHOULD include the target URI of a <code>Link: &lt;<em>constraints-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code>
+				header on an HTTP response to a given Request-URI to indicate the <code><em>constraint-URI</em></code> 
+				of a resource that defines the constraints about the to-be created resource representation against a LDP Container.
+				The resource defined by <code><em>constraint-URI</em></code> is RECOMMENDED to be a machine-readible representation
+				such as OSLC Resource Shape but MAY be some variant or other constraint document [[OSLCShapes2]].
 				
 				See [[LDP]]
 				<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
 			</h2>
 			<div class='note'>TODO <em>PROPOSED</em>: define a standard predicate for feeding indexes</div>
-			<div class='note'>TODO <em>PROPOSED</em>: define a shape-specific relationship type, thinking yes.</div>
 			
 			<pre class='example'>
 			Link: &lt;http://example.com/shapes/bug&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"
