@@ -420,7 +420,7 @@ Transfer-Encoding: chunked
 
   <p>Dialogs may also request to be resized dynamically after they've been
       displayed. These requests are the same as specified in [[OSLCPreview30]]
-      and also use <code>postMessage</code>. Client can distinguish between
+      and also use <code>postMessage</code>. Clients can distinguish between
       results and resize messages from the message prefix. Messages have the
       following prefixes:</p>
 
@@ -437,20 +437,25 @@ Transfer-Encoding: chunked
         </tr>
         <tr>
             <td><code>oslc-resize:</code></td>
-            <td>The dialog is requesting to be resized.</td>
+            <td>The dialog is asking to be resized.</td>
         </tr>
     </tbody>
 </table>
 
-<p>A JSON string follows the prefix for each message type. For dialog
-    responses, the JSON is described by <a href="#results_json"></a>.
+<p>JSON follows the prefix in the message string. For dialog responses, the
+    JSON is described by <a href="#results_json"></a>. It is a JSON object an
+    with <code>oslc:results</code> array of results. Each result is a JSON
+    object with an <code>rdf:resource</code> property whose value is the
+    resource URI.  The result may also have an <code>oslc:label</code>.
 
 <pre class="example" title="Dialog Results Message">
 oslc-response:{"oslc:results": [{ "oslc:label": "bug 123: server crash", "rdf:resource": "http://example.com/bug123" }]}
 </pre>
 
-For resize requests, JSON objects have either an <code>oslc:hintHeight</code>
-or an <code>oslc:hintWidth</code> property or both.</p>
+An empty array indicates the dialog was canceled.</p>
+
+<p>For resize requests, the JSON is an object with an <code>oslc:hintHeight</code>
+property, an <code>oslc:hintWidth</code> property, or both.</p>
 
 <pre class="example" id="ex_resize_message" title="Dyanmic Resize Message">
 oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
