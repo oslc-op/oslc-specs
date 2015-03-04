@@ -338,6 +338,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
 Accept-Post: text/turtle, application/ld+json
 Allow: POST,GET,OPTIONS,HEAD
 Preference-Applied: return=representation
+Vary: Accept,Prefer
 Transfer-Encoding: chunked
 
 @prefix ex:    &lt;http://example.com/vocab#&gt; .
@@ -683,6 +684,16 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferD
             <code>oslc:Dialog</code> in length units as specified in
             [[!CSS21]].
         </section>
+        <section id="vary_header">
+            <h2></h2>
+            
+            In responses to HTTP GET requests targeting resources
+            that have dialogs, servers SHOULD either include
+            a <code>Vary</code> response header with at least
+            <code>Accept</code> and <code>Prefer</code> field values or
+            a <code>Cache-Control</code> header indicating the resource
+            is not cacheable.</h2>
+        </section>
     </section>
 
     <section id="display_conformance">
@@ -978,7 +989,8 @@ Allow: GET,POST,HEAD,OPTIONS
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
-    <li>2015-02-02 Incorporate feedback from Martin Pain. (SP)</li>
+    <li>2015-03-04 Discuss Vary and Cache-Control. (SP)</li>
+    <li>2015-03-02 Incorporate feedback from Martin Pain. (SP)</li>
     <li>2015-02-25 Make 6.4.2 a MUST rather than a SHOULD. (SP)</li>
     <li>2015-02-23 Add conformance clause for <code>oslc:hintHeight</code> and
         <code>oslc:hintWidth</code> values.  (SP)</li>
