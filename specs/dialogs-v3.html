@@ -174,7 +174,7 @@
             canceled.</li>
     </ul>
 
-    <p>Delegated dialogs support these two cases.  They allow one application to
+    <p>Delegated dialogs support these two cases. They allow one application to
         embed a creation or selection UI into another using HTML iframe elements
         and JavaScript code.</p>
 
@@ -385,12 +385,13 @@ Transfer-Encoding: chunked
       resource from another application. They use creation dialogs when they
       want a user to create a new resource in another application.</p>
 
-    <p>A client shows a dialog in an HTML page by creating an
-        <code>iframe</code> element and setting the <code>src</code> attribute
-        to the URI of the dialog to be included.</p>
+    <p>A client can open the dialog in a new browser window, or it can embed
+        the dialog in another page by creating an <code>iframe</code> element
+        and setting the <code>src</code> attribute to the URI of the dialog to
+        be included.</p>
 
-<pre class="example highlight" title="Display a Dialog">
-    var iframe = document.createElement("iframe");
+<pre class="example highlight" title="Display a Dialog"> var iframe =
+        document.createElement("iframe");
     iframe.style.border = 0;
     iframe.style.width = "600px";  // or preferred dialog width
     iframe.style.height = "400px"; // or preferred dialog height
@@ -411,25 +412,18 @@ Transfer-Encoding: chunked
       server.</p>
 
   <p>Dialogs send results back to the client using the HTML5 function
-      <code>window.postMessage</code> [[webmessaging]]. Typically, the embedded
-      page will be loaded in an <code>iframe</code>. In such cases,
-      <code>postMessage</code> is called on that parent window. In a native
-      application, an outer page is not needed and the embedded page may be
-      shown directly in the browser's root window. When the embedded page has
-      no parent window, it calls <code>postMessage</code> on its own
-      window.</p>
+      <code>Window.postMessage</code> [[webmessaging]].
+      <code>postMessage</code> is called on <code>window.opener</code> if set.
+      Otherwise, <code>postMessage</code> is called on
+      <code>window.parent</code>.</p>
 
-  <p>Dialogs may also request to be resized dynamically after they've been
-      displayed. These requests are the same as specified in [[OSLCPreview30]]
-      and also use <code>postMessage</code>. Clients can distinguish between
-      results and resize messages from the message prefix. Messages have the
-      following prefixes:</p>
+  <p>When embedded in an <code>iframe</code>, dialogs may also request to be
+      resized dynamically. These requests are the same as specified in
+      [[OSLCPreview30]] and also use <code>postMessage</code>.  Clients can
+      distinguish between results and resize messages from the message prefix.
+      Messages have the following prefixes:</p>
 
-<table>
-    <thead>
-        <th>Message Prefix</th>
-        <th>Meaning</th>
-    </thead>
+<table> <thead> <th>Message Prefix</th> <th>Meaning</th> </thead>
     <tbody>
         <tr>
             <td><code>oslc-response:</td>
@@ -466,15 +460,15 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
   <h3>The Client's Responsibilities</h3>
 
   <ol>
-      <li>Include the dialog via an <code>iframe</code>, setting
-          <code>iframe</code> <code>src</code> to the URI of the dialog, or via
-          an embedded browser.</li>
+    <li>Open the dialog in a new window using the <code>Window.open()</code>
+        method or embed the dialog in an <code>iframe</code>, setting
+        <code>iframe</code> <code>src</code> to the URI of the dialog.</li>
 
-    <li>Add a <code>message</code> listener to the outer window to receive
-        messages from the dialog.</li>
+    <li>Add a <code>message</code> listener to receive messages from the
+        dialog.</li>
 
-    <li>Listen for window <code>message</code> events, ignoring unrecognized
-        events from other sources or those not prefixed with
+    <li>Listen for <code>message</code> events, ignoring unrecognized events
+        from other sources or those not prefixed with
         <code>oslc-response:</code></li>
 
     <li>When message from the dialog indicates a completed action, free
@@ -521,15 +515,13 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 
     <li>Once the user has created or selected a resource or canceled the
         dialog, send notification using <code>postMessage</code> to the page's
-        parent window prefixed with <code>"oslc-response:"</code>.</li>
-
-    <li>If the page is not parented, then the message is posted to the page's
-        own window. The page must ignore this message to itself.</li>
+        opener or parent window prefixed with
+        <code>"oslc-response:"</code>.</li>
   </ol>
 
-  <p>The following JavaScript code example shows how a dialog would send
-      a response using <code>postMessage</code>, taking into account
-      pages that are not parented.</p>
+  <p>The following JavaScript code example shows how a dialog would send a
+      response using <code>postMessage</code>, taking into account pages that
+      the dialog might be in its own window or an <code>iframe</code>.</p>
 
 <pre class="example highlight" id="ex_post_message">
     function respondWithSelection(label, uri) {
@@ -539,7 +531,7 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
                 "rdf:resource": uri
             } ]
         };
-        (window.parent || window).postMessage("oslc-response:" + JSON.stringify(response), "*");
+        (window.opener || window.parent).postMessage("oslc-response:" + JSON.stringify(response), "*");
     }
 </pre>
 </section>
@@ -714,7 +706,7 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferD
         <section id="postmessage_parent_window">
             <h2></h2>
 
-            Servers MUST support the <code>window.postMessage</code> method
+            Servers MUST support the <code>Window.postMessage</code> method
             [[!webmessaging]] for dialog responses.
         </section>
         <section id="other_protocols">
@@ -762,20 +754,18 @@ oslc-response:{"oslc:results": []}
             <h2></h2>
 
             Calls to <code>postMessage</code> from within a dialog MUST be made
-            on <code>window.parent</code> unless <code>null</code> or
+            on <code>window.opener</code> unless <code>null</code> or
             <code>undefined</code>.
         </section>
-        <section id="postmessage_own_window">
+        <section id="postmessage_parent_window">
             <h2></h2>
 
-            If <code>window.parent</code> is <code>null</code> or
-            <code>undefined</code>, calls to <code>postMessage</code> MUST be
-            made on the dialog's own window, allowing rich client applications
-            to handle the event. The page MUST ignore this <code>message</code>
-            to itself.
+            If <code>window.opener</code> is <code>null</code> or
+            <code>undefined</code>, calls to <code>postMessage</code>
+            MUST be made on <code>window.parent</code>.
 
 <pre class="example highlight" id="ex_postMessage">
-(window.parent || window).postMessage("oslc-response:" + response, "*");
+(window.opener || window.parent).postMessage("oslc-response:" + response, "*");
 </pre>
         </section>
         <section id="message_origin">
@@ -989,6 +979,8 @@ Allow: GET,POST,HEAD,OPTIONS
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2015-03-05 Add <code>window.opener</code> as a <code>postMessage</code>
+        target. (SP)</li>
     <li>2015-03-04 Discuss Vary and Cache-Control. (SP)</li>
     <li>2015-03-02 Incorporate feedback from Martin Pain. (SP)</li>
     <li>2015-02-25 Make 6.4.2 a MUST rather than a SHOULD. (SP)</li>
