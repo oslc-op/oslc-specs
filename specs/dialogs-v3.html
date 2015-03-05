@@ -537,11 +537,11 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 </section>
 
 <section class="informative" id="prefill">
-  <h2>Prefilling Creation Dialogs</h2>
+  <h2>Prefill</h2>
 
-  <p>Servers may support setting the initial values in a creation dialog. A
-      client can test if a dialog supports prefill by making an HTTP OPTIONS
-      request to the dialog descriptor URI.</p>
+  <p>Servers may support setting the initial values in a dialog. A client can
+      test if a dialog supports prefill by making an HTTP OPTIONS request to
+      the dialog descriptor URI.</p>
 
 <pre class="example" id="ex_options_dialog">
 OPTIONS /dialogs/createBug HTTP/1.1
@@ -574,7 +574,7 @@ Transfer-Encoding: chunked
    oslc_cm:severity &lt;http://example.com/enums#S1&gt; .
 </pre>
 
-<p>The content of the request depends on the type of resource and the server.
+<p>The content of the request depends on the type of dialog and the server.
     Servers may describe constraints on POST content using resource shapes
     [[OSLCCore2]]. The dialog descriptor uses property
     <code>oslc:resourceShape</code> for the shape.</p>
@@ -691,10 +691,10 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferD
     <section id="display_conformance">
         <h2>Display</h2>
 
-        <section id="postmessage_parent_window">
+        <section id="embed_dialog">
             <h2></h2>
 
-            When presenting a dialog inside another web application, the client
+            When embedding a dialog inside another web page, the client
             MUST use an <code>iframe</code> element and set the its
             <code>src</code> attribute to the URI of the dialog.
         </section>
@@ -703,7 +703,7 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferD
     <section id="messaging_conformance">
         <h2>Messaging</h2>
 
-        <section id="postmessage_parent_window">
+        <section id="postmessage_window">
             <h2></h2>
 
             Servers MUST support the <code>Window.postMessage</code> method
@@ -750,14 +750,14 @@ oslc-response:{"oslc:results": [{ "oslc:label": "bug 123: server crash", "rdf:re
 oslc-response:{"oslc:results": []}
 </pre>
         </section>
-        <section id="postmessage_parent_window">
+        <section id="postmessage_window_opener">
             <h2></h2>
 
             Calls to <code>postMessage</code> from within a dialog MUST be made
             on <code>window.opener</code> unless <code>null</code> or
             <code>undefined</code>.
         </section>
-        <section id="postmessage_parent_window">
+        <section id="postmessage_window_parent">
             <h2></h2>
 
             If <code>window.opener</code> is <code>null</code> or
@@ -806,9 +806,9 @@ function handleMessage(event) {
         <section id="allow_prefill">
             <h2></h2>
 
-            Servers MAY allow clients to prefill creation dialogs by accepting
-            HTTP POST requests where the Request-URI is the dialog descriptor
-            and the entity body is a resource representation describing the
+            Servers MAY allow clients to prefill dialogs by accepting
+            HTTP POST requests where the Request-URI is the dialog
+            descriptor and the entity body is an entity describing the
             initial values.
         </section>
         <section id="dialog_options">
@@ -833,9 +833,10 @@ Allow: GET,POST,HEAD,OPTIONS
         <section id="partial_prefill">
             <h2></h2>
 
-            Servers MUST NOT reject dialog prefill requests solely because they
-            are missing required fields for the resource. Users can fill in the
-            missing values in the dialog.
+            Servers MUST NOT reject prefill requests on creation dialogs
+            solely because they are missing required fields for the
+            resource. Users can fill in the missing values in the
+            dialog.
         </section>
         <section id="prefill_response">
             <h2></h2>
@@ -979,6 +980,8 @@ Allow: GET,POST,HEAD,OPTIONS
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2015-03-05 Generalize dialog prefill to include selection
+        dialogs. (SP)</li>
     <li>2015-03-05 Add <code>window.opener</code> as a <code>postMessage</code>
         target. (SP)</li>
     <li>2015-03-04 Discuss Vary and Cache-Control. (SP)</li>
