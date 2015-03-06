@@ -1,258 +1,250 @@
-<table cellspacing="1" cellpadding="5" border="0"> 
-<tbody><tr>
-<td valign="center"><img width="59" alt="OSLC_logo.png" src="/pub/Main/OslcCoreSpecification/OSLC_logo.png" height="66" />
-</td>
-<td valign="top"><h1>Open Services for Lifecycle Collaboration<br />Actions Specification Version 2.0</h1>
-</td>
-</tr></tbody></table>
+<!DOCTYPE html>
+<html>
+<head>
+<title>OSLC Actions 3.0</title>
+<meta charset='utf-8'>
+<script	src='https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script  type="text/javascript" >
+	var respecConfig = {
+		// specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN). If in doubt use WD.
+		// See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
+		specStatus : "WD",
+		
+        // Only include h1 and h2 level
+        maxTocLevel: 2,
 
-<p><strong>Status: Finalization - 17 February 2015</strong></p>
-<p><strong>Issues:</strong> [[Actions 2.0 Issues]]</p>
-<p><strong>This Version</strong></p>
-<ul>
-<li><a href="http://open-services.net/wiki/core/Actions-2.0/">http://open-services.net/wiki/core/Actions-2.0/</a></li>
-</ul>
-<p><strong>Latest Version</strong> </p>
-<ul>
-<li><a href="http://open-services.net/wiki/core/Actions-2.0/">http://open-services.net/wiki/core/Actions-2.0/</a></li>
-</ul>
-<p><strong>Previous Version</strong> </p>
-<ul>
-<li>This is the first version of this specification.  The 2.0 designation shows its alignment with Core 2.0, as is this community's practice.</li>
-</ul>
-<p><strong>Authors</strong> </p>
-<ul>
-<li><a href="http://open-services.net/bin/view/Main/JohnArwe">John Arwe</a> (IBM, OSLC-Core)</li>
-<li>Martin Pain (IBM, OSLC-Automation Lead)</li>
-<li>Samuel Padgett (IBM, OSLC-Change-Management Lead)</li>
-<li><a href="http://open-services.net/bin/view/Main/SteveSpeicher">SteveSpeicher</a> (IBM, OSLC-Core Lead)</li>
-</ul>
-<p><strong>Contributors</strong> </p>
-<ul>
-<li>See <a href="#Contributors">Contributors section</a> below</li>
-</ul>
-<div class="toc">
-<ul>
-<li><a href="#intended-audience">Intended audience</a></li>
-<li><a href="#terminology">Terminology</a></li>
-<li><a href="#overview-non-normative">Overview (non-normative)</a><ul>
-<li><a href="#what-are-actions">What are actions?</a></li>
-<li><a href="#high-level-interaction-model">High level interaction model</a></li>
-<li><a href="#what-do-consumers-need-to-know">What do consumers need to know?</a></li>
-<li><a href="#domain-specific-consumers">Domain-specific consumers</a></li>
-<li><a href="#providers">Providers</a></li>
-<li><a href="#generic-or-cross-domain-consumers">Generic or cross-domain consumers</a></li>
-<li><a href="#templates">Templates</a></li>
-</ul>
-</li>
-<li><a href="#description">Description</a><ul>
-<li><a href="#re-use-by-domain-specifications-re-use-by-domain-specs">Re-use by domain specifications ### {#re-use-by-domain-specs}</a></li>
-<li><a href="#discovering-the-actions-available-from-a-resource-oslc-action-discovery">Discovering the actions available from a resource ### {#oslc-action-discovery}</a></li>
-<li><a href="#action-resources">Action resources</a></li>
-<li><a href="#types-of-actions">Types of actions</a></li>
-<li><a href="#action-bindings-instructions-for-executing-available-actions-executing-actions">Action bindings: instructions for executing available actions  ### {#executing-actions}</a></li>
-<li><a href="#future-actions-future-actions">Future actions ### {#Future-actions}</a></li>
-<li><a href="#recognizing-the-interaction-patterns-used-by-each-binding-recognizing-patterns">Recognizing the interaction patterns used by each binding  {#recognizing-patterns}</a></li>
-<li><a href="#interaction-patterns">Interaction patterns</a><ul>
-<li><a href="#final-execution-status-patterns-final-status">Final execution status  #### {#patterns-final-status}</a></li>
-<li><a href="#pattern-http-request-with-empty-body-pattern-empty-body">Pattern: HTTP request with empty body {#pattern-empty-body}</a><ul>
-<li><a href="#pattern-recognition-rule">Pattern recognition rule</a></li>
-<li><a href="#execution">Execution</a></li>
-</ul>
-</li>
-<li><a href="#pattern-http-request-with-resource-shape-to-describe-the-request-body-pattern-resource-shape">Pattern: HTTP request with Resource Shape to describe the request body {#pattern-resource-shape}</a><ul>
-<li><a href="#pattern-recognition-rule_1">Pattern recognition rule</a></li>
-<li><a href="#execution_1">Execution</a></li>
-</ul>
-</li>
-<li><a href="#pattern-http-request-with-fixed-body-pattern-body-repn">Pattern: HTTP request with fixed body {#pattern-body-repn}</a><ul>
-<li><a href="#pattern-recognition-rule_2">Pattern recognition rule</a></li>
-<li><a href="#execution_2">Execution</a></li>
-</ul>
-</li>
-<li><a href="#pattern-automation-request-pattern-autoreq">Pattern: Automation request  {#pattern-autoreq}</a><ul>
-<li><a href="#pattern-recognition-rule_3">Pattern recognition rule</a></li>
-<li><a href="#additional-provider-constraints">Additional provider constraints</a></li>
-<li><a href="#execution_3">Execution</a></li>
-</ul>
-</li>
-<li><a href="#pattern-delegated-ui-dialog-for-immediate-execution-pattern-immed-dialog">Pattern: Delegated UI dialog for immediate execution {#pattern-immed-dialog}</a><ul>
-<li><a href="#pattern-recognition-rule_4">Pattern recognition rule</a></li>
-<li><a href="#execution-action-dialog-results">Execution ##### {#action-dialog-results}</a></li>
-</ul>
-</li>
-<li><a href="#pattern-delegated-ui-dialog-for-later-execution-pattern-dialog-delayed-execution">Pattern: Delegated UI dialog for later execution  {#pattern-dialog-delayed-execution}</a></li>
-<li><a href="#pattern-automation-creation-factory-pattern-creation-factory">Pattern: Automation Creation Factory {#pattern-creation-factory}</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#resources">Resources</a><ul>
-<li><a href="#actions-namespace">Actions Namespace</a></li>
-<li><a href="#other-namespaces">Other namespaces</a></li>
-<li><a href="#resource-action-resource-action">Resource: Action {#Resource-Action}</a><ul>
-<li><a href="#action-properties">Action Properties</a></li>
-<li><a href="#action-subtypes-action-subtypes">Action subtypes #### {#action-subtypes}</a></li>
-</ul>
-</li>
-<li><a href="#common-property-oslcaction-property-oslc-action">Common Property: oslc:action ### {#property-oslc-action}</a></li>
-<li><a href="#resource-request">Resource: Request</a><ul>
-<li><a href="#request-properties">Request Properties</a></li>
-</ul>
-</li>
-<li><a href="#resource-results">Resource: results</a></li>
-<li><a href="#resource-parameterinstance-resource_parameterinstance">Resource: ParameterInstance    {#Resource_ParameterInstance}</a><ul>
-<li><a href="#parameterinstance-properties">ParameterInstance Properties</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#best-practices">Best Practices</a><ul>
-<li><a href="#minimize-the-number-of-http-round-trips">Minimize the number of HTTP round-trips</a></li>
-</ul>
-</li>
-<li><a href="#specification-profiles">Specification profiles</a><ul>
-<li><a href="#specification-profiles-overview">Specification profiles overview</a></li>
-<li><a href="#using-specification-profiles">Using specification profiles</a></li>
-<li><a href="#recognizing-profiles">Recognizing profiles</a><ul>
-<li><a href="#why-are-profiles-only-identified-in-documentation-not-data">Why are profiles only identified in documentation, not data?</a></li>
-</ul>
-</li>
-<li><a href="#choosing-one-or-more-profiles-to-implement">Choosing one or more profiles to implement</a></li>
-<li><a href="#other-specifications-profiles-other">Other specifications ### {#profiles-other}</a></li>
-<li><a href="#terminology_1">Terminology</a></li>
-<li><a href="#specification-profile-definitions">Specification profile definitions</a><ul>
-<li><a href="#profile-post-rdf-described-by-a-oslc-resource-shape-to-the-action-resource-profile_post_resource_shape">Profile: POST RDF described by a OSLC Resource Shape to the Action resource #### {#profile_POST_resource_shape}</a></li>
-<li><a href="#profile-create-an-automation-request-profile_automation_request">Profile: Create an Automation Request #### {#profile_automation_request}</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<li><a href="#appendix-a-constructing-an-http-request-from-an-httprequest-resource-constructing-http-requests">Appendix A: Constructing an HTTP request from an http:Request resource {#constructing-http-requests}</a><ul>
-<li><a href="#standard-restrictions-on-httprequest-resources-for-simple-specification-profiles">Standard restrictions on http:Request resources for simple specification profiles</a></li>
-</ul>
-</li>
-<li><a href="#appendix-b-examples-examples">Appendix B: Examples {#examples}</a></li>
-<li><a href="#appendix-d-notices-and-references">Appendix D: Notices and References</a><ul>
-<li><a href="#contributors">Contributors</a><ul>
-<li><a href="#reporting-issues-on-the-specification">Reporting Issues on the Specification</a></li>
-<li><a href="#license-and-intellectual-property">License and Intellectual Property</a></li>
-<li><a href="#references">References</a></li>
-</ul>
-</li>
-<li><a href="#appendix-e-changes">Appendix E: Changes</a><ul>
-<li><a href="#changes-during-20-convergence-phase">Changes during 2.0 convergence phase</a></li>
-<li><a href="#changes-to-oslc-core-vocabulary">Changes to OSLC Core vocabulary</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</div>
-<p><strong>Notation and Conventions</strong></p>
-<p>The key words &ldquo;MUST&rdquo;, &ldquo;MUST NOT&rdquo;, &ldquo;REQUIRED&rdquo;, &ldquo;SHALL&rdquo;, &ldquo;SHALL NOT&rdquo;, &ldquo;SHOULD&rdquo;, &ldquo;SHOULD NOT&rdquo;, &ldquo;RECOMMENDED&rdquo;, &ldquo;MAY&rdquo;, and &ldquo;OPTIONAL&rdquo; in this document are to be interpreted as described in <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC2119</a>. Domain name examples use <a href="http://tools.ietf.org/html/rfc2606">RFC2606</a>.</p>
-<p>Any sections marked as notes, as examples, or as non-normative do not affect compliance.</p>
-<h2 id="intended-audience">Intended audience</h2>
-<p>This section is non-normative; it provides a guide as to which sections of the specification it is important for different audiences to understand and comply with.</p>
-<ul>
-<li><strong>Implementors of OSLC consumers</strong> - To reduce implementation effort, implementations may choose to be compliant with only a subset of this specification. To support interoperability between implementations that do so it is recommended that consumers pick one or more <em><a href="#Specification-profiles">specification profiles</a></em> and support, as a minimum, the subset of this specification included in those profiles.</li>
-<li><strong>Implementors of OSLC providers</strong> - To reduce implementation effort, implementations may choose to be compliant with only a subset of this specification. To support interoperability between implementations that do so it is recommended that providers pick one or more <em><a href="#Specification-profiles">specification profiles</a></em> and ensure that every action that they provide has at least one <em>Action binding</em> that falls within the constraints of each <em>profile</em>.</li>
-<li><strong>Authors of specifications that re-use Action resources</strong> - It is recommended that domain specifications reusing Action resources select a <em><a href="#Specification-profiles">specification profile</a></em> that implementations of the domain specification should support as a minimum. Such specifications can refer to a profile that is defined or referenced in this specification, or may define their own. Such specifications may also want to define additional interaction patterns, but are advised to reuse or extend the ones defined in this specification if possible, to aid interoperability.</li>
-</ul>
-<h2 id="terminology">Terminology</h2>
-<p><strong>Action</strong> - Linked Data-based hypertext describing an end -- the desired semantics -- and some means to accomplish that end via HTTP-based interaction pattern(s) that may or may not also involve user interaction.  Although the term's use in this specification is primarily to actions available when the response is formed, that limit does not come from this definition.  Action resources can be used to describe other varieties, like past, future, or potential actions; enabling this additional flexibility in the definition is intentional, and it has been exploited already by at least the <a href="http://open-services.net/wiki/automation/OSLC-Automation-Specification-Version-2.1/">Automation domain</a>.</p>
-<p><strong>Action binding</strong> - a means of executing an action, or instructions for executing an action. Each action may have multiple action bindings to allow the action to support multiple interaction patterns.  Each action binding uses an interaction pattern and specifies values (e.g. URL and request body contents) that the consumer must apply to that interaction pattern to execute that particular action.</p>
-<p><strong>Interaction pattern</strong> - an abstract definition of how a consumer and provider interact in order to execute an action.  The definition includes a rule consumers use to recognize that an action binding uses the interaction pattern, instructions for sending messages, and instructions that consumers use to determine the results.  For a simple interaction pattern using a single-request HTTP flow, determining the result can be as simple as inspecting the HTTP status code.</p>
-<p><strong><a href="#Specification-profiles">Specification profile</a></strong> - a named, coherent subset of a specification, often used in a specific domain, like <a href="/wiki/change-management">Change Management</a> or <a href="/wiki/automation">Automation</a>. An actions <em>specification profile</em> includes one or more <em>interaction patterns</em> for which each <em>Action</em> resource governed by that <em>profile</em> must provide an <em>Action binding</em>. The additional constraints simplify the range of code clients are required to implement, making it cheaper and easier to adopt. This is a specification-only concept, not a runtime concept.</p>
-<p><strong>Provider</strong> - for the purposes of the specification, an OSLC Actions provider is any OSLC implementation that serves resources of type oslc:Action or that serves action bindings, irrespective or whether it links to them from its owns resources or from resources hosted by other OSLC implementations.</p>
-<p><strong>Consumer</strong> - for the purposes of this specification, an OSLC Actions consumer is any OSLC implementation that can use resources of type oslc:Action to execute that action using its <em>action bindings</em>.</p>
-<h2 id="overview-non-normative">Overview (non-normative)</h2>
-<h3 id="what-are-actions">What are actions?</h3>
-<p>This specification provides a means of advertising actions that can be performed on (or in the context of) a specific resource. For example, a <a href="http://open-services.net/wiki/change-management/State-Transitions-for-Change-Requests/#CM-Actions-with-the-Core-Workgroup-Actions-Proposal">change request can have a "resolve" action or other state transitions</a>.
-Providers implementing this specification allow consumers to list and select actions that can be executed on a given resource <em>R</em> without needing to understand <em>R</em>'s type, properties, lifecycle, etc. See <a href="#What-do-consumers-need-to-know">What do consumers need to know?</a>.
-Each action provides a few primary pieces of information: "what does this action do?", "how do I execute this action?", and "how do I determine if the action succeeded or failed?". These are described in the <a href="#Description">normative specification sections</a> below.</p>
-<p>[[Image:Actions-Overview-Questions.png]]</p>
-<p>Those questions are answered by action bindings. The action can have multiple bindings in order to provide compatibility with more than one type of consumer, or to support multiple interaction patterns (for example, programmatic execution in addition to execution via a delegated UI dialog). Each of the different bindings provided by a single action must be <em>semantically equivalent</em> - that is, they must each achieve the same thing, just in a different way and possibly at a different point in time - although they may not be <em>semantically identical</em>, because of differing side effects or details.</p>
-<p>The scenarios that this specification enables are listed on the [[Actions 2.0 Scenarios]] page.</p>
-<h3 id="high-level-interaction-model">High level interaction model</h3>
-<ul>
-<li>Providers annotate resources with actions. </li>
-<li>Consumers discover available actions on existing resources.<ul>
-<li>Domain-specific or profile-specific clients (the normal case) do so as described in and/or constrained by the appropriate specification&#40;s&#41; and/or profile&#40;s&#41; &#40;for example, a profile provided by a domain specification&#41;; they need to understand whatever interaction pattern(s) the profile includes in order to successfully invoke actions that comply with it. </li>
-<li>Generic (cross-domain) clients might rely only on the entirety of Core Actions (this specification), and be able to display and/or invoke actions from many resource types and interaction patterns. </li>
-</ul>
-</li>
-</ul>
-<h3 id="what-do-consumers-need-to-know">What do consumers need to know?</h3>
-<p>By using this explicit, loosely-coupled description of actions that are available on a given resource R, consumers <em>do not</em> need to understand:</p>
-<ul>
-<li>the <code>rdf:type</code> of R, or the domain that defines it</li>
-<li>the native lifecycle of R</li>
-<li>the properties of R unrelated to Actions, or the meaning of their values</li>
-</ul>
-<p>instead, the consumer only needs to know:</p>
-<ul>
-<li>the URI of R</li>
-<li>how to find the actions and their bindings that exist on R (as defined by this specification)</li>
-<li>how to execute those bindings (as defined by this specification)</li>
-<li>how to determine the success/failure of its request to execute the action (as defined by this specification)</li>
-</ul>
-<p>Therefore this specification frees the execution of these actions from domain specifics, instead providing a common point of interoperability between multiple domain specifications.</p>
-<h3 id="domain-specific-consumers">Domain-specific consumers</h3>
-<p>The first-order concern of domain specifications is <em>consumers written to that specification</em>. Domain specifications provide one or more specification profiles for the consumers to support. Those profile&#40;s&#41; define the minimum subset of this specification that the consumer must implement. The consumer itself is not aware of specification profiles at run time -- it is a design-time decision about what interaction patterns to implement with what (if any) restrictions, and how to document those design-time decisions.</p>
-<p>The process that a consumer supporting a given profile &#40;whether or not that profile was provided by a domain specification&#41; would follow to find resources with actions it is capable of consuming is:</p>
-<ul>
-<li>Decide what the set of interesting resources is.  It might be one or many, depending upon the usage scenario.</li>
-<li>For each interesting resource:<ul>
-<li>Find <a href="#oslc-action-discovery">available actions</a> by looking for the <code>oslc:action</code> predicate on the resource</li>
-<li>For each such action<ul>
-<li>Find the bindings for that action by looking for the <code>oslc:binding</code> predicate on the action.</li>
-<li>For each action binding:<ul>
-<li>For each interaction pattern that is supported by the consumer (which must include, at a minimum, the interaction patterns required by the chosen profile):<ul>
-<li>Determine if this consumer is compatible with that binding, by determining whether the binding uses that interaction pattern and whether it adheres to any restrictions on the bindings that this consumer can execute (e.g. any restrictions specified against that interaction pattern in the profile that the consumer was implemented against).</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Note: At least one interaction pattern must match on a binding for the consumer to be compatible with that binding. It is theoretically possible that multiple interaction patterns may match one binding if interaction patterns that extend those in 2.0 are defined in certain ways, but in the 2.0 specification at most one interaction pattern matches any single binding.</li>
-</ul>
-</li>
-<li>If at least one of the bindings is compatible with this consumer, then the action is compatible with this consumer.</li>
-</ul>
-</li>
-<li>Do whatever the client is coded to do.</li>
-</ul>
-<p>The process such a client would follow to <em>execute</em> any action it is capable of consuming is usually to form and make an HTTP request, but some interaction patterns dictate a different process. The instructions for forming and making the request are found by following <code>oslc:binding</code> link(s) and examining the object resources.</p>
-<ul>
-<li>Given the action to execute and the binding(s) for that action that the consumer is compatible with (found using the process above)</li>
-<li>If more than one binding is compatible with the consumer, choose one using whatever criteria the consumer prefers. e.g. it can have an order of preference (decided at implementation time) based on the interaction patterns' cost of execution (e.g. time, resources), or the desired interaction with the user (e.g. dialogs, or ability to execute at a later time).</li>
-<li>Follow the instructions of the selected interaction pattern to execute the action via the chosen binding. For example, if the binding is an <code>http:Request</code> resource, form the HTTP request from it.</li>
-</ul>
-<p>Note: no mention is made of how many HTTP requests are required to retrieve the Actions/bindings/etc. data mentioned, since that is implementation-dependent. <a href="#Best-Practices">Best practices</a> suggest minimizing them, especially when UI presentation performance is important.</p>
-<h3 id="providers">Providers</h3>
-<p>The second-order concern of domain specifications is <em>providers written to that specification</em>.  The process such a provider would follow to <em>expose</em> resources with actions its domain-specific clients are capable of consuming is:</p>
-<ul>
-<li>Decide what the set of interesting resources is.<ul>
-<li>The most likely case is resources owned/exposed by the provider itself.</li>
-</ul>
-</li>
-<li>For each interesting resource:<ul>
-<li>Find any existing actions that the provider can add a new binding for<ul>
-<li>The action that the binding is for must be <em>semantically equivalent</em> to the provider's action to be exposed, where equivalence is defined by the provider of the action. (There is no loosely-coupled means of determining semantic equivalence between providers, other than when two bindings are already on the same <code>oslc:Action</code>. So usually new bindings can only be added to existing actions by the same provider that created the bindings already on the action, or some implementation-specific means would have to exist for the two providers to agree that the two bindings are semantically equivalent).</li>
-</ul>
-</li>
-<li>Add the provider's action to be exposed, either as a new <code>oslc:binding</code> link or as a new <code>oslc:action</code> link.</li>
-</ul>
-</li>
-</ul>
-<h3 id="generic-or-cross-domain-consumers">Generic or cross-domain consumers</h3>
-<p>Domain specifications often care little about consumers <em>not</em> written to that particular specification, beyond adhering to basic HTTP and Linked Data principles.  Core specifications, in effect, enable cross-domain consumers. </p>
-<p>The process such a consumer would follow to <em>find</em> resources with actions it is capable of consuming, and <em>executing</em> those, is the same as for a domain-specific consumer, but where the interaction patterns supported by the consumer are as wide a set as the implementation allows, rather than being based on a specification profile. A generic consumer could, for example, look at all actions (<code>oslc:action</code> predicates) across a set of resources, present those to a user, and let the user select one or more to invoke. The only restriction on the set of interaction patterns is the set of those understood by the consumer code, since there is no single domain specification or profile involved.</p>
-<h3 id="templates">Templates</h3>
-<p>One particular usage pattern for Actions is their use as <em>templates</em>, especially by schedulers.  An analogy is a partially filled-out form, for example a drug prescription, that one copies and submits (renews) multiple times.  It is not always easy, given one of those forms, to distinguish between the original and the copies; they have nearly identical content, but they are used very differently.  The original is used to manufacture new copies, and each copy is "traded" for a set quantity and type of medicine.<br />
-</p>
-<p>The same pattern occurs with schedulers: during a "configuration" phase, a form is filled out (for future use) and saved; later in time, during one or more "execution" or "use" phases, a copy of the saved form is submitted in order to cause a result such as executing an Action.  The resource acting as the saved form and the copies made from it have very similar representations, but distinct identifiers (URIs).  The copying process is usually accomplished by submitting a representation (of the resource acting as the template) to a creation factory, which responds to successful requests with a newly minted URI (identifying the new copy).  Creation factories implemented via HTTP POST have considerable discretion in how they use the input representation, and in some cases (like <a href="/wiki/automation">OSLC Automation</a>) the act of creation may carry with it side effects, like execution of an Automation Request.  There is nothing specific to OSLC Automation in the template usage pattern, however; indeed, readers might well recognize a similar pattern in saved queries and favorite lists on many Web sites.  Hence, the <a href="#Interaction-patterns">interaction patterns</a> described later can generally each be used as part of a template pattern at a higher level of abstraction.</p>
-<h2 id="description">Description</h2>
+		shortName : "oslc-actions",
+
+		// if your specification has a subtitle that goes below the main
+		// formal title, define it here
+		// subtitle   :  "Committee Specification Draft 01",
+
+		// if you wish the publication date to be other than the last modification, set this
+		// publishDate:  "2009-08-06",
+
+		// if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+		// and its maturity status
+		// previousPublishDate:  "1977-03-15",
+		// previousMaturity:  "WD",
+
+		// if there a publicly available Editor's Draft, this is the link
+		edDraftURI:           "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/actions.html",
+
+		// if this is a LCWD, uncomment and set the end of its review period
+		// lcEnd: "2009-08-05",
+		
+		// includePermalinks: true,
+
+		chairs : [ {
+			name : "Steve Speicher",
+			url : "http://stevespeicher.me/",
+			mailto : "sspeiche@us.ibm.com",
+			company : "IBM",
+			companyURL : "http://ibm.com/"
+		} ],
+		editors : [ {
+			name : "Martin Pain",
+			mailto : "martinpain@uk.ibm.com",
+			company : "IBM",
+			companyURL : "http://ibm.com/"
+		},
+        {
+            name:       "Samuel Padgett",
+            mailto:     "spadgett@us.ibm.com",
+            company:    "IBM",
+            companyURL: "http://ibm.com/"
+        } ],
+		wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+		wgURI : "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
+		namespaces : [ {
+			href : "http://open-services.net/ns/core#",
+			prefix : "oslc"
+		} ],
+		wgPublicList : "oslc-core-comments",
+
+		localBiblio : {
+			"OSLCCore3" : {
+				title : "OSLC Core 3.0",
+				href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core-v3.html",
+				authors : [ "Steve Speicher" ],
+				publisher : "OASIS",
+			}
+		}
+	};
+</script>
+</head>
+
+<body>
+
+	<section id='abstract'>This document provides a means of advertising actions (RESTful HTTP operations) that can be performed on 
+	 a Linked Data resource.</section>
+			
+	<section id='sotd'><em>Early Working Draft: formating into respec and aligning with 3.0 principles</em></section>
+	
+	<section id='toc'></section>	
+	<hr/>
+	
+	<section id='intro' class='informative'>
+		<h2>Introduction</h2>
+		<h3 id="what-are-actions">What are actions?</h3>
+		<p>This specification provides a means of advertising actions that can be performed on (or in the context of) a specific resource. For example, a <a href="http://open-services.net/wiki/change-management/State-Transitions-for-Change-Requests/#CM-Actions-with-the-Core-Workgroup-Actions-Proposal">change request can have a "resolve" action or other state transitions</a>.
+		Providers implementing this specification allow consumers to list and select actions that can be executed on a given resource <em>R</em> without needing to understand <em>R</em>'s type, properties, lifecycle, etc. See <a href="#What-do-consumers-need-to-know">What do consumers need to know?</a>.
+		Each action provides a few primary pieces of information: "what does this action do?", "how do I execute this action?", and "how do I determine if the action succeeded or failed?". These are described in the <a href="#Description">normative specification sections</a> below.</p>
+		<p>[[Image:Actions-Overview-Questions.png]]</p>
+		<p>Those questions are answered by action bindings. The action can have multiple bindings in order to provide compatibility with more than one type of consumer, or to support multiple interaction patterns (for example, programmatic execution in addition to execution via a delegated UI dialog). Each of the different bindings provided by a single action must be <em>semantically equivalent</em> - that is, they must each achieve the same thing, just in a different way and possibly at a different point in time - although they may not be <em>semantically identical</em>, because of differing side effects or details.</p>
+		<p>The scenarios that this specification enables are listed on the [[Actions 2.0 Scenarios]] page.</p>
+		<h3 id="high-level-interaction-model">High level interaction model</h3>
+		<ul>
+		<li>Providers annotate resources with actions. </li>
+		<li>Consumers discover available actions on existing resources.<ul>
+		<li>Domain-specific or profile-specific clients (the normal case) do so as described in and/or constrained by the appropriate specification&#40;s&#41; and/or profile&#40;s&#41; &#40;for example, a profile provided by a domain specification&#41;; they need to understand whatever interaction pattern(s) the profile includes in order to successfully invoke actions that comply with it. </li>
+		<li>Generic (cross-domain) clients might rely only on the entirety of Core Actions (this specification), and be able to display and/or invoke actions from many resource types and interaction patterns. </li>
+		</ul>
+		</li>
+		</ul>
+		<h3 id="what-do-consumers-need-to-know">What do consumers need to know?</h3>
+		<p>By using this explicit, loosely-coupled description of actions that are available on a given resource R, consumers <em>do not</em> need to understand:</p>
+		<ul>
+		<li>the <code>rdf:type</code> of R, or the domain that defines it</li>
+		<li>the native lifecycle of R</li>
+		<li>the properties of R unrelated to Actions, or the meaning of their values</li>
+		</ul>
+		<p>instead, the consumer only needs to know:</p>
+		<ul>
+		<li>the URI of R</li>
+		<li>how to find the actions and their bindings that exist on R (as defined by this specification)</li>
+		<li>how to execute those bindings (as defined by this specification)</li>
+		<li>how to determine the success/failure of its request to execute the action (as defined by this specification)</li>
+		</ul>
+		<p>Therefore this specification frees the execution of these actions from domain specifics, instead providing a common point of interoperability between multiple domain specifications.</p>
+		<h3 id="domain-specific-consumers">Domain-specific consumers</h3>
+		<p>The first-order concern of domain specifications is <em>consumers written to that specification</em>. Domain specifications provide one or more specification profiles for the consumers to support. Those profile&#40;s&#41; define the minimum subset of this specification that the consumer must implement. The consumer itself is not aware of specification profiles at run time -- it is a design-time decision about what interaction patterns to implement with what (if any) restrictions, and how to document those design-time decisions.</p>
+		<p>The process that a consumer supporting a given profile &#40;whether or not that profile was provided by a domain specification&#41; would follow to find resources with actions it is capable of consuming is:</p>
+		<ul>
+		<li>Decide what the set of interesting resources is.  It might be one or many, depending upon the usage scenario.</li>
+		<li>For each interesting resource:<ul>
+		<li>Find <a href="#oslc-action-discovery">available actions</a> by looking for the <code>oslc:action</code> predicate on the resource</li>
+		<li>For each such action<ul>
+		<li>Find the bindings for that action by looking for the <code>oslc:binding</code> predicate on the action.</li>
+		<li>For each action binding:<ul>
+		<li>For each interaction pattern that is supported by the consumer (which must include, at a minimum, the interaction patterns required by the chosen profile):<ul>
+		<li>Determine if this consumer is compatible with that binding, by determining whether the binding uses that interaction pattern and whether it adheres to any restrictions on the bindings that this consumer can execute (e.g. any restrictions specified against that interaction pattern in the profile that the consumer was implemented against).</li>
+		</ul>
+		</li>
+		</ul>
+		</li>
+		<li>Note: At least one interaction pattern must match on a binding for the consumer to be compatible with that binding. It is theoretically possible that multiple interaction patterns may match one binding if interaction patterns that extend those in 2.0 are defined in certain ways, but in the 2.0 specification at most one interaction pattern matches any single binding.</li>
+		</ul>
+		</li>
+		<li>If at least one of the bindings is compatible with this consumer, then the action is compatible with this consumer.</li>
+		</ul>
+		</li>
+		<li>Do whatever the client is coded to do.</li>
+		</ul>
+		<p>The process such a client would follow to <em>execute</em> any action it is capable of consuming is usually to form and make an HTTP request, but some interaction patterns dictate a different process. The instructions for forming and making the request are found by following <code>oslc:binding</code> link(s) and examining the object resources.</p>
+		<ul>
+		<li>Given the action to execute and the binding(s) for that action that the consumer is compatible with (found using the process above)</li>
+		<li>If more than one binding is compatible with the consumer, choose one using whatever criteria the consumer prefers. e.g. it can have an order of preference (decided at implementation time) based on the interaction patterns' cost of execution (e.g. time, resources), or the desired interaction with the user (e.g. dialogs, or ability to execute at a later time).</li>
+		<li>Follow the instructions of the selected interaction pattern to execute the action via the chosen binding. For example, if the binding is an <code>http:Request</code> resource, form the HTTP request from it.</li>
+		</ul>
+		<p>Note: no mention is made of how many HTTP requests are required to retrieve the Actions/bindings/etc. data mentioned, since that is implementation-dependent. <a href="#Best-Practices">Best practices</a> suggest minimizing them, especially when UI presentation performance is important.</p>
+		<h3 id="providers">Providers</h3>
+		<p>The second-order concern of domain specifications is <em>providers written to that specification</em>.  The process such a provider would follow to <em>expose</em> resources with actions its domain-specific clients are capable of consuming is:</p>
+		<ul>
+		<li>Decide what the set of interesting resources is.<ul>
+		<li>The most likely case is resources owned/exposed by the provider itself.</li>
+		</ul>
+		</li>
+		<li>For each interesting resource:<ul>
+		<li>Find any existing actions that the provider can add a new binding for<ul>
+		<li>The action that the binding is for must be <em>semantically equivalent</em> to the provider's action to be exposed, where equivalence is defined by the provider of the action. (There is no loosely-coupled means of determining semantic equivalence between providers, other than when two bindings are already on the same <code>oslc:Action</code>. So usually new bindings can only be added to existing actions by the same provider that created the bindings already on the action, or some implementation-specific means would have to exist for the two providers to agree that the two bindings are semantically equivalent).</li>
+		</ul>
+		</li>
+		<li>Add the provider's action to be exposed, either as a new <code>oslc:binding</code> link or as a new <code>oslc:action</code> link.</li>
+		</ul>
+		</li>
+		</ul>
+		<h3 id="generic-or-cross-domain-consumers">Generic or cross-domain consumers</h3>
+		<p>Domain specifications often care little about consumers <em>not</em> written to that particular specification, beyond adhering to basic HTTP and Linked Data principles.  Core specifications, in effect, enable cross-domain consumers. </p>
+		<p>The process such a consumer would follow to <em>find</em> resources with actions it is capable of consuming, and <em>executing</em> those, is the same as for a domain-specific consumer, but where the interaction patterns supported by the consumer are as wide a set as the implementation allows, rather than being based on a specification profile. A generic consumer could, for example, look at all actions (<code>oslc:action</code> predicates) across a set of resources, present those to a user, and let the user select one or more to invoke. The only restriction on the set of interaction patterns is the set of those understood by the consumer code, since there is no single domain specification or profile involved.</p>
+		<h3 id="templates">Templates</h3>
+		<p>One particular usage pattern for Actions is their use as <em>templates</em>, especially by schedulers.  An analogy is a partially filled-out form, for example a drug prescription, that one copies and submits (renews) multiple times.  It is not always easy, given one of those forms, to distinguish between the original and the copies; they have nearly identical content, but they are used very differently.  The original is used to manufacture new copies, and each copy is "traded" for a set quantity and type of medicine.<br />
+		</p>
+		<p>The same pattern occurs with schedulers: during a "configuration" phase, a form is filled out (for future use) and saved; later in time, during one or more "execution" or "use" phases, a copy of the saved form is submitted in order to cause a result such as executing an Action.  The resource acting as the saved form and the copies made from it have very similar representations, but distinct identifiers (URIs).  The copying process is usually accomplished by submitting a representation (of the resource acting as the template) to a creation factory, which responds to successful requests with a newly minted URI (identifying the new copy).  Creation factories implemented via HTTP POST have considerable discretion in how they use the input representation, and in some cases (like <a href="/wiki/automation">OSLC Automation</a>) the act of creation may carry with it side effects, like execution of an Automation Request.  There is nothing specific to OSLC Automation in the template usage pattern, however; indeed, readers might well recognize a similar pattern in saved queries and favorite lists on many Web sites.  Hence, the <a href="#Interaction-patterns">interaction patterns</a> described later can generally each be used as part of a template pattern at a higher level of abstraction.</p>
+	</section>
+
+	<section id="terms">
+		<h2>Terminology</h2>
+		<dl>
+			<dt class='loc-heading'>Action</dt>
+			<dd>Linked Data-based hypertext describing an end -- the desired semantics -- and some means to accomplish that end via 
+			HTTP-based interaction pattern(s) that may or may not also involve user interaction.  Although the term's use in this 
+			specification is primarily to actions available when the response is formed, that limit does not come from this definition.  
+			Action resources can be used to describe other varieties, like past, future, or potential actions; enabling this additional 
+			flexibility in the definition is intentional, and it has been exploited already by at least the 
+			<a href="http://open-services.net/wiki/automation/OSLC-Automation-Specification-Version-2.1/">Automation domain</a>.</dd>
+			
+			<dt>Action binding</dt>
+			<dd>A means of executing an action, or instructions for executing an action. Each action may have multiple action bindings 
+			to allow the action to support multiple interaction patterns.  Each action binding uses an interaction pattern and specifies 
+			values (e.g. URL and request body contents) that the consumer must apply to that interaction pattern to execute that particular 
+			action.</dd>
+			
+			<dt>Interaction pattern</dt>
+			<dd>An abstract definition of how a consumer and provider interact in order to execute an action.  The definition includes 
+			a rule consumers use to recognize that an action binding uses the interaction pattern, instructions for sending messages, 
+			and instructions that consumers use to determine the results.  For a simple interaction pattern using a single-request HTTP 
+			flow, determining the result can be as simple as inspecting the HTTP status code.</dd>
+			
+			<dt><a href="#Specification-profiles">Specification profile</a></dt>
+			<dd>A named, coherent subset of a specification, often used in a specific domain, like 
+			<a href="/wiki/change-management">Change Management</a> or <a href="/wiki/automation">Automation</a>. An actions 
+			<em>specification profile</em> includes one or more <em>interaction patterns</em> for which each <em>Action</em> resource 
+			governed by that <em>profile</em> must provide an <em>Action binding</em>. The additional constraints simplify the range of 
+			code clients are required to implement, making it cheaper and easier to adopt. This is a specification-only concept, not a 
+			runtime concept.</dd>
+			
+			<dt>Provider</dt>
+			<dd>For the purposes of the specification, an OSLC Actions provider is any OSLC implementation that serves resources of 
+			type oslc:Action or that serves action bindings, irrespective or whether it links to them from its owns resources or from 
+			resources hosted by other OSLC implementations.</dd>
+			
+			<dt>Consumer</dt>
+			<dd>For the purposes of this specification, an OSLC Actions consumer is any OSLC implementation that can use resources 
+			of type oslc:Action to execute that action using its <em>action bindings</em>.</dd>
+		</dl>
+	</section>
+
+	<section id="intended-audience" class='informative'>
+		<h2>Intended audience</h2>
+		<p>This section is non-normative; it provides a guide as to which sections of the specification it is important for different audiences to understand and comply with.</p>
+		<ul>
+			<li><strong>Implementors of OSLC consumers</strong> - To reduce implementation effort, implementations may choose to be compliant with only a subset of this specification. To support interoperability between implementations that do so it is recommended that consumers pick one or more <em><a href="#Specification-profiles">specification profiles</a></em> and support, as a minimum, the subset of this specification included in those profiles.</li>
+			<li><strong>Implementors of OSLC providers</strong> - To reduce implementation effort, implementations may choose to be compliant with only a subset of this specification. To support interoperability between implementations that do so it is recommended that providers pick one or more <em><a href="#Specification-profiles">specification profiles</a></em> and ensure that every action that they provide has at least one <em>Action binding</em> that falls within the constraints of each <em>profile</em>.</li>
+			<li><strong>Authors of specifications that re-use Action resources</strong> - It is recommended that domain specifications reusing Action resources select a <em><a href="#Specification-profiles">specification profile</a></em> that implementations of the domain specification should support as a minimum. Such specifications can refer to a profile that is defined or referenced in this specification, or may define their own. Such specifications may also want to define additional interaction patterns, but are advised to reuse or extend the ones defined in this specification if possible, to aid interoperability.</li>
+		</ul>
+	</section>
+	
+	<section id="conformance">
+		<p><em>TODO: needed for public review version of standards-track specifications, more details 
+		in <a href="http://docs.oasis-open.org/templates/TCHandbook/ConformanceGuidelines.html#_Toc170119664">TC Handbook</a>.
+		Some examples: <a href="https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp.html#conformance">LDP</a>, 
+		<a href="http://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.html#S-CONFORMANCE">UBL</a></em></p>
+	</section>
+	
+	<section class='informative'>
+		<h2>Motivation</h2>
+		<div class='note'>TODO: fill in motivation</div>
+	</section>
+	
+	<section id='concepts' class='informative'>
+		<h2>Basic Concepts</h2>
+		<div class='note'>TODO: fill in basic concepts (tease out of intro)</div>
+	</section>
+	
+	
+	<section id='implConform'>
+		<h2>Implementation Conformance</h2>
 <h3 id="re-use-by-domain-specifications-re-use-by-domain-specs">Re-use by domain specifications ### {#re-use-by-domain-specs}</h3>
 <p>Domain specifications re-using this specification <strong>SHOULD</strong> make their readers aware of <a href="#Best-Practices">Best Practices</a> for representing actions and their related resources.<br />
 </p>
@@ -506,7 +498,11 @@ and waiting for the action to be completed or cancelled before returning to the 
 <li><strong>Name:</strong> Automation Creation Factory</li>
 <li><strong>Contained in profiles:</strong> <em>(None)</em></li>
 </ul>
-<h2 id="resources">Resources</h2>
+
+	</section>
+
+	<section id='resources'>
+		<h2>Resources</h2>
 <p>This section defines the resources of the Actions specification.</p>
 <h3 id="actions-namespace">Actions Namespace</h3>
 <p>The namespace used for resources and properties <em>defined in this specification</em> is as follows: </p>
@@ -887,7 +883,10 @@ no objections to the usage.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="best-practices">Best Practices</h2>
+	</section>
+
+	<section id="best-practices">
+		<h2>Best Practices</h2>
 <h3 id="minimize-the-number-of-http-round-trips">Minimize the number of HTTP round-trips</h3>
 <p>Actions will often be and/or link to inline resources, possibly anonymous ones (without their own URL, i.e. blank nodes). But they can be separate, addressable resources if needed. Since a client might need to retrieve Action descriptions, e.g. in a UI, in order to find the one with the correct type (if it is looking for a particular type of action), it is likely advantageous to minimize the number of HTTP round trips by returning the representation of all a resource's actions along with the resource's representation.  The same pattern applies to <code>oslc:binding</code> object resources.</p>
 <h2 id="specification-profiles">Specification profiles</h2>
@@ -987,6 +986,9 @@ no objections to the usage.</p>
 <li>4xx or 5xx status code to indicate failure.</li>
 </ul>
 <p>Depending upon the <a href="#Interaction-patterns">interaction pattern</a> within which a request is made, the HTTP status code might or might not give the status of the consumer's desired result (successfully completing an action).  For example, the interaction pattern might require the consumer to use the <a href="/wiki/automation/OSLC-Automation-Specification-Version-2.0/">OSLC Automation specification</a>'s mechanisms to <a href="/wiki/automation/OSLC-Automation-Specification-Version-2.0/#State-and-Verdict-properties">monitor the action's progress and success/failure</a>.</p>
+</section>
+
+	<section>
 <h2 id="standard-restrictions-on-httprequest-resources-for-simple-specification-profiles">Standard restrictions on http:Request resources for simple specification profiles</h2>
 <p>This section is here for specification profiles to conveniently restrict <code>http:Request</code> resources to simple requests, without having to repeat these restrictions in every profile that uses them. These restrictions only apply to specification profiles that explicitly reference this section. Implementations not governed by a specific profile, or governed by profiles that do not include these restrictions, can ignore this list.</p>
 <p>When these restrictions are included in a specification profile, the providers <strong>MUST</strong>, for each action linked to from an <code>oslc:action</code> predicate, provide at least one binding that:</p>
@@ -996,54 +998,9 @@ no objections to the usage.</p>
 <li>specifies the <code>http:requestURI</code> value as a URI, NOT a literal</li>
 </ul>
 <p>Consumers supporting this profile <strong>MAY</strong> decide not to implement support for bindings that do not adhere to these restrictions. However, if they do not implement support for bindings that do not meet these restrictions the consumers <strong>MUST NOT</strong> attempt to execute such bindings. That is, in that case they <strong>MUST</strong> check that the value of these properties is as stated in these restrictions.</p>
-<h1 id="appendix-b-examples-examples">Appendix B: Examples {#examples}</h1>
-<p>This section is non-normative.</p>
-<p>The examples are on a separate page: [[Actions 2.0 Examples]]</p>
-<h1 id="appendix-d-notices-and-references">Appendix D: Notices and References</h1>
-<h3 id="contributors">Contributors</h3>
-<ul>
-<li><a href="http://open-services.net/bin/view/Main/JohnArwe">John Arwe</a> (IBM, OSLC-Core)</li>
-<li>Martin Pain (IBM, OSLC-Automation Lead)</li>
-<li>Samuel Padgett (IBM, OSLC-Change-Management Lead)</li>
-<li><a href="http://open-services.net/bin/view/Main/SteveSpeicher">SteveSpeicher</a> (IBM, OSLC-Core Lead)</li>
-</ul>
-<h3 id="reporting-issues-on-the-specification">Reporting Issues on the Specification</h3>
-<p>The working group participants who author and maintain this working draft specification, monitor a distribution list where issues or questions can be raised, see <a href="http://open-services.net/mailman/listinfo/oslc-core_open-services.net">Core Mailing List</a></p>
-<p>Also the issues found with this specification and their resolution can be found at <a href="http://open-services.net/wiki/core/OSLC-Core-V2-Issues/">Core 2.0 Issues</a>.</p>
-<h3 id="license-and-intellectual-property">License and Intellectual Property</h3>
-<p>We make this specification available under the terms and conditions set forth in the site <a href="http://open-services.net/terms/">Terms of Use</a>, <a href="http://open-services.net/ip-policy/">IP Policy</a>, and <a href="http://open-services.net/legal-agreements/performance-monitoring-wpa/">the Workgroup Participation Agreement for this Workgroup</a>.</p>
-<h3 id="references">References</h3>
-<ul>
-<li>HTTP in RDF - <a href="http://www.w3.org/TR/HTTP-in-RDF10/">HTTP Vocabulary in RDF 1.0</a></li>
-<li>OSLC Core - <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification">OSLC Core Specification 2.0</a></li>
-<li>OSLC Automation - <a href="/wiki/automation/OSLC-Automation-Specification-Version-2.1/">OSLC Automation 2.1</a></li>
-<li>Dublin Core 1.1 - <a href="http://dublincore.org/documents/2010/10/11/dces/">Dublin Core Metadata Element Set, Version 1.1</a></li>
-<li>FOAF - <a href="http://xmlns.com/foaf/spec/20100809.html">Friend of a Friend (FOAF) v0.98</a></li>
-<li>HTTP 1.1 - <a href="http://tools.ietf.org/html/rfc2616">Hyper-text Transfer Protocol (HTTP/1.1)</a></li>
-<li>JSON - <a href="http://json.org/">JavaScript Object Notation</a></li>
-<li>OAuth 1.0a - <a href="http://tools.ietf.org/html/rfc5849">RFC5849 - The OAuth 1.0 Protocol</a></li>
-<li>URI Syntax - <a href="http://tools.ietf.org/html/rfc3986">URI Generic Syntax</a></li>
-<li>XML Namespaces - <a href="http://www.w3.org/TR/REC-xml-names/">Namespaces in XML 1.0 (Third Edition)</a></li>
-<li>XSD Datatypes - <a href="http://www.w3.org/TR/xmlschema-2">XML Schema Part 2: Datatypes Second Edition</a></li>
-<li>Linked Data Platform - <a href="http://www.w3.org/TR/ldp/">Linked Data Platform 1.0</a></li>
-</ul>
-<h2 id="appendix-e-changes">Appendix E: Changes</h2>
-<ul>
-<li>2.0 is first version</li>
-</ul>
-<h3 id="changes-during-20-convergence-phase">Changes during 2.0 convergence phase</h3>
-<ul>
-<li>Addressed comments from <a href="/wiki/automation/AutomationMeetings20140515/#Minutes">May 15, 2014 meeting</a></li>
-<li>2014-06-18: Under <a href="#pattern-immed-dialog">Pattern: Delegated UI dialog for immediate execution</a> corrected "invoking dialog" to "consumer", in changes made in previous point.</li>
-<li>2014-07-17: Added short <a href="#Future-actions">future actions</a> section to address convergence feedback</li>
-<li>2014-09-11: Align with Core 2 instead of anticipating Core 3 when requiring media types (RDF/XML not Turtle)</li>
-<li>2014-09-11: Editorial changes in response to Ian's review, see July+August meeting minutes for details</li>
-<li>2014-09-12: Remove "cherry picking", whereby a single binding could have &gt;1 occurrence of predicates like httpVersion or body and thus match multiple interaction patterns</li>
-<li>2014-09-12: Add <code>oslc:usage</code> 0:* in binding resource table to match existing prose</li>
-<li>2014-10-09: Editorial changes</li>
-<li>2014-10-10: Move <code>:futureAction</code> and <code>:executes</code> predicates from Automation to Core vocabulary</li>
-<li>2015-01-28: Corrected reference to a domain specification Action type in <a href="#re-use-by-domain-specs">Re-use by domain specifications</a> section.</li>
-</ul>
+	</section>
+
+	<section>
 <h3 id="changes-to-oslc-core-vocabulary">Changes to OSLC Core vocabulary</h3>
 <p>These are the additions that this specification makes to the <a href="/wiki/core/CoreVocabulary/">OSLC Core Vocabulary</a>.</p>
 <ul>
@@ -1058,3 +1015,29 @@ no objections to the usage.</p>
 <li>Individuals:</li>
 <li><code>oslc:ActionDialog</code>. Description: An individual that represents that a dialog is to be used (oslc:usage) as a dialog to execute an oslc:Action. When the dialog is completed, the action's execution has been completed. (This is the added value on top of merely identifying a resource as rdf:type oslc:Dialog. This is in contrast to oslc-automation:DeferredExecutionDialog, which can be used as part of executing an action, but after the dialog completes the consumer has more steps to take.) The OSLC Core Actions specification defines additional status information that can be returned by dialogs used in this way.</li>
 </ul>
+</section>
+
+	<section class='appendix informative'>
+		<h2>Acknowledgements</h2>
+		<p>Many thanks to the various OASIS Core TC members and other key contributors and reviewers.</p>
+	</section>
+	
+	<section class='appendix informative'>
+		<h2>Change History</h2>
+		<p>The change history is up to the editors to insert a brief summary of
+changes, ordered by most recent changes first and with heading from which
+public draft it has been changed from.</p>
+
+<!-- 
+	<section>	
+		<h2>Detailed history</h2>
+<!-- <blockquote><em><a href="http://sspeiche.github.io/respec/examples/oslc/template-spec.html">Working Draft</a></em></blockquote> -->
+<!-- 
+		<ul>
+			<li>2014-10-20 - Provide history, prefer autogen from SCM tool...conclude with initials (SS)</li>
+		</ul>
+	</section>-->
+	</section>
+
+</body>
+</html>
