@@ -543,6 +543,10 @@ if (window.postMessage &amp;&amp; window.parent)  {
             <h2 class="normalFont">Servers MAY choose to provide Compact
                 resources for some resources and not others.</h2>
         </section>
+        <section id="http_options">
+            <h2 class="normalFont">Resources with previews MUST support
+                the HTTP OPTIONS method.</h2>
+        </section>
         <section id="vary_header">
             <h2 class="normalFont">In responses to HTTP GET requests targeting
                 resources that have a Compact resource, servers SHOULD either
@@ -566,9 +570,10 @@ if (window.postMessage &amp;&amp; window.parent)  {
     <section id="link_headers">
         <h2>Link Headers</h2>
         <section id="compact_link_header">
-            <h2 class="normalFont">In responses to HTTP requests for a target
-                resource that has a Compact resource, servers MUST include
-                a <code>Link</code> header [[!RFC5988]] where
+            <h2 class="normalFont">In responses to successful HTTP
+                requests for a target resource that has a Compact
+                resource, servers MUST include a <code>Link</code>
+                header [[!RFC5988]] where
 
                 <ul>
                     <li>The context URI is the effective request URI,</li>
@@ -712,7 +717,7 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferC
         <section id="resize_post_message">
             <h2 class="normalFont">Servers that support dynamic sizing MUST
                 send resize messages to the parent window using the
-                <code>window.postMessage</code> method [[!webmessaging]] where
+                <code>Window.postMessage</code> method [[!webmessaging]] where
                 the source of the event is the preview's window.</h2>
         </section>
         <section id="post_message_content">
@@ -902,6 +907,8 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 <p>Below is a summary of some of the changes in this draft</p>
 
 <ul>
+    <li>2015-03-06 Require HTTP OPTIONS support for resources with preview and
+        only require Link headers on successful responses. (SP)</li>
     <li>2015-03-05 Recommend Vary only if Cache-Control header is not
         set to no-store. (SP)</li>
     <li>2015-03-04 Allow Cache-Control in place of Vary (6.1.2). (SP)</li>
