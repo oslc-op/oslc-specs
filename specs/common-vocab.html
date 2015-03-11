@@ -142,21 +142,20 @@
 		
 	</section>
 -->
- 
-	<section>
-		<h2>Implementation Conformance</h2>
-
-		<section id="commonprops">
-			<h2>Common Properties</h2>
-			
+ 	<section id="commonprops">
+		<h2>Common Properties</h2>
+		
+		<section id="comPropImplConform">
+			<h2>Implementation Conformance</h2>
+		
 			<section id="nsRule"><h2 class="normal">Changes to the OSLC Core Vocabulary MUST be approved by the OASIS 
 			OSLC Core TC. The OSLC Core Vocabulary is assigned the namespace URI of the <code>http://open-services.net/ns/core#</code>.</h2>
 			</section>
-
+	
 			<section id="nsRuleExtend"><h2 class="normal">Domain TCs and other extensions MUST contribute their
 			vocabulary terms in a namespace which is assigned to them as an authority.</h2>
 			</section>
-
+	
 			<section id="vocabReuse"><h2 class="normal">OSLC Core, domain and other extensions SHOULD reuse
 			existing vocabulary terms from stable vocabularies such as [[DC-TERMS]], RDF [[rdf11-concepts]], RDF Schema [[rdf-schema]], 
 			[[FOAF]], [[skos-reference]] and OSLC.  New vocabulary terms should only be created when there is no clear 
@@ -164,23 +163,92 @@
 			</section>
 			
 			<p>See <a href="#rdfvocab" class="sectionRef"></a> for details on common property terms.</p>
+		</section>
+	</section>
 
+	<section id="discussion">
+		<h2>Discussion</h2>
+	
+		<section id="shapeDiscussion">
+			<h2>Shape: Discussion</h2>
+			<p>Often times a series of comments is collected with a lifecycle resource, often referred to as a discussion.
+			It is quite common across various types of resources such as project tasks, bug reports, requirements, assets and so on.
+			This Discussion resource definition provides a minimal shape describes the needed properties.</p>
+		
+			<div title='RDF Shape for Discussion' 
+				data-include='./Discussion-shape.ttl' 
+				data-oninclude='shapeToSpec' 
+				data-include-sync='true' 
+				data-include-replace='true' 
+				data-include-format='html'></div>
+		</section>
+			
+		<section id="shapeComment">
+			<h2>Shape: Comment</h2>
+			<p>Used in conjunction with <a href="#shapeDiscussion" title=""></a> to provide a minimal resource definition for a collection
+			of comments.</p>
+		
+			<div title='RDF Shape for Comment' 
+				data-include='./Comment-shape.ttl' 
+				data-oninclude='shapeToSpec' 
+				data-include-sync='true' 
+				data-include-replace='true' 
+				data-include-format='html'></div>
 		</section>
 		
-		<section id="errorresponses">
-			<h2>Error Responses</h2>
-			
+		<p>See <a href="#rdfvocab" class="sectionRef"></a> for details on discussion property terms.</p>
+		
+	</section>
+
+	<section id="errorresponses">
+		<h2>Errors</h2>
+		
+		<section id="errImplConform">
+			<h2>Implementation Conformance</h2>
 			<section id="errUseful"><h2 class="normal">When an OSLC Server incurs an error, it is RECOMMENDED that useful information  be provided to clients in the body of the HTTP response.</h2>
 			</section>
-
+	
 			<section id="errMsg"><h2 class="normal">OSLC Servers SHOULD use the <a href="shapeError">Error resource</a> defined below as the basis for forming error responses.</h2>
 			</section>
-
+	
 			<section id="errFormat"><h2 class="normal">OSLC Servers SHOULD return an <a href="shapeError">Error resource</a> using the same representation format requested by the client via the HTTP <code>Accept</code> request header. [[HTTP11]]</h2>
 			</section>
+		</section>
+		
+		<section id="shapeError">
+			<h2>Shape: Error</h2>
+			<p>Used when servers may need a consistent shape to communicate error messages.</p>
+		
+			<div title='RDF Shape for Error' 
+				data-include='./Error-shape.ttl' 
+				data-oninclude='shapeToSpec' 
+				data-include-sync='true' 
+				data-include-replace='true' 
+				data-include-format='html'></div>
 			
 		</section>
 
+		<section id="shapeExtendedError">
+			<h2>Shape: ExtendedError</h2>
+			<p>Additional details about an error the server had when processing the request.</p>
+		
+			<div title='RDF Shape for ExtendedError' 
+				data-include='./ExtendedError-shape.ttl' 
+				data-oninclude='shapeToSpec' 
+				data-include-sync='true' 
+				data-include-replace='true' 
+				data-include-format='html'></div>
+			
+		</section>
+		
+		<p>See <a href="#rdfvocab" class="sectionRef"></a> for details on error property terms.</p>
+		
+	</section>
+	
+	<section>
+		<h2>Terms for describing vocabularies</h2>
+		
+		
 		<section class='informative' id="invLabels">
 			<h2>Inverse Labels</h2>
 			
@@ -219,71 +287,12 @@
 			<code><pre class='example'>ex:validatesRequirement oslc:impactType oslc:UpstreamImpact .
 ex:validatesRequirementCollection oslc:impactType oslc:UpstreamImpact.</pre></code>
 		</section>
+	</section>
 		
-		<section id="shapes"><h2>Shapes</h2>
-
-			<section id="shapeDiscussion">
-				<h2>Shape: Discussion</h2>
-				<p>Often times a series of comments is collected with a lifecycle resource, often referred to as a discussion.
-				It is quite common across various types of resources such as project tasks, bug reports, requirements, assets and so on.
-				This Discussion resource definition provides a minimal shape describes the needed properties.</p>
-			
-				<div title='RDF Shape for Discussion' 
-					data-include='./Discussion-shape.ttl' 
-					data-oninclude='shapeToSpec' 
-					data-include-sync='true' 
-					data-include-replace='true' 
-					data-include-format='html'></div>
-				
-			</section>
-				
-			<section id="shapeComment">
-				<h2>Shape: Comment</h2>
-				<p>Used in conjunction with <a href="#shapeDiscussion" title=""></a> to provide a minimal resource definition for a collection
-				of comments.</p>
-			
-				<div title='RDF Shape for Comment' 
-					data-include='./Comment-shape.ttl' 
-					data-oninclude='shapeToSpec' 
-					data-include-sync='true' 
-					data-include-replace='true' 
-					data-include-format='html'></div>
-				
-			</section>
-
-			<section id="shapeError">
-				<h2>Shape: Error</h2>
-				<p>Used when servers may need a consistent shape to communicate error messages.</p>
-			
-				<div title='RDF Shape for Error' 
-					data-include='./Error-shape.ttl' 
-					data-oninclude='shapeToSpec' 
-					data-include-sync='true' 
-					data-include-replace='true' 
-					data-include-format='html'></div>
-				
-			</section>
-
-			<section id="shapeExtendedError">
-				<h2>Shape: ExtendedError</h2>
-				<p>Additional details about an error the server had when processing the request.</p>
-			
-				<div title='RDF Shape for ExtendedError' 
-					data-include='./ExtendedError-shape.ttl' 
-					data-oninclude='shapeToSpec' 
-					data-include-sync='true' 
-					data-include-replace='true' 
-					data-include-format='html'></div>
-				
-			</section>
-
-		</section>
-		
-		<section>
-			<h2>Discovery</h2>
-			<p>No additional discovery needs.  Vocabulary terms are discovered via published vocabulary documents at the OSLC Core namespace and shapes
-			at advertised URLs.</p>
-		</section>
+	<section>
+		<h2>Discovery</h2>
+		<p>No additional discovery needs.  Vocabulary terms are discovered via published vocabulary documents at the OSLC Core namespace and shapes
+		at advertised URLs.</p>
 	</section>
 	
 	<section class='appendix' id="rdfvocab">
@@ -301,12 +310,13 @@ ex:validatesRequirementCollection oslc:impactType oslc:UpstreamImpact.</pre></co
 		<p>Many thanks to the various OASIS Core TC members and other key contributors and reviewers.</p>
 	</section>
 
+<!-- 
 	<section class='appendix informative'>
 		<h2>Change History</h2>
 		<p>The change history is up to the editors to insert a brief summary of
 changes, ordered by most recent changes first and with heading from which
 public draft it has been changed from.</p>
-
+ -->
 <!-- 
 	<section>	
 		<h2>Detailed history</h2>
@@ -316,7 +326,6 @@ public draft it has been changed from.</p>
 			<li>2014-10-20 - Provide history, prefer autogen from SCM tool...conclude with initials (SS)</li>
 		</ul>
 	</section>-->
-	</section>
 
 </body>
 </html>
