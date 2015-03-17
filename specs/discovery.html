@@ -91,6 +91,27 @@
         }
     };
 </script>
+<style type="text/css">
+.normalText {
+    color: black;
+    font-family: inherit;
+    font-size: 100%;
+    font-weight: normal;
+}
+
+code {
+    font-weight:bold;
+}
+
+.rfc2119 {
+    font-weight:bold;
+}
+
+dd {
+    padding-top: 5px;
+    padding-bottom: 10px;
+}
+</style>
 </head>
 <body>
 
@@ -168,18 +189,18 @@
 		<section id="differentApproaches">
 			<h2>Choosing most effective methods</h2>
 
-			<section id="discOptions"><h2 class="normal">
+			<section id="discOptions"><h2 class="normalText">
 				Clients SHOULD use <code>HTTP OPTIONS</code> to fetch various headers and other configurations
 				information that MAY be exposed in the response content body.
 			</h2></section>
 
-			<section id="discHeaders"><h2 class="normal">
+			<section id="discHeaders"><h2 class="normalText">
 				Servers SHOULD minimize the use of HTTP response headers on various HTTP  operations as to
 				not provide unnecessary additional response content. This is also to avoid the complexity
 				on server implementations that would be needed to provide such additional content.
 			</h2></section>
 
-			<section id="discContent"><h2 class="normal">
+			<section id="discContent"><h2 class="normalText">
 				Servers SHOULD only use LDPRrepresentations for additional discovery details that are not already available
 				 within HTTP response headers. It is also useful for scenarios where it would be valuable to have the discovery
 				 data readily available for purposes such as query.
@@ -189,21 +210,21 @@
 		<section id="creation">
 			<h2>Checking for creation of a certain type of resource</h2>
 
-			<section id="doesCreate"><h2 class="normal">
+			<section id="doesCreate"><h2 class="normalText">
 				The existence of an <code>Accept-Post</code> header on an HTTP response to a given Request-URI will
 				indicate that both an HTTP POST is accepted for authorized requests and which content types are support
 				in the entity body of an HTTP POST request. Restating of [[LDP]] <a href="http://www.w3.org/TR/ldp/#header-accept-post">
 				conformance clause about <code>Accept-Post</code></a>.
 			</h2></section>
 
-			<section id="isLDPC"><h2 class="normal">
+			<section id="isLDPC"><h2 class="normalText">
 				The existence of a <code>Link: &lt;http://www.w3.org/ns/ldp#Container&gt;; rel="type"</code> header on
 				an HTTP response to a given Request-URI will indicate that the resource is a LDP Container. Restating
 				conformance clause for [[LDP]]
 				<a href="http://www.w3.org/TR/ldp/#ldpc-linktypehdr"><code>Link</code> header and resource types</a>.
 			</h2></section>
 
-			<section id="createsTypes"><h2 class="normal">
+			<section id="createsTypes"><h2 class="normalText">
 				Servers SHOULD include the target URI of a <code>Link: &lt;type-URI&gt;; rel="http://open-services.net/ns/core#creationType"</code>
 				header on an HTTP response to a given Request-URI to indicate the type-URI (i.e.<code>rdf:type</code>) for the type of resources
 				that can be created by the LDP Container. Note: since there is always some time between when the
@@ -215,14 +236,14 @@
 				</pre>
 			</section>
 
-			<section id="createTypesPred"><h2 class="normal">
+			<section id="createTypesPred"><h2 class="normalText">
 				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:creationType &lt;type-URI&gt;</code>.</h2>
 				Clients SHOULD use the predicate <code>oslc:creationType</code> when converting HTTP response headers for the same Link-relation type, into
 				an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query
 				to locate LDP Containers that can be used to create the same resource types.
 			</section>
 
-			<section id="isCreateEx" class='informative'><h2 class='normal'>Example</h2>
+			<section id="isCreateEx" class='informative'><h2 class='normalText'>Example</h2>
 				<p>Complete example highlighting that POST is supported, which content types are supported on POST,
 				the fact that the resource is a LDP Container and it advertises support for creating two types of
 				resources.  Here showing the request (OPTIONS) and then the response:</p>
@@ -248,7 +269,7 @@
 		    and for which types, it is helpful to understand if there are server-enforced constraints on
 		    the resource representation.</p>
 
-			<section id="createsWithShapes"><h2 class="normal">
+			<section id="createsWithShapes"><h2 class="normalText">
 				Servers SHOULD include the target URI of a <code>Link: &lt;<em>constraints-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code>
 				header on an HTTP response to a given Request-URI to indicate the <code><em>constraint-URI</em></code>
 				of a resource that defines the constraints about the to-be created resource representation against a LDP Container.
@@ -261,7 +282,7 @@
 			</pre>
 			</section>
 
-			<section id="createWithShapesPred"><h2 class="normal">
+			<section id="createWithShapesPred"><h2 class="normalText">
 				Servers MAY include a RDF triple in resource response body of the form:	<code>&lt;container-URI&gt; ldp:constrainedBy &lt;shape-URI&gt;</code>.</h2>
 				Clients SHOULD use the predicate <code>ldp:constrainedBy</code> when converting HTTP response headers for the same Link-relation type, into
 				an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query
@@ -282,7 +303,7 @@
 			</p>
 		</section>
 
-		<section id="authMethods"><h2 class='normal'>Checking authentication options</h2>
+		<section id="authMethods"><h2 class='normalText'>Checking authentication options</h2>
 
 			<div class='note'>This specification doesn't prescribe any specific authentication, authorization or
 			transport encryption.  It is expected that future versions or various capability specifications will
