@@ -77,9 +77,18 @@
 	              authors:  [ "Steve Speicher", "John Arwe", "Ashok Malhotra" ],
 	              publisher: "W3C"
 	          },
+                  "OSLCUIPreview20": {
+                      title:    "OSLC Core 2.0 - UI Preview",
+                      href:     "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+                      authors:  [
+                          "S. Bosworth"
+                                ],
+                                status:   "Finalized",
+                                publisher:  "http://open-services.net"
+                  }
 	      },
 	};
-	
+
 </script>
 </head>
 <body>
@@ -87,24 +96,24 @@
 	<section id='abstract'>This document will address considerations with backwards compatibility
 	and coexistence considerations OSLC Core 2.0 when adopting 3.0.  It is intended to cover the
 	capabilities defined in OSLC Core 3.0.</section>
-			
+
 	<section id='sotd'>This is an early working draft, working on outline and needs.</section>
-	
-	<section id='toc'></section>	
+
+	<section id='toc'></section>
 	<hr/>
-	
+
 	<section id='intro' class='informative'>
 		<h2>Introduction</h2>
 		<p>The evolution of OSLC started from some simple documents that defined some XML and JSON formats and some
 		interactions based on RESTful HTTP web services.  These were labeled "OSLC 1.0".  As a number of "1.0" specifications
 		emerged, common patterns and reuse opportunities emerged.  This then led to the creation of OSLC Core 2.0 [[OSLCCore2]].
-		From this, domain specifications were developed and other common specifications.  The OSLC Core 2.0 evolved from 
+		From this, domain specifications were developed and other common specifications.  The OSLC Core 2.0 evolved from
 		1.0 in that is strengthen its definition of the use of RESTful HTTP web services and adopted an existing standard-based
 		approach to representing a data model that was flexible and had multiple representation formats, namely RDF [[rdf11-concepts]].
-		Now that OSLC Core 3.0 specifications are based on [[LINKED-DATA]] and namely the Linked Data Platform [[LDP]], 
+		Now that OSLC Core 3.0 specifications are based on [[LINKED-DATA]] and namely the Linked Data Platform [[LDP]],
 		there is a less-disruptive change from 2.0 to 3.0, as conceptually they are built on the same foundation: Linked Data (HTTP and RDF).
 		Some of the underlying concepts and vocabularies may have changed in some areas, this document will address
-		how best to co-exist with 2.0 existing implementations.  Which in the end, will mostly be able just producing a few more 
+		how best to co-exist with 2.0 existing implementations.  Which in the end, will mostly be able just producing a few more
 		RDF triples (or statements) in some of the responses or additional HTTP response headers.</p>
 		<p>The goals are not to define how to future proof tools or define a comprehensive versioning model.  Though the
 		approach follows established best practices based on Web Architecture [[webarch]] and evolving RDF data models [[rdf11-concepts]].</p>
@@ -121,14 +130,14 @@
 		<h2>Motivation</h2>
 		<p>There will be a period of time to allow for both the adoption of the 3.0 specification and the deployment of those clients and servers.</p>
 	</section>
-	
+
 	<section id="diff-from-2" class="informative">
 <h2>Changes from OSLC Core 2.0</h2>
-<p>The table below summarizes the capabilities from OSLC Core 2.0 based specifications and 
+<p>The table below summarizes the capabilities from OSLC Core 2.0 based specifications and
 what changes have occurred within OSLC Core 3.0. <strong>It is not a complete list of all differences.</strong>
-As additional OSLC Core specifications are published, this table may be out of date and changes needed.  The 
+As additional OSLC Core specifications are published, this table may be out of date and changes needed.  The
 individual specifications and associated TCs will produce any needed backwards/forwards or cross dependency collateral.</p>
-    
+
 <p>Many capabilities are no longer specified in OSLC 3.0 because they are part of the W3C Linked Data
     Platform 1.0 [[LDP]]. Servers can continue to support both 2.0 and 3.0
     capabilities for backwards compatibility with 2.0 clients.</p>
@@ -283,27 +292,27 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
 </tbody>
 </table>
 </section>
-	
+
 <section><h2>Making client that works with either 2.0 or 3.0 servers</h2>
 
 	<section><h2>Server/endpoint discovery</h2>
 		<p>In order for a client to work with as many possible combinations of servers, it will need be written to be
 		flexible and tolerant of changes.  It should be expected that if a server returns URLs from 3.0 discovery mechanisms, that the
 		client shouldn't expect to see that server switch back to 2.0 mechanisms.</p>
-		
+
 		<p>3.0 clients should not send the <code>OSLC-Core-Version</code> header, if they do, use the value of "3.0".</p>
-		
-		<p>When clients are expecting a URL that is an OSLC 2.0 Service Provider document, they will clearly find a resource of type 
+
+		<p>When clients are expecting a URL that is an OSLC 2.0 Service Provider document, they will clearly find a resource of type
 		<code>oslc:ServiceProvider</code> and inlined resources of type <code>oslc:Service</code>.</p>
 		<p>When clients are expecting a URL that is an OSLC 3.0 server, they will clearly find a resource of type or subtype of <code>ldp:Container</code>.</p>
 	</section>
-	
+
 	<section><h2>Creation of resources of a certain type</h2>
 		<p>Based on the approach illustrated in the previous section to determine which version of server you are connected to:</p>
 		<p>In 2.0, the client will look into an oslc:Server resource, then domain type, then creation factory and finally the type associated with it.</p>
 		<p>In 3.0, the client will <a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/discovery.html#creation">inspect the response headers</a>.</p>
 	</section>
-	
+
 </section>
 
 <section><h2>Making server that works with either 2.0 or 3.0 clients</h2>
@@ -312,14 +321,14 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
 		<p>OSLC 2.0 clients should provide a HTTP request header of <code>OSLC-Core-Version: 2.0</code> which servers can respond with a 2.0 only response.</p>
 		<p>If the <code>OSLC-Core-Version</code> header is not provided on HTTP requests or the value is "3.0", servers can assume the client is at least a 3.0 client and
 		prefer 3.0-only responses.</p>
-		
+
 		<p>Optionally, a server can detect when a client uses a URL to make a request for a different version of a resource than the server is expecting.  The
 		server can redirect the client to the appropriate URL, using the appropriate HTTP 3xx range redirect codes such as 301 (Moved permanently).</p>
-			
+
 		<p>Additionally, servers could decide to expose additional HTTP response headers, RDF triples and HTTP OPTIONS responses to provide a
 		single view of a given resource URL that may have been reserved for a given 2.0 or 3.0 concept.  There may be advantages to reusing URLs say
 		for 2.0 creation factories and 3.0 LDP Containers, though in some cases there may be some drawbacks.</p>
-		
+
 		<div class='note'>NOTE: Do we need to articulate every resource type?</div>
 	</section>
 
@@ -333,7 +342,7 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
 		<li>Service Provider</li>
 		<li>Linked to Resource</li>
 	</ul>
-	<p>2.0 client applications shouldn't store other URLs or data, other than for caching purposes.</p> 
+	<p>2.0 client applications shouldn't store other URLs or data, other than for caching purposes.</p>
 </section>
 
 
@@ -345,7 +354,7 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
 	    <p>In OSLC Core 2.0 based specifications, OSLC Servers (Providers) would be required to expose a resource which has an <code>rdf:type</code>
 	    of <code>oslc:ServiceProvider</code>.</p>
     </section>
-	
+
 </section>
 
 <section>
@@ -364,7 +373,174 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
 
 <section>
 	<h2>Resource Preview</h2>
-	<p class="todo">TODO: complete the list of items that would should consider</p>
+<p>There are key differences between resource preview in OSLC 2.0
+    [[OSLCUIPreview20]] and OSLC 3.0 [[OSLCPreview3]]. How Consumers request
+    previews and their media types have changed. OSLC 3.0 changes some aspects
+    of preview sizing as well.</p>
+
+<section id="discovery">
+<h2>Discovery and Resource Representation</h2>
+<p>The <code>application/x-oslc-compact+xml</code> media type is no longer
+    used. Previews are instead discovered using HTTP <code>Link</code> headers
+    or by making GET requests for the target resource with an HTTP
+    <code>Prefer</code> header. Additionally, the response is no longer XML.
+    Instead Compact resources have JSON or Turtle [[turtle]]
+    representations.</p>
+
+<p>Below are OSLC 2.0 and OSLC 3.0 examples for comparison.</p>
+
+<section>
+<h2>Discovery in OSLC 2.0</h2>
+
+<p>OSLC 2.0 defined a special media type for its XML Compact representation.
+    Even though it appears to be RDF/XML, only a specific XML format is
+    allowed.</p>
+
+<p><strong>Request:</strong></p>
+
+<pre class="example">
+GET /bugs/12345 HTTP/1.1
+Host: example.com
+Accept: application/x-oslc-compact+xml
+OSLC-Core-Version: 2.0
+</pre>
+
+<p><strong>Response:</strong></p>
+
+<pre class="example">
+HTTP/1.1 200 OK
+Content-Length: 527
+Content-Type: application/x-oslc-compact+xml
+OSLC-Core-Version: 2.0
+Vary: Accept
+
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:oslc="http://open-services.net/ns/core#"&gt;
+&lt;oslc:Compact rdf:about="http://example.com/bugs/12345"&gt;
+&lt;dcterms:title&gt;12345: Need a "fix" &amp;lt;em&amp;gt;NOW&amp;lt;/em&amp;gt;&lt;/dcterms:title&gt;
+&lt;oslc:smallPreview&gt;
+    &lt;oslc:Preview&gt;
+        &lt;oslc:document rdf:resource="http://example.com/bugs/12345?hover=small"/&gt;
+    &lt;/oslc:Preview&gt;
+&lt;/oslc:smallPreview&gt;
+&lt;/oslc:Compact&gt;
+&lt;/rdf:RDF&gt;
+</pre>
+</section>
+
+<section>
+<h2>Discovery in OSLC 3.0</h2>
+
+<p>OSLC 3.0 treats Compact as a distinct resource, rather than a
+    representation. You can request it in one HTTP request using a
+    <code>Prefer</code> header. The response can be JSON or an RDF format like
+    Turtle, depending on the <code>Accept</code> header.</p>
+
+<p><strong>Request:</strong></p>
+
+<pre class="example" id="preferExample">
+GET /bugs/324 HTTP/1.1
+Host: example.com
+Accept: application/json
+Prefer: return=representation; include="http://open-services.net/ns/core#PreferCompact"
+</pre>
+
+<p><strong>Response:</strong></p>
+
+<pre class="example" id="preferenceAppliedExample">
+HTTP/1.1 200 OK
+Content-Length: 315
+Content-Type: application/json; charset=UTF-8
+ETag: "f9d76afe5fbed1655c5768906db8958a"
+Preference-Applied: return=representation
+Vary: Accept,Accept-Language,Prefer
+
+{
+    "compact": {
+        "title": "324: Need a fix &lt;em&gt;NOW&lt;/em&gt;",
+        "icon": "http://example.com/icons/defect.jpg",
+        "largePreview": {
+            "document": "http://example.com/bugs/324?preview=large",
+            "hintHeight": "250px",
+            "hintWidth": "400px"
+        }
+    }
+}
+</pre>
+
+<p>Another way to discover the Compact resource is by looking for a
+    <code>Link</code> header, which is required in OSLC 3.0.</p>
+
+<strong>Request:</strong>
+
+<pre class="example" id="linkHeaderRequest">
+HEAD /bugs/324/screenshot HTTP/1.1
+Host: example.com
+</pre>
+
+<strong>Response:</strong>
+
+<pre class="example" id="linkHeaderResponse">
+HTTP/1.1 200 OK
+Content-Length: 45789
+Content-Type: image/png
+ETag: "678609cdee68e0fb8aea5f252b84a511"
+Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/core#Compact"
+</pre>
+
+<p>The consumer then requests the Compact resource directly using its URI.</p>
+
+<strong>Request:</strong>
+
+<pre class="example" id="linkHeaderRequest">
+GET /bugs/324/screenshot?compact HTTP/1.1
+Host: example.com
+Accept: application/json
+</pre>
+
+<strong>Response:</strong>
+
+<pre class="example" id="linkHeaderResponse">
+HTTP/1.1 200 OK
+Content-Length: 192
+Content-Type: application/json; charset=UTF-8
+ETag: "3bf6fbc90e11b3c2cc30acb534b452ea"
+Vary: Accept,Accept-Language
+
+{
+    "title": "Screenshot of the problem",
+    "shortTitle": "screenshot.png",
+    "smallPreview": {
+        "document": "http://example.com/bugs/324/screenshot?preview=small"
+    }
+}
+</pre>
+
+</section>
+</section>
+
+<section id="sizing">
+<h2>Preview Sizing</h2>
+
+    <ol>
+        <li>Resize messages for previews now use <code>oslc-resize</code>
+            messages, the same as dialogs, and can set both a height and a
+            width. OSLC 2.0 used <code>oslc-preview-height</code>, which was
+            inconsistent with dialogs and only allowed changing heights. Note
+            that the width and height in an <code>oslc:resize</code> message
+            must use [[CSS2]] length units, unlike
+            <code>oslc-preview-height</code>, which was always pixels.</li>
+        <li><code>oslc:initialHeight</code> and <code>oslc:initialWidth</code>
+            are no longer properties on the <code>oslc:Compact</code> resource.
+            Instead use <code>oslc:hintHeight</code> and
+            <code>oslc:hintWidth</code>. Resize messages can be sent regardless
+            of whether size hints were provided.</li>
+        <li>Any [[CSS2]] length unit can be used for
+            <code>oslc:hintHeight</code> and <code>oslc:hintWidth</code>, not
+            just relative length units. <code>px</code> is fair game.</li>
+    </ol>
+</section>
+
 </section>
 
 
