@@ -9,22 +9,18 @@
 			specStatus : "CND",
 			shortName : "oslc-compat",
 			chairs : [ {
-				name : "Arnaud Le Hors",
+				name : "Jim Amsden",
 				url : "http://www.ibm.com/"
+			}, {
+				name : "Martin Sarabura",
+				url : "http://www.ptc.com"
 			} ],
 			editors : [ {
-				name : "Steve Speicher",
-				url : "http://stevespeicher.me/",
-				mailto : "sspeiche@us.ibm.com",
+				name : "Jim Amsden",
+				mailto : "jamsden@us.ibm.com",
 				company : "IBM",
-				companyURL : "http://ibm.com/"
-			},
-	        {
-	            name:       "Samuel Padgett",
-	            mailto:     "spadgett@us.ibm.com",
-	            company:    "IBM",
-	            companyURL: "http://ibm.com/"
-	        } ],
+				companyURL : "http://www.ibm.com/"
+			} ],
 			wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
 			wgURI : "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
 			wgPublicList : "oslc-core-comment@lists.oasis-open.org",
@@ -93,8 +89,8 @@
 </head>
 <body>
 
-	<section id='abstract'>This document will address considerations with backwards compatibility
-	and coexistence considerations OSLC Core 2.0 when adopting 3.0.  It is intended to cover the
+	<section id='abstract'>This document will address backwards compatibility, integration 
+	and coexistence considerations between OSLC Core 2.0 and 3.0.  It is intended to cover the
 	capabilities defined in OSLC Core 3.0.</section>
 
 	<section id='sotd'>This is an early working draft, working on outline and needs.</section>
@@ -107,14 +103,13 @@
 		<p>The evolution of OSLC started from some simple documents that defined some XML and JSON formats and some
 		interactions based on RESTful HTTP web services.  These were labeled "OSLC 1.0".  As a number of "1.0" specifications
 		emerged, common patterns and reuse opportunities emerged.  This then led to the creation of OSLC Core 2.0 [[OSLCCore2]].
-		From this, domain specifications were developed and other common specifications.  The OSLC Core 2.0 evolved from
-		1.0 in that is strengthen its definition of the use of RESTful HTTP web services and adopted an existing standard-based
-		approach to representing a data model that was flexible and had multiple representation formats, namely RDF [[rdf11-concepts]].
-		Now that OSLC Core 3.0 specifications are based on [[LINKED-DATA]] and namely the Linked Data Platform [[LDP]],
-		there is a less-disruptive change from 2.0 to 3.0, as conceptually they are built on the same foundation: Linked Data (HTTP and RDF).
-		Some of the underlying concepts and vocabularies may have changed in some areas, this document will address
-		how best to co-exist with 2.0 existing implementations.  Which in the end, will mostly be able just producing a few more
-		RDF triples (or statements) in some of the responses or additional HTTP response headers.</p>
+		From this, domain specifications were developed as well as specifications for additional common services.  The OSLC Core 2.0 evolution from
+		1.0 strengthened its definition of the use of RESTful HTTP web services and adopted an existing standard-based
+		approach to representing a data model that was flexible and had multiple representation formats, namely RDF [[rdf11-concepts]].</p>
+		<p>With OSLC Core 3.0 specifications based on [[LINKED-DATA]] and namely the Linked Data Platform [[LDP]], OSLC 2.0 and 3.0 are built on the same foundation: Linked Data (HTTP and RDF). This should result in a less-disruptive change from 2.0 to 3.0.
+		However, some of the underlying concepts and vocabularies have changed in some areas, and OSLC 2.0 includes capabilities that are not (yet) included in 3.0.</p>
+		<p>This document will address
+		how best to co-exist with 2.0 existing implementations. It covers the OSLC 2.0 and 3.0 capabilities and discusses approaches for how clients and servers built on different OSLC version can interoperate.</p>
 		<p>The goals are not to define how to future proof tools or define a comprehensive versioning model.  Though the
 		approach follows established best practices based on Web Architecture [[webarch]] and evolving RDF data models [[rdf11-concepts]].</p>
 	</section>
@@ -128,27 +123,30 @@
 
 	<section class='informative'>
 		<h2>Motivation</h2>
-		<p>There will be a period of time to allow for both the adoption of the 3.0 specification and the deployment of those clients and servers.</p>
+		<p>Adoption of the 3.0 specification and the deployment of those clients and servers will require some period of time. During that time there is a potentially large number of existing OSLC 2.0 clients and servers. The owners of these clients and servers will update their implementations to OSLC 3.0 based on business need and risk managment, and it is expected that these updates will occur at unpredictable and uncoordinated times. Since OSLC is intended to provide a foundation for (lifecycle) application interoperability, it is important to address interoperability between OSLC versions in order to preserve and promote community investments in integrations, and enable upgrade flexibility.</p>
 	</section>
 
 	<section id="diff-from-2" class="informative">
 <h2>Changes from OSLC Core 2.0</h2>
 <p>The table below summarizes the capabilities from OSLC Core 2.0 based specifications and
 what changes have occurred within OSLC Core 3.0. <strong>It is not a complete list of all differences.</strong>
-As additional OSLC Core specifications are published, this table may be out of date and changes needed.  The
+As additional OSLC Core specifications are published, this table may be out of date and require additional changes.  The
 individual specifications and associated TCs will produce any needed backwards/forwards or cross dependency collateral.</p>
 
-<p>Many capabilities are no longer specified in OSLC 3.0 because they are part of the W3C Linked Data
-    Platform 1.0 [[LDP]]. Servers can continue to support both 2.0 and 3.0
-    capabilities for backwards compatibility with 2.0 clients.</p>
-
 <p>Some capabilities are in both OSLC 2.0 and OSLC 3.0, but their
-    implementation has changed. One example is Resource Preview
-    [[OSLCPreview3]].</p>
+    implementation has changed. For example, Discovery [[OSLCDiscovery3]] and Resource Preview
+    [[OSLCPreview3]] capabilities are in both versions, but have different implementations.</p>
+
+<p>Many capabilities are no longer specified in OSLC 3.0 because they are part of the W3C Linked Data
+    Platform 1.0 [[LDP]].</p>
+
+<p>Other capabilities are not yet specified in OSLC Core 3.0 because they are not currently required by other OASIS domain TCs, do not have sufficient implementations or practice necessary for standardization, or do not yet have TCs to address them. OSLC 2.0 capabilities that are not currently addressed in OSLC Core 3.0 include Resource Shapes, Query (including resource selection and property filtering), Paging, Tracked Resource Set, Actions, and Automation.</p>
 
 <p>Note that the required resource representations have changed. In 2.0, these were often specialized
-at a domain level, such as RDF/XML and  OSLC JSON representations may been required. Turtle [[turtle]] and JSON-LD
+at a domain level, such as RDF/XML and OSLC JSON representations may been required. Turtle [[turtle]] and JSON-LD
     [[JSON-LD]] are required instead, this is a [[LDP]] requirement.</p>
+
+<p>Servers can continue to support both 2.0 and 3.0 capabilities for backwards compatibility with 2.0 clients.</p>
 
 <table class="simple">
 <thead>
@@ -207,7 +205,7 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
   <td>Query Capabilities</td>
   <td>MUST</td>
   <td>Not&nbsp;specified</td>
-  <td>Query capabilities simply a way to filter LDP containers, using OSLC 2.0 Query Syntax [[LDP]].</td>
+  <td>Query capabilities are a way to filter LDP containers, using OSLC 2.0 Query Syntax. OSLC 3.0 does not specify query capabilies. Rather it allows utilization of any query capabilities supported on [[LDP]] containers such as SQARQL.</td>
 </tr>
 <tr>
   <td>Query Syntax</td>
@@ -303,14 +301,16 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
 		<p>3.0 clients should not send the <code>OSLC-Core-Version</code> header, if they do, use the value of "3.0".</p>
 
 		<p>When clients are expecting a URL that is an OSLC 2.0 Service Provider document, they will clearly find a resource of type
-		<code>oslc:ServiceProvider</code> and inlined resources of type <code>oslc:Service</code>.</p>
+		<code>oslc:ServiceProvider</code> and in-lined resources of type <code>oslc:Service</code>.</p>
 		<p>When clients are expecting a URL that is an OSLC 3.0 server, they will clearly find a resource of type or subtype of <code>ldp:Container</code>.</p>
 	</section>
 
 	<section><h2>Creation of resources of a certain type</h2>
 		<p>Based on the approach illustrated in the previous section to determine which version of server you are connected to:</p>
-		<p>In 2.0, the client will look into an oslc:Server resource, then domain type, then creation factory and finally the type associated with it.</p>
-		<p>In 3.0, the client will <a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/discovery.html#creation">inspect the response headers</a>.</p>
+		<ul>
+			<li>In 2.0, the client will look into an oslc:Server resource, then domain type, then creation factory and finally the type associated with it.</li>
+			<li>In 3.0, the client will <a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/discovery.html#creation">inspect the response headers</a>.</li>
+		</ul>
 	</section>
 
 </section>
@@ -329,7 +329,7 @@ at a domain level, such as RDF/XML and  OSLC JSON representations may been requi
 		single view of a given resource URL that may have been reserved for a given 2.0 or 3.0 concept.  There may be advantages to reusing URLs say
 		for 2.0 creation factories and 3.0 LDP Containers, though in some cases there may be some drawbacks.</p>
 
-		<div class='note'>NOTE: Do we need to articulate every resource type?</div>
+		<div class='note'>Do we need to articulate every resource type?</div>
 	</section>
 
 </section>
