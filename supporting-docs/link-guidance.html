@@ -37,14 +37,7 @@
       // only "name" is required
       editors:  [
           {
-              name:       "Jim Conallen"
-          ,   mailto:     ""
-          ,   company:    "IBM"
-          ,   companyURL: "http://ibm.com/"
-          },
-          {
-              name:       "Ian Green"
-          ,   url:        ""
+              name:       "Jim Amsden"
           ,   mailto:     ""
           ,   company:    "IBM"
           ,   companyURL: "http://ibm.com/"
@@ -151,7 +144,10 @@ Now that we've defined our terminology, let's move on to expressing relationship
 <p>The RDF data model gives us a number of value-types to express
 relationships, some more complex than others. We expect that the
 majority of links will be expressed with the most simple option, URI
-Reference or as it is known in conversation, a Link. For more complex
+Reference or as it is known in conversation, a Link. In this simple case, 
+a Link refers to a RDF assertion where the predicate is the URI. It is the
+subject, predicate, object that represents the relationship.
+For more complex
 cases, when a relationship must be annotated with property-values, we
 use what is called an Anchor, which is a link plus information that
 annotates or labels that link. Read the sub-sections below for details
@@ -177,8 +173,8 @@ In RDF terminology, a link is called a URI Reference. In OSLC, you express a lin
 &lt;/rdf:RDF&gt;
 </pre>
 
-<h3> Don't make assumptions about the target of links</h3>
- Relationships in OSLC resources are at their simplest an RDF property
+<h3>Don't make assumptions about the target of links</h3>
+ <p>Relationships in OSLC resources are at their simplest an RDF property
  whose object is a URI. In some cases within one system, it is
  necessary to require a closed link, i.e. require the object of a link
  be of one or more specific resource types. In general, it is better
@@ -186,10 +182,9 @@ In RDF terminology, a link is called a URI Reference. In OSLC, you express a lin
  resource linked to. The property's purpose and name should clearly
  reflect the scenarios it is supporting. Since the usage of these
  relationship properties may exist for a long period of time,
- specification authors should use great care in determining these.
-<p>
+ specification authors should use great care in determining these.</p>
 
-As resources evolve over time, and they adapt to different situations,
+<p>As resources evolve over time, and they adapt to different situations,
 different types will be exposed as targets to existing link
 types. Well behaved clients should gracefully handle resource types
 they don't expect when exercising links in resources. Well behaved
@@ -202,12 +197,18 @@ likely that the target resource will be an oslc_cm:ChangeRequest but
 that is not necessarily the case.” Some implementations may only work
 well if the link object comes from a set of “known” or “expected”
 types. The following graceful degradation sequence is suggested for
-providers when an unexpected type is encountered:
+providers when an unexpected type is encountered:</p>
 <ol>
 <li>If possible, tolerate the unexpected link target type and allow the client’s request to proceed normally.
 <li>Else, if possible, allow the client’s request to proceed and include an informational message with the response.
 <li>Else, fail the client’s request with the most appropriate 4xx Bad Request HTTP status code.
 </ol>
+
+<h3>Store link information in one place</h3>
+<p>Link information should be captured in one place, linking from the source to the target. That is, avoid including 
+inverse properties or bi-directional links. These create information redundancy since the link can be traversed in 
+the other direction using a simple query. Storing the link in one place simplifies updates and eliminates the need to
+rely on inferencing to determine inverse property values.</p>
 </section>
 <section id="resources" id="Anchor">
 <h2>Anchor</h2>
@@ -219,14 +220,14 @@ providers when an unexpected type is encountered:
  single link, but some relationships need to be annotated with
  property values. For example, if I am trying to represent the
  subscriber relationship between a customer and a magazine, I may need
- to record an expiration date for the relationship. To do this, we
- need to use an RDF concept known as reification. Reification is a way
+ to record an expiration date for the relationship. One way to do this is
+ to use an RDF concept known as reification. Reification is a way
  to make a statement about a statement. See RDF Syntax Specification
  Section 4: Statements about Statements for more information on this
  concept (reference: RDF Syntax).
 <p>
 Assuming the subscriber scenario, example #2 shows how you would use reification to express the annotation.
-<p><strong>Example #2: Link as reified statement in RDF/XML format</strong>
+<p><strong>Example #2: Link as reified statement in Turtle format</strong>
 <pre class="example" id="eg2">
 &lt;rdf:RDF
      xmlns:terms=&quot;http://example.com/terms/&quot;
@@ -260,13 +261,10 @@ Assuming the subscriber scenario, example #2 shows how you would use reification
 
 &lt;/rdf:RDF&gt;
 </pre>
-<p>
- But there is a better RDF/XML form, made possible by the rdf:ID
+ <p>However, there is a better RDF/XML form, made possible by the rdf:ID
  attribute. OSLC implementations should prefer this next form because
- it is easier to read and easier to parse.
-<p>
-Link to validation, triples and graph: RDF Validation
-<p><strong>Example #3: Link as reified statement in RDF/XML format (preferred form)</strong>
+ it is easier to read and easier to parse.</p>
+<strong>Example #3: Link as reified statement in RDF/XML format (preferred form)</strong>
 <pre class="example" id="eg3">
 &lt;rdf:RDF
     xmlns:terms=&quot;http://example.com/terms/&quot;
@@ -326,28 +324,60 @@ that. In this case, adding <code>terms:expirationDate</code> to the
    }]
 }
 </pre>
+<p>
+Althought the approaches above work to allow anchors to represent links with properties, reification can have entailment and inferencing issues. When there is a need to reify a statement in order to make statements about the stagement (called hearsay), this may be an indication that there is a missing class in the RDF vocabulary. Rather than reifying the statement, the modeler can create a separate class and create specific relationships to that class. That may actually improve the model. The example above could be modeled by introducing a Subscription to capture information about a customer and their magazine subscriptions.
+This is sometimes called an associative object.
+</p>
+<p><strong>Example #5: Using an associative object using Turtle syntax</strong>
+<pre class="example" id="eg5">
+@prefix terms: &lt;http://example.com/terms/&gt; .
+@prefix rdf:   &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+
+&lt;http:terms:Subscription&gt;
+        a                     rdf:Class.
+
+&lt;#s1&gt;
+        a                     terms:Subscription;
+        terms:magazine        &lt;http://example.com/magazines/Cat_Fancy&gt; ;
+        terms:subscriber      &lt;http://example.com/customers/4321&gt; ;
+        terms:annualPriceUSD  &quot;15.95&quot; ;
+        terms:delivery        terms:online ;
+        terms:expirationDate  &quot;2010-01-22&quot; .
+
+&lt;#s2&gt;
+        a                     terms:Subscription ;
+        terms:magazine        &lt;http://example.com/magazines/Field_and_Stream&gt; ;
+        terms:subscriber      &lt;http://example.com/customers/4321&gt; ;
+        terms:annualPriceUSD  &quot;23.95&quot; ;
+        terms:delivery        terms:online ;
+        terms:expirationDate  &quot;2010-06-03&quot; .
+</pre>
+<p>In this example, the Subscription subject has all the required information including the magazine, subscriber,
+anual price, etc. There is no need to reify any statements. A simple query will provide the list of magazines 
+a customer subscribes to.</p>
 </section>
 </section>
 
 <section class='informative' id="Antipattern">
 <h2>Anti-pattern: Link with inlined values of target</h2>
 
-With the OSLC query syntax it is possible to get query resources with
- links and for each link some inlined values from the target of the
+Using inlined values from the target of a link may make it is possible to get properties from the target of the
  link. This allows a client to get links and some information from the
  target of each link in one HTTP request per page of results, saving
- the client the expense of dereferencing each link. This pattern is
- useful for query, but is not recommended in OSLC resource design.
+ the client the expense of dereferencing each link. Although this pattern may be useful, is not recommended in OSLC resource design.
 <p>
 Below is an example of a Blog Entry resource containing a link to an
 uploaded-file resource of type <code>oslc_blog:UploadedFile</code> and
 with the <code>dcterms:title</code> of that resource inlined. This
 enables the client to know the type and title of the target resource
-without having to HTTP GET it.
-<pre class="example" id="eg5">
-&lt;rdf:RDF xmlns:oslc_blog=&quot;http://open-services.net/ns/bogus/blog#
-             xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;&gt;
-     &lt;oslc_blog:Entry rdf:about=&quot;http://example.com/blogs/entry/5&quot;&gt;
+without having to do a separate HTTP GET request.
+<pre class="example" id="eg6">
+&lt;rdf:RDF
+  xmlns:oslc_blog=&quot;http://open-services.net/ns/bogus/blog#&quot;
+  xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+  xmlns:dcterms=&quot;http://purl.org/dc/terms/&quot;&gt;
+
+     &lt;oslc_blog:BlogEntry rdf:about=&quot;http://example.com/blogs/entry/5&quot;&gt;
         &lt;dcterms:title&gt;New Wink release available&lt;/dcterms:title&gt;
         &lt;!-- other property values --&gt;
         &lt;oslc_blog:attachment&gt;
@@ -359,7 +389,7 @@ without having to HTTP GET it.
 &lt;/rdf:RDF&gt;
 </pre>
 <p>
- In OSLC defined resource terminology, the property above is type
+ In OSLC defined resource terminology, the <code>oslc_blog:attachment</code> property value above is of type
  Resource with representation Inline. The problem with this is that it
  adds redundant property-values to a resource. When you link to a
  target resource that has a dcterms:title value and you inline that
@@ -368,6 +398,25 @@ without having to HTTP GET it.
  if the titles do not match? Can a client change the title in the
  subject resource?
 <p>
+<p>Rather the content should be catpured as:</p>
+<pre class="example" id="eg7">
+&lt;rdf:RDF
+    xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+    xmlns:dcterms=&quot;http://purl.org/dc/terms/&quot;
+    xmlns:oslc_blog=&quot;http://open-services.net/ns/bogus/blog#&quot; &gt; 
+
+  &lt;rdf:Description rdf:about=&quot;http://example.com/attachments/2&quot;&gt;
+    &lt;dcterms:title&gt;wink-0.9.6.jar&lt;/dcterms:title&gt;
+    &lt;rdf:type rdf:resource=&quot;http://open-services.net/ns/bogus/blog#UploadedFile&quot;/&gt;
+  &lt;/rdf:Description&gt;
+
+  &lt;rdf:Description rdf:about=&quot;http://example.com/blogs/entry/5&quot;&gt;
+    &lt;oslc_blog:attachment rdf:resource=&quot;http://example.com/attachments/2&quot;/&gt;
+    &lt;dcterms:title&gt;New Wink release available&lt;/dcterms:title&gt;
+    &lt;rdf:type rdf:resource=&quot;http://open-services.net/ns/bogus/blog#BlogEntry&quot;/&gt;
+  &lt;/rdf:Description&gt;
+&lt;/rdf:RDF&gt;
+</pre>
 That brings us to the end of the guidance. Please provide feedback to
 the OSLC Core Workgroup mailing-list.
 </section>
