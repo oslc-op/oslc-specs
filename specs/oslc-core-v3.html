@@ -11,12 +11,15 @@
 		specStatus : "WD",
 		shortName : "oslc-core",
 		chairs : [ {
-			name : "Arnaud Le Hors",
+			name : "Jim Amsden",
 			url : "http://www.ibm.com/"
+		}, {
+			name : "Martin Sarabura",
+			url : "http://www.ptc.com"
 		} ],
 		editors : [ {
-			name : "Steve Speicher",
-			url : "http://stevespeicher.me/"
+			name : "Jim Amsden",
+			url : "http://www.ibm.com/"
 		} ],
 		wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
 		wgURI : "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
@@ -83,9 +86,8 @@ best practices documents and formulates design principles that can be leveraged 
 other OSLC MS-affiliated TCs to enable them to focus on domain-specific concerns.</p>
 
 <figure>
-  <img src="images/oslc3-overview.png" />
+  <img src="images/core-v3.png" />
   <figcaption>OSLC Core 3.0 Overview</figcaption>
-  <!--  TODO: Consider upgrading picture to use UML notation: Packages, Dependencies, Components, ... (comment from Lonnie) -->
 </figure>
 
 <p>As seen in <a href="#fig-oslc-core-3.0-overview"></a>, there are a number of capabilities developed in different
@@ -93,8 +95,8 @@ standards organizations, TCs and working groups.  The arrows represent either de
 capabilities.  OSLC MS-affiliated TC developed specifications may depend on OSLC Core 3.0 specifications as scenarios motivate.
 Though a leading goal is to minimize and eliminate unnecessary dependencies to simplify adoption, which may result in no dependency on OSLC Core 3.0 specifications.</p>
 
-<p>This work is an evolution from the OSLC Core 2.0 [[OSLCCore2]] efforts, which takes the learning from that effort along
-with the common foundation on W3C LDP, to produce an updated set of specifications that: are simpler, have
+<p>This work is an evolution from the OSLC Core 2.0 [[OSLCCore2]] efforts, which takes the experience gained from that effort along
+with the common foundation on W3C LDP, to produce an updated set of specifications that are: simpler, built on
 layered capabilities and easier to adopt.</p>
 
 	</section>
@@ -126,7 +128,7 @@ layered capabilities and easier to adopt.</p>
 
 			<dt>Resource Shape</dt>
 			<dd>The set of properties (triples) expected in a resource for
-				specific operations (i.e. creation, update or query) for each their
+				specific operations (i.e. creation, update or query), and for each property, their
 				value types, allowed values and cardinality.</dd>
 
 			<br/>
@@ -142,7 +144,7 @@ layered capabilities and easier to adopt.</p>
 
 			<dt><a href="http://en.wikipedia.org/wiki/Application_lifecycle_management">Application Lifecycle Management (ALM)</a></dt>
 			<dd>The marriage of business management to software engineering made possible by tools that facilitate and integrate
-			requirements management, architecture, coding, testing, tracking, and release management.</dd>
+			requirements management, architecture, coding, testing, tracking, quality and release management.</dd>
 
 			<dt><a href="http://en.wikipedia.org/wiki/DevOps">DevOps</a></dt>
 			<dd>A software development method that stresses communication, collaboration and integration between
@@ -177,7 +179,7 @@ layered capabilities and easier to adopt.</p>
 			key integration scenarios that motivate its need. These are important
 			not only for knowing that the correct specification content is being
 			developed but also to assist with implementers understanding the
-			intended usage.</p>
+			intended usage and in developing relevant test cases.</p>
 
 		<em class='loc-heading'>Incremental</em>
 		<p>Specifications should be developed in an incremental fashion
@@ -211,8 +213,8 @@ layered capabilities and easier to adopt.</p>
 		<em class='loc-heading'>Vocabularies</em>
 		<p>Various OSLC MS-affiliated TCs, or any specification development body that is
 		authoring specifications for specific domains of knowledge, should minimally define
-		vocabularies and the semantics behind the various terms.  Some global
-		reuse considerations are when terms are used for cross domain queries and within
+		vocabularies and the semantics behind the various terms.  Some consideration should be given for global
+		reuse when terms are used for cross domain queries and within
 		other domain resource shape definitions.
 		Domain specifications are
 		the definition of an OSLC capability, and how those vocabulary terms are used in
@@ -234,7 +236,7 @@ layered capabilities and easier to adopt.</p>
 		application, or rich desktop applications.  For these scenarios, the technology is rapidly evolving and changing.  Priority should be
 		based on existing standards such as HTML5, with use of <code>iframe</code> and <code>postMessage()</code>. [[HTML5]]</p>
 
-		<p>Various OSLC Core specifications should elaborate on the conformance requirements leveraging these various technologies and
+		<p>Various OSLC Core specifications elaborate on the conformance requirements leveraging these various technologies and
 		approaches.</p>
 
 		<p>As the primary goals have been outlined around lifecycle integration, some scenarios may require exploration of new (or different)
@@ -251,10 +253,11 @@ layered capabilities and easier to adopt.</p>
 			<li><a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html">Resource Preview</a></li>
 			<li><a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html">Delegated Dialogs</a></li>
 			<li><a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/attachments-v3.html">Attachments</a></li>
-			<li>Vocabulary Evolution Guidance</li>
 			<li><a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/supporting-docs/link-guidance.html">Link Guidance</a></li>
 			<li><a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/compat.html">Compatibility with previous version of OSLC</a></li>
 		</ul>
+		<p>These documents comprise the multi-part specification for OSLC Core 3.0. They represent common capabilities that servers MAY provide and that may be discovered and used by clients. Although OSLC Core could be useful on its own, it is intended to specify capabilities that are common across many domains. Servers will generally specify conformance with specific domain specifications, and those domain specifications will describe what parts of OSLC Core are required for conformance. This allows servers to implement the capabilities they need in a standard way without the burden of implementing capabilities that are not required. The purpose of the OSLC Core Discovery capability is to allow clients to determine what capabilities are provided by a server. Any provided capability must meet all the conformance criteria for that capability as defined in the OSLC Core 3.0 specifications.</p>
+		<p>This implies that any capability that is discoverable is essentially optional, and once discovered, the capability is provided as defined in the applicable OSLC specifications. Servers should support OSLC Discovery, but Discovery itself is also an optional capability as servers could provide other means of informing specific clients of supported OSLC capabilities that could be utilized directly. For example, a server might provide only preview dialogs on specific resources and nothing else.</p>
 	</section>
 
 	<section class='informative'>
@@ -271,8 +274,8 @@ layered capabilities and easier to adopt.</p>
 	<p>Below is a summary of some of the changes in this draft</p>
 
 	<ul>
-            <li>2015-03-18 Removed actions and authentication links that are likely out of scope for 3.0 (SP)</li>
-            <li>2015-03-16 Add links for Discovery and Common Vocabulary Terms (SP)</li>
+        <li>2015-03-18 Removed actions and authentication links that are likely out of scope for 3.0 (SP)</li>
+        <li>2015-03-16 Add links for Discovery and Common Vocabulary Terms (SP)</li>
 	    <li>2015-01-22 Various improvements from feedback from Jad El-khoury (SS)</li>
 	    <li>2015-01-21 Added definition of Resource Shape (SS)</li>
 	    <li>2015-01-21 Various improvements from feedback from Arthur Ryman (SS)</li>
