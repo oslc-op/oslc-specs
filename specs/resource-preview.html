@@ -9,23 +9,21 @@
       edDraftURI:           "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html",
       shortName:            "resource-preview",
 
-      // editors, add as many as you like
-      // only "name" is required
-      editors:  [
-          {
-              name:       "Samuel Padgett"
-          ,   mailto:     "spadgett@us.ibm.com"
-          ,   company:    "IBM"
-          ,   companyURL: "http://ibm.com/"
-          },
-          {
-              name:       "Steve Speicher"
-          ,   url:        "http://stevespeicher.me/"
-          ,   mailto:     "sspeiche@us.ibm.com"
-          ,   company:    "IBM"
-          ,   companyURL: "http://ibm.com/"
-          }
-      ],
+      chairs : [ {
+        name : "Jim Amsden",
+        url : "http://www.ibm.com/"
+      }, {
+        name : "Martin Sarabura",
+        url : "http://www.ptc.com"
+      } ],
+        // editors, add as many as you like
+        // only "name" is required
+      editors : [ {
+        name : "Jim Amsden",
+        mailto : "jamsden@us.ibm.com",
+        company : "IBM",
+        companyURL : "http://www.ibm.com/"
+      } ],
 
       maxTocLevel: 2,
 
@@ -47,7 +45,7 @@
       localBiblio:  {
           "OSLCCore3" : {
                   title : "OSLC Core 3.0",
-                  href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core-v3.html",
+                  href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core.html",
                   authors : [ "Steve Speicher" ],
                   publisher : "OASIS",
           },
@@ -203,6 +201,7 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
 
 <p>Compact resources and resource preview solve both problems. Clients can
     discover the link label and a resource icon given only the resource URI.
+    The client can then use the link label and icon as a means of displaying the link in a meaningful way.
     Previews allow users to see see information about related resources quickly
     without leaving the application they're in, even when the resources are
     from another server.</p>
@@ -213,7 +212,7 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
 
 <p>To enable previews of a resource, servers supply an associated Compact
     resource describing the preview. The Compact resource can contain a link
-    label, icon, and small or large previews of the resource. Compact resources
+    label, icon, and small and/or large previews of the resource. Compact resources
     always have a JSON representation [[RFC4627]], but they can also have other
     representations such as turtle [[turtle]] or JSON-LD [[JSON-LD]]. Here is a
     simple example of a Compact resource:</p>
@@ -237,7 +236,7 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
     can then inline the Compact resource directly in the response, saving an
     HTTP request.</p>
 
-<p>The Compact resource may contain small or large previews. Each preview can
+<p>The Compact resource may contain small and/or large previews. Each preview can
     have size hints and a link to an HTML representation designed to be
     embedded in other user interfaces. To display the preview, the client
     creates an HTML <code>iframe</code> element in its user interface and sets
@@ -259,7 +258,7 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
 <p>The HTTP <code>Link</code> header allows servers to offer previews for any
     resource, even binary resources with no RDF or JSON representations. To
     discover previews using the <code>Link</code> header, a client typically
-    performs an HTTP HEAD request on the resource URI. The response contains a
+    performs an HTTP HEAD or OPTIONS request on the resource URI. The response contains a
     <code>Link</code> header with the URI of the Compact resource.  The
     client then performs a GET request on the Compact URI to retrieve the
     Compact resource.</p>
@@ -404,7 +403,7 @@ Vary: Accept,Accept-Language,Prefer
 <p>Services may including a JSON-LD context in an <code>application/json</code>
     response.  Clients who prefer RDF should request <code>text/turtle</code>
     or <code>application/ld+json</code> using the HTTP <code>Accept</code>
-    request header, however, rather than <code>application/json</code>.</p>
+    request header, rather than <code>application/json</code>.</p>
 
 <pre class="example" id="ex_preference_applied_jsonld"
         title="JSON Response with a JSON-LD Context">
@@ -541,6 +540,113 @@ if (window.postMessage &amp;&amp; window.parent)  {
 
 </section>
 
+<section id="previewGuidance" class="informative">
+<h2>Preview Guidance</h2>
+<p>The following guidance is suggested for Client display of a resource link
+    and rich previews. For purposes of this discussion, assume source resource
+    A has a URI property that refers to target resource B:</p>
+
+<section id="navigating" class="informative">
+<h2>Navigation to the target resource</h2>
+
+<p>At any time, the user should be able to gesture that they
+    would like to navigate the link to the target resource, regardless of how
+    the link to the target resource happens to be rendered. </p>
+</section>
+
+<section id="displayingLinks" class="informative">
+<h2>Default way to display the link to the target resource</h2>
+
+<p>The typical way for forming and displaying the hyperlink
+    should be based on information that is stored locally in
+    source resource A (or that is generally known to the Client). Generally,
+    link text can be derived from property values of resource A, and
+    potentially from a string or literal property value in the reference to the
+    target resource B, if such a property exists. Because these property values
+    are part of the representation of the source resource A, they are available
+    without consulting the target resource, and will be available even if the
+    target resource B cannot be fetched.  When available, Clients
+    should display this string (as opposed to the URI) when
+    presenting resource A to indicate a potential navigation to resource B.
+    This is the basic presentation of a link to target resource B.</p>
+
+<p>The default display of the link from A to B is visible to any user
+    authorized to access resource A. The use of Compact representation
+    information described below is only viable for users who are also
+    authorized to access resource B.</p>
+</section>
+
+<section id="usingTitle" class="informative">
+<h2>Using the Compact representation title, short title, and icon</h2>
+
+<p>A Compact representation of the resource may contain a more accurate and
+    slightly richer label for a target resource ( <code>dcterms:title</code>
+    element), a short-form title for the resource (
+    <code>oslc:shortTitle</code>), and a corresponding image (
+    <code>oslc:icon</code>), all of which may be based on the current state of
+    the target resource. If this becomes known to the Client, the client
+    should assume that this information is better and use it
+    in forming the hyperlink that is displayed to the user. When available,
+    <code>oslc:shortTitle</code> MAY be used instead of
+    <code>dcterms:title</code> in presentations where visual space is severely
+    limited.</p>
+
+<p>Clients should not fetch Compact representations when
+    there is perfectly usable default display information available. When
+    designing a Client application, consideration should be given to the
+    potential benefits of obtaining an improved title and icon for the target
+    resource against the costs of preemptively fetching the Compact
+    representation in terms of added load on servers and networks (which might
+    only be apparent to users on slow networks or heavily loaded servers).</p>
+
+<p>Clients should be wary of material obtained from
+    non-trusted sources; in particular, the Client should check that
+    the dcterms:title and oslc:shortTitle property values do not contain HTML
+    markup beyond the specified set of simple elements.</p>
+</section>
+
+<section id="previewSizing" class="informative">
+<h2>Preview sizing</h2>
+<p>When the resource does not supply preferred sizing for a preview, the
+    Client should default to a reasonably generous value.
+    The default value a Client uses may> be different for
+    different window and screen sizes.</p>
+</section>
+
+<section id="smallPreview" class="informative">
+<h2>Displaying a small preview</h2>
+
+<p>If a user mouses or hovers over a displayed link, the Client
+    should determine whether the target resource has a small
+    preview (<code>oslc:smallPreview</code>). If it does, the Client
+    should present the small preview document in a hovering
+    widget.  Since preview documents may contain arbitrary content, including
+    HTML and scripts, Client must use iframes if embedding
+    the preview document inside another HTML-based presentation.</p>
+
+<p>The Client should not attempt to prefetch a Compact
+    representation just to have the preview URIs in hand so that the hover can
+    come up faster. There is a low chance that the user will make a gesture
+    that would call for the display of a small preview. It would generally be a
+    poor trade-off to increase overall system load just to decrease UI latency
+    for low probability eventualities.</p>
+</section>
+
+<section id="largePreview" class="informative">
+<h2>Displaying a large preview</h2>
+
+<p>If the user then gestures that they want to see a bit more of the resource,
+    the Client should determine whether the target resource has a large
+    preview ( <code>oslc:largePreview</code>). If it does, the Client
+    should present the large preview document in a stationary
+    widget that permits further user interaction. Again, since preview
+    documents may contain arbitrary content, including HTML and scripts,
+    Clients must use iframes if embedding the preview
+    document inside another HTML-based presentation.</p>
+</section>
+
+</section>
+
 <section id="implementation_conformance">
     <h2>Implementation Conformance</h2>
 
@@ -635,7 +741,7 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferC
         </section>
         <section id="honor_prefer">
             <h2 class="normalFont">Servers MUST honor a client's request to
-                inline the Compact resource in JSON and RDF representations
+                in-line the Compact resource in JSON and RDF representations
                 if the target resource has a Compact resource and the request
                 is successful.</h2>
         </section>
@@ -647,7 +753,7 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferC
                 request.</h2>
         </section>
         <section id="prefer_compact_json">
-            <h2 class="normalFont">When servers inline the Compact resource
+            <h2 class="normalFont">When servers in-line the Compact resource
                 with the target resource in an <code>application/json</code>
                 [[!RFC4627]] response, the response entity MUST be a JSON
                 object with a <code>compact</code> property where the value is
@@ -657,7 +763,7 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferC
         <section id="minimal_representation">
             <h2 class="normalFont">Servers MAY choose to return only a subset
                 of the target resource properties when a client requests that
-                the Compact resource is returned inline.</h2>
+                the Compact resource is returned in-line.</h2>
         </section>
         <section id="no_pref_applied">
             <h2 class="normalFont">Clients SHOULD inspect the response body for

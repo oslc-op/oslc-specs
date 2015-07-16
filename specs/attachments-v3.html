@@ -41,21 +41,13 @@
       // editors, add as many as you like
       // only "name" is required
       editors:  [
-          {
-              name:       "Samuel Padgett"
-          ,   url:        "http://open-services.net/bin/view/Main/SamPadgett"
-          ,   mailto:     "spadgett@us.ibm.com"
-          ,   company:    "IBM"
-          ,   companyURL: "http://ibm.com/"
-          },
-          {
-              name:       "Steve Speicher"
-          ,   url:        "http://stevespeicher.me/"
-          ,   mailto:     "sspeiche@us.ibm.com"
+        {
+              name:       "Jim Amsden"
+          ,   mailto:     "jamsden@us.ibm.com"
           ,   company:    "IBM"
           ,   companyURL: "http://ibm.com/"
           }
-      ],
+        ],
 
       maxTocLevel: 2,
 
@@ -316,7 +308,7 @@ The following examples illustrate how a client can work with attachments.
 <p>Clients get the attachments for a resource by</p>
 
 <ol>
-<li>Finding the attachment container for a resource using an HTTP Link header</li>
+<li>Finding the attachment container for a resource using an HTTP OPTIONS method and Link header</li>
 <li>Getting the container for the list of attachments</li>
 </ol>
 
@@ -484,7 +476,7 @@ Content-Length: 0
 <h2>Remove an Attachment</h2>
 
 <p>To remove an attachment, make a DELETE request on the attachment URI.  This
-    removes the attachment from the container and deletes the content from the
+    removes the attachment from the container and deletes the content and attachment metadata from the
     server.</p>
 
 <pre class="example">
@@ -509,7 +501,8 @@ Content-Length: 0
     example defect resource that contains attachments. The attachment container
     is an <code>ldp:DirectContainer</code> where the membership resource is the
     defect itself. The membership predicate is <code>oslc:attachment</code>,
-    although this predicate is not required.</p>
+    although this predicate is not required. The following example shows the results
+    of an <code>HTTP GET</code> on <code>http://example.com/bugs/2314</code>.</p>
 
 <pre class="example">
 @prefix oslc:     &lt;http://open-services.net/ns/core#&gt; .
