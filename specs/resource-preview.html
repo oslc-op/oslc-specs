@@ -65,13 +65,7 @@
           }
       },
 
-      otherLinks: [{
-              key: "Supporting Documents",
-              data: [{
-                      value:  "Implementation Guidance",
-                      href: "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/supporting-docs/preview-guidance.html"
-              }]
-      }]
+      
   };
 </script>
 <title>OSLC Resource Preview 3.0</title>
@@ -112,7 +106,7 @@ dd {
 <body>
 
 <section id="abstract">A technique to get a minimal HTML representation of a
-    resource identified by a URL. Applications often use this representation to
+    resource identified by a URL. Applications often use this capability to render links with more appropriate icons and labels, or
     display a preview when a user mouses over a link.</section>
 
 <section id="toc"></section>
@@ -124,8 +118,7 @@ dd {
 
 <p>This specification describes how a client application can display links and
     embed rich previews for resources from other applications. Links may have a
-    label and an icon, and previews are HTML markup displayed directly inside
-    the client application.</p>
+    label and an icon, and previews are HTML markup provided by a server and displayed directly inside the client application.</p>
 
 <figure id="ex_preview">
   <img src="images/preview-example.png" />
@@ -194,17 +187,11 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
 <p>Applications often display links to related resources from other
     applications. For example, a quality management application might show a
     link to a related defect when displaying a test result. In some cases, the
-    quality management application only has a URI pointing to the defect. How
-    can it show the link with an appropriate label? How can testers find out
-    the status of the defect without leaving the quality management
-    application?</p>
+    quality management application only has a URI pointing to the defect. The application needs a way to display the link with an appropriate label and icon so testers find out the status of the defect without leaving the quality management application.</p>
 
-<p>Compact resources and resource preview solve both problems. Clients can
+<p>Compact resources and resource preview provide these capabilities. Clients can
     discover the link label and a resource icon given only the resource URI.
-    The client can then use the link label and icon as a means of displaying the link in a meaningful way.
-    Previews allow users to see see information about related resources quickly
-    without leaving the application they're in, even when the resources are
-    from another server.</p>
+    The client can then use the link label and icon as a means of displaying the link in a meaningful way. Previews allow users to see see information about related resources quickly without leaving the application they're in, even when the resources are from another server.</p>
 </section>
 
 <section class='informative' id="working_with_previews">
@@ -214,8 +201,7 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
     resource describing the preview. The Compact resource can contain a link
     label, icon, and small and/or large previews of the resource. Compact resources
     always have a JSON representation [[RFC4627]], but they can also have other
-    representations such as turtle [[turtle]] or JSON-LD [[JSON-LD]]. Here is a
-    simple example of a Compact resource:</p>
+    representations such as <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview#XML_Representation_Format">XML</a>, turtle [[turtle]] or JSON-LD [[JSON-LD]]. Here is a simple example of a Compact resource:</p>
 
 <pre class="example" id="ex_compact" title="A Compact Resource">
 {
@@ -248,12 +234,15 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
 <section class="informative" id="get_compact">
 <h2>Getting the Compact Resource</h2>
 
-<p>Clients can discover Compact resources in two ways:</p>
+<p>Clients can discover Compact resources in three ways:</p>
 
 <ol>
+    <li><a href="#xAcceptHeader">Discovering Compact Resources Using the HTTP Accept Header</a></li>
     <li><a href="#linkHeader">Discovering Compact Resources Using the HTTP Link Header</a></li>
     <li><a href="#prefer">Discovering Compact Resources Using the HTTP Prefer Header</a></li>
 </ol>
+
+  <p>The HTTP <code>Accept</code> header allows clients to access previews using the <code>application/x-oslc-compact+xml</code> MIME type extension to request the Compact resource representation for a URI instead of the content of the resource itself. This usage is considered deprecated and is included only to maintain compatibility with [[OSLCUIPreview20]].</p>
 
 <p>The HTTP <code>Link</code> header allows servers to offer previews for any
     resource, even binary resources with no RDF or JSON representations. To
@@ -272,9 +261,18 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
     a minimal representation of the resource and the Compact resource in the
     HTTP response body.</p>
 
-<p>The <code>Link</code> header is the only way to discover the associated
-    Compact resource for resources that don't have RDF or JSON representations,
-    such as binary files.</p>
+<section class="informative" id="linkHeader">
+<h2>Discovering Compact Resources Using the HTTP Accept Header</h2>
+  <p>[[OSLCUIPreview20]] utilizes a MIME type extension, <code>application/x-oslc-compact+xml</code> to allow servers to use content negotiation with the HTTP <code>Accept</code> header to access the Compact representation of a resource instead of the content of the resource itself. 
+
+<pre class="example" id="ex_get_compact_accept" title="Requesting the Compact Resource">
+GET /bugs/324/screenshot HTTP/1.1
+Host: example.com
+Accept: application/x-oslc-compact+xml
+</pre>
+
+  <p>This returns a Compact resource with <code>Content-Type: application/x-oslc-compact+xml</code> as defined in [[OSLCUIPreview20]].</p>
+</section>
 
 <section class="informative" id="linkHeader">
 <h2>Discovering Compact Resources Using the HTTP Link Header</h2>
@@ -609,7 +607,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <h2>Preview sizing</h2>
 <p>When the resource does not supply preferred sizing for a preview, the
     Client should default to a reasonably generous value.
-    The default value a Client uses may> be different for
+    The default value a Client uses may be different for
     different window and screen sizes.</p>
 </section>
 
@@ -637,7 +635,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
 
 <p>If the user then gestures that they want to see a bit more of the resource,
     the Client should determine whether the target resource has a large
-    preview ( <code>oslc:largePreview</code>). If it does, the Client
+    preview (<code>oslc:largePreview</code>). If it does, the Client
     should present the large preview document in a stationary
     widget that permits further user interaction. Again, since preview
     documents may contain arbitrary content, including HTML and scripts,
@@ -680,6 +678,16 @@ if (window.postMessage &amp;&amp; window.parent)  {
                 service availability issues.</h2>
         </section>
     </section>
+    <section id="accept_headers"><h2>Accept Header</h2>
+      <section id="support_accept_header"><h2 class="normalFont">
+        Servers MAY support the <code>application/x-oslc-compact+xml</code> MIME type extension to allow clients to use content negotiation to access the Compact resource. However, this usage should be considered deprecated and is only provided for OSLC 2.0 compatibility.
+      </h2></section>
+
+      <section id="x-compact-format"><h2 class="normalFont">
+        Servers that do support the <code>application/x-oslc-compact+xml</code> MIME type extension MUST return the Compact resource using <code>Content-Type: application/x-oslc-compact+xml</code> as specified in [[OSLCUIPreview20]].
+      </h2></section>
+    </section>
+
     <section id="link_headers">
         <h2>Link Headers</h2>
         <section id="compact_link_header">
@@ -802,6 +810,11 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferC
                 MUST conform to the shape specified in
                 <a href="#compactShape"></a>.</h2>
         </section>
+        <section id="compact_conform_to_xml">
+            <h2 class="normalFont">Content-Type <code>application/x-oslc-compact+xml</code> representations of the Compact resource
+                MUST conform to the shape specified in
+                <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview#XML_Representation_Format">XML Representation Format</a>.</h2>
+        </section>
         <section id="compact_other_props">
             <h2 class="normalFont">The Compact resource MAY have additional
                 server-specific properties.</h2>
@@ -849,6 +862,16 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 
             </h2>
         </section>
+        <section id="post_message_content20">
+            <h2 class="normalFont">A resize message MAY also also consist of the
+                characters <code>oslc-preview-height:</code> followed by the desired height in pixels.
+
+<pre class="example" id="ex_resize_message20" title="Example Resize Height Message">
+oslc-preview-height:277
+</pre>
+                This <code>postMessage</code> format should be considered deprecated and is only provided for OSLC 2.0 compatibility. 
+            </h2>
+        </section>
         <section id="resize_message_length_units">
             <h2 class="normalFont">The <code>oslc:hintHeight</code> and
                 <code>oslc:hintWidth</code> property values in the resize
@@ -868,7 +891,7 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 </section>
 
 <section id="resources" class="appendix">
-<h2>Resources</h2>
+<h2>Resource Constraints</h2>
 
 <section id="compactShape">
 <h2 id="resourceCompact">Resource: Compact</h2>
@@ -1020,7 +1043,7 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 
 <section id="vocab" class="appendix">
 <h2>Terms</h2>
-<p>This section highlights the new RDF vocabulary terms defined in this
+<p>This section summarizes the RDF vocabulary terms defined in this
     specification.</p>
 
 <div title='RDF Vocabulary for Resource Preview'

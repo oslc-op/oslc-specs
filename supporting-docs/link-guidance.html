@@ -72,7 +72,15 @@
                         ],
                         status:   "Finalized",
                         publisher:  "http://open-services.net"
-                 }
+                 },
+            "OSLCShapes": {
+              title:    "Resource Shape 2.0",
+              href:     "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#oslc_ResourceShape_Resource",
+              authors:  ["Dave Johnson"],
+              status:   "Finalized",
+              publisher:  "http://open-services.net",
+          },
+
         },
 
       otherLinks: [{
@@ -117,7 +125,10 @@ div.review {
     modeling links and relationships between OSLC resources.</p>
 </section>
 
-<section class="informative" id="RelationshipsinOSLC">
+<section id='toc'></section>
+<hr/>
+
+<section id="RelationshipsinOSLC">
 
 <h2>Relationships in OSLC</h2>
 
@@ -153,16 +164,16 @@ use what is called an Anchor, which is a link plus information that
 annotates or labels that link. Read the sub-sections below for details
 and examples of Links and Anchors.</p>
 
-<section id="resources" id="Link">
-<h3>Link</h3>
-<strong>Link from subject to object</strong>
+<section id="Link">
+<h2>Link</h2>
+<section id="link-from-subject-to-object">
+<h2>Link from subject to object</h2>
 <p>
-Use this when you need a simple link, you don't want to inline any summary of the target and you do not need to annotate the link with property values. Most relationships should be represented this way.
+Use this when you need a simple link and you do not need to annotate the link with property values. Most relationships should be represented this way.
 <p>
-In RDF terminology, a link is called a URI Reference. In OSLC, you express a link as a property with OSLC value-type of Resource and OSLC representation of Reference. For example, here is a property terms:subscribesTo that you might find inside a customer resource, it links to a resource that is "subscribedTo" by the customer:
+In RDF terminology, a link is called a URI Reference. In OSLC resource constraints, you express a link as a property with OSLC valueType of Resource as described in [[OSLCShapes]]. The <a href="#eg1">following example</a> shows a property <code>terms:subscribesTo</code> that you might find inside a customer resource that links to a resource that is "subscribedTo" by the customer.
 
-<p><strong>Example #1: relationship expressed as simple link (i.e. URI reference)</strong>
-<pre class="example" id="eg1">
+<pre class="example" id="eg1" title="Relationship expressed as simple link (i.e. URI reference)">
 &lt;rdf:RDF
      xmlns:terms=&quot;http://example.com/terms/&quot;
      xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;&gt;
@@ -172,8 +183,19 @@ In RDF terminology, a link is called a URI Reference. In OSLC, you express a lin
     &lt;/terms:Customer&gt;
 &lt;/rdf:RDF&gt;
 </pre>
+</p>The constraints on the terms:subscribesTo property would include <code>oscl:valueType oslc:Resource</code> as shown in the <a href="#eg1shape">example below</a>.</p>
 
-<h3>Don't make assumptions about the target of links</h3>
+<pre class="example" id="eg1shape" title="Constraints on property subscribesTo">
+&lt;#dcterms-title&gt; a  oslc:Property ;
+  oslc:name                "subscribesTo" ;
+  oslc:occurs              oslc:Zero-or-many ;
+  oslc:propertyDefinition  terms:subscribesTo ;
+  oslc:valueType           oslc:Resource.
+</pre>
+</section>
+
+<section id="no-assumptions-about-target">
+<h2>Don't make assumptions about the target of links</h2>
  <p>Relationships in OSLC resources are at their simplest an RDF property
  whose object is a URI. In some cases within one system, it is
  necessary to require a closed link, i.e. require the object of a link
@@ -187,10 +209,7 @@ In RDF terminology, a link is called a URI Reference. In OSLC, you express a lin
 <p>As resources evolve over time, and they adapt to different situations,
 different types will be exposed as targets to existing link
 types. Well behaved clients should gracefully handle resource types
-they don't expect when exercising links in resources. Well behaved
-clients should gracefully handle resource types they don't expect when
-exercising links in resources. Specifications should allow links to be
-open ended (have any type, specifying Range any), and use text in the
+they don't expect when exercising links in resources. Specifications should allow links to be open ended (have any type, specifying Range any), and use text in the
 property description to suggest expected types, without being
 limiting. For example: “Change request affects a plan item. It is
 likely that the target resource will be an oslc_cm:ChangeRequest but
@@ -199,20 +218,34 @@ well if the link object comes from a set of “known” or “expected”
 types. The following graceful degradation sequence is suggested for
 providers when an unexpected type is encountered:</p>
 <ol>
-<li>If possible, tolerate the unexpected link target type and allow the client’s request to proceed normally.
-<li>Else, if possible, allow the client’s request to proceed and include an informational message with the response.
-<li>Else, fail the client’s request with the most appropriate 4xx Bad Request HTTP status code.
+<li>If possible, tolerate the unexpected link target type and allow the client’s request to proceed normally.</li>
+<li>Else, if possible, allow the client’s request to proceed and include an informational message with the response.</li>
+<li>Else, fail the client’s request with the most appropriate 4xx Bad Request HTTP status code.</li>
 </ol>
+</section>
 
-<h3>Store link information in one place</h3>
-<p>Link information should be captured in one place, linking from the source to the target. That is, avoid including 
-inverse properties or bi-directional links. These create information redundancy since the link can be traversed in 
-the other direction using a simple query. Storing the link in one place simplifies updates and eliminates the need to
+<section id="link-in-one-place">
+<h2>Store link information in one place</h2>
+<p>By "store" we mean the resource that contains the link assertion. Link information should be captured in one place to avoid information redundancy and the associated information maintenance issues.</p> 
+
+<p>There are two general sources of information redundancy:
+<ol>
+  <li>Inverse properties</li>
+  <li>Duplicate assertions</li>
+</ol>
+Inverse properties create significant information redundancy. For example, assertions A ex:affects B and B ex:isAffectedBy A require both assertions to be updated in order to maintain information integrity. One of these assertions, perhaps the "isAffectedBy", predicate should not exist. The predicate to keep depends on the direction of the relationship that is most often known or requested by users. Inverse properties are also usually unnecessary because it is often easy to specify queries that specify the subject or object, allowing the relationship to be "navigated" in either direction.</p>
+
+<p>Duplicated triples have the same problem as any redundancy, and should be avoided whenever possible. There are times when duplicate triples are necessary, and there is a preferred way to use them. For example, a request to GET resource A might return "A ex:affects B", and a request to GET resource B might return "A ex:affects B". If they are on different servers then B's representation might get out of date, but the client should be able to tell that this is from a non-definitive source as the subject's URI has a different host/port than the request URI. This redundancy may be required to provide the information independently from different servers. But it must be handled with care to avoid data integrity issues.</p> 
+
+<p>Storing the link in one place simplifies updates and eliminates the need to
 rely on inferencing to determine inverse property values.</p>
 </section>
-<section id="resources" id="Anchor">
+</section>
+
+<section id="Anchor">
 <h2>Anchor</h2>
-<strong>Local Resource holds link from subject to object plus property-values that annotate the relationship.</strong>
+<section id="link-with-properties">
+<h2>Local Resource holds link from subject to object plus property-values that annotate the relationship</h2>
 <p>
  Relationships are expressed as RDF triples and triples do not have
  property values - only resources have property values. Links are used
@@ -226,9 +259,8 @@ rely on inferencing to determine inverse property values.</p>
  Section 4: Statements about Statements for more information on this
  concept (reference: RDF Syntax).
 <p>
-Assuming the subscriber scenario, example #2 shows how you would use reification to express the annotation.
-<p><strong>Example #2: Link as reified statement in Turtle format</strong>
-<pre class="example" id="eg2">
+Assuming the subscriber scenario, the example <a href="#eg2">below</a> shows how you would use reification to express the annotation.
+<pre class="example" id="eg2" title="Link as reified statement in Turtle format">
 &lt;rdf:RDF
      xmlns:terms=&quot;http://example.com/terms/&quot;
      xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;&gt;
@@ -264,8 +296,7 @@ Assuming the subscriber scenario, example #2 shows how you would use reification
  <p>However, there is a better RDF/XML form, made possible by the rdf:ID
  attribute. OSLC implementations should prefer this next form because
  it is easier to read and easier to parse.</p>
-<strong>Example #3: Link as reified statement in RDF/XML format (preferred form)</strong>
-<pre class="example" id="eg3">
+<pre class="example" id="eg3" title="Link as reified statement in RDF/XML format (preferred form)">
 &lt;rdf:RDF
     xmlns:terms=&quot;http://example.com/terms/&quot;
      xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;&gt;
@@ -294,14 +325,13 @@ Assuming the subscriber scenario, example #2 shows how you would use reification
 
 &lt;/rdf:RDF&gt;
 </pre>
-And here's how to express the same within the JSON format specified by
-OSLC Core. Because we already represent value-type Resource as a JSON
+<p>And here's how to express the same within the JSON format specified by
+OSLC Core. Because we already represent valueType Resource as a JSON
 object, we can simply add annotating property-values directly into
 that. In this case, adding <code>terms:expirationDate</code> to the
-<code>terms:subscribesTo</code> object.
+<code>terms:subscribesTo</code> object.</p>
 
-<p><strong>Example #4: Link as reified statement in OSLC JSON format</strong>
-<pre class="example" id="eg4">
+<pre class="example" id="eg4" title="Link as reified statement in OSLC JSON format">
 {
    &quot;prefixes&quot; : {
       &quot;terms&quot;: &quot;http://example.com/terms/&quot;,
@@ -325,11 +355,10 @@ that. In this case, adding <code>terms:expirationDate</code> to the
 }
 </pre>
 <p>
-Althought the approaches above work to allow anchors to represent links with properties, reification can have entailment and inferencing issues. When there is a need to reify a statement in order to make statements about the stagement (called hearsay), this may be an indication that there is a missing class in the RDF vocabulary. Rather than reifying the statement, the modeler can create a separate class and create specific relationships to that class. That may actually improve the model. The example above could be modeled by introducing a Subscription to capture information about a customer and their magazine subscriptions.
+Although the approaches above work to allow anchors to represent links with properties, reification can have entailment and inferencing issues. When there is a need to reify a statement in order to make statements about the stagement (called hearsay), this may be an indication that there is a missing class in the RDF vocabulary. Rather than reifying the statement, the modeler can create a separate class and create specific relationships to that class. That may actually improve the model. The example above could be modeled by introducing a Subscription to capture information about a customer and their magazine subscriptions.
 This is sometimes called an associative object.
 </p>
-<p><strong>Example #5: Using an associative object using Turtle syntax</strong>
-<pre class="example" id="eg5">
+<pre class="example" id="eg5" title="Using an associative object using Turtle syntax">
 @prefix terms: &lt;http://example.com/terms/&gt; .
 @prefix rdf:   &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
 
@@ -358,20 +387,24 @@ a customer subscribes to.</p>
 </section>
 </section>
 
-<section class='informative' id="Antipattern">
-<h2>Anti-pattern: Link with inlined values of target</h2>
+<section id="Antipattern">
+<h2>Anti-patterns</h2>
+<p>There are also some link anti-patterns that clients and servers should avoid.</p>
+<section id="link-with-inline-values">
+ <h2>Link with inlined values of target</h2>
 
-Using inlined values from the target of a link may make it is possible to get properties from the target of the
+<p>Using in-lined values from the target of a link may make it is possible to get properties from the target of the
  link. This allows a client to get links and some information from the
  target of each link in one HTTP request per page of results, saving
- the client the expense of dereferencing each link. Although this pattern may be useful, is not recommended in OSLC resource design.
+ the client the expense of dereferencing each link. Although this pattern may be useful, is not recommended in OSLC resource design.</p>
+
 <p>
 Below is an example of a Blog Entry resource containing a link to an
 uploaded-file resource of type <code>oslc_blog:UploadedFile</code> and
 with the <code>dcterms:title</code> of that resource inlined. This
 enables the client to know the type and title of the target resource
 without having to do a separate HTTP GET request.
-<pre class="example" id="eg6">
+<pre class="example" id="eg6" title="Blog entry with in-lined title">
 &lt;rdf:RDF
   xmlns:oslc_blog=&quot;http://open-services.net/ns/bogus/blog#&quot;
   xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
@@ -393,13 +426,10 @@ without having to do a separate HTTP GET request.
  Resource with representation Inline. The problem with this is that it
  adds redundant property-values to a resource. When you link to a
  target resource that has a dcterms:title value and you inline that
- dcterms:title in the subject resource, in the RDF data model this
- means that you have just given the object resource two titles. What
- if the titles do not match? Can a client change the title in the
- subject resource?
+ dcterms:title in the subject resource with a different value, in the RDF data model this means that you have just given the object resource two titles. Which is the correct title? Can a client change the title in the subject resource?
 <p>
 <p>Rather the content should be catpured as:</p>
-<pre class="example" id="eg7">
+<pre class="example" id="eg7" title="Blog Entry with no in-lined information">
 &lt;rdf:RDF
     xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
     xmlns:dcterms=&quot;http://purl.org/dc/terms/&quot;
@@ -417,18 +447,11 @@ without having to do a separate HTTP GET request.
   &lt;/rdf:Description&gt;
 &lt;/rdf:RDF&gt;
 </pre>
-That brings us to the end of the guidance. Please provide feedback to
-the OSLC Core Workgroup mailing-list.
+</p>
+<p>That brings us to the end of the guidance. Please provide feedback to
+the OSLC Core Workgroup mailing-list.</p>
 </section>
-
-<section class="informative" id="references">
-
-<h2>References</h2>
-<ol>
-<li> RDF Syntax http://www.w3.org/TR/1999/REC-rdf-syntax-19990222/
-</ol>
-
-
+</section>
 
 </body>
 </html>

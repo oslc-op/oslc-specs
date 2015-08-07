@@ -136,8 +136,7 @@
 <section id="abstract">
   <p>Delegated dialogs allow one application to embed a creation or selection
   UI into another using HTML <code>iframe</code> elements and JavaScript code.
-  The embedded dialog notifies the parent page of events using HTML5
-  <code>postMessage</code>.</p>
+  The embedded dialog notifies the parent page of resize or submit events using HTML5 <code>postMessage</code>.</p>
 </section>
 
 <section id="toc"></section>
@@ -219,11 +218,12 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
 <section class="informative" id="discovery">
 <h2>Discovering Dialogs</h2>
 
-<p>Clients can discover dialogs in two ways:</p>
+<p>Clients can discover dialogs in three ways:</p>
 
 <ul>
     <li><a href="#discovery_link"></a></li>
     <li><a href="#discovery_prefer"></a></li>
+    <li><a href="#discovery_service"></a></li>
 </ul>
 
 <section class="informative" id="discovery_link">
@@ -273,9 +273,8 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
       &lt;http://example.com/dialogs/createBug&gt;; rel="http://open-services.net/ns/core#creationDialog",
       &lt;http://example.com/dialogs/selectBug&gt;; rel="http://open-services.net/ns/core#selectionDialog"
 </pre>
-</section>
 
-<p>The client then requests the dialog descriptor.</p>
+<p>The client then requests the dialog descriptor which contains an <code>oslc:dialog</code> property whose value is a link to the HTML dialog to be displayed.</p>
 
 <pre class="example">
 GET /dialogs/selectBug HTTP/1.1
@@ -298,6 +297,7 @@ Transfer-Encoding: chunked
         oslc:resourceType  &lt;http://open-services.net/ns/cm#Bug&gt; ;
         dcterms:title      &quot;Select Bug from Product Z&quot; .
 </pre>
+</section>
 
 <section class="informative" id="discovery_prefer">
 <h2>Discovering Dialogs Using the Prefer Header</h2>
@@ -365,10 +365,105 @@ Transfer-Encoding: chunked
 </pre>
 </section>
 
-</div>
+<section class="informative" id="discovery_service">
+<h2>Discovering Dialogs Using the Service resource</h2>
+
+<p>Servers may also advertise their support for dialogs using the
+    <code>oslc:selectionDialog</code> and <code>oslc:selectionDialog</code> properties of the Service discovery resource. Each dialog type, creation
+    or selection, has its own property:.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Dialog Type</th>
+            <th>Link Relation</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Creation</td>
+            <td><code>http://open-services.net/ns/core#creationDialog</code></td>
+        </tr>
+        <tr>
+            <td>Selection</td>
+            <td><code>http://open-services.net/ns/core#selectionDialog</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The client discovers the dialogs by making a GET request on the Service resource and accessing these properties.</p>
+
+<pre class="example" title="An OPTIONS Request on the Container">
+GET /serviceproviders/bugs/services.xml HTTP/1.1
+Host: example.com
+Accept: application/rdf+xml
+</pre>
+
+<p>The server response contains a Service resource which contains properties with URLs to the dialog descriptors.</p>
+
+<pre class="example" title="Service Resource">
+HTTP/1.1 200 OK
+Date: Thu, 12 Jun 2014 18:26:59 GMT
+Content-Type: application/rdf+xml
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;rdf:RDF 
+  xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+  xmlns:dcterms=&quot;http://purl.org/dc/terms/&quot;
+  xmlns:oslc=&quot;http://open-services.net/ns/core#&quot;&gt;
+&lt;oslc:ServiceProvider rdf:about=&quot;https://example.com/serviceproviders/bugs/services.xml&quot;&gt;
+&lt;oslc:creationDialog&gt;
+  &lt;oslc:Dialog&gt;
+    &lt;dcterms:title rdf:parseType=&quot;Literal&quot;&gt;New Bug&lt;/dcterms:title&gt;
+    &lt;oslc:label&gt;Bug Change Request&lt;/oslc:label&gt;
+    &lt;oslc:usage rdf:resource=&quot;http://open-services.net/ns/cm#requirementsChangeRequest&quot;/&gt;
+    &lt;oslc:resourceType rdf:resource=&quot;http://open-services.net/ns/cm#ChangeRequest&quot;/&gt;
+    &lt;oslc:dialog rdf:resource=&quot;http://example.com/dialogs/createBug/form&quot;/&gt;
+    &lt;oslc:hintWidth&gt;680px&lt;/oslc:hintWidth&gt;
+    &lt;oslc:hintHeight&gt;505px&lt;/oslc:hintHeight&gt;
+  &lt;/oslc:Dialog&gt;
+&lt;/oslc:creationDialog&gt;
+&lt;oslc:selectionDialog&gt;
+  &lt;oslc:Dialog&gt;
+    &lt;dcterms:title rdf:parseType=&quot;Literal&quot;&gt;Select Bug&lt;/dcterms:title&gt;
+    &lt;oslc:label&gt;Bug&lt;/oslc:label&gt;
+    &lt;oslc:usage rdf:resource=&quot;http://open-services.net/ns/core#default&quot;/&gt;
+    &lt;oslc:resourceType rdf:resource=&quot;http://open-services.net/ns/cm#ChangeRequest&quot;/&gt;
+    &lt;oslc:dialog rdf:resource=&quot;http://example.com/dialogs/selectBug/form&quot;/&gt;
+    &lt;oslc:hintWidth&gt;550px&lt;/oslc:hintWidth&gt;
+    &lt;oslc:hintHeight&gt;460px&lt;/oslc:hintHeight&gt;
+  &lt;/oslc:Dialog&gt;
+&lt;/oslc:selectionDialog&gt;
+&lt;/oslc:ServiceProvider&gt;
+&lt;/rdf:RDF&gt;
+</pre>
+
+<p>The client then requests the dialog to display using the discovered URI in the <code>oslc:dialog</code> property.</p>
+
+<pre class="example">
+GET /dialogs/selectBug HTTP/1.1
+Host: example.com
+</pre>
+
+<pre class="example">
+HTTP/1.1 200 OK
+Content-Type: text/turtle
+Transfer-Encoding: chunked
+
+@prefix oslc:  &lt;http://open-services.net/ns/core#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;&gt;      a                  oslc:Dialog ;
+        oslc:dialog        &lt;http://example.com/dialogs/selectBug/form&gt; ;
+        oslc:hintHeight    &quot;600px&quot; ;
+        oslc:hintWidth     &quot;400px&quot; ;
+        oslc:label         &quot;Select Bug&quot; ;
+        oslc:resourceType  &lt;http://open-services.net/ns/cm#Bug&gt; ;
+        dcterms:title      &quot;Select Bug from Product Z&quot; .
+</pre>
+</section>
 </section>
 
-</section>
 
 <section class="informative" id="examples">
 <h2>Using Dialogs</h2>
@@ -434,10 +529,11 @@ Transfer-Encoding: chunked
     JSON is described by <a href="#results_json"></a>. It is a JSON object an
     with <code>oslc:results</code> array of results. Each result is a JSON
     object with an <code>rdf:resource</code> property whose value is the
-    resource URI.  The result may also have an <code>oslc:label</code>.
+    resource URI.  The result may also have an <code>oslc:label</code> that can be useful for client display without having to access the Compact resource.
 
 <pre class="example" title="Dialog Results Message">
-oslc-response:{"oslc:results": [{ "oslc:label": "bug 123: server crash", "rdf:resource": "http://example.com/bug123" }]}
+oslc-response:{"oslc:results": 
+  [{ "oslc:label": "bug 123: server crash", "rdf:resource": "http://example.com/bug123" }]}
 </pre>
 
 An empty array indicates the dialog was canceled.</p>
@@ -679,6 +775,11 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferD
             values or a <code>Cache-Control</code> header value
             <code>no-store</code>.
         </section>
+        <section id="serviceProperties">
+            <h2></h2>
+
+            Servers MAY also provide delegated dialog discovery using the Service resource and the <code>oslc:creationDialog</code> and <code>oslc:selectionDialog</code> properties.
+        </section>
     </section>
 
     <section id="display_conformance">
@@ -702,6 +803,11 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferD
             Servers MUST support the <code>Window.postMessage</code> method
             [[!webmessaging]] for dialog responses.
         </section>
+        <section id="windowname_protocol">
+            <h2></h2>
+
+            Servers MAY support the <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Post_Message_and_Window_Name_pro">Window Name Protocol</a> defined in [[OSLCCore2]].
+        </section>
         <section id="other_protocols">
             <h2></h2>
 
@@ -724,7 +830,8 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferD
             <a href="#results_json"></a>.
 
 <pre class="example" id="ex_results_message">
-oslc-response:{"oslc:results": [{ "oslc:label": "bug 123: server crash", "rdf:resource": "http://example.com/bug123" }]}
+oslc-response:{"oslc:results": 
+  [{ "oslc:label": "bug 123: server crash", "rdf:resource": "http://example.com/bug123" }]}
 </pre>
         </section>
         <section id="results_other_props">
@@ -857,9 +964,9 @@ Allow: GET,POST,HEAD,OPTIONS
 </section>
 
 <section class="appendix" id="dialog_shape">
-    <h2>Dialog Shape</h2>
+    <h2>Resource Constraints</h2>
 
-    <div title='RDF Shape for Dialog'
+    <div title='Resource Constraints for Dialog'
             data-include='shapes/Dialog-shape.ttl'
             data-oninclude='shapeToSpec'
             data-include-sync='true'
@@ -869,7 +976,7 @@ Allow: GET,POST,HEAD,OPTIONS
 
 <section id="vocab" class="appendix">
 <h2>Terms</h2>
-<p>This section highlights the new RDF vocabulary terms defined in this
+<p>This section summarizes the RDF vocabulary terms defined in this
     specification.</p>
 
 <div title='RDF Vocabulary for Dialogs'
