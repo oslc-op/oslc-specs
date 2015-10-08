@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'/>
+<script src='https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script class='remove'>
+  var respecConfig = {
+      specStatus:           "WD",
+      edDraftURI:           "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html",
+
+      // the specification's short name, as in http://www.w3.org/TR/short-name/
+      shortName:            "OSLC Delegated Dialogs 3.0",
+
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+      // subtitle   :  "an excellent document",
+
+      // if you wish the publication date to be other than the last modification, set this
+      // publishDate:  "2009-08-06",
+
+      // if the specification's copyright date is a range of years, specify
+      // the start date here:
+      // copyrightStart: "2005"
+
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+
+      // if there a publicly available Editor's Draft, this is the link
+      // edDraftURI:           "http://berjon.com/",
+
+      // if this is a LCWD, uncomment and set the end of its review period
+      // lcEnd: "2009-08-05",
+
+      // editors, add as many as you like
+      // only "name" is required
+      editors:  [
+          {
+              name:       "Samuel Padgett"
+          ,   mailto:     "spadgett@us.ibm.com"
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          },
+          {
+              name:       "Steve Speicher"
+          ,   url:        "http://stevespeicher.me/"
+          ,   mailto:     "sspeiche@us.ibm.com"
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          }
+      ],
+
+      maxTocLevel: 2,
+
+      // previousURI: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+      prevED: "http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs",
+
+      // name of the WG
+      wg:           "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+
+      // URI of the public WG page
+      wgURI:        "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
+
+      // name (without the @w3c.org) of the public mailing to which comments are due
+      wgPublicList: "oslc-core",
+
+      // URI of the patent status for this WG, for Rec-track documents
+      // !!!! IMPORTANT !!!!
+      // This is important for Rec-track documents, do not copy a patent URI from a random
+      // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+      // Team Contact.
+      wgPatentURI:  "",
+      // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
+
+      localBiblio:  {
+          "OSLCCore3" : {
+                  title : "OSLC Core 3.0",
+                  href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core-v3.html",
+                  authors : [ "Steve Speicher" ],
+                  publisher : "OASIS",
+          },
+          "OSLCPreview30": {
+              title:    "OSLC Resource Preview 3.0",
+              href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html",
+              authors:  [ "S. Padgett", "S. Speicher" ],
+              status:   "Working Draft",
+              publisher:  "https://www.oasis-open.org/"
+          },
+          "OSLCCore2": {
+              title:    "OSLC Core 2.0",
+              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+              authors:  ["S. Speicher", "D. Johnson"],
+              status:   "Finalized",
+              publisher:  "http://open-services.net"
+          }
+      }
+  };
+</script>
+<title>OSLC Delegated Dialogs 3.0</title>
+<style type="text/css">
+    table, thead, tr, td {
+        padding: 5px;
+        border-width: 1px;
+        border-spacing: 0px;
+        border-style: solid;
+        border-collapse: collapse;
+    }
+
+    td {
+        min-width: 100px;
+    }
+
+    .conformance section {
+        margin-top: 1.33em;
+        margin-bottom: 1.33em;
+    }
+
+    .conformance h4 {
+        color: black;
+        font-family: inherit;
+        font-size: 100%;
+        font-weight: normal;
+        display: inline;
+    }
+
+    code {
+        font-weight:bold;
+    }
+
+    .rfc2119 {
+        font-weight:bold;
+    }
+
+    dd {
+        padding-top: 5px;
+        padding-bottom: 10px;
+    }
+</style>
+</head>
+
+<body>
+<section id="abstract">
+  <p>Delegated dialogs allow one application to embed a creation or selection
+  UI into another using HTML <code>iframe</code> elements and JavaScript code.
+  The embedded dialog notifies the parent page of events using HTML5
+  <code>postMessage</code>.</p>
+</section>
+
+<section id="toc"></section>
+<hr>
+
+<section id="introduction">
+    <h2>Introduction</h2>
+
+    <p>OSLC specifications target specific integration scenarios. In some
+        cases, allowing one application to delegate to a user interface defined
+        in another application is a more effective way to support a use case
+        than an HTTP interface that can only be accessed programmatically.
+        There are two cases where this is especially true:</p>
+
+    <ul>
+        <li><em>Resource creation</em>: when a user of a web application needs
+            to create a new resource in another application. In this case, the
+            web application asks the other server to provide a UI for resource
+            creation, and the server notifies the application when the creation has
+            been completed or canceled by the user.</li>
+
+        <li><em>Resource selection</em>: when a user of a web application needs
+            to pick a resource managed by another application. In this case,
+            the web application asks the other server to provide a UI for
+            resource selection, and the server notifies the application when a
+            resource or resources has been selected or if the selection was
+            canceled.</li>
+    </ul>
+
+    <p>Delegated dialogs support these two cases. They allow one application to
+        embed a creation or selection UI into another using HTML iframe elements
+        and JavaScript code.</p>
+
+   <figure id="ex_dialog">
+      <img src="images/dialog-example.png" />
+      <figcaption>Creation Dialog</figcaption>
+   </figure>
+
+   <p><a href="#ex_dialog"></a> depicts what a defect creation dialog might
+   look like inside a quality management tool, displayed when the user clicks
+   the <i>Open Bug</i> button. The dialog content itself comes from the change
+   management tool, running on another server. The dialog displays seamlessly
+   inside the quality management application, however, while retaining the
+   change management tool's look and feel and capabilities.</p>
+
+   <p>Delegated dialogs provide a simple way for an end user to create or
+   select resources from another application, thus eliminating the need to
+   rebuild the other application's dialog and its application logic.</p>
+</section>
+
+<section id="sotd"></section>
+
+<section id='conformance'></section>
+
+<section class="glossary" id="terminology">
+<h2>Terminology</h2>
+
+<p>Terminology is based on OSLC Core Overview [[OSLCCore3]], W3C Linked Data
+Platform [[LDP]], W3C's Architecture of the World Wide Web [[WEBARCH]],
+and Hyper-text Transfer Protocol [[HTTP11]].</p>
+
+<p>The following terms are used in discussions of dialogs:</p>
+
+<dl>
+    <dt class="loc-heading">Dialog</dt>
+    <dd>A web page for creating or selecting resources to be embedded inside
+        another application.</dd>
+
+    <dt class="loc-heading">Dialog Descriptor</dt>
+    <dd>A resource that describes information about a dialog such as its title
+        and dimensions. In RDF representations, the dialog descriptor has RDF
+        type <code>oslc:Dialog</code>. See <a href="#dialog_shape"></a>.</dd>
+
+    <dt class="loc-heading">Prefill</dt>
+    <dd>A method of setting initial field values in a creation dialog.</dd>
+</dl>
+</section>
+
+<section class="informative" id="discovery">
+<h2>Discovering Dialogs</h2>
+
+<p>Clients can discover dialogs in two ways:</p>
+
+<ul>
+    <li><a href="#discovery_link"></a></li>
+    <li><a href="#discovery_prefer"></a></li>
+</ul>
+
+<section class="informative" id="discovery_link">
+<h2>Discovering Dialogs Using the Link Header</h2>
+
+<p>LDP containers [[LDP]] advertise their support for dialogs using the
+    HTTP <code>Link</code> header [[RFC5988]]. Each dialog type, creation
+    or selection, has its own link relation.</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Dialog Type</th>
+            <th>Link Relation</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Creation</td>
+            <td><code>http://open-services.net/ns/core#creationDialog</code></td>
+        </tr>
+        <tr>
+            <td>Selection</td>
+            <td><code>http://open-services.net/ns/core#selectionDialog</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The client discovers the dialogs by making an HTTP OPTIONS request on
+    the container.</p>
+
+<pre class="example" title="An OPTIONS Request on the Container">
+OPTIONS /bugs/ HTTP/1.1
+Host: example.com
+</pre>
+
+<p>The server response contains <code>Link</code> to the dialog
+    descriptors.</p>
+
+<pre class="example" title="Response with Dialog Link Headers">
+HTTP/1.1 204 No Content
+Date: Thu, 12 Jun 2014 18:26:59 GMT
+Allow: GET,POST,OPTIONS,HEAD
+Accept-Post: text/turtle,application/ld+json
+Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type",
+      &lt;http://example.com/dialogs/createBug&gt;; rel="http://open-services.net/ns/core#creationDialog",
+      &lt;http://example.com/dialogs/selectBug&gt;; rel="http://open-services.net/ns/core#selectionDialog"
+</pre>
+</section>
+
+<p>The client then requests the dialog descriptor.</p>
+
+<pre class="example">
+GET /dialogs/selectBug HTTP/1.1
+Host: example.com
+</pre>
+
+<pre class="example">
+HTTP/1.1 200 OK
+Content-Type: text/turtle
+Transfer-Encoding: chunked
+
+@prefix oslc:  &lt;http://open-services.net/ns/core#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;&gt;      a                  oslc:Dialog ;
+        oslc:dialog        &lt;http://example.com/dialogs/selectBug/form&gt; ;
+        oslc:hintHeight    &quot;600px&quot; ;
+        oslc:hintWidth     &quot;400px&quot; ;
+        oslc:label         &quot;Select Bug&quot; ;
+        oslc:resourceType  &lt;http://open-services.net/ns/cm#Bug&gt; ;
+        dcterms:title      &quot;Select Bug from Product Z&quot; .
+</pre>
+
+<section class="informative" id="discovery_prefer">
+<h2>Discovering Dialogs Using the Prefer Header</h2>
+
+<p>Clients can also use the HTTP <code>Prefer</code> header to find the dialogs
+    for a container. The client makes an HTTP GET request on the resource URI
+    using the <code>return=representation</code> preference [[RFC7240]] and
+    <code>include</code> parameter [[LDP]] value
+    <code>http://open-services.net/ns/core#PreferDialog</code>. The server
+    responds with the dialog descriptors in the response body.  Clients should
+    also use <code>include</code> parameter value
+    <code>http://www.w3.org/ns/ldp#PreferMinimalContainer</code> so that the
+    response doesn't include unnecessary data.</p>
+
+<p>The following example shows a container that supports creation and selection
+    dialogs:</p>
+
+<pre class='example'>
+GET /bugs/ HTTP/1.1
+Host: example.com
+Accept: text/turtle
+Prefer: return=representation;
+        include="http://open-services.net/ns/core#PreferDialog http://www.w3.org/ns/ldp#PreferMinimalContainer"
+</pre>
+<pre class='example'>
+HTTP/1.1 200 OK
+Content-Type: text/turtle
+ETag: "_87e52ce291112"
+Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
+      &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+Accept-Post: text/turtle, application/ld+json
+Allow: POST,GET,OPTIONS,HEAD
+Preference-Applied: return=representation
+Vary: Accept,Prefer
+Transfer-Encoding: chunked
+
+@prefix ex:    &lt;http://example.com/vocab#&gt; .
+@prefix oslc:  &lt;http://open-services.net/ns/core#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+@prefix ldp:   &lt;http://www.w3.org/ns/ldp#&gt; .
+
+&lt;http://example.com/bugs/&gt;
+        a                     ldp:BasicContainer ;
+        oslc:creationDialog   &lt;http://example.com/dialogs/createBug&gt; ;
+        oslc:selectionDialog  &lt;http://example.com/dialogs/selectBug&gt; ;
+        dcterms:title         &quot;Bugs Records for Product Z&quot; .
+
+&lt;http://example.com/dialogs/createBug&gt;
+        a                  oslc:Dialog ;
+        oslc:dialog        &lt;http://example.com/dialogs/createBug/form&gt; ;
+        oslc:hintHeight    &quot;600px&quot; ;
+        oslc:hintWidth     &quot;400px&quot; ;
+        oslc:label         &quot;New Bug&quot; ;
+        oslc:resourceType  &lt;http://open-services.net/ns/cm#Bug&gt; ;
+        dcterms:title      &quot;Report Bug (Product Z)&quot; .
+
+&lt;http://example.com/dialogs/selectBug&gt;
+        a                  oslc:Dialog ;
+        oslc:dialog        &lt;http://example.com/dialogs/selectBug/form&gt; ;
+        oslc:hintHeight    &quot;600px&quot; ;
+        oslc:hintWidth     &quot;400px&quot; ;
+        oslc:label         &quot;Select Bug&quot; ;
+        oslc:resourceType  &lt;http://open-services.net/ns/cm#Bug&gt; ;
+        dcterms:title      &quot;Select Bug (Product Z)&quot; .
+</pre>
+</section>
+
+</div>
+</section>
+
+</section>
+
+<section class="informative" id="examples">
+<h2>Using Dialogs</h2>
+
+  <p>Servers can offer two kinds of dialogs, selection dialogs and creation
+      dialogs. Clients use selection dialogs when they want a user to pick a
+      resource from another application. They use creation dialogs when they
+      want a user to create a new resource in another application.</p>
+
+    <p>A client can open the dialog in a new browser window, or it can embed
+        the dialog in another page by creating an <code>iframe</code> element
+        and setting the <code>src</code> attribute to the URI of the dialog to
+        be included.</p>
+
+<pre class="example highlight" title="Display a Dialog"> var iframe =
+        document.createElement("iframe");
+    iframe.style.border = 0;
+    iframe.style.width = "600px";  // or preferred dialog width
+    iframe.style.height = "400px"; // or preferred dialog height
+    iframe.src = "http://example.com/dialogs/createBug/form";
+    document.getElementById("dialogContainer").appendChild(iframe);
+</pre>
+
+  <p>Clients might choose to place dialogs inside page elements styled to
+      look like a dialog window.</p>
+
+   <figure id="dialog_iframe">
+      <img src="images/dialog-iframe.png" />
+      <figcaption>Dialog iframe</figcaption>
+   </figure>
+
+  <p>The <code>iframe</code> itself, outlined in
+      <a href="#dialog_iframe"></a>, contains the dialog content from the
+      server.</p>
+
+  <p>Dialogs send results back to the client using the HTML5 function
+      <code>Window.postMessage</code> [[webmessaging]].
+      <code>postMessage</code> is called on <code>window.opener</code> if set.
+      Otherwise, <code>postMessage</code> is called on
+      <code>window.parent</code>.</p>
+
+  <p>When embedded in an <code>iframe</code>, dialogs may also request to be
+      resized dynamically. These requests are the same as specified in
+      [[OSLCPreview30]] and also use <code>postMessage</code>.  Clients can
+      distinguish between results and resize messages from the message prefix.
+      Messages have the following prefixes:</p>
+
+<table> <thead> <th>Message Prefix</th> <th>Meaning</th> </thead>
+    <tbody>
+        <tr>
+            <td><code>oslc-response:</td>
+            <td>The user has created or selected a resource or canceled the
+                dialog.</td>
+        </tr>
+        <tr>
+            <td><code>oslc-resize:</code></td>
+            <td>The dialog is asking to be resized.</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>JSON follows the prefix in the message string. For dialog responses, the
+    JSON is described by <a href="#results_json"></a>. It is a JSON object an
+    with <code>oslc:results</code> array of results. Each result is a JSON
+    object with an <code>rdf:resource</code> property whose value is the
+    resource URI.  The result may also have an <code>oslc:label</code>.
+
+<pre class="example" title="Dialog Results Message">
+oslc-response:{"oslc:results": [{ "oslc:label": "bug 123: server crash", "rdf:resource": "http://example.com/bug123" }]}
+</pre>
+
+An empty array indicates the dialog was canceled.</p>
+
+<p>For resize requests, the JSON is an object with an <code>oslc:hintHeight</code>
+property, an <code>oslc:hintWidth</code> property, or both.</p>
+
+<pre class="example" id="ex_resize_message" title="Dyanmic Resize Message">
+oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
+</pre>
+
+<section class="informative" id="client_responsibilities">
+  <h3>The Client's Responsibilities</h3>
+
+  <ol>
+    <li>Open the dialog in a new window using the <code>Window.open()</code>
+        method or embed the dialog in an <code>iframe</code>, setting
+        <code>iframe</code> <code>src</code> to the URI of the dialog.</li>
+
+    <li>Add a <code>message</code> listener to receive messages from the
+        dialog.</li>
+
+    <li>Listen for <code>message</code> events, ignoring unrecognized events
+        from other sources or those not prefixed with
+        <code>oslc-response:</code></li>
+
+    <li>When message from the dialog indicates a completed action, free
+        resources and handle the action.</li>
+  </ol>
+
+<pre class="example highlight" title="Listen for Dialog Results">
+    window.addEventListener("message", function(event) {
+        // Make sure the message originated from the same origin as the dialog.
+        if (event.origin !== "http://example.com") {
+            return;
+        }
+
+        // Make sure the message starts with oslc-response:
+        var message = event.data;
+        if (message.indexOf("oslc-response:") !== 0) {
+            return;
+        }
+
+        // Handle each result.
+        var response = JSON.parse(message.substr("oslc-response:".length));
+        var results = response["oslc:results"];
+        for (var i = 0; i < results.length; i++) {
+            var label = results[i]["oslc:label"];
+            var uri = results[i]["rdf:resource"];
+            // Handle resource...
+        }
+
+        // Remove the dialog from the page.
+        var dialogContainer = document.getElementById('dialogContainer');
+        dialogContainer.removeChild(dialogContainer.firstChild);
+    }, false);
+</pre>
+
+</section>
+<section class="informative" id="server_responsibilities">
+  <h3>The Server's Responsibilities</h3>
+
+  <ol>
+    <li>Provide the dialog, an HTML page for resource creation or
+        selection.</li>
+
+    <li>Allow the user to perform resource creation or selection.</li>
+
+    <li>Once the user has created or selected a resource or canceled the
+        dialog, send notification using <code>postMessage</code> to the page's
+        opener or parent window prefixed with
+        <code>"oslc-response:"</code>.</li>
+  </ol>
+
+  <p>The following JavaScript code example shows how a dialog would send a
+      response using <code>postMessage</code>, taking into account pages that
+      the dialog might be in its own window or an <code>iframe</code>.</p>
+
+<pre class="example highlight" id="ex_post_message">
+    function respondWithSelection(label, uri) {
+        var response = {
+            "oslc:results": [ {
+                "oslc:label": label,
+                "rdf:resource": uri
+            } ]
+        };
+        (window.opener || window.parent).postMessage("oslc-response:" + JSON.stringify(response), "*");
+    }
+</pre>
+</section>
+
+<section class="informative" id="prefill">
+  <h2>Prefill</h2>
+
+  <p>Servers may support setting the initial values in a dialog. A client can
+      test if a dialog supports prefill by making an HTTP OPTIONS request to
+      the dialog descriptor URI.</p>
+
+<pre class="example" id="ex_options_dialog">
+OPTIONS /dialogs/createBug HTTP/1.1
+Host: example.com
+</pre>
+
+  <p>If the server supports prefill for this dialog, it includes POST among the
+      methods in the <code>Allow</code> response header.</p>
+
+<pre class="example" id="ex_options_response">
+HTTP/1.1 204 No Content
+Allow: GET,POST,HEAD,OPTIONS
+</pre>
+
+<p>To prefill content, clients POST the resource representation with the
+    desired initial values.</p>
+<pre class="example" title="Prefilling a Bug Creation Dialog"
+        id="ex_prefill_request">
+POST /dialogs/createBug HTTP/1.1
+Host: example.com
+Content-Type: text/turtle
+Transfer-Encoding: chunked
+
+@prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;&gt;
+   a oslc_cm:Bug ;
+   dcterms:title "Build 23 failed" ;
+   oslc_cm:severity &lt;http://example.com/enums#S1&gt; .
+</pre>
+
+<p>The content of the request depends on the type of dialog and the server.
+    Servers may describe constraints on POST content using resource shapes
+    [[OSLCCore2]]. The dialog descriptor uses property
+    <code>oslc:resourceShape</code> for the shape.</p>
+
+<p>The server's response contains a <code>Location</code> header with the
+    prefilled dialog's URI. The client uses this as the
+    <code>iframe src</code>.
+
+<pre class="example" title="The Server Responds with the Dialog Location" id="ex_prefill_response">
+HTTP/1.1 201 Created
+Location: http://example.com/dialogs/createBug/form/2zFy45
+</pre>
+
+<p>The client then uses the dialog URI from the <code>Location</code> like any
+    other dialog. The dialog URI from a prefill request is often temporary.
+    After a reasonable time, the server might respond with 404 Not Found or 410
+    Gone.</p>
+
+</section>
+</section>
+
+<!-- Conformance clauses have empty <h2></h2> tags for ReSpec to generate
+     section numbers. -->
+<section id="implementation_conformance" class="conformance">
+    <h2>Implementation Conformance</h2>
+
+    <section id="discovery_conformance">
+        <h2>Discovery</h2>
+
+        <section id="selection_dialog_link">
+            <h2></h2>
+
+            In responses to HTTP requests for an LDP container that has a
+            selection dialog, server MUST include a <code>Link</code> header
+            [[!RFC5988]] where
+
+            <ul>
+                <li>The context URI is the effective request URI,</li>
+                <li>The link relation is
+                    <code>http://open-services.net/ns/core#selectionDialog</code>, and</li>
+                <li>The target URI is the URI of the dialog descriptor.</li>
+            </ul>
+
+<pre class="example">
+Link: &lt;http://example.com/dialogs/selectBug&gt;; rel="http://open-services.net/ns/core#selectionDialog"
+</pre>
+        </section>
+
+        <section id="creation_dialog_link">
+            <h2></h2>
+
+            In responses to successful HTTP requests for an LDP container that has a
+            creation dialog, server MUST include a <code>Link</code> header
+            [[!RFC5988]] where
+
+            <ul>
+                <li>The context URI is the effective request URI,</li>
+                <li>The link relation is
+                    <code>http://open-services.net/ns/core#creationDialog</code>, and</li>
+                <li>The target URI is the URI of the dialog descriptor.</li>
+            </ul>
+
+<pre class="example">
+Link: &lt;http://example.com/dialogs/createBug&gt;; rel="http://open-services.net/ns/core#creationDialog"
+</pre>
+        </section>
+
+        <section id="prefer_dialog">
+            <h2></h2>
+
+            Clients MAY request that the dialog descriptors for an LDP
+            container are returned inline using the <code>Prefer</code> request
+            header [[!RFC7240]] and
+
+                <ul>
+                    <li>Preference <code>return</code>, value
+                        <code>representation</code></li>
+                    <li>Parameter <code>include</code> [[!LDP]], value
+                        <code>http://open-services.net/ns/core#PreferDialog</code>.</li>
+                </ul>
+
+<pre class="example" id="ex_prefer_compact" title="Example Prefer Header">
+Prefer: return=representation; include="http://open-services.net/ns/core#PreferDialog"
+</pre>
+        </section>
+
+        <section id="honor_prefer">
+            <h2></h2>
+
+            Servers MUST honor a client's request to inline dialog descriptors
+            if the target resource has any dialog descriptors and the request
+            is successful.
+        </section>
+        <section id="css_length_units">
+            <h2></h2>
+
+            Servers MUST express the <code>oslc:hintWidth</code> and
+            <code>oslc:hintHeight</code> properties of an
+            <code>oslc:Dialog</code> in length units as specified in
+            [[!CSS21]].
+        </section>
+        <section id="vary_header">
+            <h2></h2>
+
+            In responses to HTTP GET requests targeting resources
+            that have dialogs, servers SHOULD either include
+            a <code>Vary</code> response header with at least
+            <code>Accept</code> and <code>Prefer</code> field
+            values or a <code>Cache-Control</code> header value
+            <code>no-store</code>.
+        </section>
+    </section>
+
+    <section id="display_conformance">
+        <h2>Display</h2>
+
+        <section id="embed_dialog">
+            <h2></h2>
+
+            When embedding a dialog inside another web page, the client
+            MUST use an <code>iframe</code> element and set the its
+            <code>src</code> attribute to the URI of the dialog.
+        </section>
+    </section>
+
+    <section id="messaging_conformance">
+        <h2>Messaging</h2>
+
+        <section id="postmessage_window">
+            <h2></h2>
+
+            Servers MUST support the <code>Window.postMessage</code> method
+            [[!webmessaging]] for dialog responses.
+        </section>
+        <section id="other_protocols">
+            <h2></h2>
+
+            Servers MAY support other protocols for dialog responses not
+            specified in this document, which clients request by appending a
+            fragment identifier [[!RFC3986]] describing the protocol to the end
+            of the dialog URI.
+        </section>
+        <section id="no_fragment_identifier">
+            <h2></h2>
+
+            Servers MUST use <code>postMessage</code> for dialog responses if
+            a client has not added a fragment identifier to the dialog URI.
+        </section>
+        <section id="message_contents">
+            <h2></h2>
+
+            Messages describing dialog results MUST start with the characters
+            <code>oslc-response:</code> followed by JSON as specified in
+            <a href="#results_json"></a>.
+
+<pre class="example" id="ex_results_message">
+oslc-response:{"oslc:results": [{ "oslc:label": "bug 123: server crash", "rdf:resource": "http://example.com/bug123" }]}
+</pre>
+        </section>
+        <section id="results_other_props">
+            <h2></h2>
+
+            Servers MAY include additional server-specific properties in the
+            results JSON.
+        </section>
+        <section id="postmessage_canceled">
+            <h2></h2>
+
+            If the user cancels a dialog, the dialog MUST still send a message
+            with an empty <code>oslc:results</code> array.
+
+<pre class="example" id="ex_results_message">
+oslc-response:{"oslc:results": []}
+</pre>
+        </section>
+        <section id="postmessage_window_opener">
+            <h2></h2>
+
+            Calls to <code>postMessage</code> from within a dialog MUST be made
+            on <code>window.opener</code> unless <code>null</code> or
+            <code>undefined</code>.
+        </section>
+        <section id="postmessage_window_parent">
+            <h2></h2>
+
+            If <code>window.opener</code> is <code>null</code> or
+            <code>undefined</code>, calls to <code>postMessage</code>
+            MUST be made on <code>window.parent</code>.
+
+<pre class="example highlight" id="ex_postMessage">
+(window.opener || window.parent).postMessage("oslc-response:" + response, "*");
+</pre>
+        </section>
+        <section id="message_origin">
+            <h2></h2>
+
+            Clients handling <code>message</code> events from dialogs MUST
+            verify that the event <code>origin</code> is the same as the
+            dialog.
+
+            <p>For example, if the dialog is from example.com,
+
+<pre class="example highlight" id="ex_verify_origin">
+function handleMessage(event) {
+    if (event.origin !== "http://example.com") {
+        return;
+    }
+
+    // Otherwise, process message...
+}
+</pre></p>
+        </section>
+        <section id="resize">
+            <h2></h2>
+
+            Dialogs MAY support dynamic resizing as specified in
+            [[!OSLCPreview30]].
+        </section>
+        <section id="ignore_unrecognized_messages">
+            <h2></h2>
+
+            Clients MUST anticipate other, unrelated uses of
+            <code>postMessage</code> and ignore unrecognized messages not
+            conforming to the protocol.
+        </section>
+    </section>
+    <section id="prefill_conformance">
+        <h2>Prefill</h2>
+        <section id="allow_prefill">
+            <h2></h2>
+
+            Servers MAY allow clients to prefill dialogs by accepting
+            HTTP POST requests where the Request-URI is the dialog
+            descriptor and the entity body is an entity describing the
+            initial values.
+        </section>
+        <section id="dialog_options">
+            <h2></h2>
+
+            Servers that support prefill MUST include the value
+            <code>POST</code> in the set of <code>Allow</code> header values
+            returned in response to HTTP OPTIONS requests for the dialog
+            descriptor URI.
+
+<pre class="example" id="ex_verify_origin">
+Allow: GET,POST,HEAD,OPTIONS
+</pre>
+        </section>
+        <section id="partial_shape">
+            <h2></h2>
+
+            Servers MAY describe prefill constraints by adding an
+            <code>oslc:resourceShape</code> property to the dialog descriptor
+            whose value is a resource shape [[!OSLCCore2]].
+        </section>
+        <section id="partial_prefill">
+            <h2></h2>
+
+            Servers MUST NOT reject prefill requests on creation dialogs
+            solely because they are missing required fields for the
+            resource. Users can fill in the missing values in the
+            dialog.
+        </section>
+        <section id="prefill_response">
+            <h2></h2>
+
+            On successful prefill requests, servers MUST respond with status
+            code 201 (Created) and a <code>Location</code> header whose value
+            is the URI of the prefilled dialog.
+        </section>
+        <section id="prefill_temp_uris">
+            <h2></h2>
+
+            After some elapsed time, servers MAY respond with a 404 (Not Found)
+            or 410 (Gone) to an HTTP GET request for a prefilled dialog URI.
+            Clients SHOULD NOT cache dialog URIs from prefill requests since
+            they are often temporary.
+        </section>
+        <section id="prefill_query_params">
+            <h2></h2>
+
+            Servers MAY support prefill by adding initial values as query
+            parameters to the prefilled dialog URI. Clients SHOULD NOT assume
+            any specific URL format, however.
+        </section>
+    </section>
+</section>
+
+<section class="appendix" id="dialog_shape">
+    <h2>Dialog Shape</h2>
+
+    <div title='RDF Shape for Dialog'
+            data-include='shapes/Dialog-shape.ttl'
+            data-oninclude='shapeToSpec'
+            data-include-sync='true'
+            data-include-replace='true'
+            data-include-format='html'></div>
+</section>
+
+<section id="vocab" class="appendix">
+<h2>Terms</h2>
+<p>This section highlights the new RDF vocabulary terms defined in this
+    specification.</p>
+
+<div title='RDF Vocabulary for Dialogs'
+        data-include='vocab/dialogs-vocab.ttl'
+        data-oninclude='vocabToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+</section>
+
+<section class="appendix" id="results_json">
+    <h2>Dialog Results JSON</h2>
+
+    <p>Dialog results are represented as JSON [[!RFC4627]]. The top-level JSON
+        object has an <code>oslc:results</code> property.</p>
+
+    <table style="width: 100%">
+        <colgroup>
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 46%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th>Occurs</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>oslc:results</code></td>
+                <td>JSON Array</td>
+                <td>Exactly-one</td>
+                <td>An array of results, each result a JSON object. An empty
+                    array means the user canceled the dialog or didn't select a
+                    resource.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Each result is a JSON object with the following properties.</p>
+
+    <table style="width: 100%">
+        <colgroup>
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 18%;">
+            <col span="1" style="width: 46%;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+                <th>Occurs</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>rdf:resource</code></td>
+                <td>String</td>
+                <td>Exactly-one</td>
+                <td>URI of the resource selected or created</td>
+            </tr>
+            <tr>
+                <td><code>oslc:label</code></td>
+                <td>String</td>
+                <td>Zero-or-one</td>
+                <td>Short label describing the resource selected</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Here is an example response that contains two resources.</p>
+
+<pre class="example highlight" id="ex_creation_message">
+{
+    "oslc:results": [
+        {
+            "oslc:label": "Bug 123: Server crash",
+            "rdf:resource": "http://example.com/bug123"
+        },
+        {
+            "oslc:label": "Bug 456: Client hangs on startup",
+            "rdf:resource": "http://example.com/bug456"
+        }
+    ]
+}
+</pre>
+
+    <p>When sent as a message in calls to <code>postMessage</code>, the JSON
+        string is prefixed with the characters <code>oslc-response:</code>.</p>
+
+</section>
+
+<section class="appendix informative" id="history">
+<h2>Change History</h2>
+<p>Below is a summary of some of the changes in this draft</p>
+
+<ul>
+    <li>2015-03-06 Only require Link headers on successful HTTP responses. (SP)</li>
+    <li>2015-03-05 Recommend Vary only if Cache-Control header is not
+        set to no-store. (SP)</li>
+    <li>2015-03-05 Generalize dialog prefill to include selection
+        dialogs. (SP)</li>
+    <li>2015-03-05 Add <code>window.opener</code> as a <code>postMessage</code>
+        target. (SP)</li>
+    <li>2015-03-04 Discuss Vary and Cache-Control. (SP)</li>
+    <li>2015-03-02 Incorporate feedback from Martin Pain. (SP)</li>
+    <li>2015-02-25 Make 6.4.2 a MUST rather than a SHOULD. (SP)</li>
+    <li>2015-02-23 Add conformance clause for <code>oslc:hintHeight</code> and
+        <code>oslc:hintWidth</code> values.  (SP)</li>
+    <li>2015-02-19 Add resource shapes for prefill. (SP)</li>
+    <li>2015-02-18 Add dialog vocabulary. (SP)</li>
+    <li>2015-02-18 Add references to Terminology section. (SP)</li>
+    <li>2015-02-16 Cite RFC 3986 for fragment identifier. (SP)</li>
+    <li>2015-02-16 Add example dialog screenshot. (SP)</li>
+    <li>2015-02-10 Clearly distinguish between dialogs and dialog descriptors.
+        (SP)</li>
+    <li>2015-02-04 Add discovery conformance clauses. (SP)</li>
+    <li>2015-02-04 Add discovery examples. (SP)</li>
+    <li>2015-02-03 Move conformance clauses to numbered sections. Remove
+        windowName protocol. Refer to dynamic resizing in Resource Preview 3.0.
+        (SP)</li>
+    <li>2014-12-04 Shorten spec title. (SP)</li>
+    <li>2014-08-28 Add Change History and References. (SP)</li>
+    <li>2014-08-27 Initial draft, contributed from open-services.net. (SP)</li>
+</ul>
+</section>
+
+<section class='appendix informative'>
+<h2>Acknowledgments</h2>
+<p>The editors would like to thank to OSLC Core Technical Committee
+for contributions and feedback, especially Ian Green for his review
+comments. This specification is based on [[OSLCCore2]], authored by
+Steve Speicher and Dave Johnson.</p>
+</section>
+
+</body>
+</html>
+

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'/>
+<script src='https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script class='remove'>
+  var respecConfig = {
+      specStatus:           "WD",
+      edDraftURI:           "preview-guidance.html",
+
+      // the specification's short name, as in http://www.w3.org/TR/short-name/
+      shortName:            "OSLC 3.0 Resource Preview Guidance",
+
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+      // subtitle   :  "an excellent document",
+
+      // if you wish the publication date to be other than the last modification, set this
+      // publishDate:  "2009-08-06",
+
+      // if the specification's copyright date is a range of years, specify
+      // the start date here:
+      // copyrightStart: "2005"
+
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+
+      // if there a publicly available Editor's Draft, this is the link
+      // edDraftURI:           "http://berjon.com/",
+
+      // if this is a LCWD, uncomment and set the end of its review period
+      // lcEnd: "2009-08-05",
+
+      // editors, add as many as you like
+      // only "name" is required
+      editors:  [
+          {
+              name : "Jim Amsden",
+              mailto : "jamsden@us.ibm.com",
+              company : "IBM",
+              companyURL : "http://www.ibm.com/"
+          }
+      ],
+
+      previousURI: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+      prevED: "http://open-services.net/wiki/core/User-Interface-Previews-3.0/",
+
+      // name of the WG
+      wg:           "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+
+      // URI of the public WG page
+      wgURI:        "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
+
+      // name (without the @w3c.org) of the public mailing to which comments are due
+      wgPublicList: "oslc-core",
+
+      // URI of the patent status for this WG, for Rec-track documents
+      // !!!! IMPORTANT !!!!
+      // This is important for Rec-track documents, do not copy a patent URI from a random
+      // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+      // Team Contact.
+      wgPatentURI:  "",
+      // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
+        localBiblio:  {
+                "OSLCUIPreview20": {
+                        title:    "OSLC Core 2.0 - UI Preview",
+                        href:     "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+                        authors:  [
+                                "S. Bosworth"
+                        ],
+                        status:   "Finalized",
+                        publisher:  "http://open-services.net"
+                 }
+        }
+  };
+</script>
+<title>Open Services for Lifecycle Collaboration Resource Preview Guidance</title>
+<style type="text/css">
+table, thead, tr, td {
+    padding: 5px;
+    border-width: 1px;
+    border-spacing: 0px;
+    border-style: solid;
+    border-collapse: collapse;
+}
+
+td {
+    min-width: 100px;
+}
+
+div.review {
+    border-color: #E05252;
+    background: #FBE9E9;
+    padding: 0.5em;
+    margin: 1em 0;
+    position: relative;
+    clear: both;
+    border-left-width: .5em;
+    border-left-style: solid;
+}
+</style>
+</head>
+<body>
+
+<section id="abstract">
+    <p>This document discusses best practices and recommendations for implement
+        OSLC Resource Preview.</p>
+</section>
+
+<section class="informative" id="introduction">
+
+<section id="sotd"></section>
+
+<section id="display">
+<h2>Displaying a Preview</h2>
+<p>The following guidance is suggested for Client display of a resource link
+    and rich previews. For purposes of this discussion, assume source resource
+    A has a URI property that refers to target resource B:</p>
+
+<section id="navigating">
+<h2>Navigation to the target resource</h2>
+
+<p>At any time, the user <strong>SHOULD</strong> be able to gesture that they
+    would like to navigate the link to the target resource, regardless of how
+    the link to the target resource happens to be rendered. </p>
+</section>
+
+<section id="displayingLinks">
+<h2>Default way to display the link to the target resource</h2>
+
+<p>The typical way for forming and displaying the hyperlink
+    <strong>SHOULD</strong> be based on information that is stored locally in
+    source resource A (or that is generally known to the Client). Generally,
+    link text can be derived from property values of resource A, and
+    potentially from a string or literal property value in the reference to the
+    target resource B, if such a property exists. Because these property values
+    are part of the representation of the source resource A, they are available
+    without consulting the target resource, and will be available even if the
+    target resource B cannot be fetched.  When available, Clients
+    <strong>SHOULD</strong> display this string (as opposed to the URI) when
+    presenting resource A to indicate a potential navigation to resource B.
+    This is the basic presentation of a link to target resource B.</p>
+
+<p>The default display of the link from A to B is visible to any user
+    authorized to access resource A. The use of Compact representation
+    information described below is only viable for users who are also
+    authorized to access resource B.</p>
+</section>
+
+<section id="usingTitle">
+<h2>Using the Compact representation title, short title, and icon</h2>
+
+<p>A Compact representation of the resource may contain a more accurate and
+    slightly richer label for a target resource ( <code>dcterms:title</code>
+    element), a short-form title for the resource (
+    <code>oslc:shortTitle</code>), and a corresponding image (
+    <code>oslc:icon</code>), all of which may be based on the current state of
+    the target resource. If this becomes known to the Client, the client
+    <strong>SHOULD</strong> assume that this information is better and use it
+    in forming the hyperlink that is displayed to the user. When available,
+    <code>oslc:shortTitle</code> MAY be used instead of
+    <code>dcterms:title</code> in presentations where visual space is severely
+    limited.</p>
+
+<p>Clients <strong>SHOULD NOT</strong> fetch Compact representations when
+    there is perfectly usable default display information available. When
+    designing a Client application, consideration should be given to the
+    potential benefits of obtaining an improved title and icon for the target
+    resource against the costs of preemptively fetching the Compact
+    representation in terms of added load on servers and networks (which might
+    only be apparent to users on slow networks or heavily loaded servers).</p>
+
+<p>Clients <strong>SHOULD</strong> be wary of material obtained from
+    non-trusted sources; in particular, the Client <strong>SHOULD</strong> check that
+    the dcterms:title and oslc:shortTitle property values do not contain HTML
+    markup beyond the specified set of simple elements.</p>
+</section>
+
+<section id="smallPreview">
+<h2>Preview sizing</h2>
+<p>When the resource does not supply preferred sizing for a preview, the
+    Client <strong>SHOULD</strong> default to a reasonably generous value.
+    The default value a Client uses <strong>MAY</strong> be different for
+    different window and screen sizes.</p>
+</section>
+
+<section id="smallPreview">
+<h2>Displaying a small preview</h2>
+
+<p>If a user mouses or hovers over a displayed link, the Client
+    <strong>SHOULD</strong> determine whether the target resource has a small
+    preview (<code>oslc:smallPreview</code>). If it does, the Client
+    <strong>SHOULD</strong> present the small preview document in a hovering
+    widget.  Since preview documents may contain arbitrary content, including
+    HTML and scripts, Client <strong>MUST</strong> use iframes if embedding
+    the preview document inside another HTML-based presentation.</p>
+
+<p>The Client <strong>SHOULD NOT</strong> attempt to prefetch a Compact
+    representation just to have the preview URIs in hand so that the hover can
+    come up faster. There is a low chance that the user will make a gesture
+    that would call for the display of a small preview. It would generally be a
+    poor trade-off to increase overall system load just to decrease UI latency
+    for low probability eventualities.</p>
+</section>
+
+<section id="largePreview">
+<h2>Displaying a large preview</h2>
+
+<p>If the user then gestures that they want to see a bit more of the resource,
+    the Client should determine whether the target resource has a large
+    preview ( <code>oslc:largePreview</code>). If it does, the Client
+    <strong>SHOULD</strong> present the large preview document in a stationary
+    widget that permits further user interaction. Again, since preview
+    documents may contain arbitrary content, including HTML and scripts,
+    Clients <strong>MUST</strong> use iframes if embedding the preview
+    document inside another HTML-based presentation.</p>
+</section>
+
+</section>
+
+<section class="appendix informative" id="history">
+<h2>Change History</h2>
+<p>Below is a summary of some of the changes in this draft</p>
+
+<ul>
+    <li>2015-05-05 Changed Consumer to Client, changed to a committee note
+    <li>2014-09-04 Initial draft, extracted from OSLC Resource Preview 3.0
+        specification working draft. (SP)</li>
+</ul>
+</section>
+
+</body>
+</html>
+

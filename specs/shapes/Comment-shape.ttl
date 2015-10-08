@@ -1,40 +1,42 @@
-@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix foaf:  <http://http://xmlns.com/foaf/0.1/> .
 @prefix oslc:  <http://open-services.net/ns/core#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
-# TODO: What stable URL to use for this shape?
-@base <http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/Comment-shape.ttl> .
+<http://open-services.net/ns/core/shapes/Comment>
+	a               oslc:ResourceShape ;
+	oslc:describes  oslc:Comment ;
+	oslc:name       "Comment" ;
+	dcterms:title   "OSLC Core Comment Shape" ;
+	oslc:property  <#dcterms-title>, <#dcterms-desc>, <#dcterms-creator>, 
+		<#dcterms-desc>, <#oslc-inReplyTo>, <#dcterms-created>.
+        
+<#dcterms-title> a  oslc:Property ;
+	oslc:name                "title" ;
+	oslc:occurs              oslc:Zero-or-one ;
+	oslc:propertyDefinition  dcterms:title ;
+	oslc:valueType           rdf:XMLLiteral.
 
-<#Comment>
-    a               oslc:ResourceShape ;
-    oslc:describes  oslc:Comment ;
-    dcterms:title   "OSLC Core Comment Shape" ;
-    oslc:property  <#dcterms-title>, <#dcterms-desc>, <#dcterms-creator>, <#dcterms-id>,
-        <#dcterms-desc>, <#oslc-inReplyTo>, <#dcterms-created>.
+<#dcterms-desc> a                        oslc:Property ;
+	oslc:name                "description" ;
+	oslc:occurs              oslc:Exactly-one ;
+	oslc:propertyDefinition  dcterms:description ;
+	oslc:valueType           rdf:XMLLiteral.
 
-<#dcterms-title> a           oslc:Property ;
-    oslc:name                "title" ;
-    dcterms:description      """A brief title for the comment. SHOULD include only content that is valid and suitable inside an XHTML <code>&lt;span&gt;</code> element."""^^rdf:XMLLiteral ;
-    oslc:occurs              oslc:Zero-or-one ;
-    oslc:propertyDefinition  dcterms:title ;
-    oslc:valueType           rdf:XMLLiteral.
+<#dcterms-creator> a                        oslc:Property ;
+	oslc:name                "creator" ;
+	oslc:occurs              oslc:Exactly-one ;
+	oslc:propertyDefinition  dcterms:creator ;
+	oslc:range               foaf:Person ;
+	oslc:representation      oslc:Either ;
+	oslc:valueShape          <http://example.com/oslc/shapes/Person> ;
+	oslc:valueType           oslc:AnyResource.
 
-<#dcterms-desc> a            oslc:Property ;
-    oslc:name                "description" ;
-    dcterms:description      """Details or body of the comment. SHOULD include only content that is valid and suitable inside an XHTML <code>&lt;div&gt;</code> element."""^^rdf:XMLLiteral ;
-    oslc:occurs              oslc:Exactly-one ;
-    oslc:propertyDefinition  dcterms:description ;
-    oslc:valueType           rdf:XMLLiteral.
-
-<#dcterms-creator> a         oslc:Property ;
-    oslc:name                "creator" ;
-    dcterms:description      """The person who created the comment."""^^rdf:XMLLiteral ;
-    oslc:occurs              oslc:Exactly-one ;
-    oslc:propertyDefinition  dcterms:creator ;
-    oslc:range               foaf:Person ;
-    oslc:representation      oslc:Either ;
-    oslc:valueType           oslc:AnyResource.
+<#dcterms-id> a                        oslc:Property ;
+	oslc:name                "identifier" ;
+	oslc:occurs              oslc:Exactly-one ;
+	oslc:propertyDefinition  dcterms:identifier ;
+	oslc:valueType           <http://www.w3.org/2001/XMLSchema#string>.
 
 <#oslc-inReplyTo> a  oslc:Property ;
 	oslc:name                "inReplyTo" ;
@@ -42,27 +44,10 @@
 	oslc:propertyDefinition  oslc:inReplyTo ;
 	oslc:range               oslc:Comment ;
 	oslc:representation      oslc:Reference ;
-	oslc:valueType           oslc:Resource.
-
-<#dcterms-id> a              oslc:Property ;
-    oslc:name                "identifier" ;
-    dcterms:description      """A service defined identifier"""^^rdf:XMLLiteral ;
-    oslc:occurs              oslc:Exactly-one ;
-    oslc:propertyDefinition  dcterms:identifier ;
-    oslc:valueType           <http://www.w3.org/2001/XMLSchema#string>.
-
-<#oslc-inReplyTo> a          oslc:Property ;
-    oslc:name                "inReplyTo" ;
-    dcterms:description      """Reference to the comment to which this comment replies."""^^rdf:XMLLiteral ;
-    oslc:occurs              oslc:Zero-or-one ;
-    oslc:propertyDefinition  oslc:inReplyTo ;
-    oslc:range               oslc:Comment ;
-    oslc:representation      oslc:Reference ;
-    oslc:valueType           oslc:Resource .
+	oslc:valueType           oslc:Reference.
 
 <#dcterms-created> a   oslc:Property ;
-    oslc:name                "created" ;
-    dcterms:description      """When the comment resource was created."""^^rdf:XMLLiteral ;
-    oslc:occurs              oslc:Exactly-one ;
-    oslc:propertyDefinition  dcterms:created ;
-    oslc:valueType           <http://www.w3.org/2001/XMLSchema#dateTime>.
+	oslc:name                "created" ;
+	oslc:occurs              oslc:Exactly-one ;
+	oslc:propertyDefinition  dcterms:created ;
+	oslc:valueType           <http://www.w3.org/2001/XMLSchema#dateTime>.

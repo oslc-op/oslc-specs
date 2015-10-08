@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html> 
+<html>
 <head>
 <title>OSLC Discovery 3.0</title>
 <meta charset='utf-8'>
@@ -35,19 +35,26 @@
 
         // includePermalinks: true,
 
-		chairs : [ {
-			name : "Jim Amsden",
-			url : "http://www.ibm.com/"
-		}, {
-			name : "Martin Sarabura",
-			url : "http://www.ptc.com"
-		} ],
-		editors : [ {
-			name : "Jim Amsden",
-			mailto : "jamsden@us.ibm.com",
-			company : "IBM",
-			companyURL : "http://www.ibm.com/"
-		} ],
+        chairs : [ {
+                name : "Steve Speicher",
+                url : "http://stevespeicher.me/",
+                mailto : "sspeiche@us.ibm.com",
+                company : "IBM",
+                companyURL : "http://ibm.com/"
+        } ],
+        editors : [ {
+                name : "Steve Speicher",
+                url : "http://stevespeicher.me/",
+                mailto : "sspeiche@us.ibm.com",
+                company : "IBM",
+                companyURL : "http://ibm.com/"
+        },
+        {
+            name:       "Samuel Padgett",
+            mailto:     "spadgett@us.ibm.com",
+            company:    "IBM",
+            companyURL: "http://ibm.com/"
+        } ],
         wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
         wgURI : "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
         namespaces : [ {
@@ -57,37 +64,9 @@
         wgPublicList : "oslc-core-comments",
 
         localBiblio : {
-          "OSLCCore2" : {
-              title:    "OSLC Core 2.0",
-              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification",
-              authors:  ["S. Speicher", "D. Johnson"],
-              status:   "Finalized",
-              publisher:  "http://open-services.net",
-          },
-          "OSLCQuery" : {
-              title:    "OSLC Core 2.0 Query Capability",
-              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities",
-              authors:  ["S. Speicher", "D. Johnson"],
-              status:   "Finalized",
-              publisher:  "http://open-services.net",
-          },
-          "OSLCSPR" : {
-              title:    "OSLC Core 2.0 Service Provider Resources",
-              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources",
-              authors:  ["S. Speicher", "D. Johnson"],
-              status:   "Finalized",
-              publisher:  "http://open-services.net",
-          },
-          "OSLCSPV": {
-              title:    "OSLC Core 2.0 Selective Property Values",
-              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values",
-              authors:  ["S. Speicher", "D. Johnson"],
-              status:   "Finalized",
-              publisher:  "http://open-services.net",
-          },
             "OSLCCore3" : {
                 title : "OSLC Core 3.0",
-                href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core.html",
+                href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core-v3.html",
                 authors : [ "Steve Speicher" ],
                 publisher : "OASIS",
             },
@@ -108,11 +87,6 @@
                 href : "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#oslc_ResourceShape_Resource",
                 authors : [ "Dave Johnson" ],
                 publisher : "open-services.net",
-            },
-            "OpenIDConnect" : {
-                title : "OpenID Connect",
-                href : "http://openid.net/connect/",
-                publisher : "openid.net",
             }
         }
     };
@@ -151,11 +125,15 @@ dd {
 
 	<section id='intro' class='informative'>
 		<h2>Introduction</h2>
-		<p>A common problem with building interoperable solutions is having a mechanism for a client to introspect a server API or end-point
-		to learn if the target application supports a set of capabilities.  Client applications would then provide features based on what is discovered.  For example, a person using a quality management tool
-		wants to be able to record a bug in a bug tracking tool.  The integration from the quality management tool will want to be able to do a number of things on behalf of the user and provide an optional integrated experience to streamline the users workflow.  To do this, the quality management tool will need a means of discovering information about the bug tracking tool including: authenticating, knowing that the target tool is capable of receiving creation requests for bugs, whether it can be handled via a user interface, what fields are required and types of data, and also if the bug record can be pre-filled with some data from the test currently being executed.</p>
-
-		<p>OSLC Discovery 3.0 defines a capability providing client applications a standard way to introspect servers to determine what resource types the server supports, how to preview, select or create instances of those resources, and any constraints on resource creation or update. Discovery capabilities allow clients to determine what capabilities are provided by a server so they can adapt to, and integrate with different servers in support of end user integration scenarios.</p>
+		<p>A common problem to building interoperable solutions is having a mechanism for a client to introspect an API or end-point
+		to learn if the target application supports a set of capabilities.  Sometimes the client applications may provide limited
+		or no features based on what is discovered.  An example of discovery needs includes a person using a quality management tool
+		that wants to be able to record a bug in a bug tracking tool.  The integration from the quality management tool will want to
+		be able to do a number of things on behalf of the user and provide an optional integrated experience to streamline the
+		users workflow.  Therefore the discovery needs include: authenticating, knowing that the target tool is capable of
+		receiving creation requests for bugs, whether it can be handled via a user interface, what fields are required and
+		types of data, and also if the bug record can be pre-filled with some data from the test currently being executed.</p>
+		<p></p>
 	</section>
 
 	<section id="terms">
@@ -171,29 +149,29 @@ dd {
 	</section>
 
 	<section id="conformance">
+	<p><em>TODO: needed for public review version of standards-track specifications, more details
+	in <a href="http://docs.oasis-open.org/templates/TCHandbook/ConformanceGuidelines.html#_Toc170119664">TC Handbook</a>.
+	Some examples: <a href="https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp.html#conformance">LDP</a>,
+	<a href="http://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.html#S-CONFORMANCE">UBL</a></em></p>
 	</section>
 
 	<section class='informative'>
 		<h2>Motivation</h2>
-		<p>Management and use of shared information in complex domains such as IT application lifecycle management and systems and software engineering often involve the integration of many data sources supported by tools developed by different vendors on different technical architectures, and introduced at different times. Integrating these tools in order to support a wide range of evolving end user scenarios requires flexible and loosely coupled interactions between consumers and providers of this shared information. An important way of achieving this flexibility and loose coupling is to allow clients to incrementally discover the capabilities of any given server, and then adapt to what is discovered in order to maximize end user capabilities. Although a client may not know ahead of time what capabilities a given server might provide, they can know a standard means of discovering those capabilities, and can be developed in a way dynamically adapt to the discovered capabilities.</p>
-		<p>Key usage scenarios that motivate a number of requirements for discovery include determining if the target tool supports:</p>
+		<p>Some key usage scenarios that motivate a number of requirements for discovery.</p>
+		<p>Determine if the target tool supports:</p>
 		<ul>
-			<li>A certain authentication model (OAuth2, OpenID Connect, HTTPS Basic)</li>
-			<li>Creating resources with a given type</li>
-			<li>User interface previews of a given resource</li>
-			<li>User interface dialogs for creating or selecting resources of given types</li>
-			<li>Prefilling dialogs for resource creation</li>
-			<li>Describing the constraints on a resource creation or update request (allowable properties or values)</li>
-			<li>Querying resources to select specific instances and property values</li>
-			<li>Adding attachments to resources</li>
+			<li>a certain authentication model (OAuth2, OpenID Connect, HTTP Basic)</li>
+			<li>creating bug records (resources of a given kind)</li>
+			<li>user interface previews</li>
+			<li>user interface dialogs for creating or selecting bugs (resources of given types)</li>
+			<li>prefilling dialogs</li>
+			<li>describing the constraints on a bug creation or update request (shapes associated with certain operations)</li>
 		</ul>
-		<p>Additionally there is motivation to establish a common way for tools to support similar mechanisms so that each new capability doesn't introduce a new discovery model.  It is also desired to have capabilities defined, whether
+		<p>Additionally there is motivation to establish a common way for tools to support similar mechanisms so
+		that each new capability doesn't introduce a new discovery model.  It is also desired to have capabilities defined, whether
 		within a standards development group or proprietary, to be able to leverage a similar approach to discovery.</p>
+		<p>The basis for how clients discovery capability should be based on the methods established by [[LDP]] and [[HTTP11]].</p>
 
-		<p>Security concerns are also important when managing shared information across organization and tool boundaries. The specific security needs of any application however are difficult to predict. Experience has shown that this variability results in complexity for tool integration and therefore some standard mechanism for authentication discovery is highly desired.</p>
-
-		<p>The basis for how clients discover capabilities should be based on the methods established by [[LDP]] and [[HTTP11]], and service provider resources defined by [[OSLCCore2]].</p>
-		
 	</section>
 
 <!--
@@ -202,55 +180,41 @@ dd {
 		<p>TODO: determine if needed</p>
 	</section>   -->
 
-	<section id="discoveryCapabilities">
-		<h2>Discovery Capabilities</h2>
-		<p>There are various approaches for how specifications define and advertise their capabilities, and how clients can efficiently discover what is available.  The following sections will provide guidance on approaches that should be used.</p>
+	<section>
+		<h2>Discovery Approaches</h2>
+		<p>There are various approaches for both specifications to define how their capabilities
+		could be advertised and how clients can efficiently discover what is needed.  The follow sections
+		will provide guidance on approaches that should be used.</p>
 
-		<p>OSLC defines two broad approaches for clients to discover capabilities provided by a server, loosely categorized as "Static Up-Front" and "Dynamic Incremental".</p>
-
-		<p><em>Static Up-Front</em> discovery, which is compatible with [[OSLCCore2]], is an up-front or somewhat more static approach to discovery that utilizes ServiceProviderCatalog, ServiceProvider, and Service resources. Typically a client would perform discovery on startup by accessing the Services defined by any ServiceProvider resources the client might need. A client could also access one or more ServiceProviderCatalog resources in order to locate the available ServiceProvider resources. The client would then configure its capabilities based on what was discovered. In many, or possibly most instances, the ServiceProvider resources will be dynamically created by servers based on the state of the information they manage. Clients may choose to periodically refresh their capabilities by re-reading the ServiceProviders and adapting to the newly available services. Therefore this approach to discovery is not completely static, or up-front, but that does represent a possible common usage pattern.</p>
-
-		<p>Figure <a href="#discoveryModel"></a> illustrates the Service Provider Catalog and Service Provider concepts and relationships defined by [[OSLCCore2]]. There are two resources defined: Service Provider Catalog and Service Provider, that provide the discovery information. There are also a set of local in-line resources that are provided inside these resources to define namespaces, OAuth configurations, contributors as well as services and their capabilities.</p>
-
-		<figure id="discoveryModel">
-		   <img src="images/oslc-discovery-model.png" />
-		   <figcaption>Service Provider concepts and relationships</figcaption>
-		</figure>
-
-		<p><em>Dynamic Incremental</em> discovery is a second approach that utilizes lazy or deferred discovery, getting just the information that is needed for any client capability when it is needed, and not getting information about server capabilities that might not ever be used. Clients typically utilize HTTP <code>OPTIONS</code> or <code>HEAD</code> methods on LDPCs and get discovery information from Link headers included in the HTTP response. This approach is more applicable for situations where the services provided by a server are changing rapidly as the result of resource creation or update, and clients will need to do queries for incremental discovery before executing many operations. This approach is also useful for clients that only need to do very specific things and are not necessarily involved in a long conversation with a server. Discovery in this case can be a simple HTTP <code>OPTIONS</code> request on the required LDPC and the client can immediately complete its operation without needing to deal with potentially large discovery documents.</p>
-
-		<section id="discoveryMethods">
-			<h2>General Discovery Methods</h2>
-			<p>The following clauses apply to all discovery capabilities including resource creation, resource preview, delegated dialogs for resource creation and selection, and resource constraints discovery.</p>
+		<section id="differentApproaches">
+			<h2>Choosing most effective methods</h2>
 
 			<section id="discOptions"><h2 class="normalText">
-				Clients SHOULD use <code>HTTP OPTIONS</code> to fetch various headers and other configuration information that MAY be exposed in the response content body.
+				Clients SHOULD use <code>HTTP OPTIONS</code> to fetch various headers and other configurations
+				information that MAY be exposed in the response content body.
 			</h2></section>
 
 			<section id="discHeaders"><h2 class="normalText">
-				Servers SHOULD minimize the use of HTTP response headers on various HTTP operations as to avoid unnecessary additional response content for clients to consume. This is also to avoid the complexity on server implementations that would be needed to provide such additional content.
+				Servers SHOULD minimize the use of HTTP response headers on various HTTP  operations as to
+				not provide unnecessary additional response content. This is also to avoid the complexity
+				on server implementations that would be needed to provide such additional content.
 			</h2></section>
 
 			<section id="discContent"><h2 class="normalText">
-				Servers SHOULD only use LDPR representations for additional discovery details that are not already available within HTTP response headers. It is also useful for scenarios where it would be valuable to have the discovery data readily available for purposes such as query.
-			</h2></section>
-
-			<section id="consistentContent"><h2 class="normalText">
-				Servers SHOULD provide the same discovery information no matter how clients request that information.
+				Servers SHOULD only use LDPRrepresentations for additional discovery details that are not already available
+				 within HTTP response headers. It is also useful for scenarios where it would be valuable to have the discovery
+				 data readily available for purposes such as query.
 			</h2></section>
 		</section>
 
 		<section id="creation">
-			<h2>Resource Creation Discovery</h2>
-
-			<p>Resource creation is done by doing an HTTP <code>POST</code> to a URI that supports resource creation, providing the resource content in the entity request body. Clients can discover resources that support resource creation either through the <code>http://open-services.net/ns/core#creationFactory</code> property of a Service in a ServiceProvider resource, or by using an <code>OPTIONS</code> request on an LDPC to determine if it accepts the <code>POST</code> method.</p>
-
-			<section id="serviceProvider"><h2 class="normalText">
-				Servers MAY provide one or more creation factories to enable creation of new resources as described in <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Creation_Factories">Creation Factories</a>.
-			</h2></section>
+			<h2>Checking for creation of a certain type of resource</h2>
 
 			<section id="doesCreate"><h2 class="normalText">
-				The existence of an <code>Accept-Post</code> header on an HTTP response to a given Request-URI indicates i) that an HTTP POST will be accepted for authorized requests and ii) what types of content are supported in the entity body of the HTTP POST request. Restating of [[LDP]] <a href="http://www.w3.org/TR/ldp/#header-accept-post"> conformance clause about <code>Accept-Post</code></a>.
+				The existence of an <code>Accept-Post</code> header on an HTTP response to a given Request-URI will
+				indicate that both an HTTP POST is accepted for authorized requests and which content types are support
+				in the entity body of an HTTP POST request. Restating of [[LDP]] <a href="http://www.w3.org/TR/ldp/#header-accept-post">
+				conformance clause about <code>Accept-Post</code></a>.
 			</h2></section>
 
 			<section id="isLDPC"><h2 class="normalText">
@@ -261,93 +225,107 @@ dd {
 			</h2></section>
 
 			<section id="createsTypes"><h2 class="normalText">
-				Servers SHOULD include the target URI of a <code>Link: &lt;type-URI&gt;; rel="http://open-services.net/ns/core#resourceType"</code>
-				header on an HTTP response to a given Request-URI to indicate the type-URI (i.e., <code>rdf:type</code>) for the type of resources that can be created by the LDP Container. Note: since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
+				Servers SHOULD include the target URI of a <code>Link: &lt;type-URI&gt;; rel="http://open-services.net/ns/core#creationType"</code>
+				header on an HTTP response to a given Request-URI to indicate the type-URI (i.e.<code>rdf:type</code>) for the type of resources
+				that can be created by the LDP Container. Note: since there is always some time between when the
+				test is done and when the creation request is sent, and that there may be additional server enforced constraints
+				on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
+				<pre class='example'>
+				Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
+				      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
+				</pre>
 			</section>
 
 			<section id="createTypesPred"><h2 class="normalText">
-				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:resourceType &lt;type-URI&gt;</code>.</h2>
-				Clients SHOULD use the predicate <code>oslc:resourceType</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.
+				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:creationType &lt;type-URI&gt;</code>.</h2>
+				Clients SHOULD use the predicate <code>oslc:creationType</code> when converting HTTP response headers for the same Link-relation type, into
+				an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query
+				to locate LDP Containers that can be used to create the same resource types.
 			</section>
 
-			<p>The following example is an OPTIONS request on the /bugs/ resource.</p>
-			<pre class='example'>
-			OPTIONS /bugs/ HTTP/1.1
-			Host: example.com
-			</pre>
-			<p> The response to this example request indicates that <code>POST</code> is supported for creating resources while the <code>Accept-Post</code> header indicates Turtle and JSON-LD content types are supported. The <code>"type"</code> link header indicates the resource is an LDP BasicContainer. The <code>"resourceType"</code> link headers indicate which resource types are supported on <code>POST</code>. In this case the LDP Container advertises support for creating two types of resources: Bug and Feature. POSTing an entity request body that is not one of these types would result in an error.</p>
-			<pre class='example'>
-			HTTP/1.1 204 No Content
-			Date: Thu, 12 Jun 2014 18:26:59 GMT
-			Allow: POST,GET,OPTIONS,HEAD,PUT
-			Accept-Post: text/turtle, application/ld+json
-			Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
-				  &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
-			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#resourceType",
-			      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#resourceType"
-			</pre>
+			<section id="isCreateEx" class='informative'><h2 class='normalText'>Example</h2>
+				<p>Complete example highlighting that POST is supported, which content types are supported on POST,
+				the fact that the resource is a LDP Container and it advertises support for creating two types of
+				resources.  Here showing the request (OPTIONS) and then the response:</p>
+				<pre class='example'>
+				OPTIONS /bugs/ HTTP/1.1
+				Host: example.come
+				</pre>
+				<pre class='example'>
+				HTTP/1.1 204 No Content
+				Date: Thu, 12 Jun 2014 18:26:59 GMT
+				Allow: POST,GET,OPTIONS,HEAD,PUT
+				Accept-Post: text/turtle, application/ld+json
+				Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
+					  &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
+				Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
+				      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
+				</pre>
+			</section>
 		</section>
 
-		<section id="creationShapes"><h2>Resource Creation and Update Constraints Discovery</h2>
-		    <p>In addition to the ways one can discover if a given OSLC Server supports creation of resources and for which types, it is helpful to understand if there are server-enforced constraints on the resource representation. Clients can discovery these constraints either through the <code>http://open-services.net/ns/core#resourceShape</code> property of a Creation Factory resource, or by using <code>Link: &lt;<em>constraint-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code>
-				header on an HTTP response to a given Request-URI.</p>
-
-			<section id="creationFactoryResourceShape"><h2 class="normalText">
-				Servers MAY describe constraints enforced on resource representations through the <code>http://open-services.net/ns/core#resourceShape</code> property of a Creation Factory resource as described in <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Creating_an_OSLC_Defined_Resourc">Creating an OSLC Defined Resource</a>.
-			</h2></section>
+		<section id="creationShapes"><h2>Checking for constraints for creation</h2>
+		    <p>In addition to the ways one can discover if a given OSLC Server supports creation of resources
+		    and for which types, it is helpful to understand if there are server-enforced constraints on
+		    the resource representation.</p>
 
 			<section id="createsWithShapes"><h2 class="normalText">
-				Servers SHOULD include the target URI of a <code>Link: &lt;<em>constraints-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code> header on an HTTP response to a given Request-URI to indicate the <code><em>constraint-URI</em></code> of a resource that defines the constraints about the to-be created resource representation against a LDP Container. The resource defined by <code><em>constraint-URI</em></code> is RECOMMENDED to be a machine-readable representation
-				such as OSLC Resource Shape [[OSLCShapes2]], but MAY be some variant or other constraint document. See [[LDP]]	<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
+				Servers SHOULD include the target URI of a <code>Link: &lt;<em>constraints-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code>
+				header on an HTTP response to a given Request-URI to indicate the <code><em>constraint-URI</em></code>
+				of a resource that defines the constraints about the to-be created resource representation against a LDP Container.
+				The resource defined by <code><em>constraint-URI</em></code> is RECOMMENDED to be a machine-readible representation
+				such as OSLC Resource Shape but MAY be some variant or other constraint document [[OSLCShapes2]].
+				See [[LDP]]	<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
 			</h2>
-
-				<pre class='example'>
-				Link: &lt;http://example.com/shapes/bug&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"
-				</pre>
-				<p>The link header in the example above would be returned on a POST or PUT to a resource of type <code>&lt;http://open-services.net/ns/cm#Bug&gt;</code> that violated the referenced constraint.</p>
+			<pre class='example'>
+			Link: &lt;http://example.com/shapes/bug&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"
+			</pre>
 			</section>
 
 			<section id="createWithShapesPred"><h2 class="normalText">
 				Servers MAY include a RDF triple in resource response body of the form:	<code>&lt;container-URI&gt; ldp:constrainedBy &lt;shape-URI&gt;</code>.</h2>
-				Clients SHOULD use the predicate <code>ldp:constrainedBy</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that are constraints by the same resource.
+				Clients SHOULD use the predicate <code>ldp:constrainedBy</code> when converting HTTP response headers for the same Link-relation type, into
+				an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query
+				to locate LDP Containers that are constraints by the same resource.
 			</section>
 		</section>
 
-		<section id="uiPreview"><h2>Resource User Interface Preview Discovery</h2>
-			<p>See [[OSLCCore2]] sections on discovery using the <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview"><code>Accept: application/x-oslc-compact+xml</code></a> header, and [[ResourcePreview]] for section on discovery using the
+		<section id="uiPreview"><h2>User interface resource previews</h2>
+			<p>See [[ResourcePreview]] sections on discovery using
 			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html#linkHeader">the <code>Link</code> header</a> or
-			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html#prefer">the <code>Prefer</code></a> header.</p>
+			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/resource-preview.html#prefer">the <code>Prefer</code> header</a>.</p>
 		</section>
 
-		<section id="dialogs"><h2>Resource User Interface Delegated Dialogs Discovery</h2>
-			<p>See [[OSLCCore2]] sections on using the <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs"><code>http://open-services.net/ns/core#selectionDialog</code></a> or <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs"><code>http://open-services.net/ns/core#creationDialog</code></a> properties of a Service resource, and see[[Dialogs]] sections on discovery using
+		<section id="dialogs"><h2>User interface dialogs</h2>
+			<p>See [[Dialogs]] sections on discovery
 			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html#discovery_link">the <code>Link</code> header</a> or
 			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/dialogs-v3.html#discovery_prefer">the <code>Prefer</code> header</a>.
 			</p>
 		</section>
 
-		<section id="authDiscovery"><h2>Authentication Discovery</h2>
-			<section id="createWithShapesPred"><h2 class="normalText">
-				Clients SHOULD determine what authentication schemes a server supports by parsing and processing the challenge sent by the target server in response to a request for a protected resource.
-			</h2></section>
-			
+		<section id="authMethods"><h2 class='normalText'>Checking authentication options</h2>
+
+			<div class='note'>This specification doesn't prescribe any specific authentication, authorization or
+			transport encryption.  It is expected that future versions or various capability specifications will
+			define such mechanisms.</div>
+
 		</section>
 <!--
 			<div class="issue-open"><div class="issue-title">Issue title (open)</div>Some text about this issue</div>
 			<div class="issue-closed"><div class="issue-title">Issue title (closed)</div>Some text about this issue</div>
 			<div class="issue-pending"><div class="issue-title">Issue title (pending)</div>Some text about this issue</div>
  -->
-	</section>
 
-	<section>
-		<h2>Resource Constraints</h2>
-		<p><em>No resource constraints are defined in this specification.</em></p>
+		<section>
+			<h2>Shape</h2>
+			<p><em>No shapes are defined in this specification.</em></p>
+
+		</section>
 	</section>
 
 	<section class='appendix'>
-		<h2>Terms</h2>
-			<p>This section summarizes the RDF vocabulary terms defined in this
-    			specification.</p>
+		<h2>RDF Vocabulary</h2>
+
 		<div title='RDF Vocabulary for Discovery'
 			data-include='vocab/discovery-vocab.ttl'
 			data-oninclude='vocabToSpec'
@@ -355,12 +333,6 @@ dd {
 			data-include-replace='true'
 			data-include-format='html'></div>
 
-		<div title='RDF Vocabulary for Discovery 2.0'
-			data-include='vocab/core2-vocab.ttl'
-			data-oninclude='vocabToSpec'
-			data-include-sync='true'
-			data-include-replace='true'
-			data-include-format='html'></div>
 	</section>
 
 	<section class='appendix informative'>
