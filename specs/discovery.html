@@ -228,7 +228,7 @@ dd {
 			</h2></section>
 
 			<section id="discHeaders"><h2 class="normalText">
-				Servers SHOULD minimize the use of HTTP response headers on various HTTP operations as to avoid unnecessary additional response content. This is also to avoid the complexity on server implementations that would be needed to provide such additional content.
+				Servers SHOULD minimize the use of HTTP response headers on various HTTP operations as to avoid unnecessary additional response content for clients to consume. This is also to avoid the complexity on server implementations that would be needed to provide such additional content.
 			</h2></section>
 
 			<section id="discContent"><h2 class="normalText">
@@ -261,13 +261,13 @@ dd {
 			</h2></section>
 
 			<section id="createsTypes"><h2 class="normalText">
-				Servers SHOULD include the target URI of a <code>Link: &lt;type-URI&gt;; rel="http://open-services.net/ns/core#creationType"</code>
+				Servers SHOULD include the target URI of a <code>Link: &lt;type-URI&gt;; rel="http://open-services.net/ns/core#resourceType"</code>
 				header on an HTTP response to a given Request-URI to indicate the type-URI (i.e., <code>rdf:type</code>) for the type of resources that can be created by the LDP Container. Note: since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
 			</section>
 
 			<section id="createTypesPred"><h2 class="normalText">
-				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:creationType &lt;type-URI&gt;</code>.</h2>
-				Clients SHOULD use the predicate <code>oslc:creationType</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.
+				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:resourceType &lt;type-URI&gt;</code>.</h2>
+				Clients SHOULD use the predicate <code>oslc:resourceType</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.
 			</section>
 
 			<p>The following example is an OPTIONS request on the /bugs/ resource.</p>
@@ -275,7 +275,7 @@ dd {
 			OPTIONS /bugs/ HTTP/1.1
 			Host: example.com
 			</pre>
-			<p> The response to this example request indicates that <code>POST</code> is supported for creating resources while the <code>Accept-Post</code> header indicates Turtle and JSON-LD content types are supported. The <code>"type"</code> link header indicates the resource is an LDP BasicContainer. The <code>"creationType"</code> link headers indicate which resource types are supported on <code>POST</code>. In this case the LDP Container advertises support for creating two types of resources: Bug and Feature. POSTing an entity request body that is not one of these types would result in an error.</p>
+			<p> The response to this example request indicates that <code>POST</code> is supported for creating resources while the <code>Accept-Post</code> header indicates Turtle and JSON-LD content types are supported. The <code>"type"</code> link header indicates the resource is an LDP BasicContainer. The <code>"resourceType"</code> link headers indicate which resource types are supported on <code>POST</code>. In this case the LDP Container advertises support for creating two types of resources: Bug and Feature. POSTing an entity request body that is not one of these types would result in an error.</p>
 			<pre class='example'>
 			HTTP/1.1 204 No Content
 			Date: Thu, 12 Jun 2014 18:26:59 GMT
@@ -283,8 +283,8 @@ dd {
 			Accept-Post: text/turtle, application/ld+json
 			Link: &lt;http://www.w3.org/ns/ldp#BasicContainer&gt;; rel="type",
 				  &lt;http://www.w3.org/ns/ldp#Resource&gt;; rel="type"
-			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#creationType",
-			      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#creationType"
+			Link: &lt;http://open-services.net/ns/cm#Bug&gt;; rel="http://open-services.net/ns/core#resourceType",
+			      &lt;http://example.com/vocab#Feature&gt;; rel="http://open-services.net/ns/core#resourceType"
 			</pre>
 		</section>
 
