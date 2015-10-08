@@ -3,25 +3,29 @@
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
-<http://example.com/oslc/shapes/Discussion>
+# TODO: What stable URL to use for this shape?
+@base <http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/Discussion-shape.ttl> .
+
+<#Discussion>
         a               oslc:ResourceShape ;
         oslc:describes  oslc:Discussion ;
-        dcterms:title   "Discussion" ;
         oslc:property   [ a                        oslc:Property ;
                           oslc:name                "comment" ;
-                          dcterms:description      "A comment about the associated resource" ;
                           oslc:occurs              oslc:Zero-or-many ;
                           oslc:propertyDefinition  oslc:comment ;
+                          dcterms:description "Comment about resource"^^rdf:XMLLiteral ;                          
                           oslc:range               oslc:Comment ;
                           oslc:representation      oslc:Either ;
-                          oslc:valueType           oslc:AnyResource
+                          oslc:valueType           oslc:AnyResource ;
+                          oslc:readOnly            false
                         ] ;
         oslc:property   [ a                        oslc:Property ;
                           oslc:name                "discussionAbout" ;
-                          dcterms:description      "A reference to the associated resource" ;
                           oslc:occurs              oslc:Exactly-one ;
                           oslc:propertyDefinition  oslc:discussionAbout ;
+                          dcterms:description "Reference to associated resource"^^rdf:XMLLiteral ;                          
+                          oslc:valueType           oslc:Resource ;
                           oslc:representation      oslc:Reference ;
-                          oslc:valueType           oslc:Resource
+                          oslc:readOnly            false
                         ] ;
-        dcterms:description   "OSLC Core Discussion Shape" .
+        dcterms:title   "OSLC Core Discussion Shape" .
