@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'/>
+<script src='https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script class='remove'>
+  var respecConfig = {
+      specStatus:           "CND",
+      edDraftURI:           "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/supporting-documents/link-guidance.html",
+
+      // the specification's short name, as in http://www.w3.org/TR/short-name/
+      shortName:            "OSLC Link Guidance 3.0",
+
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+      // subtitle   :  "an excellent document",
+
+      // if you wish the publication date to be other than the last modification, set this
+      // publishDate:  "2009-08-06",
+
+      // if the specification's copyright date is a range of years, specify
+      // the start date here:
+      // copyrightStart: "2005"
+
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+
+      // if there a publicly available Editor's Draft, this is the link
+      // edDraftURI:           "http://berjon.com/",
+
+      // if this is a LCWD, uncomment and set the end of its review period
+      // lcEnd: "2009-08-05",
+
+      // editors, add as many as you like
+      // only "name" is required
+      editors:  [
+          {
+              name:       "Jim Conallen"
+          ,   mailto:     ""
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          },
+          {
+              name:       "Ian Green"
+          ,   url:        ""
+          ,   mailto:     ""
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          }
+      ],
+
+      previousURI: "http://open-services.net/bin/view/Main/OslcCoreSpecAppendixLinks",
+      prevED: "http://open-services.net/wiki/core/User-Interface-Previews-3.0/",
+
+      // name of the WG
+      wg:           "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+
+      // URI of the public WG page
+      wgURI:        "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
+
+      // name (without the @w3c.org) of the public mailing to which comments are due
+      wgPublicList: "oslc-core",
+
+      // URI of the patent status for this WG, for Rec-track documents
+      // !!!! IMPORTANT !!!!
+      // This is important for Rec-track documents, do not copy a patent URI from a random
+      // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+      // Team Contact.
+      wgPatentURI:  "",
+      // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
+        localBiblio:  {
+                "OSLCLinkGuidance20": {
+                        title:    "OSLC Core 2.0 - Guidance on Links and Relationships",
+                        href:     "http://open-services.net/bin/view/Main/OslcCoreSpecAppendixLinks",
+                        authors:  [
+                                "Dave Johnson"
+                        ],
+                        status:   "Finalized",
+                        publisher:  "http://open-services.net"
+                 }
+        },
+
+      otherLinks: [{
+              key: "Supporting Documents",
+              data: [{
+                      value:  "OSLC Core 2.0 - Guidance on Links and Relationships",
+                      href: "http://open-services.net/bin/view/Main/OslcCoreSpecAppendixLinks"
+              }]
+      }]
+  };
+</script>
+<title>OSLC Link Guidance 3.0</title>
+<style type="text/css">
+table, thead, tr, td {
+    padding: 5px;
+    border-width: 1px;
+    border-spacing: 0px;
+    border-style: solid;
+    border-collapse: collapse;
+}
+
+td {
+    min-width: 100px;
+}
+
+div.review {
+    border-color: #E05252;
+    background: #FBE9E9;
+    padding: 0.5em;
+    margin: 1em 0;
+    position: relative;
+    clear: both;
+    border-left-width: .5em;
+    border-left-style: solid;
+}
+</style>
+</head>
+<body>
+
+<section id="abstract">
+<p>In this informative appendix we offer advice to OSLC Technical Committees on
+    modeling links and relationships between OSLC resources.</p>
+</section>
+
+<section class="informative" id="RelationshipsinOSLC">
+
+<h2>Relationships in OSLC</h2>
+
+<p>The Core workgroup's guidance to OSLC domain workgroups is that
+relationships are uni-directional and in most cases relationships
+should be modeled as links. We offer two ways to express
+relationships, a link and an anchor. Let's define those terms and
+others that we will use in this document:</p>
+
+    <ol>
+        <li>Relationship: a relationship is said to exist between two resources if there is something that connects them; they work together, belong together, are similar or should be considered together. There may be different types of relationships.
+        <li>Link: a link is a URI reference from one resource, the subject or source, to another resource, said to be the object or target. In RDF and in OSLC we use links to model relationships and like relationships, links are uni-directional.
+
+          <li>Anchor: an anchor is a mechanism for attaching property-values to a link, thus annotating a relationship with values that are about that relationship.
+    </ol>
+
+Now that we've defined our terminology, let's move on to expressing relationships.
+
+</section>
+
+<section class='informative' id="Expressingrelationships">
+<h2>Expressing relationships for OSLC</h2>
+
+<p>The RDF data model gives us a number of value-types to express
+relationships, some more complex than others. We expect that the
+majority of links will be expressed with the most simple option, URI
+Reference or as it is known in conversation, a Link. For more complex
+cases, when a relationship must be annotated with property-values, we
+use what is called an Anchor, which is a link plus information that
+annotates or labels that link. Read the sub-sections below for details
+and examples of Links and Anchors.</p>
+
+<section id="resources" id="Link">
+<h3>Link</h3>
+<strong>Link from subject to object</strong>
+<p>
+Use this when you need a simple link, you don't want to inline any summary of the target and you do not need to annotate the link with property values. Most relationships should be represented this way.
+<p>
+In RDF terminology, a link is called a URI Reference. In OSLC, you express a link as a property with OSLC value-type of Resource and OSLC representation of Reference. For example, here is a property terms:subscribesTo that you might find inside a customer resource, it links to a resource that is "subscribedTo" by the customer:
+
+<p><strong>Example #1: relationship expressed as simple link (i.e. URI reference)</strong>
+<pre class="example" id="eg1">
+&lt;rdf:RDF
+     xmlns:terms=&quot;http://example.com/terms/&quot;
+     xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;&gt;
+
+    &lt;terms:Customer rdf:about=&quot;http://example.com/customers/4321&quot;&gt;
+         &lt;terms:subscribesTo rdf:resource=&quot;http://example.com/magazines/Field_and_Stream&quot; /&gt;
+    &lt;/terms:Customer&gt;
+&lt;/rdf:RDF&gt;
+</pre>
+
+<h3> Don't make assumptions about the target of links</h3>
+ Relationships in OSLC resources are at their simplest an RDF property
+ whose object is a URI. In some cases within one system, it is
+ necessary to require a closed link, i.e. require the object of a link
+ be of one or more specific resource types. In general, it is better
+ to be open like the web and not place restrictions on the type of
+ resource linked to. The property's purpose and name should clearly
+ reflect the scenarios it is supporting. Since the usage of these
+ relationship properties may exist for a long period of time,
+ specification authors should use great care in determining these.
+<p>
+
+As resources evolve over time, and they adapt to different situations,
+different types will be exposed as targets to existing link
+types. Well behaved clients should gracefully handle resource types
+they don't expect when exercising links in resources. Well behaved
+clients should gracefully handle resource types they don't expect when
+exercising links in resources. Specifications should allow links to be
+open ended (have any type, specifying Range any), and use text in the
+property description to suggest expected types, without being
+limiting. For example: “Change request affects a plan item. It is
+likely that the target resource will be an oslc_cm:ChangeRequest but
+that is not necessarily the case.” Some implementations may only work
+well if the link object comes from a set of “known” or “expected”
+types. The following graceful degradation sequence is suggested for
+providers when an unexpected type is encountered:
+<ol>
+<li>If possible, tolerate the unexpected link target type and allow the client’s request to proceed normally.
+<li>Else, if possible, allow the client’s request to proceed and include an informational message with the response.
+<li>Else, fail the client’s request with the most appropriate 4xx Bad Request HTTP status code.
+</ol>
+</section>
+<section id="resources" id="Anchor">
+<h2>Anchor</h2>
+<strong>Local Resource holds link from subject to object plus property-values that annotate the relationship.</strong>
+<p>
+ Relationships are expressed as RDF triples and triples do not have
+ property values - only resources have property values. Links are used
+ to express relationships. Many relationships can be represented by a
+ single link, but some relationships need to be annotated with
+ property values. For example, if I am trying to represent the
+ subscriber relationship between a customer and a magazine, I may need
+ to record an expiration date for the relationship. To do this, we
+ need to use an RDF concept known as reification. Reification is a way
+ to make a statement about a statement. See RDF Syntax Specification
+ Section 4: Statements about Statements for more information on this
+ concept (reference: RDF Syntax).
+<p>
+Assuming the subscriber scenario, example #2 shows how you would use reification to express the annotation.
+<p><strong>Example #2: Link as reified statement in RDF/XML format</strong>
+<pre class="example" id="eg2">
+&lt;rdf:RDF
+     xmlns:terms=&quot;http://example.com/terms/&quot;
+     xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;&gt;
+
+    &lt;terms:Customer rdf:about=&quot;http://example.com/customers/4321&quot;&gt;
+         &lt;terms:subscribesTo rdf:resource=&quot;http://example.com/magazines/Field_and_Stream&quot; /&gt;
+    &lt;/terms:Customer&gt;
+
+    &lt;terms:Customer rdf:about=&quot;http://example.com/customers/4321&quot;&gt;
+         &lt;terms:subscribesTo rdf:resource=&quot;http://example.com/magazines/Cat_Fancy&quot; /&gt;
+    &lt;/terms:Customer&gt;
+
+    &lt;rdf:Statement rdf:about=&quot;#n1&quot;&gt;
+        &lt;terms:expirationDate&gt;2010-06-03&lt;/terms:expirationDate&gt;
+        &lt;terms:annualPriceUSD&gt;23.95&lt;/terms:annualPriceUSD&gt;
+        &lt;terms:delivery rdf:resource=&quot;http://example.com/terms/online&quot; /&gt;
+        &lt;rdf:subject rdf:resource=&quot;http://example.com/customers/4321&quot;/&gt;
+        &lt;rdf:object rdf:resource=&quot;http://example.com/magazines/Field_and_Stream&quot;/&gt;
+        &lt;rdf:predicate rdf:resource=&quot;http://example.com/terms/subscribesTo&quot; /&gt;
+   &lt;/rdf:Statement&gt;
+
+    &lt;rdf:Statement rdf:about=&quot;#n2&quot;&gt;
+        &lt;terms:expirationDate&gt;2010-01-22&lt;/terms:expirationDate&gt;
+        &lt;terms:annualPriceUSD&gt;15.95&lt;/terms:annualPriceUSD&gt;
+        &lt;terms:delivery rdf:resource=&quot;http://example.com/terms/mail&quot; /&gt;
+        &lt;rdf:subject rdf:resource=&quot;http://example.com/customers/4321&quot;/&gt;
+        &lt;rdf:object rdf:resource=&quot;http://example.com/magazines/Cat_Fancy&quot;/&gt;
+        &lt;rdf:predicate rdf:resource=&quot;http://example.com/terms/subscribesTo&quot; /&gt;
+   &lt;/rdf:Statement&gt;
+
+&lt;/rdf:RDF&gt;
+</pre>
+<p>
+ But there is a better RDF/XML form, made possible by the rdf:ID
+ attribute. OSLC implementations should prefer this next form because
+ it is easier to read and easier to parse.
+<p>
+Link to validation, triples and graph: RDF Validation
+<p><strong>Example #3: Link as reified statement in RDF/XML format (preferred form)</strong>
+<pre class="example" id="eg3">
+&lt;rdf:RDF
+    xmlns:terms=&quot;http://example.com/terms/&quot;
+     xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;&gt;
+
+    &lt;terms:Customer rdf:about=&quot;http://example.com/customers/4321&quot;&gt;
+         &lt;terms:subscribesTo rdf:ID=&quot;n1&quot;
+             rdf:resource=&quot;http://example.com/magazines/Field_and_Stream&quot; /&gt;
+    &lt;/terms:Customer&gt;
+
+    &lt;terms:Customer rdf:about=&quot;http://example.com/customers/4321&quot;&gt;
+         &lt;terms:subscribesTo rdf:ID=&quot;n2&quot;
+             rdf:resource=&quot;http://example.com/magazines/Cat_Fancy&quot; /&gt;
+    &lt;/terms:Customer&gt;
+
+    &lt;rdf:Description rdf:about=&quot;#n1&quot;&gt;
+        &lt;terms:expirationDate&gt;2010-06-03&lt;/terms:expirationDate&gt;
+        &lt;terms:annualPriceUSD&gt;23.95&lt;/terms:annualPriceUSD&gt;
+        &lt;terms:delivery rdf:resource=&quot;http://example.com/terms/online&quot; /&gt;
+   &lt;/rdf:Description&gt;
+
+    &lt;rdf:Description rdf:about=&quot;#n2&quot;&gt;
+        &lt;terms:expirationDate&gt;2010-01-22&lt;/terms:expirationDate&gt;
+        &lt;terms:annualPriceUSD&gt;15.95&lt;/terms:annualPriceUSD&gt;
+        &lt;terms:delivery rdf:resource=&quot;http://example.com/terms/online&quot; /&gt;
+   &lt;/rdf:Description&gt;
+
+&lt;/rdf:RDF&gt;
+</pre>
+And here's how to express the same within the JSON format specified by
+OSLC Core. Because we already represent value-type Resource as a JSON
+object, we can simply add annotating property-values directly into
+that. In this case, adding <code>terms:expirationDate</code> to the
+<code>terms:subscribesTo</code> object.
+
+<p><strong>Example #4: Link as reified statement in OSLC JSON format</strong>
+<pre class="example" id="eg4">
+{
+   &quot;prefixes&quot; : {
+      &quot;terms&quot;: &quot;http://example.com/terms/&quot;,
+      &quot;oslc&quot;: &quot;http://open-services.net/ns/core#&quot;,
+      &quot;rdf&quot; : &quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+   },
+   &quot;rdf:about&quot; : &quot;http://example.com/customers/4321&quot;,
+   &quot;rdf:type&quot; : { &quot;rdf:resource&quot; : &quot;http://example.com/terms/Customer&quot; },
+   &quot;terms:subscribesTo&quot; : [{
+       &quot;rdf:resource&quot; : &quot;http://example.com/magazines/Field_and_Stream&quot;,
+       &quot;terms:expirationDate&quot; : &quot;2010-06-03&quot;
+       &quot;terms:annualPriceUSD&quot; : 23.95,
+       &quot;terms:delivery&quot; : { &quot;rdf:resource&quot; : &quot;http://example.com/terms/online&quot; }
+   },
+   {
+       &quot;rdf:resource&quot; : &quot;http://example.com/magazines/Cat_Fancy&quot;,
+       &quot;terms:expirationDate&quot; : &quot;2010-01-22&quot;
+       &quot;terms:annualPriceUSD&quot; : 15.95,
+       &quot;terms:delivery&quot; : { &quot;rdf:resource&quot; : &quot;http://example.com/terms/mail&quot; }
+   }]
+}
+</pre>
+</section>
+</section>
+
+<section class='informative' id="Antipattern">
+<h2>Anti-pattern: Link with inlined values of target</h2>
+
+With the OSLC query syntax it is possible to get query resources with
+ links and for each link some inlined values from the target of the
+ link. This allows a client to get links and some information from the
+ target of each link in one HTTP request per page of results, saving
+ the client the expense of dereferencing each link. This pattern is
+ useful for query, but is not recommended in OSLC resource design.
+<p>
+Below is an example of a Blog Entry resource containing a link to an
+uploaded-file resource of type <code>oslc_blog:UploadedFile</code> and
+with the <code>dcterms:title</code> of that resource inlined. This
+enables the client to know the type and title of the target resource
+without having to HTTP GET it.
+<pre class="example" id="eg5">
+&lt;rdf:RDF xmlns:oslc_blog=&quot;http://open-services.net/ns/bogus/blog#
+             xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;&gt;
+     &lt;oslc_blog:Entry rdf:about=&quot;http://example.com/blogs/entry/5&quot;&gt;
+        &lt;dcterms:title&gt;New Wink release available&lt;/dcterms:title&gt;
+        &lt;!-- other property values --&gt;
+        &lt;oslc_blog:attachment&gt;
+           &lt;oslc_blog:UploadedFile rdf:about=&quot;http://example.com/attachments/2&quot;&gt;
+             &lt;dcterms:title&gt;wink-0.9.6.jar&lt;/dcterms:title&gt;
+           &lt;/oslc_blog:UploadedFile&gt;
+        &lt;/oslc_blog:attachment&gt;
+     &lt;/oslc_blog:BlogEntry&gt;
+&lt;/rdf:RDF&gt;
+</pre>
+<p>
+ In OSLC defined resource terminology, the property above is type
+ Resource with representation Inline. The problem with this is that it
+ adds redundant property-values to a resource. When you link to a
+ target resource that has a dcterms:title value and you inline that
+ dcterms:title in the subject resource, in the RDF data model this
+ means that you have just given the object resource two titles. What
+ if the titles do not match? Can a client change the title in the
+ subject resource?
+<p>
+That brings us to the end of the guidance. Please provide feedback to
+the OSLC Core Workgroup mailing-list.
+</section>
+
+<section class="informative" id="references">
+
+<h2>References</h2>
+<ol>
+<li> RDF Syntax http://www.w3.org/TR/1999/REC-rdf-syntax-19990222/
+</ol>
+
+
+
+</body>
+</html>
