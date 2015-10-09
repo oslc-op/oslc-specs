@@ -1,0 +1,69 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# TODO: What stable URL to use for this shape?
+<http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/AttachmentDescriptor-shape.ttl>
+	a oslc:ResourceShape ;
+	dcterms:title "LDP-RS to contain data about a LDP-NR(Attachment)" ;
+	oslc:name "AttachmentDescriptor" ;
+	oslc:describes oslc:AttachmentDescriptor ;
+	oslc:property <#dcterms-title>, <#dcterms-id>, <#dcterms-format>, <#attachmentSize>,
+		<#dcterms-creator>, <#dcterms-created>, <#dcterms-desc> .
+
+<#dcterms-title> a oslc:Property ;
+	oslc:name "title" ;
+	oslc:propertyDefinition dcterms:title ;
+	oslc:occurs oslc:Zero-or-one ;
+	dcterms:description "Client-specified file name or title."^^rdf:XMLLiteral ;
+	oslc:valueType xsd:string ;
+	oslc:readOnly false .
+
+<#dcterms-id> a oslc:Property ;
+	oslc:name "identifier" ;
+	oslc:propertyDefinition dcterms:identifier ;
+	oslc:occurs oslc:Zero-or-one;
+	dcterms:description "System-assigned identifier."^^rdf:XMLLiteral ;
+	oslc:valueType xsd:string ;
+	oslc:readOnly true .
+
+<#dcterms-format> a oslc:Property ;
+	oslc:name "format" ;
+	oslc:propertyDefinition dcterms:format ;
+	oslc:occurs oslc:Zero-or-one;
+	oslc:readOnly true ;
+	dcterms:description "MIME type of the attachment content. SHOULD be a <a href='http://mediatypes.appspot.com/'>PURL media-type resource</a>."^^rdf:XMLLiteral .
+
+<#attachmentSize>  a oslc:Property ;
+	oslc:name "attachmentSize" ;
+	oslc:propertyDefinition oslc:attachmentSize ;
+	oslc:occurs oslc:Zero-or-one ;
+	dcterms:description "Size in bytes of the attachment content."^^rdf:XMLLiteral ;
+	oslc:readOnly true ;
+	oslc:valueType xsd:integer .
+
+<#dcterms-creator> a oslc:Property;
+	oslc:name "creator";
+	oslc:propertyDefinition dcterms:creator;
+	oslc:occurs oslc:Zero-or-more;
+	oslc:readOnly true;
+	dcterms:description "Creator or creators of the attachment. Likely a <code>foaf:Person</code>, but not necessarily so."^^rdf:XMLLiteral ;
+	oslc:valueType oslc:Resource .
+#	oslc:range oslc:personShape.
+
+<#dcterms-created> a oslc:Property ;
+	oslc:name "created" ;
+	oslc:propertyDefinition dcterms:created ;
+	oslc:occurs oslc:Zero-or-one;
+	oslc:readOnly true ;
+	dcterms:description "Timestamp of attachment creation."^^rdf:XMLLiteral ;
+	oslc:valueType xsd:dateTime .
+
+<#dcterms-desc> a oslc:Property ;
+	oslc:name "description" ;
+	oslc:occurs oslc:Zero-or-one ;
+	oslc:propertyDefinition dcterms:description ;
+	dcterms:description "Descriptive text about the attachment."^^rdf:XMLLiteral ;
+	oslc:readOnly false ;
+	oslc:valueType rdf:XMLLiteral .
