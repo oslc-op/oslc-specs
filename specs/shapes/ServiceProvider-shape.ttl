@@ -1,0 +1,97 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix oslc: <http://open-services.net/ns/core#> .
+
+# TODO: What stable URL to use for this shape?
+@base <http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/ServiceProvider-shape.ttl> .
+
+<#ServiceProvider>  a oslc:ResourceShape ;
+    dcterms:title "Service Provider" ;
+    dcterms:description "A Service Provider describes a set of services offered by an OSLC implementation." ;
+    oslc:describes oslc:ServiceProvider ;
+    oslc:property 
+        <#dcterms-title>,
+        <#dcterms-description>,
+        <#dcterms-publisher>,
+        <#oslc-details>,
+        <#oslc-service>,
+        <#oslc-prefixDefinition>,
+        <#oslc-oauthConfiguration>
+.
+
+<#dcterms-title> a oslc:Property ;
+	oslc:name "title" ;
+	oslc:propertyDefinition dcterms:title ;
+	oslc:occurs oslc:Zero-or-one;
+	dcterms:description "Title of this resource."^^rdf:XMLLiteral ;
+	oslc:valueType rdf:XMLLiteral ;
+	oslc:readOnly true
+.
+
+<#dcterms-description> a oslc:Property ;
+	oslc:name "description" ;
+	oslc:propertyDefinition dcterms:description ;
+	oslc:occurs oslc:Zero-or-one;
+	dcterms:description "Description of the services provided."^^rdf:XMLLiteral ;
+	oslc:valueType rdf:XMLLiteral ;
+	oslc:readOnly true
+.
+
+<#dcterms-publisher> a oslc:Property ;
+	oslc:name "publisher" ;
+	oslc:propertyDefinition dcterms:publisher ;
+	oslc:range oslc:Publisher ;
+	oslc:occurs oslc:Zero-or-one;
+	dcterms:description "Describes the software product that provides the implementation."^^rdf:XMLLiteral ;
+	oslc:valueType oslc:AnyResource ;
+	oslc:representation oslc:Inline ;
+	oslc:readOnly true
+.
+
+<#oslc-service> a oslc:Property ;
+	oslc:name "service" ;
+	oslc:propertyDefinition oslc:service ;
+	oslc:range oslc:Service ;
+	oslc:occurs oslc:One-or-many;
+	dcterms:description "Describes a service offered by the service provider."^^rdf:XMLLiteral ;
+	oslc:valueType oslc:AnyResource ;
+	oslc:representation oslc:Inline ;
+	oslc:readOnly true
+.
+
+<#oslc-details> a oslc:Property ;
+	oslc:name "details" ;
+	oslc:propertyDefinition oslc:details ;
+	oslc:occurs oslc:Zero-or-many;
+	dcterms:description "A URL that may be used to retrieve a resource to determine additional details about the service provider. "^^rdf:XMLLiteral ;
+	oslc:valueType oslc:Resource ;
+	oslc:representation oslc:Reference ;
+	oslc:readOnly true
+.
+
+<#oslc-prefixDefinition> a oslc:Property ;
+	oslc:name "prefixDefinition" ;
+	oslc:propertyDefinition oslc:prefixDefinition ;
+	oslc:range oslc:PrefixDefinition ;
+	oslc:occurs oslc:Zero-or-many;
+	dcterms:description "Defines a namespace prefix for use in JSON representations and in forming OSLC Query Syntax strings."^^rdf:XMLLiteral ;
+	oslc:valueType oslc:AnyResource ;
+	oslc:representation oslc:Inline ;
+	oslc:readOnly true
+.
+
+
+<#oslc-oauthConfiguration> a oslc:Property ;
+	oslc:name "oauthConfiguration" ;
+	oslc:propertyDefinition oslc:oauthConfiguration ;
+	oslc:range oslc:OAuthConfiguration ;
+	oslc:occurs oslc:Zero-or-many ;
+	dcterms:description "Defines the three OAuth URIs required for a client to act as an OAuth consumer."^^rdf:XMLLiteral ;
+	oslc:valueType oslc:AnyResource ;
+	oslc:representation oslc:Inline ;
+	oslc:readOnly true
+.
+
+
