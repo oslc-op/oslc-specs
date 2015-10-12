@@ -41,9 +41,13 @@ public class Main
         ResultModel resultModel = new ResultModel();
         HttpHandler httpHandler = new HttpHandler();
 
-        if (!checkUsage(args,resultModel))
+        if (!checkUsage(args,resultModel,httpHandler))
         {
-            System.err.println("Usage: "+this.getClass().getName()+" -q suppressedIssue ... -s shapeFile|shapeURI ... -v vocabFile|vocabURI ...");
+            System.err.println("Usage: "+this.getClass().getName()
+                + " -q suppressedIssue ..."
+                + " -x excludeURI ..."
+                + " -s shapeFile|shapeURI ..."
+                + " -v vocabFile|vocabURI ...");
         }
 
         int errors = 0;
@@ -94,7 +98,7 @@ public class Main
     }
 
 
-    private boolean checkUsage(String[] args, ResultModel resultModel)
+    private boolean checkUsage(String[] args, ResultModel resultModel, HttpHandler httpHandler)
     {
         int     index  = 0;
         boolean passed = true;
@@ -117,6 +121,11 @@ public class Main
                 {
                     index++;
                     resultModel.suppressIssue(args[index++]);
+                }
+                else if (args[index].equals("-x") ||  args[index].equals("-exclude"))
+                {
+                    index++;
+                    httpHandler.excludeURI(args[index++]);
                 }
                 else
                 {

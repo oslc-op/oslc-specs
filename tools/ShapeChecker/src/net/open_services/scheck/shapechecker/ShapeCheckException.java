@@ -1,7 +1,7 @@
 package net.open_services.scheck.shapechecker;
 
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 
 /**
  * An exception representing an issue found by the shape checker.

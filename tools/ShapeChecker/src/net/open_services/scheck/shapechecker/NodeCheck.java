@@ -1,17 +1,19 @@
 package net.open_services.scheck.shapechecker;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.vocabulary.RDF;
 
 /**
  * Check the properties of one node in a model.
@@ -166,6 +168,81 @@ public class NodeCheck
         }
         return errCount;
     }
+
+
+
+    /**
+     * Check for string properties with language tags
+     *
+     * @param property the property whose literal values should be checked
+     * @param occurs the valid occurrences for the property
+     * @param validator a function to perform extra validation
+     * @return the number of errors noted in this check
+     */
+    @javax.annotation.CheckReturnValue
+    public int checkLangString(Property property, Occurrence occurs, Function<String,Resource> validator)
+    {
+        int errCount = 0;
+        int count = 0;
+        Set<String> langTags = new HashSet<>();
+
+        StmtIterator it = originalModel.listStatements(subject,property,(RDFNode)null);
+        while (it.hasNext())
+        {
+            Statement st = it.next();
+            count++;
+
+            RDFNode node = st.getObject();
+
+            if (!node.isLiteral())
+            {
+                resultModel.createIssue(resultNode, ResultModel.NotLiteral, property, node);
+                errCount++;
+            }
+            else
+            {
+                Literal lit = node.asLiteral();
+                RDFDatatype dt = lit.getDatatype();
+                Resource validation;
+
+                if (!(dt == null || dt.equals(XSDDatatype.XSDstring) || (dt.equals(RDF.dtXMLLiteral) && lit.isWellFormedXML())))
+                {
+                    // Literal of type other than some string
+                    resultModel.createIssue(resultNode, ResultModel.WrongType, property, node);
+                    errCount++;
+                }
+                else
+                {
+                    String lang = lit.getLanguage();
+                    if (langTags.contains(lang))
+                    {
+                        resultModel.createIssue(resultNode, ResultModel.DuplicateLangString, property, node);
+                        errCount++;
+                    }
+                    else
+                    {
+                        langTags.add(lang);
+                    }
+
+
+                    // Custom validation?
+                    if (validator != null && (validation = validator.apply(lit.getLexicalForm())) != null)
+                    {
+                        resultModel.createIssue(resultNode, validation, property, node);
+                        errCount++;
+                    }
+                }
+            }
+            shrinkingModel.remove(st);
+        }
+        if (count == 0 && !occurs.isOptional())
+        {
+            resultModel.createIssue(resultNode, ResultModel.Missing, property);
+            errCount++;
+        }
+        return errCount;
+    }
+
 
 
     /**

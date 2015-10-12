@@ -4,17 +4,17 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.vocabulary.DCTerms;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.vocabulary.XSD;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.vocabulary.DCTerms;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 
 /**
  * Check the statements in a single OSLC Shape.
@@ -140,9 +140,10 @@ public class ShapeCheck
             (uri) -> (uri.equals(OSLC.Property.getURI()) ? null : ResultModel.WrongType));
 
         // Check the optional properties of the property definition
-        errors += node.checkLiteral(DCTerms.title, null, Occurrence.ZeroOrOne, null);
+        errors += node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(OSLC.readOnly, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
+        errors += node.checkLiteral(OSLC.isMemberProperty, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         errors += node.checkURI(OSLC.allowedValue, Occurrence.ZeroOrMany,
             (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null;});
         errors += node.checkURI(OSLC.allowedValues, Occurrence.ZeroOrOne, null); // TODO - validate the allowedValues resource

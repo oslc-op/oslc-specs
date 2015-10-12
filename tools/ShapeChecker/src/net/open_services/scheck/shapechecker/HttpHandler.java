@@ -12,13 +12,12 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.RiotException;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.ResIterator;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 
 /**
@@ -32,6 +31,17 @@ public class HttpHandler
 
     private Map<URI,Boolean> foundHttpResources = new HashMap<>();
     private Set<String> foundRDFResources = new HashSet<>();
+    private Set<String> skipURIs = new HashSet<>();
+
+
+    /**
+     * Exclude a URI from being fetched and parsed.
+     * @param uri the URI to be skipped
+     */
+    public void excludeURI(String uri)
+    {
+        skipURIs.add(uri);
+    }
 
 
     /**
@@ -105,6 +115,11 @@ public class HttpHandler
         if (foundHttpResources.containsKey(httpUri))
         {
             // Resource previously found
+        }
+        else if (skipURIs.contains(httpUri.toString()))
+        {
+            // Do not try to read or parse this
+            foundHttpResources.put(httpUri, false);
         }
         else if (!isRDF(httpUri))
         {
