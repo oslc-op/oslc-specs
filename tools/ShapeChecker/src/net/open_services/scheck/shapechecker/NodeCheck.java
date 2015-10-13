@@ -205,7 +205,7 @@ public class NodeCheck
                 RDFDatatype dt = lit.getDatatype();
                 Resource validation;
 
-                if (!(dt == null || dt.equals(XSDDatatype.XSDstring) || (dt.equals(RDF.dtXMLLiteral) && lit.isWellFormedXML())))
+                if (!(dt == null || dt.equals(RDF.dtLangString) || dt.equals(XSDDatatype.XSDstring) || (dt.equals(RDF.dtXMLLiteral) && lit.isWellFormedXML())))
                 {
                     // Literal of type other than some string
                     resultModel.createIssue(resultNode, ResultModel.WrongType, property, node);

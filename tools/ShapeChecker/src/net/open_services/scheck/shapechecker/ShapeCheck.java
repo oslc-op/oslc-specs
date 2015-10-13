@@ -68,7 +68,7 @@ public class ShapeCheck
 
         // Look for the required and optional literal properties
         NodeCheck node = new NodeCheck(shape, httpHandler, shapeModel, shapeCopy, resultModel, shapeResult);
-        errors += node.checkLiteral(DCTerms.title, null, Occurrence.ExactlyOne, null);
+        errors += node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne, null);
         errors += node.checkURI(OSLC.describes, Occurrence.ExactlyOne,
             (uri)->{shapeResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri));return checkUnique(describes,uri);});
