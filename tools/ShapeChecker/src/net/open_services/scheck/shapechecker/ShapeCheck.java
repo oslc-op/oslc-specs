@@ -74,6 +74,7 @@ public class ShapeCheck
         // Look for the optional properties
         errors += node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne, null);
+        errors += node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         errors += node.checkURI(RDFS.seeAlso, Occurrence.ZeroOrMany, null);
 
         // Allow optional OSLC properties for any resource
