@@ -54,11 +54,25 @@ public class NodeCheck
      * Check the validity of an object that can be either a literal or a URI
      * @param property the property whose existence should be checked
      * @param occurs the valid occurrences for the property
-     * @param validator a function to perform extra validation
      * @return the number of errors noted in this check
      */
     @javax.annotation.CheckReturnValue
-    public int checkNode(Property property, Occurrence occurs, Function<String,Resource> validator)
+    public int checkNode(Property property, Occurrence occurs)
+    {
+        return checkNode(property,occurs,null,null);
+    }
+
+
+    /**
+     * Check the validity of an object that can be either a literal or a URI
+     * @param property the property whose existence should be checked
+     * @param occurs the valid occurrences for the property
+     * @param literalValidator a function to perform extra validation for a literal property value
+     * @param uriValidator a function to perform extra validation for a URI property value
+     * @return the number of errors noted in this check
+     */
+    @javax.annotation.CheckReturnValue
+    public int checkNode(Property property, Occurrence occurs, Function<String,Resource> literalValidator, Function<String,Resource> uriValidator)
     {
         int errCount = 0;
         int count = 0;
@@ -73,10 +87,21 @@ public class NodeCheck
             Resource validation;
 
             // Custom validation?
-            if (validator != null && (validation = validator.apply(node.toString())) != null)
+            if (node.isLiteral())
             {
-                resultModel.createIssue(resultNode, validation, property, node);
-                errCount++;
+                if (literalValidator != null && (validation = literalValidator.apply(node.toString())) != null)
+                {
+                    resultModel.createIssue(resultNode, validation, property, node);
+                    errCount++;
+                }
+            }
+            else
+            {
+                if (uriValidator != null && (validation = uriValidator.apply(node.toString())) != null)
+                {
+                    resultModel.createIssue(resultNode, validation, property, node);
+                    errCount++;
+                }
             }
             shrinkingModel.remove(st);
         }
@@ -272,7 +297,6 @@ public class NodeCheck
             {
                 resultModel.createIssue(resultNode, ResultModel.NotResource, property, node);
                 errCount++;
-                shrinkingModel.remove(st);
             }
             else
             {
@@ -297,10 +321,10 @@ public class NodeCheck
                 if (validator != null && (validation = validator.apply(uri)) != null)
                 {
                     resultModel.createIssue(resultNode, validation, property, node);
-                    errCount++;
+                     errCount++;
                 }
-                shrinkingModel.remove(st);
             }
+            shrinkingModel.remove(st);
         }
         if (count == 0 && !occurs.isOptional())
         {
