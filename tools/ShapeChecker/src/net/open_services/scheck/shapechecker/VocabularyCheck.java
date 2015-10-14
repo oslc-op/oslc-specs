@@ -127,7 +127,7 @@ public class VocabularyCheck
             (uri) -> (uri.matches(".*\\.ttl") ? null : ResultModel.SourceNotTurtle));
 
         // Check the optional properties of the ontology
-        errors += node.checkNode(DCTerms.license, Occurrence.ZeroOrOne, null);
+        errors += node.checkNode(DCTerms.license, Occurrence.ZeroOrOne);
         errors += node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(vocabModel.createProperty("http://purl.org/vocab/vann/preferredNamespacePrefix"),
