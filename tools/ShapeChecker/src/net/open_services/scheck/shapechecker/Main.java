@@ -19,6 +19,7 @@ public class Main
 {
     private List<URI> vocabularies = new ArrayList<>();
     private List<URI> shapes       = new ArrayList<>();
+    private boolean   debug        = false;
 
     /**
      * Main entrypoint to OSLC Shape & Vocabulary checker
@@ -44,10 +45,12 @@ public class Main
         if (!checkUsage(args,resultModel,httpHandler))
         {
             System.err.println("Usage: "+this.getClass().getName()
-                + " -q suppressedIssue ..."
-                + " -x excludeURI ..."
-                + " -s shapeFile|shapeURI ..."
-                + " -v vocabFile|vocabURI ...");
+                + " [-s shapeFile|shapeURI ...]"
+                + " [-v vocabFile|vocabURI ...]"
+                + " [-q suppressedIssue ...]"
+                + " [-x excludeURI ...]"
+                + " [-D]"
+                );
         }
 
         int errors = 0;
@@ -93,7 +96,7 @@ public class Main
         }
 
         resultModel.getSummary().addLiteral(ResultModel.issueCount, errors);
-//        Models.write(resultModel.getModel(), System.out);
+        if (debug) Models.write(resultModel.getModel(), System.out);
         resultModel.print(System.out);
     }
 
@@ -103,11 +106,20 @@ public class Main
         int     index  = 0;
         boolean passed = true;
 
-        while (args.length > index+1 && args[index].charAt(0) == '-')
+        while (args.length > index && args[index].charAt(0) == '-')
         {
             try
             {
-                if (args[index].equals("-v") ||  args[index].equals("-vocab"))
+                if (args[index].equals("-D") ||  args[index].equals("-DEBUG"))
+                {
+                    index++;
+                    debug = true;
+                }
+                else if (args.length <= index+1)
+                {
+                    return false;
+                }
+                else if (args[index].equals("-v") ||  args[index].equals("-vocab"))
                 {
                     index++;
                     vocabularies.add(checkFileOrURI(args[index++]));
