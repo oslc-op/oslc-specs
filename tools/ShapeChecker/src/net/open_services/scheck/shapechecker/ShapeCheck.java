@@ -66,13 +66,19 @@ public class ShapeCheck
     {
         int errors = 0;
 
-        // Look for the required and optional literal properties
+        // Look for the required  properties
         NodeCheck node = new NodeCheck(shape, httpHandler, shapeModel, shapeCopy, resultModel, shapeResult);
-        errors += node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
-        errors += node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne, null);
         errors += node.checkURI(OSLC.describes, Occurrence.ExactlyOne,
             (uri)->{shapeResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri));return checkUnique(describes,uri);});
+
+        // Look for the optional properties
+        errors += node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
+        errors += node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne, null);
         errors += node.checkURI(RDFS.seeAlso, Occurrence.ZeroOrMany, null);
+
+        // Allow optional OSLC properties for any resource
+        errors += node.checkNode(OSLC.accessContext, Occurrence.ZeroOrOne, (lit)->ResultModel.WrongType,null);
+        errors += node.checkNode(OSLC.serviceProvider, Occurrence.ZeroOrOne, (lit)->ResultModel.WrongType,null);
 
         StmtIterator it = shapeCopy.listStatements(shape, OSLC.property, (RDFNode)null);
         while (it.hasNext())
@@ -144,14 +150,15 @@ public class ShapeCheck
         errors += node.checkLiteral(OSLC.readOnly, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(OSLC.isMemberProperty, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
-        errors += node.checkURI(OSLC.allowedValue, Occurrence.ZeroOrMany,
-            (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null;});
         errors += node.checkURI(OSLC.allowedValues, Occurrence.ZeroOrOne, null); // TODO - validate the allowedValues resource
         errors += node.checkURI(OSLC.valueShape, Occurrence.ZeroOrOne, null); // TODO - add this shape to a list of shapes that must be defined
         errors += node.checkURI(OSLC.range, Occurrence.ZeroOrMany, null);
-        errors += node.checkNode(OSLC.defaultValue, Occurrence.ZeroOrOne,
+        errors += node.checkNode(OSLC.allowedValue, Occurrence.ZeroOrMany, null,
+            (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null;});
+        errors += node.checkNode(OSLC.defaultValue, Occurrence.ZeroOrOne, null,
             (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null;});
 
+        // Special check for value type
         errors += checkValueType(propDef,propResult);
 
         // Check that the prop def has no other properties

@@ -63,6 +63,9 @@ public class OSLC
     public static final Property range              = property("range");
     public static final Property readOnly           = property("readOnly");
     public static final Property representation     = property("representation");
+    public static final Property serviceProvider    = property("serviceProvider");
     public static final Property valueShape         = property("valueShape");
     public static final Property valueType          = property("valueType");
+
+    public static final Property accessContext      = ResourceFactory.createProperty("http://open-services.net/ns/core/acc#accessContext");
 }
