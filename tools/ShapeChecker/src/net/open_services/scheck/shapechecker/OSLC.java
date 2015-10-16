@@ -56,6 +56,7 @@ public class OSLC
     public static final Property impactType         = property("impactType");
     public static final Property inverseLabel       = property("inverseLabel");
     public static final Property isMemberProperty   = property("isMemberProperty");
+    public static final Property maxSize            = property("maxSize");
     public static final Property name               = property("name");
     public static final Property occurs             = property("occurs");
     public static final Property property           = property("property");

@@ -269,6 +269,10 @@ public class ShapeCheck
             resultModel.createIssue(propResult, ResultModel.WrongType, OSLC.valueType, valueType);
             errCount++;
         }
+
+        errCount += node.checkLiteral(OSLC.maxSize, XSDDatatype.XSDinteger, Occurrence.ZeroOrOne,
+            (lit)->(finalValueType.equals(XSD.xstring) || finalValueType.equals(RDF.xmlLiteral) ? null : ResultModel.InappropriateMaxSize));
+
         return errCount;
     }
 }

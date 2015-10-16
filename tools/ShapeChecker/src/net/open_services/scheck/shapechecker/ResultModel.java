@@ -151,8 +151,12 @@ public class ResultModel
     public static final Resource Duplicate        = resource("Duplicate");
 
     /** Error class for a duplicate langauge-tagged string */
-    @SCIssue(description="This property name, definition, or oslc:describes is not unique.")
-    public static final Resource DuplicateLangString = resource("Duplicate language on string literal");
+    @SCIssue(description="Duplicate language on string literal.")
+    public static final Resource DuplicateLangString = resource("DuplicateLangString");
+
+    /** Error class for inappropriate use of the oslc:maxSize property */
+    @SCIssue(description="The property oslc:maxSize appplies only to string or XMLLiteral value types.")
+    public static final Resource InappropriateMaxSize = resource("InappropriateMaxSize");
 
     /** Error class for unreadable or unparseable RDF */
     @SCIssue(description="The target resource cannot be fetched or parsed as RDF.")
