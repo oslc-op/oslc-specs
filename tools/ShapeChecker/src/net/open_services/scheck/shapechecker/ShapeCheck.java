@@ -73,7 +73,7 @@ public class ShapeCheck
 
         // Look for the optional properties
         errors += node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
-        errors += node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne, null);
+        errors += node.checkLiteral(DCTerms.description, RDF.dtXMLLiteral, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         errors += node.checkURI(RDFS.seeAlso, Occurrence.ZeroOrMany, null);
 
@@ -136,7 +136,7 @@ public class ShapeCheck
 
         // Check the mandatory properties of the property definition
         NodeCheck node = new NodeCheck(propDef, httpHandler, shapeModel, shapeCopy, resultModel, propResult);
-        errors += node.checkLiteral(DCTerms.description, null, Occurrence.ExactlyOne, null);
+        errors += node.checkLiteral(DCTerms.description, RDF.dtXMLLiteral, Occurrence.ExactlyOne, null);
         errors += node.checkLiteral(OSLC.name, null, Occurrence.ExactlyOne,
             (literal) -> (checkUnique(names,literal)));
         errors += node.checkURI(OSLC.occurs, Occurrence.ExactlyOne,
