@@ -156,7 +156,7 @@ public class NodeCheck
                 if (dt == null) dt = XSDDatatype.XSDstring;
 
                 // Check valid XML strings
-                if ((dt.equals(RDF.dtXMLLiteral) || (datatype!=null && datatype.equals(RDF.dtXMLLiteral))) && !lit.isWellFormedXML())
+                if (dt.equals(RDF.dtXMLLiteral) && !lit.isWellFormedXML())
                 {
                     resultModel.createIssue(resultNode, ResultModel.BadXMLLiteral, property, node);
                     errCount++;
