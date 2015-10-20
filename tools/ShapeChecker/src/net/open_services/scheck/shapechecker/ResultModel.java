@@ -143,8 +143,12 @@ public class ResultModel
     public static final Resource BadOccurs        = resource("BadOccurs");
 
     /** Error class for a vs:term_status with an unknown value */
-    @SCIssue(description="The vs:term_status property must be either \\\"stable\\\" or \\\"archaic\\\"; \\\"unstable\\\" or \\\"testing\\\" are bad practice in published vocabularies")
+    @SCIssue(description="The vs:term_status property must be either \\\"stable\\\" or \\\"archaic\\\"; \\\"unstable\\\" or \\\"testing\\\" are bad practice in published vocabularies.")
     public static final Resource BadTermStatus    = resource("BadTermStatus");
+
+    /** Error class for an ill-formed XML literal */
+    @SCIssue(description="The XML literal is not well-formed.")
+    public static final Resource BadXMLLiteral    = resource("BadXMLLiteral");
 
     /** Error class for a duplicate property value */
     @SCIssue(description="This property name, definition, or oslc:describes is not unique.")

@@ -152,24 +152,23 @@ public class NodeCheck
                 RDFDatatype dt = lit.getDatatype();
                 Resource validation;
 
-                if (datatype != null && !datatype.equals(XSDDatatype.XSDstring))
+                // Plain literals are strings
+                if (dt == null) dt = XSDDatatype.XSDstring;
+
+                // Check valid XML strings
+                if ((dt.equals(RDF.dtXMLLiteral) || (datatype!=null && datatype.equals(RDF.dtXMLLiteral))) && !lit.isWellFormedXML())
                 {
-                    // Literal of type other than some string
-                    if (!datatype.equals(dt))
-                    {
-                        resultModel.createIssue(resultNode, ResultModel.WrongType, property, node);
-                        errCount++;
-                    }
+                    resultModel.createIssue(resultNode, ResultModel.BadXMLLiteral, property, node);
+                    errCount++;
                 }
-                else
+
+                // Check literal type matches - but consider XMLLiteral as a string type
+                if (datatype != null && !(datatype.equals(dt)
+                        || (datatype.equals(RDF.dtXMLLiteral) && dt.equals(XSDDatatype.XSDstring))
+                        || (datatype.equals(XSDDatatype.XSDstring) && dt.equals(RDF.dtXMLLiteral))))
                 {
-                    // String literal
-                    if (dt != null && !dt.equals(XSDDatatype.XSDstring)
-                        && !(dt.equals(RDF.dtXMLLiteral) && lit.isWellFormedXML()))
-                    {
-                        resultModel.createIssue(resultNode, ResultModel.WrongType, property, node);
-                        errCount++;
-                    }
+                    resultModel.createIssue(resultNode, ResultModel.WrongType, property, node);
+                    errCount++;
                 }
 
                 // Custom validation?
@@ -230,10 +229,15 @@ public class NodeCheck
                 RDFDatatype dt = lit.getDatatype();
                 Resource validation;
 
-                if (!(dt == null || dt.equals(RDF.dtLangString) || dt.equals(XSDDatatype.XSDstring) || (dt.equals(RDF.dtXMLLiteral) && lit.isWellFormedXML())))
+                if (!(dt == null || dt.equals(RDF.dtLangString) || dt.equals(XSDDatatype.XSDstring) || dt.equals(RDF.dtXMLLiteral)))
                 {
                     // Literal of type other than some string
                     resultModel.createIssue(resultNode, ResultModel.WrongType, property, node);
+                    errCount++;
+                }
+                else if (dt!=null && dt.equals(RDF.dtXMLLiteral) && !lit.isWellFormedXML())
+                {
+                    resultModel.createIssue(resultNode, ResultModel.BadXMLLiteral, property, node);
                     errCount++;
                 }
                 else
