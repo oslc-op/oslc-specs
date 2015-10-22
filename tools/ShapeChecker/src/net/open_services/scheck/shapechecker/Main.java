@@ -20,6 +20,7 @@ public class Main
     private List<URI> vocabularies = new ArrayList<>();
     private List<URI> shapes       = new ArrayList<>();
     private boolean   debug        = false;
+    private boolean   verbose      = false;
 
     /**
      * Main entrypoint to OSLC Shape & Vocabulary checker
@@ -59,6 +60,7 @@ public class Main
         {
             try
             {
+                if (verbose) System.err.println("Parsing "+vocab.toString());
                 errors += new VocabularyCheck(vocab, httpHandler, resultModel).checkVocabularies();
             }
             catch (RiotNotFoundException e)
@@ -75,6 +77,7 @@ public class Main
         {
             try
             {
+                if (verbose) System.err.println("Parsing "+shape.toString());
                 errors += new ShapesDocCheck(shape, httpHandler, resultModel).checkShapes();
             }
             catch (RiotNotFoundException e)
@@ -110,31 +113,37 @@ public class Main
         {
             try
             {
-                if (args[index].equals("-D") ||  args[index].equals("-DEBUG"))
+                if (args[index].equals("-D") || args[index].equals("-DEBUG"))
                 {
                     index++;
                     debug = true;
+                }
+                if (args[index].equals("-V") || args[index].equals("-VERBOSE") || args[index].equals("--verbose"))
+                {
+                    index++;
+                    verbose = true;
+                    httpHandler.setVerbose(verbose);
                 }
                 else if (args.length <= index+1)
                 {
                     return false;
                 }
-                else if (args[index].equals("-v") ||  args[index].equals("-vocab"))
+                else if (args[index].equals("-v") || args[index].equals("-vocab"))
                 {
                     index++;
                     vocabularies.add(checkFileOrURI(args[index++]));
                 }
-                else if (args[index].equals("-s") ||  args[index].equals("-shape"))
+                else if (args[index].equals("-s") || args[index].equals("-shape"))
                 {
                     index++;
                     shapes.add(checkFileOrURI(args[index++]));
                 }
-                else if (args[index].equals("-q") ||  args[index].equals("-quiet"))
+                else if (args[index].equals("-q") || args[index].equals("-quiet"))
                 {
                     index++;
                     resultModel.suppressIssue(args[index++]);
                 }
-                else if (args[index].equals("-x") ||  args[index].equals("-exclude"))
+                else if (args[index].equals("-x") || args[index].equals("-exclude"))
                 {
                     index++;
                     httpHandler.excludeURI(args[index++]);

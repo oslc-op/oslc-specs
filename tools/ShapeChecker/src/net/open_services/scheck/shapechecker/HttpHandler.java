@@ -32,6 +32,17 @@ public class HttpHandler
     private Map<URI,Boolean> foundHttpResources = new HashMap<>();
     private Set<String> foundRDFResources = new HashSet<>();
     private Set<String> skipURIs = new HashSet<>();
+    private boolean verbose = false;
+
+
+    /**
+     * Sets the verbose option.
+     * @param verbose the verbose value to set.
+     */
+    public void setVerbose(boolean verbose)
+    {
+        this.verbose = verbose;
+    }
 
 
     /**
@@ -130,6 +141,7 @@ public class HttpHandler
         {
            // Resource is RDF, so read it and save contained subjects
             foundHttpResources.put(httpUri, true);
+            if (verbose) System.err.println("Parsing "+httpUri.toString());
             Model foundModel = ModelFactory.createDefaultModel().read(httpUri.toString());
             ResIterator ri = foundModel.listSubjects();
             while (ri.hasNext())
