@@ -17,7 +17,7 @@ import org.apache.jena.vocabulary.RDF;
 
 /**
  * Read and check the statements in each OSLC Shape in a document.
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public class ShapesDocCheck
 {

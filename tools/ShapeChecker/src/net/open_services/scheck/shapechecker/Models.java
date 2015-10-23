@@ -7,13 +7,13 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 
 /**
- * Utilities for Jena models
- * @author Nick Crossley. Released to public domain.
+ * Utilities for Jena models.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public final class Models
 {
     /**
-     * No instantiation
+     * No instantiation.
      */
     private Models() {}
 

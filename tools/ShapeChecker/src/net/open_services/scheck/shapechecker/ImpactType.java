@@ -8,25 +8,25 @@ import java.util.Set;
  * {@code oslc:UpstreamImpact}, {@code oslc:DownstreamImpact}, {@code oslc:SymmetricImpact},
  * or {@code oslc:NoImpact}.
  *
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public enum ImpactType
 {
-    /** {@code oslc:UpstreamImpact} */
+    /** {@code oslc:UpstreamImpact}. */
     UpstreamImpact("http://open-services.net/ns/core#UpstreamImpact"),
 
-    /** {@code oslc:DownstreamImpact} */
+    /** {@code oslc:DownstreamImpact}. */
     DownstreamImpact("http://open-services.net/ns/core#DownstreamImpact"),
 
-    /** {@code oslc:SymmetricImpact} */
+    /** {@code oslc:SymmetricImpact}. */
     SymmetricImpact("http://open-services.net/ns/core#SymmetricImpact"),
 
-    /** {@code oslc:NoImpact} */
+    /** {@code oslc:NoImpact}. */
     NoImpact("http://open-services.net/ns/core#NoImpact");
 
-    private String  uri;
-
     private static Set<String> uris = new HashSet<>();
+
+    private String  uri;
 
     static
     {
@@ -55,7 +55,7 @@ public enum ImpactType
 
 
     /**
-     * Check if a given URI is a valid occurrence
+     * Check if a given URI is a valid occurrence.
      * @param checkURI the URI to check
      * @return true if the given URI is a valid occurrence
      */

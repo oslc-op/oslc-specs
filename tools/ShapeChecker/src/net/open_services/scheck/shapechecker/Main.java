@@ -13,7 +13,7 @@ import org.apache.jena.riot.RiotNotFoundException;
 
 /**
  * Main entrypoint to OSLC Shape & Vocabulary checker.
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public class Main
 {
@@ -23,7 +23,7 @@ public class Main
     private boolean   verbose      = false;
 
     /**
-     * Main entrypoint to OSLC Shape & Vocabulary checker
+     * Main entrypoint to OSLC Shape & Vocabulary checker.
      * @param args command line arguments specify vocabularies and shapes to be checked
      * <ul>
      * <li>Each -v argument introduces a vocabulary, by local path or by URI</li>
@@ -60,7 +60,10 @@ public class Main
         {
             try
             {
-                if (verbose) System.err.println("Parsing "+vocab.toString());
+                if (verbose)
+                {
+                    System.err.println("Parsing "+vocab.toString());
+                }
                 errors += new VocabularyCheck(vocab, httpHandler, resultModel).checkVocabularies();
             }
             catch (RiotNotFoundException e)
@@ -77,7 +80,10 @@ public class Main
         {
             try
             {
-                if (verbose) System.err.println("Parsing "+shape.toString());
+                if (verbose)
+                {
+                    System.err.println("Parsing "+shape.toString());
+                }
                 errors += new ShapesDocCheck(shape, httpHandler, resultModel).checkShapes();
             }
             catch (RiotNotFoundException e)
@@ -99,7 +105,10 @@ public class Main
         }
 
         resultModel.getSummary().addLiteral(ResultModel.issueCount, errors);
-        if (debug) Models.write(resultModel.getModel(), System.out);
+        if (debug)
+        {
+            Models.write(resultModel.getModel(), System.out);
+        }
         resultModel.print(System.out);
     }
 

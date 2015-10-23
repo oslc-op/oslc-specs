@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation for a ShapeChecker vocabulary.
- * @author Nick Crossley. Released to public domain, September 2015.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 @Target({ElementType.TYPE,ElementType.PACKAGE})
 @Retention(RetentionPolicy.SOURCE)
@@ -29,7 +29,7 @@ public @interface SCVocab
     String domain();
 
     /**
-     * A longer description of the vocabulary or domain
+     * A longer description of the vocabulary or domain.
      */
     String description();
 }

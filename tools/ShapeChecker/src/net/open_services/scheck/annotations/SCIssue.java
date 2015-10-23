@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation for a ShapeChecker Issue.
- * @author Nick Crossley. Released to public domain, September 2015.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.SOURCE)

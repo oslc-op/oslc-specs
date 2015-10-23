@@ -4,18 +4,25 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 
+//CSOFF: JavadocVariableCheck
+//CSOFF: DeclarationOrderCheck
+//CSOFF: ConstantNameCheck
 /**
  * Constants for the OSLC Core vocabulary.
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 @SuppressWarnings("javadoc")
-public class OSLC
+public final class OSLC
 {
     private static final String uri = "http://open-services.net/ns/core#";
 
+    private OSLC()
+    {
+        // No instantiation
+    }
 
     /**
-     * returns the URI for this schema
+     * returns the URI for this schema.
      * @return the URI for this schema
      */
     public static String getURI()
@@ -24,13 +31,13 @@ public class OSLC
     }
 
 
-    private static final Resource resource(String local)
+    private static Resource resource(String local)
     {
         return ResourceFactory.createResource(uri + local);
     }
 
 
-    private static final Property property(String local)
+    private static Property property(String local)
     {
         return ResourceFactory.createProperty(uri, local);
     }

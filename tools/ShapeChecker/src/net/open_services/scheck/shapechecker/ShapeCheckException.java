@@ -6,14 +6,14 @@ import org.apache.jena.rdf.model.Resource;
 /**
  * An exception representing an issue found by the shape checker.
  *
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public class ShapeCheckException extends Exception
 {
     private static final long serialVersionUID = 1L;
-    private Resource issueClass;
-    private Resource subject;
-    private RDFNode  object;
+    private final Resource issueClass;
+    private final Resource subject;
+    private final RDFNode  object;
 
 
     /**
@@ -23,6 +23,8 @@ public class ShapeCheckException extends Exception
     public ShapeCheckException(Resource issueClass)
     {
         this.issueClass = issueClass;
+        this.subject = null;
+        this.object = null;
     }
 
 

@@ -13,7 +13,7 @@ import org.apache.jena.vocabulary.RDF;
 /**
  * Check that all vocabulary terms are used in some shape,
  * and that all shape classes, property predicates, and allowed value resources are defined in vocabularies.
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public class CrossCheck
 {
@@ -35,7 +35,7 @@ public class CrossCheck
 
 
     /**
-     * Build the maps of resources in vocabs and shapes
+     * Build the maps of resources in vocabs and shapes.
      */
     public void buildMaps()
     {
@@ -133,7 +133,7 @@ public class CrossCheck
 
 
     /**
-     * Check consistency of the vocabs and shapes
+     * Check consistency of the vocabs and shapes.
      * @return the number of errors
      */
     public int check()

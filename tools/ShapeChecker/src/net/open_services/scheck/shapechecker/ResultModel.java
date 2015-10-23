@@ -73,8 +73,11 @@ import net.open_services.scheck.annotations.TermType;
  * }
  * </pre>
  *
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
+//CSOFF: DeclarationOrderCheck
+//CSOFF: ConstantNameCheck
+//CSOFF: LineLengthCheck
 @SCVocab(
     uri="http://open-services.net/ns/scheck#",
     prefix="scheck",
@@ -93,178 +96,178 @@ public class ResultModel
     private static Map<String, Resource> issueMap         = new HashMap<>();
 
 
-    private static final Resource resource(String local)
+    private static Resource resource(String local)
     {
         Resource resource = ResourceFactory.createResource(checkerNS + local);
         issueMap.put(local, resource);
         return resource;
     }
 
-    private static final Property property(String local)
+    private static Property property(String local)
     {
         return ResourceFactory.createProperty(checkerNS, local);
     }
 
 
-    /** Summary result type */
+    /** Summary result type. */
     @SCTerm(type=TermType.Class,description="A summary of the results of a check.")
     public static final Resource Summary          = resource("Summary");
 
-    /** VocabResult outer result type */
+    /** VocabResult outer result type. */
     @SCTerm(type=TermType.Class,description="A resource holding the check results for one vocabulary.")
     public static final Resource VocabResult      = resource("VocabResult");
 
-    /** OntologyResult inner result type */
+    /** OntologyResult inner result type. */
     @SCTerm(type=TermType.Class,description="A resource holding the check results for the ontology resource for one vocabulary.")
     public static final Resource OntologyResult   = resource("OntologyResult");
 
-    /** TermResult inner result type */
+    /** TermResult inner result type. */
     @SCTerm(type=TermType.Class,description="A resource holding the check results for one term of one vocabulary.")
     public static final Resource TermResult       = resource("TermResult");
 
-    /** ShapesResult outer result type */
+    /** ShapesResult outer result type. */
     @SCTerm(type=TermType.Class,description="A resource holding the check results for the shapes from one source.")
     public static final Resource ShapesResult     = resource("ShapesResult");
 
-    /** ShapeResult inner result type */
+    /** ShapeResult inner result type. */
     @SCTerm(type=TermType.Class,description="A resource holding the check results for a single shape.")
     public static final Resource ShapeResult      = resource("ShapeResult");
 
-    /** PropertyResult inner result type */
+    /** PropertyResult inner result type. */
     @SCTerm(type=TermType.Class,description="A resource holding the check results for one property of one shape.")
     public static final Resource PropertyResult   = resource("PropertyResult");
 
-    /** Error class for an oslc:impactType with an unknown value */
+    /** Error class for an oslc:impactType with an unknown value. */
     @SCIssue(description="Impact type must be one of oslc:UpstreamImpact, oslc:DownstreamImpact, oslc:SymmetricImpact, or oslc:NoImpact.")
     public static final Resource BadImpactType    = resource("BadImpactType");
 
-    /** Error class for an oslc:occurs with an unknown value */
+    /** Error class for an oslc:occurs with an unknown value. */
     @SCIssue(description="The oslc:occurs property must be one of oslc:Exactly-one, oslc:One-or-many, oslc:Zero-or-one, or oslc:Zero-or-many.")
     public static final Resource BadOccurs        = resource("BadOccurs");
 
-    /** Error class for a vs:term_status with an unknown value */
+    /** Error class for a vs:term_status with an unknown value. */
     @SCIssue(description="The vs:term_status property must be either \\\"stable\\\" or \\\"archaic\\\"; \\\"unstable\\\" or \\\"testing\\\" are bad practice in published vocabularies.")
     public static final Resource BadTermStatus    = resource("BadTermStatus");
 
-    /** Error class for an ill-formed XML literal */
+    /** Error class for an ill-formed XML literal. */
     @SCIssue(description="The XML literal is not well-formed.")
     public static final Resource BadXMLLiteral    = resource("BadXMLLiteral");
 
-    /** Error class for a duplicate property value */
+    /** Error class for a duplicate property value. */
     @SCIssue(description="This property name, definition, or oslc:describes is not unique.")
     public static final Resource Duplicate        = resource("Duplicate");
 
-    /** Error class for a duplicate langauge-tagged string */
+    /** Error class for a duplicate langauge-tagged string. */
     @SCIssue(description="Duplicate language on string literal.")
     public static final Resource DuplicateLangString = resource("DuplicateLangString");
 
-    /** Error class for inappropriate use of the oslc:maxSize property */
+    /** Error class for inappropriate use of the oslc:maxSize property. */
     @SCIssue(description="The property oslc:maxSize appplies only to string or XMLLiteral value types.")
     public static final Resource InappropriateMaxSize = resource("InappropriateMaxSize");
 
-    /** Error class for unreadable or unparseable RDF */
+    /** Error class for unreadable or unparseable RDF. */
     @SCIssue(description="The target resource cannot be fetched or parsed as RDF.")
     public static final Resource InvalidRdf       = resource("InvalidRdf");
 
-    /** Error class for an invalid URI as the object of some property */
+    /** Error class for an invalid URI as the object of some property. */
     @SCIssue(description="The URI of the target is invalid.")
     public static final Resource InvalidUri       = resource("InvalidUri");
 
-    /** Error class for use of oslc:LocalResource - no longer recommended */
+    /** Error class for use of oslc:LocalResource - no longer recommended. */
     @SCIssue(description="Use of oslc:LocalResource should be replaced by oslc:AnyResource with oslc:representation=oslc:Inline.")
     public static final Resource LocalResourceDeprecated = resource("LocalResourceDeprecated");
 
-    /** Error class for mismatching values of oslc:ValueType and oslc:Representation */
+    /** Error class for mismatching values of oslc:ValueType and oslc:Representation. */
     @SCIssue(description="Mismatching values of oslc:ValueType and oslc:Representation.")
     public static final Resource MismatchingRepresentation = resource("MismatchingRepresentation");
 
-    /** Error class for a missing property of some node */
+    /** Error class for a missing property of some node. */
     @SCIssue(description="The named property should be be specified for this resource.")
     public static final Resource Missing          = resource("Missing");
 
-    /** Error class for a property that occurs too many times */
+    /** Error class for a property that occurs too many times. */
     @SCIssue(description="This property should appear at most once.")
     public static final Resource MoreThanOne      = resource("MoreThanOne");
 
-    /** Error class for a term not defined by an ontology */
+    /** Error class for a term not defined by an ontology. */
     @SCIssue(description="This subject does not appear to be part of an ontology or one of its terms.")
     public static final Resource NoOntology       = resource("NoOntology");
 
-    /** Error class for a property not defined by a shape */
+    /** Error class for a property not defined by a shape. */
     @SCIssue(description="This property definition or other subject does not appear to be part of a defined shape.")
     public static final Resource NoShape          = resource("NoShape");
 
-    /** Error class for a term or property that does not have a hash URI based on the parent URI */
+    /** Error class for a term or property that does not have a hash URI based on the parent URI. */
     @SCIssue(description="The term or property should use a hash URI, relative to its ontology or shape, respectively.")
     public static final Resource NotHash          = resource("NotHash");
 
-    /** Error class for a resource property that should be a literal */
+    /** Error class for a resource property that should be a literal. */
     @SCIssue(description="A literal value is expected here, not a resource.")
     public static final Resource NotLiteral       = resource("NotLiteral");
 
-    /** Error class for a literal property that should be a resource */
+    /** Error class for a literal property that should be a resource. */
     @SCIssue(description="A resource value is expected here, not a literal.")
     public static final Resource NotResource      = resource("NotResource");
 
-    /** Error class for a redundant (unknown, unexpected) property of some node */
+    /** Error class for a redundant (unknown, unexpected) property of some node. */
     @SCIssue(description="This property is unexpected.")
     public static final Resource Redundant        = resource("Redundant");
 
-    /** Error class for a source that does not refer to a Turtle URI */
+    /** Error class for a source that does not refer to a Turtle URI. */
     @SCIssue(description="The vocabulary or shape source does not appear to be in Turtle.")
     public static final Resource SourceNotTurtle  = resource("SourceNotTurtle");
 
-    /** Error class for a vocab term that is not defined by its parent ontology URI */
+    /** Error class for a vocab term that is not defined by its parent ontology URI. */
     @SCIssue(description="This term does not have rdfs:isDefinedBy its parent ontology.")
     public static final Resource TermNotInVocab   = resource("TermNotInVocab");
 
-    /** Error class for an unreachable resource */
+    /** Error class for an unreachable resource. */
     @SCIssue(description="This resource is not fetchable.")
     public static final Resource Unreachable      = resource("Unreachable");
 
-    /** Error class for a property of the wrong type */
+    /** Error class for a property of the wrong type. */
     @SCIssue(description="Wrong type for oslc:valueType, or for a property definition, or for a literal.")
     public static final Resource WrongType        = resource("WrongType");
 
 
-    /** predicate for a check */
+    /** Predicate for a check. */
     @SCTerm(type=TermType.Property,description="The subject of a check.")
     public static final Property checks           = property("checks");
 
-    /** predicate for an issue */
+    /** Predicate for an issue. */
     @SCTerm(type=TermType.Property,description="An issue reported by the checker.")
     public static final Property issue            = property("issue");
 
-    /** predicate for an issue count */
+    /** Predicate for an issue count. */
     @SCTerm(type=TermType.Property,description="The number of issues reported by the checker within the current scope.")
     public static final Property issueCount       = property("issueCount");
 
-    /** predicate for a result */
+    /** Predicate for a result. */
     @SCTerm(type=TermType.Property,description="The check results for a set of resources within the current scope.")
     public static final Property result           = property("result");
 
-    /** predicate for the subject of an issue */
+    /** Predicate for the subject of an issue. */
     @SCTerm(type=TermType.Property,description="The subject of an issue.")
     public static final Property subject          = property("subject");
 
-    /** predicate for the value of an issue */
+    /** Predicate for the value of an issue. */
     @SCTerm(type=TermType.Property,description="The value concerning which an issue is being reported.")
     public static final Property value            = property("value");
 
 
-    /** Summary predicate for an undefined class */
+    /** Summary predicate for an undefined class. */
     @SCTerm(type=TermType.Property,description="These classes are referenced in the given shapes, but not defined in the expected vocabulary:")
     public static final Property undefinedClass   = property("undefinedClass");
 
-    /** Summary predicate for an undefined term */
+    /** Summary predicate for an undefined term. */
     @SCTerm(type=TermType.Property,description="These properties or resources are referenced in the given shapes, but not defined in the expected vocabulary:")
     public static final Property undefinedProp    = property("undefinedProp");
 
-    /** Summary predicate for an unreferenced vocabulary */
+    /** Summary predicate for an unreferenced vocabulary. */
     @SCTerm(type=TermType.Property,description="These vocabularies were given, but were not referenced in the given shapes:")
     public static final Property unusedVocabulary = property("unusedVocabulary");
 
-    /** Summary predicate for an unreferenced vocabulary term */
+    /** Summary predicate for an unreferenced vocabulary term. */
     @SCTerm(type=TermType.Property,description="These terms were defined in the given vocabularies, but were not referenced in the given shapes:")
     public static final Property unusedTerm       = property("unusedTerm");
 
@@ -298,7 +301,7 @@ public class ResultModel
 
 
     /**
-     * Get the result model
+     * Get the result model.
      * @return the result model
      */
     public Model getModel()
@@ -308,7 +311,7 @@ public class ResultModel
 
 
     /**
-     * Create an anonymous outer node to hold results for a vocabulary or shape
+     * Create an anonymous outer node to hold results for a vocabulary or shape.
      * @param type the type of the outer node ({@code VocabResult} or {@code ShapesResult})
      * @return the resource created
      */
@@ -319,7 +322,7 @@ public class ResultModel
 
 
     /**
-     * Create an anonymous inner node to hold results for parts of vocabularies or shapes
+     * Create an anonymous inner node to hold results for parts of vocabularies or shapes.
      * @param parent the parent node
      * @param type the type of the inner node
      * (@code OntologyResult}, {@code TermResult}, {@code ShapeResult}, or {@code PropertyResult})
@@ -353,7 +356,7 @@ public class ResultModel
 
 
     /**
-     * Create an anonymous node to hold info about an issue
+     * Create an anonymous node to hold info about an issue.
      * @param resultNode the parent of the new anonymous node
      * @param type the type of the issue node
      * @param subjectResource the subject of the issue
@@ -379,7 +382,7 @@ public class ResultModel
 
 
     /**
-     * Create an anonymous node to hold info about an issue
+     * Create an anonymous node to hold info about an issue.
      * @param resultNode the parent of the new anonymous node
      * @param type the type of the issue node
      * @param literal the subject of the issue
@@ -400,7 +403,7 @@ public class ResultModel
 
 
     /**
-     * Create an anonymous node to hold info about an issue
+     * Create an anonymous node to hold info about an issue.
      * @param resultNode the parent of the new anonymous node
      * @param type the type of the issue node
      * @param subjectResource the subject of the issue
@@ -412,7 +415,7 @@ public class ResultModel
 
 
     /**
-     * Create an anonymous node to hold info about an issue
+     * Create an anonymous node to hold info about an issue.
      * @param resultNode the parent of the new anonymous node
      * @param e info about the issue
      */
@@ -423,7 +426,7 @@ public class ResultModel
 
 
     /**
-     * Get the summary resource
+     * Get the summary resource.
      * @return the summary resource
      */
     public Resource getSummary()

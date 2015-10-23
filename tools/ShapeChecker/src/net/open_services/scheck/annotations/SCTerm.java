@@ -7,14 +7,14 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation for a ShapeChecker vocabulary term.
- * @author Nick Crossley. Released to public domain, September 2015.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.SOURCE)
 public @interface SCTerm
 {
     /**
-     * The type of the term: rdfs:Class, rdf:Property, or rdfs:Resource
+     * The type of the term: rdfs:Class, rdf:Property, or rdfs:Resource.
      */
     TermType type();
 

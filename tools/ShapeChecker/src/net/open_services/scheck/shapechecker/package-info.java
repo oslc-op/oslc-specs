@@ -3,6 +3,7 @@
  *
  * <h2>Vocabulary Checks</h2>
  * <p>
+ * TODO this list is out of date.
  * The program performs the following internal checks on each vocabulary:
  * </p>
  * <ul>
@@ -137,7 +138,7 @@
  * The results of these checks are placed into an RDF model, as defined by {@link net.open_services.scheck.shapechecker.ResultModel}.
  * TODO: Ideally, someone will write a web app to display this result model in a nice way.</p>
  *
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 package net.open_services.scheck.shapechecker;
 

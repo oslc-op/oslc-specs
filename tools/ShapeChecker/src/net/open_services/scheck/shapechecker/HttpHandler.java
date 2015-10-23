@@ -22,14 +22,15 @@ import org.apache.jena.riot.RiotException;
 
 /**
  * Handle http connections, and verify the reachability of URIs.
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public class HttpHandler
 {
-    private static final String JENA_RDF_ACCEPT_HEADER = "text/turtle,application/n-triples;q=0.9,application/ld+json;q=0.8,application/rdf+xml;q=0.7,*/*;q=0.5";
+    private static final String JENA_RDF_ACCEPT_HEADER =
+            "text/turtle,application/n-triples;q=0.9,application/ld+json;q=0.8,application/rdf+xml;q=0.7,*/*;q=0.5";
     private static final String RDF_TYPES = "turtle|n-triples|json|rdf|xml";
 
-    private Map<URI,Boolean> foundHttpResources = new HashMap<>();
+    private Map<URI,Boolean> httpResourceIsRDF = new HashMap<>();
     private Set<String> foundRDFResources = new HashSet<>();
     private Set<String> skipURIs = new HashSet<>();
     private boolean verbose = false;
@@ -58,7 +59,7 @@ public class HttpHandler
     /**
      * Check to see if a URI is reachable.
      * @param uri the uri to check
-     * @throws ShapeCheckException
+     * @throws ShapeCheckException if there was a problem checking the URI
      */
     public void checkValidReference(String uri) throws ShapeCheckException
     {
@@ -89,7 +90,7 @@ public class HttpHandler
         }
         catch (RiotException | IOException e1)
         {
-            foundHttpResources.put(httpUri, false);
+            httpResourceIsRDF.put(httpUri, false);
             throw new ShapeCheckException(
                 ResultModel.InvalidRdf,
                 ResourceFactory.createResource(uri),
@@ -123,25 +124,28 @@ public class HttpHandler
 
     private void fetchHttpResource(URI httpUri) throws ShapeCheckException, IOException
     {
-        if (foundHttpResources.containsKey(httpUri))
+        if (httpResourceIsRDF.containsKey(httpUri))
         {
             // Resource previously found
         }
         else if (skipURIs.contains(httpUri.toString()))
         {
             // Do not try to read or parse this
-            foundHttpResources.put(httpUri, false);
+            httpResourceIsRDF.put(httpUri, false);
         }
         else if (!isRDF(httpUri))
         {
             // Resource is present, but is not RDF
-            foundHttpResources.put(httpUri, false);
+            httpResourceIsRDF.put(httpUri, false);
         }
         else
         {
-           // Resource is RDF, so read it and save contained subjects
-            foundHttpResources.put(httpUri, true);
-            if (verbose) System.err.println("Parsing "+httpUri.toString());
+            // Resource is RDF, so read it and save contained subjects
+            httpResourceIsRDF.put(httpUri, true);
+            if (verbose)
+            {
+                System.err.println("Parsing "+httpUri.toString());
+            }
             Model foundModel = ModelFactory.createDefaultModel().read(httpUri.toString());
             ResIterator ri = foundModel.listSubjects();
             while (ri.hasNext())
@@ -159,7 +163,7 @@ public class HttpHandler
 
     private Resource findRDFResource(URI httpUri, String uri)
     {
-        if (httpUri.toString().equals(uri) || foundHttpResources.get(httpUri) == false)
+        if (httpUri.toString().equals(uri) || !httpResourceIsRDF.get(httpUri))
         {
             // The HTTP resource itself has already been found
             // We do not check non-RDF hash resources
@@ -186,7 +190,7 @@ public class HttpHandler
         int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode != 200)
         {
-            foundHttpResources.put(httpUri, false);
+            httpResourceIsRDF.put(httpUri, false);
             throw new ShapeCheckException(
                 ResultModel.InvalidRdf,
                 ResourceFactory.createResource(httpUri.toString()),

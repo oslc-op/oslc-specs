@@ -8,27 +8,28 @@ import java.util.Set;
  * {@code oslc:Exactly-one}, {@code oslc:One-or-many}, {@code oslc:Zero-or-one},
  * or {@code oslc:Zero-or-many}.
  *
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public enum Occurrence
 {
-    /** {@code oslc:Exactly-one} */
+    /** {@code oslc:Exactly-one}. */
     ExactlyOne("http://open-services.net/ns/core#Exactly-one", false, false),
 
-    /** {@code oslc:One-or-many} */
+    /** {@code oslc:One-or-many}. */
     OneOrMany("http://open-services.net/ns/core#One-or-many", false, true),
 
-    /** {@code oslc:Zero-or-one} */
+    /** {@code oslc:Zero-or-one}. */
     ZeroOrOne("http://open-services.net/ns/core#Zero-or-one", true, false),
 
-    /** {@code oslc:Zero-or-many} */
+    /** {@code oslc:Zero-or-many}. */
     ZeroOrMany("http://open-services.net/ns/core#Zero-or-many", true, true);
+
+    private static Set<String> uris = new HashSet<>();
 
     private String  uri;
     private boolean isOptional;
     private boolean allowMultiple;
 
-    private static Set<String> uris = new HashSet<>();
 
     static
     {
@@ -81,7 +82,7 @@ public enum Occurrence
 
 
     /**
-     * Check if a given URI is a valid occurrence
+     * Check if a given URI is a valid occurrence.
      * @param checkURI the URI to check
      * @return true if the given URI is a valid occurrence
      */

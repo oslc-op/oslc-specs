@@ -20,7 +20,7 @@ import org.apache.jena.vocabulary.RDFS;
 
 /**
  * Read and check the statements in an RDF vocabulary (owl:Ontology).
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public class VocabularyCheck
 {
@@ -34,7 +34,7 @@ public class VocabularyCheck
 
 
     /**
-     * Create a new vocabulary checker for the statements in a document
+     * Create a new vocabulary checker for the statements in a document.
      *
      * @param document The document URI
      * @param httpHandler An HttpHandler to check for reachability of URI references
@@ -107,7 +107,7 @@ public class VocabularyCheck
 
 
     /**
-     * Check the properties of the ontology resource for a vocabulary
+     * Check the properties of the ontology resource for a vocabulary.
      *
      * @param ontology the ontology resource to be checked
      * @return the number of errors found
@@ -149,7 +149,7 @@ public class VocabularyCheck
 
 
     /**
-     * Check the properties of one term in a vocabulary
+     * Check the properties of one term in a vocabulary.
      *
      * @param vocab the vocabulary in which the term appears
      * @param term the term to be checked
@@ -203,7 +203,7 @@ public class VocabularyCheck
 
 
     /**
-     * Special checks for rdf:type property
+     * Special checks for rdf:type property.
      *
      * @param term the term whose type is being checked
      * @param termResult the {@link ResultModel} resource to which to add errors

@@ -3,13 +3,17 @@ package net.open_services.scheck.annotations;
 
 /**
  * The type of a vocabulary term.
- * @author Nick Crossley. Released to public domain, September 2015.
+ * @author Nick Crossley. Released to public domain 2015.
  */
-@SuppressWarnings("javadoc")
 public enum TermType
 {
+    /** Vocabulary term for an RDF class. */
     Class("rdfs:Class"),
+
+    /** Vocabulary term for an RDF property. */
     Property("rdf:Property"),
+
+    /** Vocabulary term for an RDF individual. */
     Resource("rdfs:Resource");
 
 

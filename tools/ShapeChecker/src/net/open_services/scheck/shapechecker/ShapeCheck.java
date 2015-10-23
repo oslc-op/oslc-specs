@@ -18,7 +18,7 @@ import org.apache.jena.vocabulary.XSD;
 
 /**
  * Check the statements in a single OSLC Shape.
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public class ShapeCheck
 {
@@ -41,7 +41,8 @@ public class ShapeCheck
      * @param resultModel the model to which any results should be added
      * @param shapesResult a node in the resultModel for the results for all shapes in a document
      */
-    public ShapeCheck(Set<String> describes, HttpHandler httpHandler, Model shapeModel, Model shapeCopy, ResultModel resultModel, Resource shapesResult)
+    public ShapeCheck(Set<String> describes, HttpHandler httpHandler,
+            Model shapeModel, Model shapeCopy, ResultModel resultModel, Resource shapesResult)
     {
         this.describes = describes;
         this.httpHandler = httpHandler;
@@ -69,7 +70,7 @@ public class ShapeCheck
         // Look for the required  properties
         NodeCheck node = new NodeCheck(shape, httpHandler, shapeModel, shapeCopy, resultModel, shapeResult);
         errors += node.checkURI(OSLC.describes, Occurrence.OneOrMany,
-            (uri)->{shapeResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri));return checkUnique(describes,uri);});
+            (uri)->{shapeResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri)); return checkUnique(describes,uri);});
 
         // Look for the optional properties
         errors += node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
@@ -103,7 +104,7 @@ public class ShapeCheck
 
 
     /**
-     * Check the properties of one property definition in a shape
+     * Check the properties of one property definition in a shape.
      *
      * @param document the URI of the document containing this shape
      * @param shape the shape in which the property appears
@@ -124,9 +125,9 @@ public class ShapeCheck
             resultModel.createIssue(propResult, ResultModel.NotResource, propDefNode.asLiteral().getLexicalForm());
             return errors;
         }
-        else if (!(propDef=propDefNode.asResource()).isAnon() &&
-                !propDef.getURI().replaceAll("#[^/]+$","").equals(shape.getURI().replaceAll("#[^/]+$","")) &&
-                !propDef.getURI().replaceAll("#[^/]+$","").equals(document.toString()
+        else if (!(propDef=propDefNode.asResource()).isAnon()
+                && !propDef.getURI().replaceAll("#[^/]+$","").equals(shape.getURI().replaceAll("#[^/]+$",""))
+                && !propDef.getURI().replaceAll("#[^/]+$","").equals(document.toString()
                     .replaceAll("#[^/]+$","")
                     .replaceAll("file:/(?!/)", "file:///")))
         {
@@ -142,7 +143,7 @@ public class ShapeCheck
         errors += node.checkURI(OSLC.occurs, Occurrence.ExactlyOne,
             (uri) -> (Occurrence.isValidURI(uri) ? null : ResultModel.BadOccurs));
         errors += node.checkURI(OSLC.propertyDefinition, Occurrence.ExactlyOne,
-            (uri) -> {propResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri));return checkUnique(predicates,uri);});
+            (uri) -> {propResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri)); return checkUnique(predicates,uri);});
         errors += node.checkURI(RDF.type, Occurrence.ExactlyOne,
             (uri) -> (uri.equals(OSLC.Property.getURI()) ? null : ResultModel.WrongType));
 
@@ -200,7 +201,7 @@ public class ShapeCheck
 
 
     /**
-     * Special checks for oslc:valueType property
+     * Special checks for oslc:valueType property.
      *
      * @param propDef the property definition whose type is being checked
      * @param propResult the {@link ResultModel} resource to which to add errors
@@ -278,7 +279,7 @@ public class ShapeCheck
 
 
     /**
-     * Special checks for oslc:allowedValues property
+     * Special checks for oslc:allowedValues property.
      *
      * @param propDef the property definition whose type is being checked
      * @param propResult the {@link ResultModel} resource to which to add errors

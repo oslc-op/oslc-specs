@@ -17,7 +17,7 @@ import org.apache.jena.vocabulary.RDF;
 
 /**
  * Check the properties of one node in a model.
- * @author Nick Crossley. Released to public domain.
+ * @author Nick Crossley. Released to public domain 2015.
  */
 public class NodeCheck
 {
@@ -51,7 +51,7 @@ public class NodeCheck
 
 
     /**
-     * Check the validity of an object that can be either a literal or a URI
+     * Check the validity of an object that can be either a literal or a URI.
      * @param property the property whose existence should be checked
      * @param occurs the valid occurrences for the property
      * @return the number of errors noted in this check
@@ -64,7 +64,7 @@ public class NodeCheck
 
 
     /**
-     * Check the validity of an object that can be either a literal or a URI
+     * Check the validity of an object that can be either a literal or a URI.
      * @param property the property whose existence should be checked
      * @param occurs the valid occurrences for the property
      * @param literalValidator a function to perform extra validation for a literal property value
@@ -120,7 +120,7 @@ public class NodeCheck
 
 
     /**
-     * Check the validity of a literal
+     * Check the validity of a literal.
      * @param property the property whose literal values should be checked
      * @param datatype the type of the literal
      * @param occurs the valid occurrences for the property
@@ -153,7 +153,10 @@ public class NodeCheck
                 Resource validation;
 
                 // Plain literals are strings
-                if (dt == null) dt = XSDDatatype.XSDstring;
+                if (dt == null)
+                {
+                    dt = XSDDatatype.XSDstring;
+                }
 
                 // Check valid XML strings
                 if (dt.equals(RDF.dtXMLLiteral) && !lit.isWellFormedXML())
@@ -196,7 +199,7 @@ public class NodeCheck
 
 
     /**
-     * Check for string properties with language tags
+     * Check for string properties with language tags.
      *
      * @param property the property whose literal values should be checked
      * @param occurs the valid occurrences for the property
@@ -275,7 +278,7 @@ public class NodeCheck
 
 
     /**
-     * Check the validity of a uri
+     * Check the validity of a uri.
      *
      * @param property the property whose uri values should be checked
      * @param occurs the valid occurrences for the property
