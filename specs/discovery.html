@@ -3,7 +3,7 @@
 <head>
 <title>OSLC Discovery 3.0</title>
 <meta charset='utf-8'>
-<script	src='https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script	src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
 <script  type="text/javascript" >
     var respecConfig = {
         // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN). If in doubt use WD.
@@ -148,8 +148,7 @@ dd {
 </head>
 <body>
 
-	<section id='abstract'>This document outlines a common approach for HTTP/LDP-based server to be able to
-	publish their RESTful API capabilities and how clients can discover and use them.</section>
+	<section id='abstract'>This document outlines a common approach for HTTP/LDP-based server to be able to	publish their RESTful API capabilities and how clients discover and use them.</section>
 
 	<section id='sotd'><em>Stable Working Draft: received and incorporated TC feedback.  (Almost) Ready for Public Review.</em></section>
 
@@ -160,7 +159,7 @@ dd {
 		<h2>Introduction</h2>
 		<p>A common problem with building interoperable solutions is having a mechanism for a client to introspect a server API or end-point
 		to learn if the target application supports a set of capabilities.  Client applications would then provide features based on what is discovered.  For example, a person using a quality management tool
-		wants to be able to record a bug in a bug tracking tool.  The integration from the quality management tool will want to be able to do a number of things on behalf of the user and provide an optional integrated experience to streamline the users workflow.  To do this, the quality management tool will need a means of discovering information about the bug tracking tool including: authenticating, knowing that the target tool is capable of receiving creation requests for bugs, whether it can be handled via a user interface, what fields are required and types of data, and also if the bug record can be pre-filled with some data from the test currently being executed.</p>
+		wants to be able to record a defect in a change management tool.  The integration from the quality management tool will want to be able to do a number of things on behalf of the user and provide an optional integrated experience to streamline the users workflow.  To do this, the quality management tool will need a means of discovering information about the change management tool including: authenticating, knowing that the target tool is capable of receiving creation requests for defects, whether it can be handled via a user interface, what fields are required, with what types of data, and also if the defect record can be pre-filled with some data from the test currently being executed.</p>
 
 		<p>OSLC Discovery 3.0 defines a capability providing client applications a standard way to introspect servers to determine what resource types the server supports, how to preview, select or create instances of those resources, and any constraints on resource creation or update. Discovery capabilities allow clients to determine what capabilities are provided by a server so they can adapt to, and integrate with different servers in support of end user integration scenarios.</p>
 	</section>
@@ -211,16 +210,16 @@ dd {
 
 	<section id="discoveryCapabilities">
 		<h2>Discovery Capabilities</h2>
-		<p>There are various approaches for how specifications define and advertise their capabilities, and how clients can efficiently discover what is available.  The following sections will provide guidance on approaches that should be used.</p>
+		<p>There are various approaches for how servers define and advertise their capabilities, and how clients can efficiently discover what is available.  The following sections will provide guidance on approaches that should be used.</p>
 
 		<p>OSLC defines two broad approaches for clients to discover capabilities provided by a server, loosely categorized as "Static Up-Front" and "Dynamic Incremental".</p>
 
 		<p><em>Static Up-Front</em> discovery, which is compatible with [[OSLCCore2]], is an up-front or somewhat more static approach to discovery that utilizes ServiceProviderCatalog, ServiceProvider, and Service resources. Typically a client would perform discovery on startup by accessing the Services defined by any ServiceProvider resources the client might need. A client could also access one or more ServiceProviderCatalog resources in order to locate the available ServiceProvider resources. The client would then configure its capabilities based on what was discovered. In many, or possibly most instances, the ServiceProvider resources will be dynamically created by servers based on the state of the information they manage. Clients may choose to periodically refresh their capabilities by re-reading the ServiceProviders and adapting to the newly available services. Therefore this approach to discovery is not completely static, or up-front, but that does represent a possible common usage pattern.</p>
 
-		<p>Figure <a href="#discoveryModel"></a> illustrates the Service Provider Catalog and Service Provider concepts and relationships defined by [[OSLCCore2]]. There are two resources defined: Service Provider Catalog and Service Provider, that provide the discovery information. There are also a set of local in-line resources that are provided inside these resources to define namespaces, OAuth configurations, contributors as well as services and their capabilities.</p>
+		<p>Figure <a href="#discoveryModel"></a> illustrates the Service Provider Catalog and Service Provider concepts and relationships. There are two resources defined: Service Provider Catalog and Service Provider, that provide the discovery information. There are also a set of local in-line resources that are provided inside these resources to define namespaces, OAuth configurations, contributors as well as services and their capabilities.</p>
 
 		<figure id="discoveryModel">
-		   <img src="images/oslc-discovery-model.png" />
+		   <img src="images/CoreDiscoveryUML.png" />
 		   <figcaption>Service Provider concepts and relationships</figcaption>
 		</figure>
 

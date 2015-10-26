@@ -4,7 +4,7 @@
 <meta charset='utf-8' />
 <title>OSLC Core 3.0</title>
 <script
-	src='http://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js'
+	src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js'
 	async class='remove'></script>
 <script class='remove'>
 	var respecConfig = {
@@ -135,7 +135,12 @@ supporting architecture that is: loosely coupled, minimal, and
 standardized. OSLC is based on World Wide Web and Linked Data principles, such
 as those defined in the W3C Linked Data Platform [[LDP]], to create a cohesive
 set of specifications that can enable products, services, and other
-distributed network resources to interoperate successfully. [[LDP]]</p>
+distributed network resources to interoperate successfully [[LDP]].</p>
+
+<figure>
+  <img src="images/oslc-architecture.png" />
+  <figcaption>OSLC Core 3.0 Architecture</figcaption>
+</figure>
 
 <p>OSLC is motivated by domain-driven scenarios that inspire standardization
 of common capabilities across disciplines such as change management,
@@ -179,17 +184,17 @@ simpler, built on layered capabilities and easier to adopt.</p>
 
 		<dl class="glossary">
 			<dt>OSLC Server</dt>
-			<dd>LDP Server that also supports some OSLC-based specifications. See Server [[HTTP11]] and LDP Server [[LDP]].</dd>
+			<dd>LDP Server that also supports capabilities defined by some OSLC-based specifications. See Server [[HTTP11]] and LDP Server [[LDP]].</dd>
 
 			<dt>OSLC Client</dt>
-			<dd>LDP Client that also supports some OSLC-based specifications. See Client [[HTTP11]] and LDP Client [[LDP]]. A particular software component or application could be an OSLC Server supporting a set of domains, and an OSLC Client of other domains depending on its needs.</dd>
+			<dd>LDP Client that uses capabilities defined by some OSLC-based specifications. See Client [[HTTP11]] and LDP Client [[LDP]]. A particular software component or application could be an OSLC Server supporting a set of domains, and an OSLC Client of other domains depending on its needs.</dd>
 
 			<dt>Domain</dt>
 			<dd>A topic area of a specific focus area and/or collection of disciplines.  Often OASIS OSLC-affiliated TCs are organized
 			around a domain.</dd>
 
 			<dt>OSLC Core Specifications</dt>
-			<dd>Specifications that cover specific capabilities that often are needed across various domains.  They
+			<dd>Specifications that cover specific capabilities that are often needed across various domains.  They
 			are created, authored or endorsed by the OASIS OSLC Core TC. Can be abbreviated to Core Specifications.</dd>
 
 			<dt>OSLC Domain Specifications</dt>
@@ -215,7 +220,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
 
 			<dt><a href="http://en.wikipedia.org/wiki/DevOps">DevOps</a></dt>
 			<dd>A software development method that stresses communication, collaboration and integration between
-			software developers and Information Technology(IT) professionals.</dd>
+			software developers and Information Technology(IT) professionals in support of continuous delivery.</dd>
 
 			<dt><a href="http://en.wikipedia.org/wiki/IT_service_management">IT Service Management (ITSM)</a></dt>
 			<dd>The implementation and management of quality information technology services. IT service management is performed by IT service providers through people, process and information technology.</dd>
@@ -238,13 +243,14 @@ simpler, built on layered capabilities and easier to adopt.</p>
 
 	<section class='informative'>
 		<h2>Goals/Motivation</h2>
-		<p>The primary goal of OSLC is to enable integration of federated, shared information across tools that support different, but related domains. OSLC was initially focused on development of Information Technology solutions involving processes, activities, work products and supporting tools for solution delivery and lifecycle management (SDLC). However, OSLC capabilities could be applicable to other domains. The specific goals for OSLC Core 3.0 are to build on the existing OSLC Core 2.0 specifications to further facilitate the development and integration of domains and supporting tools that address additional integration needs. Specifically:
+		<p>The primary goal of OSLC is to enable integration of federated, shared information across tools that support different, but related domains. OSLC was initially focused on development of Information Technology (IT) solutions involving processes, activities, work products and supporting tools for Application Lifecycle Management (ALM). However, OSLC capabilities could be applicable to other domains. The specific goals for OSLC Core 3.0 are to build on the existing OSLC Core 2.0 specifications to further facilitate the development and integration of domains and supporting tools that address additional integration needs. Specifically:
 		<ul>
 			<li>Integration is based on an open standard, and not controlled by any single vendor</li>
 			<li>OSLC 3.0 is based on the new W3C Linked Data Platform standard which provides a solid foundation for reading and writing linked data resources</li>
 			<li>The specifications are simpler, more consistent and will potentially be more attractive to, and easier to consume by new integrations</li>
 			<li>There are some new capabilities including Attachments, Inverse link labels, traceability and impact types</li>
 			<li>Domain vocabularies can be improved for data consistency and removing data gaps</li>
+			<li>All Resource Shapes are provided in machine readable Turtle files</li>
 		</ul></p>
 		<p>The following guiding principles were used to govern the evolution of OSLC and guide the development of the OSLC Core 3.0 specifications.</p>
 
@@ -269,7 +275,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
 			simplest solution that would work for a given scenario but allows for easy adoption. Authors should avoid solutions that offer additional capabilities which may inhibit adoption of necessary capabilities.</p>
 
 		<em class='loc-heading'>Capability Based</em>
-		<p>A capability is the ability to perform actions to achieve outcomes described by scenarios through the use of specific technologies. Capabilities should be incrementally defined as independent focused specifications and independently discovered at runtime. Even though there may be some generally agreed upon best practices for capability publication and discovery, each capability should define how it is published and discovered. The Core OSLC capabilities are defined in this specification.</p>
+		<p>A capability is the ability to perform actions to achieve outcomes described by scenarios through the use of specific technologies. Capabilities should be incrementally defined as independent focused specifications and independently discoverable at runtime. Even though there may be some generally agreed upon best practices for capability publication and discovery, each capability should define how it is published and discovered. The Core OSLC capabilities are defined in this specification.</p>
 
 		<em class='loc-heading'>Vocabularies</em>
 		<p>Various OSLC MS-affiliated TCs, or any specification development body that is authoring specifications for specific domains of knowledge, should minimally define vocabularies and the semantics behind the various terms.  Some consideration should be given for global reuse when terms are used for cross domain queries and within
@@ -316,9 +322,9 @@ simpler, built on layered capabilities and easier to adopt.</p>
 			<h2>Resource Representations</h2>
 			<p> OSLC resource representations come in many forms and are subject to standard HTTP and mechanisms for content negotiation.</p>
 
-			<p>OSLC domain specifications should specify the representations needed for the specific scenarios that they are addressing, and should recognize that different representations are appropriate for different purposes. For example, browser oriented scenarios might be best addressed by JSON or Atom format representations.</p>
+			<p>OSLC domain specifications specify the representations needed for the specific scenarios that they are addressing, and should recognize that different representations are appropriate for different purposes. For example, browser oriented scenarios might be best addressed by JSON or Atom format representations.</p>
 
-			<p>OSLC domain specifications are also expected to follow common practices and conventions that are in concert with existing industry standards and offer consistency across domains. All of the OSLC specifications are built upon the standard RDF data model, allowing OSLC to align with the Linked-Data Platform [[LDP]]. In addition, all OSLC specifications have adopted the convention to illustrate RDF/XML representations and will typically require RDF/XML representations to enable consistency across OSLC implementations. </p>
+			<p>OSLC domain specifications are also expected to follow common practices and conventions that are in concert with existing industry standards and offer consistency across domains. All of the OSLC specifications are built upon the standard RDF data model, allowing OSLC to align with the Linked-Data Platform [[LDP]]. In addition, all OSLC specifications have adopted the convention to illustrate Turtle and JSON-LD representations and will typically require these representations to enable consistency across OSLC implementations. </p>
 
 			<section id="ldpRepresentations"><h2 class="normalText">
 				OSLC Services MUST provide and accept text/turtle and application/ld+json representations for each OSLC resource.</h2>
@@ -329,7 +335,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
 			</section>
 
 			<section id="otherRepresentations"><h2 class="normalText"> 
-				OSLC Services MAY provide and accept standard or emerging standard formats such as XML, HTML, and the Atom Syndication Format.</h2>
+				OSLC Services MAY provide and accept existing standard or emerging standard formats such as XML, HTML, and the Atom Syndication Format.</h2>
 			</section>
 		</section>
 		<section id="commonVocabulary">
@@ -364,9 +370,9 @@ simpler, built on layered capabilities and easier to adopt.</p>
 		</section>
 		<section id="query">
 			<h2>Query</h2>
-			<p>OSLC servers will often manage large amounts of potentially complex link-data entities. Practical use of this information will require some query capability that minimally supports selection, projection and ordering. Ideally OSLC Core would rely on existing standard query services such as [[SPARQL]] that are integrated with [[LDP]]. The <a href="https://www.w3.org/community/ldql/">Linked Data Query Language Community Group</a> is currently working on a Query Language for [[LDP]]. However, the reality is that many OSLC servers are adapters built on existing data management capabilities that are not built on an RDF foundation and do not provide SPARQL endpoints for query. In order to address the need for standard query capability to enable integration, [[OSLCCore2]] introduced a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Capability</a> and a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Syntax</a> that were intended to be simple enough that they could be implemented on a wide range of existing server architectures. In practice this has proven to be more difficult than anticipated. But the need is still there. OSLC Core 3.0 is built on [[LDP]] and future OSLC domain servers may provide more consistent access to SPARQL endpoints. Ofter time, that may lead to the deprecation of OSLC Core 2.0 Query Capability. In the meantime, OSLC Core 2.0 Query Capability is still available for OSLC domain specifications that need it.</p>
+			<p>OSLC servers will often manage large amounts of potentially complex link-data entities. Practical use of this information will require some query capability that minimally supports selection, projection and ordering. Ideally OSLC Core would rely on existing standard query services such as [[SPARQL]] that may be integrated with [[LDP]]. The <a href="https://www.w3.org/community/ldql/">Linked Data Query Language Community Group</a> is currently working on a Query Language for [[LDP]]. However, the reality is that many OSLC servers are adapters built on existing data management capabilities that are not built on an RDF foundation and do not provide SPARQL endpoints for query. In order to address the need for standard query capability to enable integration, [[OSLCCore2]] introduced a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Capability</a> and a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Syntax</a> that were intended to be simple enough that they could be implemented on a wide range of existing server architectures. In practice this has proven to be more difficult than anticipated. But the need is still there. OSLC Core 3.0 is built on [[LDP]] and future OSLC domain servers may provide more consistent access to SPARQL endpoints. Ofter time, that may lead to the deprecation of OSLC Core 2.0 Query Capability. In the meantime, OSLC Core 2.0 Query Capability is still available for OSLC domain specifications that need it.</p>
 			<section id="queryCapability"><h2 class="normalText">
-				OSLC Servers MAY support a <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities">Query Capability</a> as defined in [[OSLCCore2]] to enable clients to perform selection and projection operations in order to retrieve a selected subset of resources and property values from an LDPC. For OSLC 3.0, every LDPC is considered an <code>oslc:queryBase</code> URI.  This capability is included to preserve compatibility with [[OSLCCore2]].
+				OSLC Servers MAY support a <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities">Query Capability</a> as defined in [[OSLCCore2]] to enable clients to perform selection and projection operations in order to retrieve a selected subset of resources and property values from an LDPC. This capability is included to preserve compatibility with [[OSLCCore2]].
 			</h2></section>	
 		</section>
 		<section id="resourcePaging">
