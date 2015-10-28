@@ -34,7 +34,8 @@ public final class ConvertToTurtle
                 continue;
             }
 
-            String newName = arg.replaceAll("\\.(xml)|(rdf)$","") + ".ttl";
+            String newName = arg.replaceAll("\\.(xml|rdf)$","") + ".ttl";
+            System.out.println("Converting "+arg+" to "+newName);
             Model model = ModelFactory.createDefaultModel().read(arg);
             try (OutputStream os = new FileOutputStream(newName))
             {
