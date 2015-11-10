@@ -377,7 +377,7 @@ Transfer-Encoding: chunked
 <h2>Discovering Dialogs Using the Service resource</h2>
 
 <p>Servers may also advertise their support for dialogs using the
-    <code>oslc:selectionDialog</code> and <code>oslc:selectionDialog</code> properties of the Service discovery resource. Each dialog type, creation
+    <code>oslc:creationDialog</code> and <code>oslc:selectionDialog</code> properties of the Service discovery resource. Each dialog type, creation
     or selection, has its own property:.</p>
 
 <table>
@@ -446,29 +446,13 @@ Content-Type: application/rdf+xml
 &lt;/rdf:RDF&gt;
 </pre>
 
-<p>The client then requests the dialog to display using the discovered URI in the <code>oslc:dialog</code> property.</p>
+<p>The client then requests the dialog to display using the discovered URI in the <code>oslc:dialog</code> property in order to display the desired form.</p>
 
 <pre class="example">
-GET /dialogs/selectBug HTTP/1.1
+GET /dialogs/selectBug/form HTTP/1.1
 Host: example.com
 </pre>
 
-<pre class="example">
-HTTP/1.1 200 OK
-Content-Type: text/turtle
-Transfer-Encoding: chunked
-
-@prefix oslc:  &lt;http://open-services.net/ns/core#&gt; .
-@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
-
-&lt;&gt;      a                  oslc:Dialog ;
-        oslc:dialog        &lt;http://example.com/dialogs/selectBug/form&gt; ;
-        oslc:hintHeight    &quot;600px&quot; ;
-        oslc:hintWidth     &quot;400px&quot; ;
-        oslc:label         &quot;Select Bug&quot; ;
-        oslc:resourceType  &lt;http://open-services.net/ns/cm#Bug&gt; ;
-        dcterms:title      &quot;Select Bug from Product Z&quot; .
-</pre>
 </section>
 </section>
 
@@ -534,8 +518,8 @@ Transfer-Encoding: chunked
 </table>
 
 <p>JSON follows the prefix in the message string. For dialog responses, the
-    JSON is described by <a href="#results_json"></a>. It is a JSON object an
-    with <code>oslc:results</code> array of results. Each result is a JSON
+    JSON is described by <a href="#results_json"></a>. It is a JSON object
+    with an <code>oslc:results</code> array of results. Each result is a JSON
     object with an <code>rdf:resource</code> property whose value is the
     resource URI.  The result may also have an <code>oslc:label</code> that can be useful for client display without having to access the Compact resource.
 
@@ -673,7 +657,7 @@ Transfer-Encoding: chunked
 
 <p>The content of the request depends on the type of dialog and the server.
     Servers may describe constraints on POST content using resource shapes
-    [[OSLCCore2]]. The dialog descriptor uses property
+    [[OSLCCoreVocab]]. The dialog descriptor uses property
     <code>oslc:resourceShape</code> for the shape.</p>
 
 <p>The server's response contains a <code>Location</code> header with the
@@ -744,7 +728,7 @@ Link: &lt;http://example.com/dialogs/createBug&gt;; rel="http://open-services.ne
 
             Clients MAY request that the dialog descriptors for an LDP
             container are returned inline using the <code>Prefer</code> request
-            header [[!RFC7240]] and
+            header [[!RFC7240]] with:
 
                 <ul>
                     <li>Preference <code>return</code>, value
@@ -786,7 +770,7 @@ Prefer: return=representation; include="http://open-services.net/ns/core#PreferD
         <section id="serviceProperties">
             <h2></h2>
 
-            Servers MAY also provide delegated dialog discovery using the Service resource and the <code>oslc:creationDialog</code> and <code>oslc:selectionDialog</code> properties.
+            Servers MAY also provide delegated dialog discovery using the ServiceProvider and Service resource and the <code>oslc:creationDialog</code> and <code>oslc:selectionDialog</code> properties.
         </section>
     </section>
 
@@ -983,13 +967,6 @@ Allow: GET,POST,HEAD,OPTIONS
             data-include-format='html'></div>
 </section>
 
-<div title='RDF Vocabulary for Dialogs'
-        data-include='vocab/dialogs-vocab.ttl'
-        data-oninclude='vocabToSpec'
-        data-include-sync='true'
-        data-include-replace='true'
-        data-include-format='html'></div>
-</section>
 
 <section class="appendix" id="results_json">
     <h2>Dialog Results JSON</h2>

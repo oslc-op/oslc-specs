@@ -112,9 +112,8 @@ dd {
 </head>
 <body>
 
-<section id="abstract">A technique to get a minimal HTML representation of a
-    resource identified by a URL. Applications often use this capability to render links with more appropriate icons and labels, or
-    display a preview when a user mouses over a link.</section>
+<section id="abstract">Resource Preview defines a technique to get a minimal HTML representation of a
+    resource identified by a URL. Applications often use this capability to render links with more appropriate icons and labels, or display a preview when a user mouses over a link.</section>
 
 <section id="toc"></section>
 <hr>
@@ -208,7 +207,7 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
     resource describing the preview. The Compact resource can contain a link
     label, icon, and small and/or large previews of the resource. Compact resources
     always have a JSON representation [[RFC4627]], but they can also have other
-    representations such as <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview#XML_Representation_Format">XML</a>, turtle [[turtle]] or JSON-LD [[JSON-LD]]. Here is a simple example of a Compact resource:</p>
+    representations such as <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview#XML_Representation_Format">XML</a>, T urtle [[turtle]] or JSON-LD [[JSON-LD]]. Here is a simple example of a Compact resource:</p>
 
 <pre class="example" id="ex_compact" title="A Compact Resource">
 {
@@ -405,7 +404,7 @@ Vary: Accept,Accept-Language,Prefer
 }
 </pre>
 
-<p>Services may including a JSON-LD context in an <code>application/json</code>
+<p>Services may include a JSON-LD context in an <code>application/json</code>
     response.  Clients who prefer RDF should request <code>text/turtle</code>
     or <code>application/ld+json</code> using the HTTP <code>Accept</code>
     request header, rather than <code>application/json</code>.</p>
@@ -584,7 +583,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
 <section id="usingTitle" class="informative">
 <h2>Using the Compact representation title, short title, and icon</h2>
 
-  <p>A Compact representation of the resource may contain a more accurate and slightly richer label for a target resource (<code>dcterms:title</code> element), a short-form title for the resource (<code>oslc:shortTitle</code>), and a corresponding image (<code>oslc:icon</code>), possibly chosen from a set with different sizes (<code>oslc:iconSrcSet</code>), all of which may be based on the current state of the target resource. If this becomes known to the Client, the client should assume that this information is better and use it in forming the hyperlink that is displayed to the user. When available, <code>oslc:shortTitle</code> MAY be used instead of <code>dcterms:title</code> in presentations where visual space is severely limited.</p>
+  <p>A Compact representation of the resource may contain a more accurate and slightly richer label for a target resource (<code>dcterms:title</code> element), a short-form title for the resource (<code>oslc:shortTitle</code>), and a corresponding image (<code>oslc:icon</code>), possibly chosen from a set with different sizes (<code>oslc:iconSrcSet</code>), all of which may be based on the current state of the target resource. If this becomes known to the Client, the client should assume that this information is better and use it in forming the hyperlink that is displayed to the user. When available, <code>oslc:shortTitle</code> may be used instead of <code>dcterms:title</code> in presentations where visual space is severely limited.</p>
 
 <p>Clients should not fetch Compact representations when
     there is perfectly usable default display information available. When
@@ -676,6 +675,10 @@ if (window.postMessage &amp;&amp; window.parent)  {
         </section>
     </section>
     <section id="accept_headers"><h2>Accept Header</h2>
+      <section id="return_accept_header"><h2 class="normalFont">
+        In response to OPTIONS, HEAD or GET on resource, servers MAY include an <code>Accept: application/x-oslc-compact+xml</code> header to indicate the resource provides a compact representation.
+      </h2></section>
+
       <section id="support_accept_header"><h2 class="normalFont">
         Servers MAY support the <code>application/x-oslc-compact+xml</code> MIME type extension to allow clients to use content negotiation to access the Compact resource. However, this usage should be considered deprecated and is only provided for OSLC 2.0 compatibility.
       </h2></section>
