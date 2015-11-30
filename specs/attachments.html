@@ -11,7 +11,7 @@
 	specStatus : "WD", // "CS",
 
 
-      edDraftURI:           "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/attachments.html",
+      edDraftURI:           "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/attachments.html",
 
       // the specification's short name, as in http://www.w3.org/TR/short-name/
       shortName:            "OSLC Attachments 3.0",
@@ -73,13 +73,13 @@
       localBiblio:  {
 		    "OSLCCore3": {
 			   title:    "OSLC Core Overview 3.0",
-    			href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/oslc-core-overview.html",
+    			href:     "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-core-overview.html",
     			authors:  [	"Steve Speicher"],
 	   		publisher:  "OASIS",
 		    },
         "OSLCCoreVocab" : {
             title : "OSLC Core Vocabulary",
-             href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/core-vocab.html",
+             href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/core-vocab.html",
              authors : [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
              status:   "Working Draft",
              publisher : "OASIS",
@@ -130,7 +130,7 @@
 </head>
 <body>
 <section id="abstract">
-<p>Binary or text documents are considered attachments to other resources.
+<p>Binary or text documents may be considered attachments to other resources.
 	This specification describes a minimal way to manage attachments related to web resources using
     LDP-Containers and Non-RDF Source [[LDP]].</p>
 </section>
@@ -285,7 +285,7 @@ to some lifecycle resource in context to some scenario.  Some specific scenarios
     this resource should be listed in the HTTP response <code>Link</code>
     header [[RFC5988]] with <code>rel="describedby"</code> [[LDP]].</p>
 
-<p>A server can set a <code>Slug</code> header in the
+<p>A client can set a <code>Slug</code> header in the
     attachment-creating POST to specify a hint for a name for the resource as
     part of that single request. This can be important as some systems
     require a name at the time the attachment is created. Different systems may
@@ -312,7 +312,7 @@ The following examples illustrate how a client can work with attachments.
 <section id="ex_get_attachment">
 <h2>Find the Attachments for a Resource</h2>
 
-<p>Clients get the attachments for a resource by</p>
+<p>Clients get the attachments for a resource by:</p>
 
 <ol>
 <li>Finding the attachment container for a resource using an HTTP OPTIONS method and Link header</li>
@@ -469,7 +469,7 @@ Content-Length: 19377
 <p>The server typically responds with a 204 No Content status if the request
     succeeds. It also updates an associated attachment metadata in the
     <code>oslc:AttachmentDescriptor</code> in the <code>describedby</code>
-    link.</p>
+    link. For example, the client could have included a <code>Slug</code> header on the update request in order to rename the attachment.</p>
 
 <pre class="example">
 HTTP/1.1 204 No Content
@@ -781,7 +781,7 @@ Content-Length: 0
 <p>This document applies the following constraints to the [[OSLCCoreVocab]] vocabulary terms.</p>
 
 <p>The <code>oslc:AttachmentDescriptor</code> resource type is used to describe
-    the binary resource (or non-LDP-Resource) associated with a particular
+    the binary resource (or non-RDF Resource) associated with a particular
     resource. When a client POSTs an attachment content to a server, the server
     stores the attachment content and assigns a URI just like any other type of
     resource creation but it may also create an
@@ -797,7 +797,7 @@ Content-Length: 0
     each <code>oslc:attachment</code> statement is the binary attachment.
     Issuing an HTTP HEAD or GET operation on that binary attachment resource
     URL should produce an HTTP response with a header value of <code>Link:
-        rel='meta'</code> to indicate the URL of the
+        rel='describedBy'</code> to indicate the URL of the
     <code>oslc:AttachmentDescriptor</code> resource.  The properties for the
     <code>oslc:AttachmentDescriptor</code> resource are indicated in the table
     below.</p>

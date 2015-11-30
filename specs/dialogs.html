@@ -69,21 +69,21 @@
       localBiblio:  {
           "OSLCCore3" : {
                   title : "OSLC Core 3.0",
-                  href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/oslc-core.html",
+                  href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-core.html",
                   authors : [ "Jim Amsden", "S. Padgett", "S. Speicher"],
                   status:   "Working Draft",
                   publisher : "OASIS",
           },
           "OSLCCoreVocab" : {
                   title : "OSLC Core Vocabulary",
-                  href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/core-vocab.html",
+                  href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/core-vocab.html",
                   authors : [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
                   status:   "Working Draft",
                   publisher : "OASIS",
           },
           "OSLCPreview30": {
               title:    "OSLC Resource Preview 3.0",
-              href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/resource-preview.html",
+              href:     "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-preview.html",
               authors:  [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
               status:   "Working Draft",
               publisher:  "https://www.oasis-open.org/"
@@ -583,7 +583,7 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
         dialogContainer.removeChild(dialogContainer.firstChild);
     }, false);
 </pre>
-<section>
+</section>
 
 <section class="informative" id="server_responsibilities">
   <h3>The Server's Responsibilities</h3>
@@ -676,38 +676,40 @@ Location: http://example.com/dialogs/createBug/form/2zFy45
 
 </section>
 
-</section class="informative" id="server_responsibilities">
+<section class="informative" id="clickjacking">
   <h3>Security Issue: Clickjacking (UI redress attack)</h3>
 
-  <p>This vulnerability can occur when a malicious (or compromised) web application embeds an OSLC delegated dialog (or UI preview) in their own web page, obscures it from the user's view by covering it with other layers or components, then tricks the user into clicking on a button in the unseen iframe by encouraging them to click on components that they can see. The user is intending to click on the components that they can see, but the malicious web page is "hijacking" those clicks because they really activate components in the embedded iframe.</p>
+  <p><a href="https://en.wikipedia.org/wiki/Clickjacking">Clickjacking</a> is a vulnerability that can occur when a malicious (or compromised) web application embeds an OSLC delegated dialog (or UI preview) in their own web page, obscures it from the user's view by covering it with other layers or components, then tricks the user into clicking on a button in the unseen iframe by encouraging them to click on components that they can see. The user is intending to click on the components that they can see, but the malicious web page is "hijacking" those clicks because they really activate components in the embedded iframe.</p>
  
-  <p>This vulnerability requires that the user loads a malicious webpage in their browser. This can happen in a number of ways, including:
-  <ol>
+  <p>This vulnerability requires that the user loads a malicious web page in their browser. This can happen in a number of ways, including:
+  <ul>
     <li>The user is tricked into loading the page directly, believing it to be trustworthy.</li>
     <li>A trusted page is compromised and "infected" to perform this attack.</li>
     <li>An OSLC server administrator is tricked into configuring their server to trust a malicious server. Their server then loads the malicious page as a delegated dialog or rich UI preview, which then embeds the page under attack in a further iframe.</li>
-  </ol>
+  </ul>
 
-  <p>There are always two pages involved in this attack; the "UI consumer" page (which has the iframe embedded within it), and the "UI provider" page (which gets loaded within the iframe). I'll call the UI provider's server the "server under attack".
+  <p>There are always two pages involved in this attack; the "UI consumer" page (which has the iframe embedded within it), and the "UI provider" page (which gets loaded within the iframe). Consider the UI provider's server the "server under attack".
  
-To protect against this attack:
+  <p>To protect against this attack:
+  <ol>
+    <li>When requesting the URL for the delegates dialog (from the ServiceProvider) or the UI preview (from the compact resource), the server under attack must require requests for these resources to be authenticated. This authentication must be for the end-user, not for the client app itself.</li>
+    <li>When returning a URL for the dialog or preview, the server under attack must return a URL that is specific to the authenticated user, and that cannot be guessed by merely knowing the user's username or ID.</li>
+    <li>When the server under attack receives a request for the dialog or preview URL itself (the request that is generated by the iframe to load the page to display within it), the server under attack must check that the URL that was requested is one that was generated for the same user that is requesting this page (i.e. the user that is identified by a session ID in the cookies sent with the request). This makes sure that the client can't get a URL for the dialog from one user that it is authenticated for, an use that to perform a clickjacking attack on another user that has not authorized that client.</li>
+    <li>If the users (for the URL and the cookie) do not match, then the server can either return with an HTTP error, or include an <code><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options">X-Frame-Options</a></code> header with value SAMEORIGIN or DENY.</li>
+    <li>All pages that are not dialogs or previews - that is, all pages that are not intended to be embedded - should include an <code>X-Frame-Options</code> response header with value SAMEORIGIN or DENY, to prevent them from being used for clickjacking attacks.</li>
+  </ol></p>
 
-    When requesting the URL for the delegates dialog (from the ServiceProvider) or the UI preview (from the compact resource), the server under attack must require requests for these resources to be authenticated. This authentication must be for the end-user, not for the client app itself.
-    When returning a URL for the dialog or preview, the server under attack must return a URL that is specific to the authenticated user, and that cannot be guessed by merely knowing the user's username or ID.
-    When the server under attack receives a request for the dialog or preview URL itself (the request that is generated by the iframe to load the page to display within it), the server under attack must check that the URL that was requested is one that was generated for the same user that is requesting this page (i.e. the user that is identified by a session ID in the cookies sent with the request). This makes sure that the client can't get a URL for the dialog from one user that it is authenticated for, an use that to perform a clickjacking attack on another user that has not authorised that client.
-    If the users (for the URL and the cookie) do not match, then the server can either return with an HTTP error, or include an X-Frame-Options header with value SAMEORIGIN or DENY.
-    All pages that are not dialogs or previews - that is, all pages that are not intended to be embedded - should include an X-Frame-Options response header with value SAMEORIGIN or DENY, to prevent them from being used for clickjacking attacks.
-
-This is only required on dialogs or previews that contain controls that can be invoked with one or more clicks, and where those controls have side effects on the server. That is, if there are no controls on a preview, then there is no target for the malicious page to tick the user to click on.
+  <p>This is only required on dialogs or resource previews that contain controls that can be invoked with one or more clicks, and where those controls have side effects on the server. That is, if there are no controls on a preview, then there is no target for the malicious page to tick the user to click on.</p>
  
-By following these steps the server under attack knows that only clients that are able to authenticate against the server (e.g. for OAuth authentication they must have a valid client ID and - if required by the interaction pattern they're using - they must know the client secret), and that have also been authorized by the user to whom the the dialog is displayed, can display that dialog.
+  <p>By following these steps the server under attack knows that only clients that are able to authenticate against the server (e.g. for OAuth authentication they must have a valid client ID and - if required by the interaction pattern they're using - they must know the client secret), and that have also been authorized by the user to whom the the dialog is displayed, can display that dialog.</p>
  
-There are still some potential attack vectors:
+  <p>There are still some potential attack vectors:
+  <ul>
+    <li>The server administrator could authorize a malicious client app.</li>
+    <li>The user could authorize a malicious app to authenticate with the server under attack on their behalf.</li>
+  </ul></p>
 
-    The server administrator could authorize a malicious client app.
-    The user could authorize a malicious app to authenticate with the server under attack on their behalf.
-
-But the exposure has been reduced as the attack cannot occur simply by loading a malicious web page in the user's browser.
+  <p>But the exposure has been reduced as the attack cannot occur simply by loading a malicious web page in the user's browser.
   </p>
 </section>
 

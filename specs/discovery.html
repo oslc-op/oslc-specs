@@ -87,26 +87,26 @@
           },
             "OSLCCore3" : {
                 title : "OSLC Core 3.0",
-                href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/oslc-core.html",
-                authors : [ "Steve Speicher" ],
+                href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-core.html",
+                authors : [ "Steve Speicher", "Jim Amsden" ],
                 publisher : "OASIS",
             },
           "OSLCCoreVocab" : {
                   title : "OSLC Core Vocabulary",
-                  href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/core-vocab.html",
+                  href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/core-vocab.html",
                   authors : [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
                   status:   "Working Draft",
                   publisher : "OASIS",
           },
             "ResourcePreview" : {
                 title : "OSLC Resource Preview 3.0",
-                href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/resource-preview.html",
-                authors : [ "Samuel Padgett", "Steve Speicher" ],
+                href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-preview.html",
+                authors : [ "Samuel Padgett", "Steve Speicher", "Jim Amsden" ],
                 publisher : "OASIS",
             },
             "Dialogs" : {
                 title : "OSLC Delegated Dialogs 3.0",
-                href : "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/dialogs.html",
+                href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/dialogs.html",
                 authors : [ "Samuel Padgett", "Steve Speicher" ],
                 publisher : "OASIS",
             },
@@ -157,9 +157,15 @@ dd {
 
 	<section id='intro' class='informative'>
 		<h2>Introduction</h2>
-		<p>A common problem with building interoperable solutions is having a mechanism for a client to introspect a server API or end-point
+		<p>A common problem with building interoperable solutions is having a mechanism for a client to explore a server API or end-point
 		to learn if the target application supports a set of capabilities.  Client applications would then provide features based on what is discovered.  For example, a person using a quality management tool
-		wants to be able to record a defect in a change management tool.  The integration from the quality management tool will want to be able to do a number of things on behalf of the user and provide an optional integrated experience to streamline the users workflow.  To do this, the quality management tool will need a means of discovering information about the change management tool including: authenticating, knowing that the target tool is capable of receiving creation requests for defects, whether it can be handled via a user interface, what fields are required, with what types of data, and also if the defect record can be pre-filled with some data from the test currently being executed.</p>
+		wants to be able to record a defect in a change management tool.  The integration from the quality management tool will want to be able to do a number of things on behalf of the user and provide an integrated experience to streamline the users workflow.  To do this, the quality management tool will need to discover information about the change management tool including:
+    <ul>
+      <li>How to authenticate</li>
+      <li>If the target tool is capable of receiving creation requests for defects</li>
+      <li>Whether defect creation can be handled via a user interface</li>
+      <li>What fields are required, with what types of data</li>
+      <li>If the defect record can be pre-filled with some data from the test currently being executed</li></ul></p>
 
 		<p>OSLC Discovery 3.0 defines a capability providing client applications a standard way to introspect servers to determine what resource types the server supports, how to preview, select or create instances of those resources, and any constraints on resource creation or update. Discovery capabilities allow clients to determine what capabilities are provided by a server so they can adapt to, and integrate with different servers in support of end user integration scenarios.</p>
 	</section>
@@ -171,8 +177,7 @@ dd {
 			Transfer Protocol [[HTTP11]].</p>
 		<dl>
 			<dt class='loc-heading'><dfn>Discovery</dfn></dt>
-			<dd>The act of an OSLC Client to be able to determine if an OSLC Server supports a given capability.  It also applies
-			to applications that do not operate as a client or server, for example running within a web browser.</dd>
+			<dd>The act of an OSLC Client to be able to determine if an OSLC Server supports a given capability.</dd>
 		</dl>
 	</section>
 
@@ -181,7 +186,7 @@ dd {
 
 	<section class='informative'>
 		<h2>Motivation</h2>
-		<p>Management and use of shared information in complex domains such as IT application lifecycle management and systems and software engineering often involve the integration of many data sources supported by tools developed by different vendors on different technical architectures, and introduced at different times. Integrating these tools in order to support a wide range of evolving end user scenarios requires flexible and loosely coupled interactions between consumers and providers of this shared information. An important way of achieving this flexibility and loose coupling is to allow clients to incrementally discover the capabilities of any given server, and then adapt to what is discovered in order to maximize end user capabilities. Although a client may not know ahead of time what capabilities a given server might provide, they can know a standard means of discovering those capabilities, and can be developed in a way dynamically adapt to the discovered capabilities.</p>
+		<p>Management and use of shared information in complex domains such as IT application lifecycle management and systems and software engineering often involve the integration of many data sources supported by tools developed by different vendors on different technical architectures, and introduced at different times. Integrating these tools in order to support a wide range of evolving end user scenarios requires flexible and loosely coupled interactions between consumers and providers of this shared information. An important way of achieving this flexibility and loose coupling is to allow clients to incrementally discover the capabilities of any given server, and then adapt to what is discovered in order to maximize end user capabilities. Although a client may not know ahead of time what capabilities a given server might provide, they can know a standard means of discovering those capabilities, and can be developed to dynamically adapt to the discovered capabilities.</p>
 		<p>Key usage scenarios that motivate a number of requirements for discovery include determining if the target tool supports:</p>
 		<ul>
 			<li>A certain authentication model (OAuth2, OpenID Connect, HTTPS Basic)</li>
@@ -227,14 +232,14 @@ dd {
 
 		<p><em>Dynamic Incremental</em> discovery is a second approach that utilizes lazy or deferred discovery, getting just the information that is needed for any client capability when it is needed, and not getting information about server capabilities that might not ever be used. Clients typically utilize HTTP <code>OPTIONS</code> or <code>HEAD</code> methods on LDPCs and get discovery information from Link headers included in the HTTP response. This approach is more applicable for situations where the services provided by a server are changing rapidly as the result of resource creation or update, and clients will need to do incremental discovery before executing the next operations. This approach is also useful for clients that only need to do very specific things and are not necessarily involved in a long-running conversation with a server. Discovery in this case can be a simple HTTP <code>OPTIONS</code> request on the required LDPC and the client can immediately complete its operation without needing to deal with potentially large discovery documents.</p>
 
-    <p>However, both of these approaches are based on a uniform discovery capability. ServiceProviderCatalog, ServiceProvider and Service resources from [[OSLCCore2]] are specific kinds of LDP Containers. A ServiceProviderCatalog members include ServiceProviderCatalogs and ServiceProvider LDPCs. ServiceProvider members include Service LDPCs. Each of these LDPCs have additional properties as defined by the OSLC vocabulary and shapes. This allows clients to use either approach to discover server provided OSLC capabilities, and maintains compatibility with [[OSLCCore2]] while providing new, simple and flexible approaches to service discovery.
+    <p>Both of these approaches are based on a uniform discovery capability. ServiceProviderCatalog, ServiceProvider and Service resources from [[OSLCCore2]] are specific kinds of LDP Containers. A ServiceProviderCatalog members include ServiceProviderCatalogs and ServiceProvider LDPCs. ServiceProvider members include Service LDPCs. Each of these LDPCs have additional properties as defined by the OSLC vocabulary and shapes. This allows clients to use either approach to discover server provided OSLC capabilities, and maintains compatibility with [[OSLCCore2]] while providing new, simple and flexible approaches to service discovery.
 
 		<section id="discoveryMethods">
 			<h2>General Discovery Methods</h2>
 			<p>The following clauses apply to all discovery capabilities including resource creation, resource preview, delegated dialogs for resource creation and selection, and resource constraints discovery. OSLC discovery capabilities may also apply to OSLC resources themselves, including LDPCs, and the discovery LDPC resources including ServiceProviderCatalog, ServiceProvider and Service resources. This allows servers to dynamically configure their capabilities, or provide users with a means of selecting the capabilities they need from those provided by a server.</p>
 
 			<section id="discOptions"><h2 class="normalText">
-				Clients SHOULD use <code>HTTP OPTIONS</code> to fetch various headers and other configuration information that MAY be exposed in the response content body.
+				Clients SHOULD use <code>HTTP OPTIONS</code> to fetch various headers and other configuration information that may be exposed in the response content body.
 			</h2></section>
 
 			<section id="discHeaders"><h2 class="normalText">
@@ -250,7 +255,7 @@ dd {
 		<section id="creation">
 			<h2>Resource Creation Discovery</h2>
 
-			<p>Resource creation is done by doing an HTTP <code>POST</code> to a URI that supports resource creation, providing the resource content in the entity request body. Clients can discover resources that support resource creation either through the <code>http://open-services.net/ns/core#creationFactory</code> property of a Service in a ServiceProvider resource, or by using an <code>OPTIONS</code> request on an LDPC to determine if it accepts the <code>POST</code> method.</p>
+			<p>Resource creation is done by sending an HTTP <code>POST</code> to a URI that supports resource creation, providing the resource content in the entity request body. Clients can discover resources that support resource creation either through the <code>http://open-services.net/ns/core#creationFactory</code> property of a Service in a ServiceProvider resource, or by using an <code>OPTIONS</code> request on an LDPC to determine if it accepts the <code>POST</code> method.</p>
 
 			<section id="serviceProvider"><h2 class="normalText">
 				Servers MAY provide one or more creation factories to enable creation of new resources. Creation factories are LDPCs whose URI MAY be given in the <code>oslc:creationFactory</code> property of a Service resource.
@@ -273,8 +278,7 @@ dd {
 			</section>
 
 			<section id="createTypesPred"><h2 class="normalText">
-				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:resourceType &lt;type-URI&gt;</code>.</h2>
-				Clients SHOULD use the predicate <code>oslc:resourceType</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.
+				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:resourceType &lt;type-URI&gt;</code>. Clients SHOULD use the predicate <code>oslc:resourceType</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.</h2>
 			</section>
 
 			<p>The following example is an OPTIONS request on the /bugs/ resource.</p>
@@ -296,7 +300,7 @@ dd {
 		</section>
 
 		<section id="creationShapes"><h2>Resource Creation and Update Constraints Discovery</h2>
-		    <p>In addition to the ways one can discover if a given OSLC Server supports creation of resources and for which types, it is helpful to understand if there are server-enforced constraints on the resource representation. Clients can discovery these constraints either through the <code>http://open-services.net/ns/core#resourceShape</code> property of a Creation Factory resource, or by using <code>Link: &lt;<em>constraint-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code>
+		    <p>In addition to the ways one can discover if a given OSLC Server supports creation of resources and for which types, it is helpful to understand if there are server-enforced constraints on the resource representation. Clients can discover these constraints either through the <code>http://open-services.net/ns/core#resourceShape</code> property of a Creation Factory resource, or by using <code>Link: &lt;<em>constraint-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code>
 				header on an HTTP response to a given Request-URI.</p>
 
 			<section id="creationFactoryResourceShape"><h2 class="normalText">
@@ -315,21 +319,20 @@ dd {
 			</section>
 
 			<section id="createWithShapesPred"><h2 class="normalText">
-				Servers MAY include a RDF triple in resource response body of the form:	<code>&lt;container-URI&gt; ldp:constrainedBy &lt;shape-URI&gt;</code>.</h2>
-				Clients SHOULD use the predicate <code>ldp:constrainedBy</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that are constraints by the same resource.
+				Servers MAY include a RDF triple in resource response body of the form:	<code>&lt;container-URI&gt; ldp:constrainedBy &lt;shape-URI&gt;</code>. Clients SHOULD use the predicate <code>ldp:constrainedBy</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that are constraints by the same resource.</h2>
 			</section>
 		</section>
 
 		<section id="uiPreview"><h2>Resource User Interface Preview Discovery</h2>
 			<p>See [[ResourcePreview]] for resource preview discovery using the
-			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/resource-preview.html#linkHeader">the <code>Link</code> header</a> or
-			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/resource-preview.html#prefer">the <code>Prefer</code></a> header.</p>
+			<a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-preview.html#linkHeader">the <code>Link</code> header</a> or
+			<a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-preview.html#prefer">the <code>Prefer</code></a> header.</p>
 		</section>
 
 		<section id="dialogs"><h2>Resource User Interface Delegated Dialogs Discovery</h2>
 			<p>See [[Dialogs]] for resource selection and creation delegated UI discovery using the <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs"><code>http://open-services.net/ns/core#selectionDialog</code></a> or <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs"><code>http://open-services.net/ns/core#creationDialog</code></a> properties of a Service resource, or the 
-			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/dialogs.html#discovery_link">the <code>Link</code> header</a> or
-			<a href="http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/dialogs.html#discovery_prefer">the <code>Prefer</code> header</a>.
+			<a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/dialogs.html#discovery_link">the <code>Link</code> header</a> or
+			<a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/dialogs.html#discovery_prefer">the <code>Prefer</code> header</a>.
 			</p>
 		</section>
 
