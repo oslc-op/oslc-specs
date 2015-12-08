@@ -110,12 +110,6 @@
                 authors : [ "Samuel Padgett", "Steve Speicher" ],
                 publisher : "OASIS",
             },
-            "OSLCShapes2" : {
-                title : "OSLC Resource Shapes 2.0",
-                href : "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#oslc_ResourceShape_Resource",
-                authors : [ "Dave Johnson" ],
-                publisher : "open-services.net",
-            },
             "OpenIDConnect" : {
                 title : "OpenID Connect",
                 href : "http://openid.net/connect/",
@@ -148,7 +142,7 @@ dd {
 </head>
 <body>
 
-	<section id='abstract'>This document outlines a common approach for HTTP/LDP-based server to be able to	publish their RESTful API capabilities and how clients discover and use them.</section>
+	<section id='abstract'>This document outlines a common approach for HTTP/LDP-based servers to be able to	publish their RESTful API capabilities and how clients discover and use them.</section>
 
 	<section id='sotd'><em>Stable Working Draft: received and incorporated TC feedback.  (Almost) Ready for Public Review.</em></section>
 
@@ -232,14 +226,22 @@ dd {
 
 		<p><em>Dynamic Incremental</em> discovery is a second approach that utilizes lazy or deferred discovery, getting just the information that is needed for any client capability when it is needed, and not getting information about server capabilities that might not ever be used. Clients typically utilize HTTP <code>OPTIONS</code> or <code>HEAD</code> methods on LDPCs and get discovery information from Link headers included in the HTTP response. This approach is more applicable for situations where the services provided by a server are changing rapidly as the result of resource creation or update, and clients will need to do incremental discovery before executing the next operations. This approach is also useful for clients that only need to do very specific things and are not necessarily involved in a long-running conversation with a server. Discovery in this case can be a simple HTTP <code>OPTIONS</code> request on the required LDPC and the client can immediately complete its operation without needing to deal with potentially large discovery documents.</p>
 
-    <p>Both of these approaches are based on a uniform discovery capability. ServiceProviderCatalog, ServiceProvider and Service resources from [[OSLCCore2]] are specific kinds of LDP Containers. A ServiceProviderCatalog members include ServiceProviderCatalogs and ServiceProvider LDPCs. ServiceProvider members include Service LDPCs. Each of these LDPCs have additional properties as defined by the OSLC vocabulary and shapes. This allows clients to use either approach to discover server provided OSLC capabilities, and maintains compatibility with [[OSLCCore2]] while providing new, simple and flexible approaches to service discovery.
+    <p>Both of these approaches are based on a uniform discovery capability. ServiceProviderCatalog, ServiceProvider and Service resources from [[OSLCCore2]] are specific kinds of LDP Containers. The members of a ServiceProviderCatalog resource include ServiceProviderCatalogs and ServiceProvider LDPCs. ServiceProvider resource members include Service LDPCs. Each of these LDPCs have additional properties as defined by the OSLC vocabulary and shapes. This allows clients to use either approach to discover server provided OSLC capabilities, and maintains compatibility with [[OSLCCore2]] while providing new, simple and flexible approaches to service discovery.</p>
+
+    <p>Discovery will always have to start with at least one discovery resource URI to bootstrap discovery on that server. Servers must provide some way for clients learn about, find, or discover such LDPC URIs. For example, servers could provide such information:
+    <ul>
+      <li>In their user documentation or UI</li>
+      <li>Using HTTP <code>OPTIONS *</code> to return a ServiceProviderCatalog or link headers to root LDPCs describing the discovery capabilities offered</li>
+      <li>Using <a href="https://tools.ietf.org/html/rfc5785">/.well-known/ locations</a> to provide discovery URIs</li>
+    </ul>
+    The URI could be for a ServiceProviderCatalog or context LDPC resource on which either static up-front or dynamic incremental discovery can be performed. Different server implementation architectures and extensibility mechanisms may require different approaches for discovering OSLC discovery resource URIs.</p>
 
 		<section id="discoveryMethods">
 			<h2>General Discovery Methods</h2>
 			<p>The following clauses apply to all discovery capabilities including resource creation, resource preview, delegated dialogs for resource creation and selection, and resource constraints discovery. OSLC discovery capabilities may also apply to OSLC resources themselves, including LDPCs, and the discovery LDPC resources including ServiceProviderCatalog, ServiceProvider and Service resources. This allows servers to dynamically configure their capabilities, or provide users with a means of selecting the capabilities they need from those provided by a server.</p>
 
 			<section id="discOptions"><h2 class="normalText">
-				Clients SHOULD use <code>HTTP OPTIONS</code> to fetch various headers and other configuration information that may be exposed in the response content body.
+				Clients SHOULD use HTTP <code>OPTIONS</code> to fetch various headers and other configuration information that may be exposed in the response content body from other HTTP methods.
 			</h2></section>
 
 			<section id="discHeaders"><h2 class="normalText">
@@ -247,7 +249,7 @@ dd {
 			</h2></section>
 
 			<section id="discContent"><h2 class="normalText">
-				Servers SHOULD only use LDPR representations for additional discovery details that are not already available within HTTP response headers. It is also useful for scenarios where it would be valuable to have the discovery data readily available for purposes such as query.
+				Servers SHOULD only use LDPR representations for additional custom discovery details that are not already available within HTTP response headers. LDPR representations of discovery information may also be useful for scenarios where it would be valuable to have the discovery data readily available for purposes such as query.
 			</h2></section>
 
 		</section>
@@ -274,14 +276,14 @@ dd {
 
 			<section id="createsTypes"><h2 class="normalText">
 				Servers SHOULD include the target URI of a <code>Link: &lt;type-URI&gt;; rel="http://open-services.net/ns/core#resourceType"</code>
-				header on an HTTP response to a given Request-URI to indicate the type-URI (i.e., <code>rdf:type</code>) for the type of resources that can be created by the LDP Container. Note: since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
+				header on an HTTP response to a given Request-URI to indicate the type-URI (i.e., the values of <code>rdf:type</code> properties) for the type of resources that can be created by the LDP Container. Note: since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
 			</section>
 
 			<section id="createTypesPred"><h2 class="normalText">
-				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:resourceType &lt;type-URI&gt;</code>. Clients SHOULD use the predicate <code>oslc:resourceType</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.</h2>
+				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:resourceType &lt;type-URI&gt;</code>. Clients SHOULD use the predicate <code>oslc:resourceType</code> when converting HTTP Link headers that have <code>http://open-services.net/ns/core#resourceType</code> as the Link-relation ("rel" value) into RDF triples.This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.</h2>
 			</section>
 
-			<p>The following example is an OPTIONS request on the /bugs/ resource.</p>
+			<p>The following example is an OPTIONS request on the /bugs/ resource that demonstrates some of the discovery capabilities.</p>
 			<pre class='example'>
 			OPTIONS /bugs/ HTTP/1.1
 			Host: example.com
@@ -309,7 +311,7 @@ dd {
 
 			<section id="createsWithShapes"><h2 class="normalText">
 				Servers SHOULD include the target URI of a <code>Link: &lt;<em>constraints-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code> header on an HTTP response to a given Request-URI to indicate the <code><em>constraint-URI</em></code> of a resource that defines the constraints about the to-be created resource representation against a LDP Container. The resource defined by <code><em>constraint-URI</em></code> is RECOMMENDED to be a machine-readable representation
-				such as OSLC Resource Shape [[OSLCShapes2]], but MAY be some variant or other constraint document. See [[LDP]]	<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
+				such as OSLC Resource Shape [[OSLCCoreVocab]], but MAY be some variant or other constraint document. See [[LDP]]	<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
 			</h2>
 
 				<pre class='example'>
@@ -341,6 +343,9 @@ dd {
 				Clients SHOULD determine what authentication schemes a server supports by parsing and processing the challenge sent by the target server in response to a request for a protected resource.
 			</h2></section>
 			
+      <section id="mayProvideOAuthConfig"><h2 class="normalText">
+        Clients MAY provide OAuth configuration information in the OAuthConfiguration member of a ServiceProviderCatalog as described in <a href="#resourceConstraints"></a>.
+      </h2></section>
 		</section>
 <!--
 			<div class="issue-open"><div class="issue-title">Issue title (open)</div>Some text about this issue</div>
@@ -349,7 +354,7 @@ dd {
  -->
 	</section>
 
-<section id="resources" class="appendix">
+<section id="resourceConstraints" class="appendix">
 <h2>Resource Constraints</h2>
 
 <p>This document applies the following constraints to the [[OSLCCoreVocab]] vocabulary terms.</p>
