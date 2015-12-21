@@ -249,7 +249,7 @@ dd {
 			</h2></section>
 
 			<section id="discContent"><h2 class="normalText">
-				Servers SHOULD only use LDPR representations for additional custom discovery details that are not already available within HTTP response headers. LDPR representations of discovery information may also be useful for scenarios where it would be valuable to have the discovery data readily available for purposes such as query.
+				Servers SHOULD NOT include discovery information in entity response bodies if the information is already available in HTTP headers. LDPR representations of discovery information may also be useful for scenarios where it would be valuable to have the discovery data readily available for purposes such as query.
 			</h2></section>
 
 		</section>
@@ -275,8 +275,7 @@ dd {
 			</h2></section>
 
 			<section id="createsTypes"><h2 class="normalText">
-				Servers SHOULD include the target URI of a <code>Link: &lt;type-URI&gt;; rel="http://open-services.net/ns/core#resourceType"</code>
-				header on an HTTP response to a given Request-URI to indicate the type-URI (i.e., the values of <code>rdf:type</code> properties) for the type of resources that can be created by the LDP Container. Note: since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
+				In a response to Request-URI on an LDPC, servers SHOULD include a <code>Link</code> header with the relation-type set to rel="http://open-services.net/core#resourceType" and the Target URI set to the <code>rdf:type</code> of resources that can be created in the LDPC. Note: since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
 			</section>
 
 			<section id="createTypesPred"><h2 class="normalText">
@@ -310,8 +309,7 @@ dd {
 			</h2></section>
 
 			<section id="createsWithShapes"><h2 class="normalText">
-				Servers SHOULD include the target URI of a <code>Link: &lt;<em>constraints-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code> header on an HTTP response to a given Request-URI to indicate the <code><em>constraint-URI</em></code> of a resource that defines the constraints about the to-be created resource representation against a LDP Container. The resource defined by <code><em>constraint-URI</em></code> is RECOMMENDED to be a machine-readable representation
-				such as OSLC Resource Shape [[OSLCCoreVocab]], but MAY be some variant or other constraint document. See [[LDP]]	<a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
+				In a response to an HTTP <code>POST</code> or <code>PUT</code> method on a given Request-URI referencing an LDPC, servers SHOULD include a <code>Link</code> header with the relation-type set to rel="http://open-services.net/core#constrainedBy" and the Target URI set to the URI of a resource that defines constraints on the to-be created or updated resource representation in the LDPC. The resource referenced by Target URI is RECOMMENDED to be a machine-readable representation such as OSLC Resource Shape [[OSLCCoreVocab]], but MAY be some variant or other constraint document. See [[LDP]] <a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
 			</h2>
 
 				<pre class='example'>
