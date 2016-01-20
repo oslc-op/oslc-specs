@@ -181,7 +181,7 @@ dd {
 			architectural basis for web applications [<a href="#RW-Linked-Data">RW
 				Linked Data</a>]. The principles for designing Linked Data web
 			applications are standardized by the W3C Linked Data
-			Platform Specification 1.0 [[LDP].
+			Platform Specification 1.0 [[LDP]].
 		</p>
 
 		<p>
@@ -237,11 +237,15 @@ dd {
 			(e.g. GET, POST) and the integrity constraints that must be satisfied
 			by the contents in that context.</p>
 
-		<p>This document begins with a brief discussion of the use cases
+		<p>Resource shapes specify a standard way of describing resources and constraints on resources that may be used in defining among other things, OSLC domain resources. There are other means that OSLC domains may use in addition to or instead of resource shapes such as W3C [[SHACL]] or [[JSONSchema]]. OSLC servers should describe their resources using resource shapes if they wish to integrate with [[OSLCCore2]] clients or servers that are expecting resource shapes. OSLC Domain specifications are expected to specify how the constraints on their domain elements are expressed and supported by servers.</p>
+
+		<p>This specification begins with a brief discussion of the use cases
 			and requirements that the Resource Shape specification addresses. It
 			then describes all aspects of the current specification in detail.
 			Finally, it concludes with some recommendations for extensions based
 			on implementation experience.</p>
+
+
 	</section>
 
 	<section id="terms">
@@ -252,23 +256,19 @@ dd {
 			<dl>
 				<dt>applicability</dt>
 				<dd>
-					Given a set of shapes that are associated with a described resource
-					in a given context, only those shapes that match the type of the
-					described resource are applicable to it. Refer to the description
-					of the property <a href="#describes">oslc:describes</a> for the
-					type matching rules.
+					Shapes associated with a resource apply to that resource if the shape's <code>oslc:describes</code> property matches the type of the assocated resource, or the shape has no <code>oslc:describes</code> property in which case it applies to all resources associated with that shape. For all shapes that "apply to" or describes an associated resource, that resource should satisfy the constraints defined by those shapes. See <a href="#associating-and-applying-shapes">Associating and Applying Shapes</a> for the definition of how shapes are associated with resources, what associated shapes apply to a resource, and what it means if multiple shapes apply to a single resource.
 				</dd>
 
 				<dt>association</dt>
 				<dd>
-					This specification defines two contexts in which a shape may become
+					This specification defines three contexts in which a shape may become
 					associated with a described resource. The described resource itself
 					may link to a shape using the property <a href="#instanceShape">oslc:instanceShape</a>,
-					or the described resource may be the request to or response from a
+				    the described resource may be the entity request to or response from a
 					REST service whose service description links to a shape using the
-					property <a href="#resourceShape">oslc:resourceShape</a>. More than
+					property <a href="#resourceShape">oslc:resourceShape</a>, or the the resource may be the object value of a Property whose <a href="#valueShape">oslc:valueShape</a> links to the constraining shape. More than
 					one shape may become associated with a described resource in a
-					given context. Not all the associated shapes are necessarily
+					given context. The shapes associated with a resource are the set of shapes to be checked for applicability. Not all the associated shapes are necessarily
 					applicable. Refer to the definition of applicability above.
 				</dd>
 
@@ -415,7 +415,6 @@ dd {
 			are referred to as shape resources. It is to be understood that the
 			validity and meaning of a shape resource depends on any other shape
 			resources it is linked to.</p>
-		<p>This specification specifies a standard way of describing resources and constraints on resources that may be used in defining among other things, OSLC domain resources. There are other means that OSLC domains may use in addition to or instead of resource shapes such as W3C [[SHACL]] or [[JSONSchema]]. OSLC servers should describe their resources using resource shapes if they wish to integrate with [[OSLCCore2]] clients or servers that are expecting resource shapes. OSLC Domain specifications are expected to specify how the constraints on their domain elements are expressed and supported by servers.</p>
 		<ol>
 			<li>A shape language must be able to express the most commonly
 				occurring aspects of RDF resources in high-level terms, using
@@ -499,14 +498,13 @@ dd {
 			<p>
 				The box labeled <q>Property</q> represents a defined property. A
 				defined property is resource of rdf:type <a href="#Property">oslc:Property</a>.
-				The arrow labeled <q>property</q> represents the containment
+				The arrow labeled <q>property</q> represents the aggregation
 				relation between a shape and its defined properties. The predicate
 				of this relation is <a href="#property">oslc:property</a>.
 			</p>
 			<p>
 				Each <a href="#Property">oslc:Property</a> resource has a set of
-				properties that describe the defined property and the constraints on
-				its use within any resource of the given shape. These include a
+				properties that describe the defined property and the constraints on its use within any resource that the given shape applies to. These include a
 				description of the values of the defined property and its occurrence
 				within the resource. The value of a defined property may be a
 				literal, a resource, or either. If the value of a defined property
@@ -550,12 +548,16 @@ dd {
 		<section id="associating-and-applying-shapes">
 		<h2>Associating and Applying Shapes</h2>
 			<p>
-				This specification defines three ways to associate shapes with a
-				resource, namely using <a href="#instanceShape">oslc:instanceShape</a>,
-				<a href="#resourceShape">oslc:resourceShape</a>, and <a href="#valueShape">oslc:valueShape</a>. Other specifications <span class="rfc2119">MAY</span> define additional mechanisms. In
-				general, the relation between shapes and resources is many-to-many.
+				In general, the relation between shapes and resources is many-to-many.
 				Given a resource R there <span class="rfc2119">MAY</span> be zero or
-				more shapes S associated with it.
+				more shapes S associated with it. This specification defines three ways to associate shapes with a
+				resource, namely using <a href="#instanceShape">oslc:instanceShape</a>,
+				<a href="#resourceShape">oslc:resourceShape</a>, and <a href="#valueShape">oslc:valueShape</a>. Other specifications <span class="rfc2119">MAY</span> define additional mechanisms. 
+				<ol>
+				  <li>Resource <code>oslc:instanceShape</code> ResourceShape - directly associates a constraining shape with a resource.</li>
+				  <li>Service <code>oslc:resourceShape</code> ResourceShape - associates a constraining shape with the entity request or response resource of a service (e.g., a creation or query service).</li>
+				  <li>Property <code>oslc:valueShape</code> ResourceShape - associates a constraining shape with the resource that is the object value of a property of a resource.</li>
+				</ol>
 			</p>
 			<p>
 				Not all shapes associated with a resource are necessarily applicable
@@ -888,7 +890,7 @@ dd {
 	<section id='resourceShape-shape' class='shapes'>
 	<h2>ResourceShape Constraints</h2>
   <div title='ResourceShape Constraints'
-    data-include='shapes/ResourceShapes-shape.ttl#ResourceShape'
+    data-include='./shapes/ResourceShapes-shape.ttl#ResourceShape'
     data-oninclude='shapeToSpec'
     data-include-sync='true'
     data-include-replace='true'
