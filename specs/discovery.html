@@ -228,13 +228,34 @@ dd {
 
     <p>Both of these approaches are based on a uniform discovery capability. ServiceProviderCatalog, ServiceProvider and Service resources from [[OSLCCore2]] are specific kinds of LDP Containers. The members of a ServiceProviderCatalog resource include ServiceProviderCatalogs and ServiceProvider LDPCs. ServiceProvider resource members include Service LDPCs. Each of these LDPCs have additional properties as defined by the OSLC vocabulary and shapes. This allows clients to use either approach to discover server provided OSLC capabilities, and maintains compatibility with [[OSLCCore2]] while providing new, simple and flexible approaches to service discovery.</p>
 
+    <section id="bootstrappingDiscovery">
+    <h2>Bootstrapping Discovery</h2>
     <p>Discovery will always have to start with at least one discovery resource URI to bootstrap discovery on that server. Servers must provide some way for clients learn about, find, or discover such LDPC URIs. For example, servers could provide such information:
     <ul>
       <li>In their user documentation or UI</li>
       <li>Using HTTP <code>OPTIONS *</code> to return a ServiceProviderCatalog or link headers to root LDPCs describing the discovery capabilities offered</li>
-      <li>Using <a href="https://tools.ietf.org/html/rfc5785">/.well-known/ locations</a> to provide discovery URIs</li>
     </ul>
     The URI could be for a ServiceProviderCatalog or context LDPC resource on which either static up-front or dynamic incremental discovery can be performed. Different server implementation architectures and extensibility mechanisms may require different approaches for discovering OSLC discovery resource URIs.</p>
+
+    <p>This specification specifies how servers respond to discovery requests through LDPC Link headers or ServiceProviderCatalog and/or ServiceProvider resources. It does not specify how servers organize their LDPCs, how they make distinguished LDPCs known to end users to start the discovery process, or how servers provide efficient access to discovery information that may be distributed over many LDPCs managed by the server. Servers may choose to support the OSLC Query capability on OSLC LDPCs and discovery resources in order to facilitate access to discovery information.</p>
+    </section>
+
+    <section id="dynamicDiscover">
+    <h2>Updating Discovery Information</h2>
+    <p>Servers may chose to do support changes to their configurations in order to support adding new domains and services, extending existing domains and services, and/or integrating domains. This specification does not specify how servers provide extensibility mechanisms. Some possible approaches could include:
+      <ul>
+        <li>Configuration information could be provided through files that are read at startup to define the service providers and services for the supported domains. These files could utilize the ServiceProviderCatalog and ServiceProvider resource formats.</li>
+        <li>Servers may provide administration facilities or operational modes (through commands, REST services, GUI, etc.) that:
+          <ul>
+            <li>Create and configure additional LDPCs that provide new services</li>
+            <li>Define or extend domain vocabularies</li>
+            <li>Define or extend resource shapes to support specific needs</li>
+          </ul>
+        <li>Servers may choose to support these configuration changes only on restart, or dynamically at runtime.</li>
+      </ul>
+    </p>
+    <p>The ServiceProviderCatalog, ServiceProvider and Service shapes specify that much of the discovery information provided in these resource representations is read-only. That means that clients accessing these resources cannot expect to change read-only properties and do and HTTP <code>PUT</code> operation as a means of updating server configurations. However, these constraints only apply to these particular discovery resource representations and do not prevent servers from providing other means of modifying their configuration information. These modifications would then be reflected in read-only properties in the discovery resource representations when they are accessed.
+    </section>
 
 		<section id="discoveryMethods">
 			<h2>General Discovery Methods</h2>
@@ -246,10 +267,6 @@ dd {
 
 			<section id="discHeaders"><h2 class="normalText">
 				Servers SHOULD minimize the use of HTTP response headers on various HTTP operations as to avoid unnecessary additional response content for clients to consume. This is also to avoid the complexity on server implementations that would be needed to provide such additional content.
-			</h2></section>
-
-			<section id="discContent"><h2 class="normalText">
-				Servers SHOULD NOT include discovery information in entity response bodies if the information is already available in HTTP headers. LDPR representations of discovery information may also be useful for scenarios where it would be valuable to have the discovery data readily available for purposes such as query.
 			</h2></section>
 
 		</section>
