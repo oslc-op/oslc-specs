@@ -242,7 +242,7 @@ to some lifecycle resource in context to some scenario.  Some specific scenarios
 <section id='concepts' class='informative'>
 <h2>Basic Concepts</h2>
 <!-- TODO: Consider adding a simple diagram showing relationship from: resource->(container & member properties)->attachdescriptor -->
-<p>An attachment is added to a resource via a simple POST request to the
+<p>Attachments are added to a resource via a simple POST request to the
     appropriate LDP-Container resource. The entity body becomes the content of
     the attachment resource. The attachment may automatically be associated with
     the resource via some membership relationship, which may use the <code>oslc:attachment</code> membership predicate.
@@ -250,8 +250,8 @@ to some lifecycle resource in context to some scenario.  Some specific scenarios
     <code>oslc:AttachmentDescriptor</code> resource. The property values are
     assigned by the server or can be determined from standard headers of
     the POST.  The following table maps the HTTP request headers from the POST
-    request to create the attachment resource to what can
-    be used as the initial values in the indicated
+    request to create the attachment resource, to what can
+    be used to derive the initial values in the indicated
     <code>oslc:AttachmentDescriptor</code> resource:</p>
 
 <table>
@@ -277,31 +277,6 @@ to some lifecycle resource in context to some scenario.  Some specific scenarios
 </tbody>
 </table>
 
-<p>When a server successfully creates an attachment resource, it
-    responds with an HTTP status code of 201 (created)
-    with the URI of the newly created attachment resource in the HTTP response
-    <code>Location</code> header.  Additional, if the server created an
-    associated <code>oslc:AttachmentDescriptor</code> resource, the URI for
-    this resource should be listed in the HTTP response <code>Link</code>
-    header [[RFC5988]] with <code>rel="describedby"</code> [[LDP]].</p>
-
-<p>A client can set a <code>Slug</code> header in the
-    attachment-creating POST to specify a hint for a name for the resource as
-    part of that single request. This can be important as some systems
-    require a name at the time the attachment is created. Different systems may
-    have different requirements for valid attachment names, so the value of the
-    <code>Slug</code> header should be interpreted as a hint in this context.
-    If the given name can not be used as specified, it is transformed into a
-    valid name. If that is not possible or the header is not specified, an
-    arbitrary value is assigned. Failure due to an invalid name is undesirable
-    because of the potentially large size of an attachment resource.</p>
-
-<p>A <code>Slug</code> header can also be included by a server in the
-    response to a GET on an attachment resource. If a client wishes to store
-    the content as a file, this value provides a hint as to the file name to
-    use (subject, of course, to any file system restrictions). In the absence
-    of an <code>Slug</code> header, the client may use the last segment of
-    the resource's URI as a hint, or just choose an arbitrary file name.</p>
 </section>
 
 <section id="examples" class="informative">
@@ -392,6 +367,14 @@ Vary: Accept,Prefer
 <p>Once clients have the attachment URI, they can get the attachment by simply
     making an HTTP GET request to the attachment URI.</p>
 
+<p>A <code>Slug</code> header can be included by a server in the
+    response to a <code>GET</code> on an attachment resource. If a client wishes to store
+    the content as a file, this value provides a hint as to the file name to
+    use (subject, of course, to any file system restrictions). In the absence
+    of an <code>Slug</code> header, the client may use the last segment of
+    the resource's URI as a hint, or just choose an arbitrary file name.</p>
+
+
 <pre class="example">
 GET /bugs/2314/attachments/1 HTTP/1.1
 Host: example.com
@@ -424,9 +407,22 @@ Link: &lt;http://example.com/bugs/2314/attachments/meta/1&gt;; rel="describedby"
 
 <p>To create an attachment, POST the attachment content to the attachment
     container for the resource. The request should have a
-    <code>Content-Type</code> header describing the attachment's media type.
+    <code>Content-Type</code> header describing the attachment's media type and subtype as specified in <a href="http://www.iana.org/assignments/media-types/">Media Types</a>.
     The optional <code>Slug</code> header is used to give the attachment a
-    name.</p>
+    name. The <code>Content-Length</code> header is used to initialize the attachment size.</p>
+
+<p>A client can set a <code>Slug</code> header in the
+    attachment-creating POST to specify a hint for a name for the resource as
+    part of that single request. This can be important as some systems
+    require a name at the time the attachment is created. Different systems may
+    have different requirements for valid attachment names, so the value of the
+    <code>Slug</code> header should be interpreted as a hint in this context.
+    If the given name can not be used as specified, it is transformed into a
+    valid name. If that is not possible or the header is not specified, an
+    arbitrary value is assigned. Failure due to an invalid name is undesirable
+    because of the potentially large size of an attachment resource.</p>
+
+<p>The client can provide the attachment size in the <code>Content-Length</code> header and this can be used to initialize the <code>oslc:AttachmentDescriptor</code> <code>oslc:attachmentSize</code> property. The server may compute a different attachment size than that provided by the client if the client specified value is incorrect or not provided.</p>
 
 <pre class="example">
 POST /bugs/2314/attachments HTTP/1.1
@@ -442,6 +438,14 @@ Content-Length: 18124
     <code>oslc:AttachmentDescriptor</code> for the attachment in the HTTP
     response, which contains metadata about the attachment.</p>
 
+<p>When a server successfully creates an attachment resource, it
+    responds with an HTTP status code of 201 (created)
+    with the URI of the newly created attachment resource in the HTTP response
+    <code>Location</code> header.  Additionally, if the server created an
+    associated <code>oslc:AttachmentDescriptor</code> resource, the URI for
+    this resource should be listed in the HTTP response <code>Link</code>
+    header [[RFC5988]] with <code>rel="describedby"</code> [[LDP]].</p>
+
 <pre class="example">
 HTTP/1.1 201 Created
 Allow: GET,HEAD,OPTIONS,POST
@@ -456,7 +460,7 @@ Content-Length: 0
 <h2>Update an Attachment</h2>
 
 <p>To update an attachment, PUT the attachment content to the attachment
-    container for the resource.</p>
+   resource.</p>
 
 <pre class="example">
 PUT /bugs/2314/attachments/3 HTTP/1.1
@@ -487,7 +491,7 @@ Content-Length: 0
     server.</p>
 
 <pre class="example">
-DELETE /bugs/2314/attachments HTTP/1.1
+DELETE /bugs/2314/attachments/3 HTTP/1.1
 Host: example.com
 </pre>
 
@@ -535,7 +539,7 @@ Content-Length: 0
 
 &lt;http://example.com/bugs/2314/attachments/meta/1&gt;
         a                       oslc:AttachmentDescriptor ;
-        oslc:attachmentSize     "53622"^^&lt;http://www.w3.org/2001/XMLSchema#int&gt; ;
+        oslc:attachmentSize     "53622"^^&lt;http://www.w3.org/2001/XMLSchema#integer&gt; ;
         dcterms:created         "2011-07-18T13:22:30.45-05:00"^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt; ;
         dcterms:creator         &lt;http://example.com/users/steve&gt; ;
         dcterms:format          &lt;http://purl.org/NET/mediatypes/image/png&gt; ;
@@ -632,9 +636,7 @@ Content-Length: 0
             <h2></h2>
 
             When servers update an attachment, they MUST also update any
-            associated <code>oslc:AttachmentDescriptor</code> properties that
-            have changed such as <code>oslc:attachmentSize</code> or
-            <code>dcterms:modified</code>.
+            affected <code>oslc:AttachmentDescriptor</code> properties of the associated attachment descriptor.
         </section>
 
         <section id="attachment_delete">
@@ -667,7 +669,7 @@ Content-Length: 0
         <section id="attachment_container_post_no_slug">
             <h2></h2>
 
-            Servers MUST NOT reject an HTTP POST request to an
+            Servers SHOULD NOT reject an HTTP POST request to an
             <code>oslc:AttachmentContainer</code> solely because it does not
             contain a <code>Slug</code> header.
         </section>
@@ -705,6 +707,12 @@ Content-Length: 0
             client's requested interaction model and treat the resource as an
             LDP-NR.
         </section>
+
+        <section id="attachment_delete">
+            <h2></h2>
+
+            Servers MUST reject an HTTP DELETE request to an <code>oslc:AttachmentContainer</code>.
+        </section>
     </section>
 
     <section id="attachment_descriptors">
@@ -740,8 +748,7 @@ Content-Length: 0
             <h2></h2>
 
             The <code>dcterms:title</code> of the
-            <code>oslc:AttachmentDescriptor</code> SHOULD be the filename of
-            the attachment.
+            <code>oslc:AttachmentDescriptor</code> SHOULD be the value of the client-supplied HTTP <code>Slug</code> header.
         </section>
 
         <section id="create_slug_format">
@@ -752,7 +759,7 @@ Content-Length: 0
             <code>dcterms:format</code> property value in the newly-created
             attachment's <code>oslc:AttachmentDescriptor</code>.  The
             <code>dcterms:format</code> value SHOULD be a
-            <a href="http://mediatypes.appspot.com/">PURL media-type
+            <a href="http://www.iana.org/assignments/media-types/media-types.xhtml">PURL media-type
                 resource</a>.
         </section>
 
