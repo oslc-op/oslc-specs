@@ -1252,7 +1252,7 @@ dd {
 				vocabulary URI for extensions <code>http://open-services.net/ns/core-ext#</code>.</p>
 		</div>
 
-		<p>The implicit assumption that the described resource appears as
+		<p>The implicit assumption that the shape's described resource appears as
 			a subject node works well when the described resource is implemented
 			using common programming technologies. Most programming languages
 			have the concept of a structure, record, or class which naturally
@@ -1280,12 +1280,14 @@ dd {
 				express the relations between test cases and the requirements that
 				they validate. Further suppose that there is a pre-existing
 				vocabulary for requirements that defines the property
-				ex:isValidatedBy which asserts that the subject is validated by the
-				object. In this case there is no need to define the inverse property
+				ex:isValidatedBy which asserts that the subject requirement is validated by the
+				object test case. In this case there is no need to define the inverse property
 				ex:validates. Instead the representation of test case resources
 				should use ex:isValidatedBy with the test case as the object and the
 				requirement as the subject. This situation cannot be described by
 				the current Shapes specification.</p>
+
+			<p>The [[OSLCCoreVocab]] defines <code>oslc:inverseLabel</code> to specify a more meaningful label that can be used to distinguish incoming links where no inverse properties are defined.</p>
 
 			<h3 id="isInverseProperty">ext:isInverseProperty Property</h3>
 			<div>
@@ -1298,12 +1300,12 @@ dd {
 					subject.
 				</p>
 			</div>
-			<h3 id="inversePropertyName">ext:inverseProperty Property</h3>
+			<h3 id="inverseProperty">ext:inverseProperty Property</h3>
 			<div>
 				<p>
-					Another possible fix for this limitation is to introduce a new optional, reference 
+					There are cases where links between domains are defined in both directions, even though that is not a recommended practice. In this case, there needs to be some way to define the relationship between these properties.  This could be addressed by introducing a new optional, reference 
 					 property on <a href="#Property">oslc:Property</a>
-					resources, <code>ext:inversePropertyName</code>. If a Property has a resource value type, then <code>ext:inversePropertyName</code> suggests a name for the inverse property. Tools that query incoming links could use this value to display the link in a more meaningful way.
+					resources, <code>ext:inverseProperty</code>. If a Property has a resource value type, then <code>ext:inverseProperty</code> provide the URI of the inverse <code>rdf:Poperty</code>. Tools that query incoming links could use this value to access the inverse property shape in order to display the link in a more meaningful way.
 				</p>
 			</div>
 		</section>
