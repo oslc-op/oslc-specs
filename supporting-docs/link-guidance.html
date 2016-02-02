@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset='utf-8'/>
-<script src='https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
 <script class='remove'>
   var respecConfig = {
       specStatus:           "CND",
@@ -235,7 +235,7 @@ providers when an unexpected type is encountered:</p>
 </ol>
 Inverse properties create significant information redundancy. For example, assertions A ex:affects B and B ex:isAffectedBy A require both assertions to be updated in order to maintain information integrity. One of these assertions, perhaps the "isAffectedBy", predicate should not exist. The predicate to keep depends on the direction of the relationship that is most often known or requested by users. Inverse properties are also usually unnecessary because it is often easy to specify queries that specify the subject or object, allowing the relationship to be "navigated" in either direction.</p>
 
-<p>Duplicated triples have the same problem as any redundancy, and should be avoided whenever possible. There are times when duplicate triples are necessary, and there is a preferred way to use them. For example, a request to GET resource A might return "A ex:affects B", and a request to GET resource B might return "A ex:affects B". If they are on different servers then B's representation might get out of date, but the client should be able to tell that this is from a non-definitive source as the subject's URI has a different host/port than the request URI. This redundancy may be required to provide the information independently from different servers. But it must be handled with care to avoid data integrity issues.</p> 
+<p>Duplicated triples have the same problem as any redundancy, and should be avoided whenever possible. There are times when duplicate triples are necessary, and there is a preferred way to use them. For example, a request to GET resource A might respond with triple "A ex:affects B", and a request to GET resource B might also respond with the same "A ex:affects B" triple. If they are on different servers then B's assertion might get out of date. However the client should be able to tell that this assertion is from a non-definitive source as the subject's URI has a different host/port than the request URI. This redundancy may be required to provide the information independently from different servers. But it must be handled with care to avoid data integrity issues.</p> 
 
 <p>Storing the link in one place simplifies updates and eliminates the need to
 rely on inferencing to determine inverse property values.</p>
@@ -255,8 +255,7 @@ rely on inferencing to determine inverse property values.</p>
  subscriber relationship between a customer and a magazine, I may need
  to record an expiration date for the relationship. One way to do this is
  to use an RDF concept known as reification. Reification is a way
- to make a statement about a statement. See RDF Syntax Specification
- Section 4: Statements about Statements for more information on this
+ to make a statement about a statement. See <a href="https://www.w3.org/TR/REC-rdf-syntax/#section-Syntax-reifying">RDF Syntax Specification</a>: Reifying Statements for more information on this
  concept (reference: RDF Syntax).
 <p>
 Assuming the subscriber scenario, the example <a href="#eg2">below</a> shows how you would use reification to express the annotation.

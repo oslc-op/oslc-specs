@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html> 
 <head>
-<title>OSLC Resource Shape 3.0</title>
+<title>OSLC Resource Shape</title>
 <meta charset='utf-8'>
 <script	src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove' type="text/javascript"></script>
 <script  type="text/javascript" >
@@ -15,6 +15,13 @@
 
         shortName : "resource-shape",
 
+      	// the document's citation label
+      	citationLabel: "OSLC-Shapes-3.0",
+
+      	// OSLC version number for the spec, and the revision level of the document within its stage
+      	oslcVersion: "3.0",
+      	revision: "01",
+      
         // if your specification has a subtitle that goes below the main
         // formal title, define it here
         // subtitle   :  "Committee Specification Draft 01",
@@ -208,7 +215,7 @@ dd {
 		<p>Well-established programming technologies such as relational
 			databases, object-oriented programming languages, and XML utilize <a href="https://en.wikipedia.org/wiki/Closed-world_assumption">closed-world assmuptions</a> to provide
 			schemas or type definitions that encode integrity constraints.
-			Applications utilizing RDF and <a href="https://en.wikipedia.org/wiki/Open-world_assumption">open-world assmuptions</a> may need a similar mechanism to close the world down, and frequently
+			Applications utilizing RDF and <a href="https://en.wikipedia.org/wiki/Open-world_assumption">open-world assmuptions</a> may need a similar mechanism to constrain the open-world for a particular context, and frequently
 			start to use RDFS or OWL for this purpose. However, this is a
 			misapplication of those technologies.</p>
 
@@ -237,10 +244,10 @@ dd {
 			(e.g. GET, POST) and the integrity constraints that must be satisfied
 			by the contents in that context.</p>
 
-		<p>Resource shapes specify a standard way of describing resources and constraints on resources that may be used in defining among other things, OSLC domain resources. There are other means that OSLC domains may use in addition to or instead of resource shapes such as W3C [[SHACL]] or [[JSONSchema]]. OSLC servers should describe their resources using resource shapes if they wish to integrate with [[OSLCCore2]] clients or servers that are expecting resource shapes. OSLC Domain specifications are expected to specify how the constraints on their domain elements are expressed and supported by servers.</p>
+		<p>Resource shapes specify a standard way of describing resources and constraints on resources that may be used in defining among other things, OSLC domain resources. There are other means that OSLC domains may use in addition to or instead of resource shapes such as W3C [[SHACL]] or [[JSONSchema]]. OSLC servers should describe their resources using resource shapes if they wish to integrate with [[OSLCCore3]] clients or servers that are expecting resource shapes. OSLC domain specifications use shapes to specify the constraints on their domain vocabulary elements that must be supported by servers.</p>
 
 		<p>This specification begins with a brief discussion of the use cases
-			and requirements that the Resource Shape specification addresses. It
+			and requirements that the OSLC Resource Shape Specification addresses. It
 			then describes all aspects of the current specification in detail.
 			Finally, it concludes with some recommendations for extensions based
 			on implementation experience.</p>
@@ -266,7 +273,7 @@ dd {
 					may link to a shape using the property <a href="#instanceShape">oslc:instanceShape</a>,
 				    the described resource may be the entity request to or response from a
 					REST service whose service description links to a shape using the
-					property <a href="#resourceShape">oslc:resourceShape</a>, or the the resource may be the object value of a Property whose <a href="#valueShape">oslc:valueShape</a> links to the constraining shape. More than
+					property <a href="#resourceShape">oslc:resourceShape</a>, or the resource may be the object value of a Property whose <a href="#valueShape">oslc:valueShape</a> links to the constraining shape. More than
 					one shape may become associated with a described resource in a
 					given context. The shapes associated with a resource are the set of shapes to be checked for applicability. Not all the associated shapes are necessarily
 					applicable. Refer to the definition of applicability above.
@@ -298,9 +305,9 @@ dd {
 				<dt>graph</dt>
 				<dd>An RDF document may be regarded as a directed, labeled
 					multi-graph, or, simply, a graph, in which each triple of the
-					document corresponds to an arc of the graph. The source of the arc
-					is the subject its triple. The target of the arc is the object of
-					its triple. The label of the arc is the predicate of its triple.</dd>
+					document corresponds to an arc of the graph. For each arc in the graph, the source
+					is the subject its triple, the target is the object of
+					its triple, and the label is the predicate of its triple.</dd>
 
 				<dt>object property</dt>
 				<dd>An object property is a defined property that links to a
@@ -370,8 +377,8 @@ dd {
 				or updating resources. Such a tool needs to understand the expected
 				contents of the resource so it can generate a user interface. It
 				also needs to understand the applicable integrity constraints so it
-				can validate user input before sending it to the service provider.
-				Furthermore, the service provide may apply different constraints for
+				can validate user input before sending it to the service provider or server.
+				Furthermore, the server may apply different constraints for
 				creation versus update operations.</p>
 		</section>
 
@@ -489,26 +496,26 @@ dd {
 				the resource types that are defined by the Shapes specification.</p>
 			<p>
 				The box labeled <q>Resource Shape</q> represents a shape. A shape
-				is a resource of <code>rdf:type</code> <a href="#ResourceShape">oslc:ResourceShape</a>.
+				is a resource of <code>rdf:type</code> <a href="#resourceShape-shape">oslc:ResourceShape</a>.
 				A shape describes a set of resources. A shape is basically a set of
-				defined properties that any resource of that shape is expected to
-				contain. A shape contains one or more defined properties.
+				one or more defined properties that any resource described by that shape is expected to
+				contain.
 			</p>
 
 			<p>
 				The box labeled <q>Property</q> represents a defined property. A
-				defined property is resource of rdf:type <a href="#Property">oslc:Property</a>.
+				defined property is a resource of rdf:type <a href="#property-shape">oslc:Property</a>.
 				The arrow labeled <q>property</q> represents the aggregation
 				relation between a shape and its defined properties. The predicate
 				of this relation is <a href="#property">oslc:property</a>.
 			</p>
 			<p>
-				Each <a href="#Property">oslc:Property</a> resource has a set of
+				Each <a href="#property-shape">oslc:Property</a> resource has a set of
 				properties that describe the defined property and the constraints on its use within any resource that the given shape applies to. These include a
-				description of the values of the defined property and its occurrence
+				description of the values of the defined property and the number of its occurrences or cardinality
 				within the resource. The value of a defined property may be a
 				literal, a resource, or either. If the value of a defined property
-				is a resource, then defined property may refer to another <a href="#ResourceShape">oslc:ResourceShape</a> resource that
+				is a resource, then defined property may refer to another <a href="#resourceShape-shape">oslc:ResourceShape</a> resource that
 				describes the value resource. This relation is depicted by the arrow
 				labeled <q>valueShape</q>. The predicate of this relation is <a href="#valueShape">oslc:valueShape</a>.
 			</p>
@@ -518,7 +525,7 @@ dd {
 				be large and be used in many shapes. In this case it is useful to
 				put the allowed values in a separate resource so they can be easily
 				reused. The box labeled <q>Allowed Values</q> represents a resource
-				of rdf:type <a href="#AllowedValues">oslc:AllowedValues</a>. The
+				of rdf:type <a href="#allowedValue-shape">oslc:AllowedValues</a>. The
 				arrow labeled <q>allowedValues</q> represents the relation between
 				a defined property and its set of allowed values. The predicate of
 				this relation is <a href="#allowedValues">oslc:allowedValues</a>.
@@ -600,7 +607,7 @@ dd {
 			</p>
 		</section>
 
-		<section id="informative">
+		<section id="runningExample" class="informative">
 		<h2>A Running Example of Shape Resources</h2>
 			<p>
 				This section presents a simple running example to illustrate the
@@ -738,7 +745,7 @@ dd {
 	<section id="vocabulary">
 	<h2>Vocabulary</h2>
 		<p>The Shapes vocabulary consists of the following terms defined
-			by the oslc: vocabulary:</p>
+			by the OSLC vocabulary.</p>
 
 		<p>
 			In addition, shape resources use the following terms from Dublin Core
@@ -788,7 +795,7 @@ dd {
 
 				<dt><i>Read-Only</i></dt>
 				<dd>
-					<code>true</code> if the property is read-only. If omitted, or set to false, then the property is writable. Providers SHOULD declare a property read-only when changes to the value of that property will not be accepted after the resource has been created, e.g. on PUT/PATCH requests. Consumers should note that the converse does not apply: Providers MAY reject a change to the value of a writable property.
+					<code>true</code> if the property is read-only. If omitted, or set to false, then the property is writable. Servers SHOULD declare a property read-only when changes to the value of that property will not be accepted after the resource has been created, e.g. on PUT/PATCH requests. Clients should note that the converse does not apply: Servers MAY reject a change to the value of a writable property.
 				</dd>
 
 				<dt><i>Value-Type</i></dt>
@@ -850,27 +857,24 @@ dd {
 			</p>
 
 			<p>
-				For example, in OSLC a resource that accepts POST requests to create
+				For example, in OSLC a resource that accepts POST requests to and LDPC in order to create
 				new resources is referred to as a <em>creation factory</em>. The
 				service description for a creation factory may link to one or more
 				shape resources that describe the bodies of POST requests.
 			</p>
 		</div>
 
-		<h3 id="dcterms:description">dcterms:description Property</h3>
-		<div>
-			<p>
-				<code>dcterms:description</code> is used to provide a description of <a
-					href="#Property">oslc:Property</a> resources. Its value <span
-					class="rfc2119">SHOULD</span> be a literal of type rdf:XMLLiteral
-				that is valid content for an XHTML
-				<code>&lt;div&gt;</code>
-				element. If the value contains no XML markup then it <span
-					class="rfc2119">MAY</span> be represented as a plain text literal
-				or xsd:string.
-			</p>
-		</div>
 
+	<section id='resourceShape-shape' class='shapes'>
+	<h2>ResourceShape Constraints</h2>
+  <div title='ResourceShape Constraints'
+    data-include='./shapes/ResourceShapes-shape.ttl#ResourceShape'
+    data-oninclude='shapeToSpec'
+    data-include-sync='true'
+    data-include-replace='true'
+    data-include-format='html'>
+  </div>
+		<h3 id="dcterms:description">dcterms:description Property</h3>
 		<h3 id="dcterms:title">dcterms:title Property</h3>
 		<div>
 			<p>
@@ -886,16 +890,19 @@ dd {
 			</p>
 		</div>
 
+		<div>
+			<p>
+				<code>dcterms:description</code> is used to provide a description of <a
+					href="#Property">oslc:Property</a> resources. Its value <span
+					class="rfc2119">SHOULD</span> be a literal of type rdf:XMLLiteral
+				that is valid content for an XHTML
+				<code>&lt;div&gt;</code>
+				element. If the value contains no XML markup then it <span
+					class="rfc2119">MAY</span> be represented as a plain text literal
+				or xsd:string.
+			</p>
+		</div>
 
-	<section id='resourceShape-shape' class='shapes'>
-	<h2>ResourceShape Constraints</h2>
-  <div title='ResourceShape Constraints'
-    data-include='./shapes/ResourceShapes-shape.ttl#ResourceShape'
-    data-oninclude='shapeToSpec'
-    data-include-sync='true'
-    data-include-replace='true'
-    data-include-format='html'>
-  </div>
   		<h3 id="describes">oslc:describes Property</h3>
 		<div>
 			<p>
@@ -909,7 +916,7 @@ dd {
 
 			<p>
 				For example, a creation factory may be able to create many different
-				types of resources. The description of a given type of resource is
+				types of resources. The constraints on a given type of resource is
 				specified by the associated shape resources that contain an <a
 					href="#describes">oslc:describes</a> link to that type.
 			</p>
@@ -988,7 +995,7 @@ dd {
 			</p>
 			<p>
 				A default value <span class="rfc2119">MAY</span> be used by
-				consumers of a described resource if the defined property is not
+				clients of a described resource if the defined property is not
 				present in the representation of the described resource. This
 				mechanism is useful if a service introduces a new defined property
 				but does not update all pre-existing described resources.
@@ -999,7 +1006,7 @@ dd {
 		<div>
 			<p>
 				If present and true, <code>oslc:hidden</code> is used to indicate that the
-				defined property is not normally presented to users. A consumer of
+				defined property is not normally presented to users. A client of
 				the described resource <span class="rfc2119">SHOULD NOT</span>
 				display hidden defined properties to normal users. It <span
 					class="rfc2119">MAY</span> display hidden defined properties to
@@ -1087,9 +1094,10 @@ dd {
 			<p>
 				<code>oslc:range</code> <span class="rfc2119">MUST NOT</span> be used with
 				datatype properties. It <span class="rfc2119">MAY</span> be used
-				with object properties. For object properties, oslc:range is used to
-				specify an allowed <code>rdf:type</code> of the object resource. The value of
-				this property <span class="rfc2119">MAY</span> be any rdf:type URI
+				with object properties. For object properties, <code>oslc:range</code> is used to
+				specify the allowed <code>rdf:type</code>s of the object resource.
+				The object resource SHOULD be any of the specified <code>oslc:range</code> types, but no inferencing is intended if the actual target resource is or is not one of these types. This is very different semantics than <code>rdfs:range</code> which does have inferencing implications.</p>
+				<p>The values of this property <span class="rfc2119">MAY</span> be any rdf:type URI
 				or the following individual:
 			</p>
 			<dl>
@@ -1104,7 +1112,7 @@ dd {
 			<p>
 				If present and true, <code>oslc:readOnly</code> is used to specify that the value
 				of defined property is managed by the service, i.e. that it is
-				read-only. It cannot be directly modified by consumers of the
+				read-only. It cannot be directly modified by clients of the
 				service. Services <span class="rfc2119">SHOULD</span> ignore
 				attempts to modify read-only properties, but <span class="rfc2119">MAY</span>
 				fail such requests. If a service ignores an attempt to modify a
@@ -1125,15 +1133,15 @@ dd {
 				modification timestamps, the identity of who created or modified the
 				described resource, and properties computed from the values of other
 				properties.</p>
-			<p>When modifying a resource, it is natural for a consumer to
+			<p>When modifying a resource, it is natural for a client to
 				first retrieve its current representation using a GET request. This
 				request will return read-only properties along with read-write
 				properties. If a service fails PUT requests that contain read-only
-				properties then consumers will have to remove all read-only
+				properties then clients will have to remove all read-only
 				properties before submitting PUT requests. The behavior of ignoring
 				read-only properties in PUT requests is therefore more convenient
-				for consumers. Similarly, when copying a resource, a consumer would
-				GET it first. It is therefore more convenient for consumers if the
+				for clients. Similarly, when copying a resource, a client would
+				GET it first. It is therefore more convenient for clients if the
 				service ignores read-only properties also in POST requests.</p>
 		</div>
 
@@ -1174,7 +1182,7 @@ dd {
 			<div>
 				<p>
 					For datatype properties, <code>oslc:valueType</code> specifies the literal value
-					type. It <span class="rfc2119">MUST</span> be one of the following
+					type. OSLC datatype properties are a subset of the base or primitive types defined by <a href="https://www.w3.org/TR/REC-rdf-syntax/">RDF</a> and <a href="https://www.w3.org/TR/xmlschema11-1/">XML Schema</a>. A datatype <span class="rfc2119">MUST</span> be one of the following
 					individuals:
 				</p>
 
@@ -1246,11 +1254,13 @@ dd {
 			been identified through experience gained with using the Shapes
 			specification in practice.</p>
 
-		<h2 id="ext-vocabulary">ext: Extensions Vocabulary</h2>
+		<section id="extVocabulary" class="informative">
+		<h2 id="ext-vocabulary">Extensions Vocabulary</h2>
 		<div>
 			<p>In the following sections the prefix ext: denotes the
 				vocabulary URI for extensions <code>http://open-services.net/ns/core-ext#</code>.</p>
 		</div>
+		</section>
 
 		<p>The implicit assumption that the shape's described resource appears as
 			a subject node works well when the described resource is implemented

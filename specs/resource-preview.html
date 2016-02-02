@@ -9,6 +9,13 @@
       edDraftURI:           "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-preview.html",
       shortName:            "resource-preview",
 
+      // the document's citation label
+      citationLabel: "OSLC-ResourcePreview-3.0",
+
+      // OSLC version number for the spec, and the revision level of the document within its stage
+      oslcVersion: "3.0",
+      revision: "01",
+      
       chairs : [ {
         name : "Jim Amsden",
         url : "http://www.ibm.com/"
@@ -113,7 +120,7 @@ dd {
 <body>
 
 <section id="abstract">Resource Preview defines a technique to get a minimal HTML representation of a
-    resource identified by a URL. Applications often use this capability to render links with more appropriate icons and labels, or display a preview when a user mouses over a link.</section>
+    resource identified by a URL. Applications often use this capability to render or display links with more appropriate icons and labels, or display a preview when a user mouses over a link.</section>
 
 <section id="toc"></section>
 <hr>
@@ -132,10 +139,8 @@ dd {
 </figure>
 
 <p>Previews often appear as a pop-up when a user mouses over a link as in
-    <a href="#ex_preview"></a>. A client can display a preview differently,
-    however, depending on the kind of application, the size of the screen, and
-    the capabilities of the device. A desktop application on a PC might handle
-    previews differently than a mobile application running on a small
+    <a href="#ex_preview"></a>. However, a client may wish to display a preview differently depending on the kind of application, the size of the screen, and
+    the capabilities of the device. For example, a desktop application on a PC might handle previews differently than a mobile application running on a small
     touchscreen.</p>
 
 <p>Servers can provide both small and large previews. A client might show a
@@ -207,7 +212,7 @@ and Hyper-text Transfer Protocol [[HTTP11]].</p>
     resource describing the preview. The Compact resource can contain a link
     label, icon, and small and/or large previews of the resource. Compact resources
     always have a JSON representation [[RFC4627]], but they can also have other
-    representations such as <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview#XML_Representation_Format">XML</a>, T urtle [[turtle]] or JSON-LD [[JSON-LD]]. Here is a simple example of a Compact resource:</p>
+    representations such as <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview#XML_Representation_Format">XML</a>, Turtle [[turtle]] or JSON-LD [[JSON-LD]]. Here is a simple example of a Compact resource:</p>
 
 <pre class="example" id="ex_compact" title="A Compact Resource">
 {
@@ -623,7 +628,7 @@ if (window.postMessage &amp;&amp; window.parent)  {
     come up faster. There is a low chance that the user will make a gesture
     that would call for the display of a small preview. It would generally be a
     poor trade-off to increase overall system load just to decrease UI latency
-    for low probability eventualities.</p>
+    for low probability eventualities. Clients may wish to utilize lazy loading techniques to only access preview dialogs that users actually view, and can cache those dialogs for subsequent uses if needed to improve performance.</p>
 </section>
 
 <section id="largePreview" class="informative">

@@ -20,10 +20,10 @@
 		shortName : "oslc-core",
 
       // the document's citation label
-      citationLabel: "OSLC-Core-3.0",
+      citationLabel: "OSLC-CoreVocab-3.0",
 
       // OSLC version number for the spec, and the revision level of the document within its stage
-      oslcVersion: "1.0",
+      oslcVersion: "3.0",
       revision: "01",
 
       // if your specification has a subtitle that goes below the main
@@ -167,8 +167,12 @@ dd {
 		</dl>
 	</section>
 
-	<section class='informative'>
+	<section id="motivation" class='informative'>
 		<h2>Motivation</h2>
+		<p>Most OSLC vocabularies and resource shape constraints on usages of those vocabularies are given in the various OSLC domain specifications. The motivation for these domain specifications is to define agreed upon, formalized vocabulary terms for key elements in the domain. Domain vocabularies are not intended to restrict what vocabularies servers actually use for those domains, or what domains they support. Rather vocabularies establish a common core of domain terms that reduce accidental variability and foster greater interchange and interoperability between tools that support and users that make use of domains. Servers are free to extend the domains and integrate across domains as required to realize their provided capabilities.<p>
+
+		<p>OSLC Core takes a similar approach for common terms that are used across most domains. The intent is to provide a foundation for building domains that again reduces unnecessary variability, and eliminates the need for the various domain specifications to redundantly define similar terms.</p>
+
 		<p><a title="">Archived Resource</a>s are typically found in large systems in which an immutable copy of the state of a resource at a given time is captured. The purpose may vary in that it could be simply a way to facilitate access to a backup or snapshot of a resource at a particular point in time.  Another use may be to indicate that a resource has been deleted, but is saved by the system for historical or legal reasons. Having a consistent way to indicate that a resource, or a set of them, has been archived helps when defining certain views of the resources or queries.
 		Archived Resources may be identified by having a property <code> oslc:archived</code>. with value <code>true</code>.</p>
 
@@ -185,10 +189,81 @@ dd {
 		a dependency relation, in which case it may be useful to explicitly describe the nature of the dependency.</p>
 	</section>
 
-	<section id='resourceShapes'>
+	<section id='resourceShapes' class='informative'>
 		<h2>Resource Shape</h2>
-		<p>Constraints on OSLC Core and Domain resources SHOULD be described using [[ResourceShapes]] which is included as part of the OSLC Core multi-part specifications. Servers MAY use other constraint languages such as [[SHACL]] to define resource constraints. The shape of an RDF resource is a description of the set of triples it is expected to contain and the integrity constraints those triples are required to satisfy. Applications of shapes include validating RDF data, documenting RDF APIs, and providing meta-data to tools, such as form and query builders, that handle RDF data.
+		<p>Constraints on OSLC Core and Domain resources SHOULD be described using [[ResourceShapes]] which is included as part of the OSLC Core multi-part specifications. Servers MAY use other constraint languages such as [[SHACL]] to define resource constraints. The shape of an RDF resource is a description of the set of triples it is expected to contain and the integrity constraints those triples are required to satisfy. Applications of shapes include validating RDF data, documenting RDF APIs, and providing meta-data to tools, such as form and query builders, that handle RDF data. OSLC Core uses shapes to:
+		<ul>
+			<li>Define specific vocabulary constraints including allowed values, max size, cardinality, representation in RDF specifications and if the property is read only.</li>
+			<ls>Specify the properties required for resource creation.</ls>
+			<li>Specify what servers all allow for prefilling delegated dialogs.</li>
+			<li>Describe the results of query operations.</li> 
 		</p>
+	</section>
+
+	<section id="enumerations" class="informative">
+		<h2>Defining Enumerations</h2>
+		<p>Some property values are are characterized by a limited set of enumerated values. The type for these property values is called an enumeration in many modeling and programming languages, while the values are called enumeration literals. RDF does not define a specific way of defining enumerated types and enumeration literals. As a result, different vocabularies may take different, but equally valid approaches. In order to foster interoperability and integration, OSLC Core provides a recommended approach for defining enumerated types and enumeration literals. This approach is used in defining the OSLC Core vocabulary terms.</p>
+
+		<p>Enumerations in an OSLC vocabulary should be defined as an RDF class. Enumeration literals are the URIs of individuals of that class. For example, consider an enumeration called "Color" that has enumeration literals <code>{red, yellow, green, blue}</code> (using Java notation). Color would be defined as an RDF class and the enumeration literals would be individuals of that class. A <code>color</code> property is defined and then used to assert that the color of myCar is blue.
+		<pre class="example">
+# Color enumeration
+Color
+    a rdfs:Class ;
+    rdfs:label "Color" ;
+    rdfs:comment "The class of possible color values." .
+
+# Color enumeration literals
+red
+    a Color ;
+    rdfs:label "red" .
+
+yellow
+    a Color ;
+    rdfs:label "yellow" .
+
+green
+    a Color ;
+    rdfs:label "green" .
+
+blue
+	a Color ;
+	rdfs:label "blue" .
+
+# A Color property
+color
+	a rdf:Property ;
+	rdfs:label "color" ;
+	rdfs:comment "Used to specify the color of a resource".
+
+# Asserting the color of a resource
+myCar color blue.
+		</pre>
+		<p>Enumerations can be open or closed. Open enumerations allow additional enumeration literals to be added as needed. Closed enumerations have a fixed set of enumeration literals that is not intended to be extended. Resource shapes can be used to constrain enumerations to a specific set of values. Notice in the example above that the color property did not specify its rdfs:range. This keeps the enumeration completely open to any set of individuals. OSLC prefers to use resource shapes to constrain resources for particular usages, leaving them open for extension for other, possibly unanticipated usages.</p>
+
+		<p>A shape can be used to constrain the Color enumeration for a specific purpose. For example, the color of lights in a traffic light should be constrained to exactly red, yellow and green.</p>
+		<pre class="example">
+# Create a constraint on Color for traffic lights
+TrafficLightConstraint
+	a oslc:ResourceShape ;
+	oslc:describes fhwa:TrafficLight ;
+	determs:title "Establish constraints for traffic light colors" ;
+	oslc:property colorConstraint .
+
+colorConstraint
+	a oslc:Property ;
+	oslc:name "color" ;
+	dcterms:description "The colors for a traffic light as specified by FHWA."
+	oslc:propertyDefinition color ;
+	oslc:occurs oslc:Exactly-one ;
+	oslc:range Color ;
+	oslc:allowValue red, yellow, green ;
+	oslc:readOnly "false" ;
+	oslc:representation oslc:Reference ;
+	oslc:valueType oslc:Resource .
+		</pre> 
+	<p>TrafficLightConstraint defines a constraint associated with the vocabulary term <code>fhwa:TrafficLight</code>. The constraint has one property, colorConstraint whose <code>oslc:propertyDefinition</code> is the color RDF property. The <code>oslc:range</code> for the colorConstraint is set to Color, meaning the value of the applicable property is constrained to be of <code>rdf:type</code> Color. The <code>oslc:allowedValue</code> property further constrains the values to be red, yelow, or green. If the <code>oslc:allowedValue</code> were not specified, then the TrafficLightConstraint would allow the enumeration to be open.</p>
+
+	<p>A completely different shape constraint could be used for colors that represent the status of a risk mitigation in a software development project.</p>
 	</section>
 
  	<section id="commonprops">
@@ -196,7 +271,13 @@ dd {
 		<p>Unlike the rest of the Core specification, these properties change and grow as new common properties
             are added by the Core TC. The properties that we list here are available for use in OSLC specification 
             in defining OSLC resources, but this does not mean that they are required to be in OSLC resources. 
-            OSLC domain specifications decide which properties are allowed and required for each resource use case.</p>
+            OSLC domain specifications decide which properties are allowed and required for each resource use case. The OSLC common properties include properties defined in other standard vocabularies including:
+            <ul>
+            	<li><a href="http://xmlns.com/foaf/spec/">Friend of a Friend (FOAF)</a></li>
+            	<li><a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core (dcterms)</a></li>
+            	<li><a href="https://www.w3.org/TR/2004/REC-rdf-schema-20040210/">RDF Schema (rdfs)</a></li>
+            </ul>
+            </p>
           
 		<section id="anyProperties" class="shapes">
 			<h2>Properties on Any Resource</h2>
