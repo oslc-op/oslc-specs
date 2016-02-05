@@ -528,7 +528,7 @@ Host: example.com
     JSON is described by <a href="#results_json"></a>. It is a JSON object
     with an <code>oslc:results</code> array of results. Each result is a JSON
     object with an <code>rdf:resource</code> property whose value is the
-    resource URI.  The result may also have an <code>oslc:label</code> that can be useful for client display without having to use resource preview to access the Compact resource.
+    resource URI.  The result may also have an <code>oslc:label</code> that can be useful for client to display a label for the delegated dialog.
 
 <pre class="example" title="Dialog Results Message">
 oslc-response:{"oslc:results": 
@@ -629,7 +629,7 @@ oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
 
   <p>Servers may support setting the initial values in a dialog. A client can
       test if a dialog supports prefill by making an HTTP OPTIONS request to
-      the dialog descriptor URI.</p>
+      the dialog descriptor URI. Prefill can be used with creation dialogs to provide a template of initial values. Clients can use prefill with selection dialogs to inform servers about the users desired content in the selection dialog.</p>
 
 <pre class="example" id="ex_options_dialog">
 OPTIONS /dialogs/createBug HTTP/1.1
@@ -665,7 +665,7 @@ Transfer-Encoding: chunked
 <p>The content of the request depends on the type of dialog and the server.
     Servers may describe constraints on POST content using resource shapes
     [[OSLCCoreVocab]]. The dialog descriptor uses property
-    <code>oslc:resourceShape</code> for the shape.</p>
+    <code>oslc:resourceShape</code> for the shape constraints.</p>
 
 <p>The server's response contains a <code>Location</code> header with the
     prefilled dialog's URI. The client uses this as the
@@ -938,11 +938,15 @@ function handleMessage(event) {
             conforming to the protocol.
         </section>
     </section>
+
     <section id="prefill_conformance">
         <h2>Prefill</h2>
+        <section id="support_prefill">
+            <h2></h2>
+            Servers MAY support prefill for creation and/or selection dialogs. Client provided prefill information, either in a request entity body or query parameters is intended to inform servers of possible initial values for creation dialogs, or the preferred content of selection dialogs. Clients SHOULD NOT assume any specific content or URL format.
+        </section>
         <section id="allow_prefill">
             <h2></h2>
-
             Servers MAY allow clients to prefill dialogs by accepting
             HTTP POST requests where the Request-URI is the dialog
             descriptor and the entity body is an entity describing the
@@ -987,8 +991,6 @@ Allow: GET,POST,HEAD,OPTIONS
 
             After some elapsed time, servers MAY respond with a 404 (Not Found)
             or 410 (Gone) to an HTTP GET request for a prefilled dialog URI.
-            Clients SHOULD NOT cache dialog URIs from prefill requests since
-            they are often temporary.
         </section>
         <section id="prefill_query_params">
             <h2></h2>
