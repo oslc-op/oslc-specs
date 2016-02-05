@@ -182,7 +182,7 @@ dd {
 		<p>Error responses from HTTP request often take the form of HTML pages intended for a human to read, even though these requests are often initiated from applications that don't have a human actively monitoring it.  A consistent way to request error responses of a certain format, and a prescribed interaction model can
 		help clients better handle errors automatically.</p>
 
-		<p>Consider a user interface for a query builder that allows users to build queries about test cases. It is natural for the query builder to present the user with a list of the properties that apply to test cases that could be used in the query. Suppose the user wants to build a query that returns all that requirements that are validated by a test case. The query builder should describe the available properties from the point of view of the test case. This implies that the query builder should describe the inverse relation asserted by any triple that has the test case as an object. In this example, the query builder should describe requirement <code>oslc_rm:validatedBy</code> test case as test case <code>validates</code> requirement.</p>
+		<p>Consider a user interface for a query builder that allows users to build queries about test cases. It is natural for the query builder to present the user with a list of the properties that apply to test cases that could be used in the query. Suppose the user wants to build a query that returns all the requirements that are validated by a test case. The query builder should describe the available properties from the point of view of the test case. This implies that the query builder should describe the inverse relation asserted by any triple that has the test case as an object. In this example, the query builder should describe assertions of the form {requirement <code>oslc_rm:validatedBy</code> test case} as {test case <code>validates</code> requirement}.</p>
 
 		<p>Some RDF properties express dependency relations between artifacts, and it is often very valuable to trace the impact of a change in an artifact to those artifacts that depend on it directly or indirectly. The concept of dependency is very general. For example, the concept of trace relations is described in [[SysML]]: “A generic trace requirement relationship provides a general-purpose relationship between a requirement and any other model element. The semantics of trace include no real constraints and therefore are quite weak.”
 		As a general guideline, if any triple that uses a given predicate may become invalid if the state of either its subject or object resources change, then we may legitimately regard that predicate as expressing
@@ -269,9 +269,9 @@ colorConstraint
  	<section id="commonprops">
 		<h2>Common Properties</h2>
 		<p>Unlike the rest of the Core specification, these properties change and grow as new common properties
-            are added by the Core TC. The properties that we list here are available for use in OSLC specification 
-            in defining OSLC resources, but this does not mean that they are required to be in OSLC resources. 
-            OSLC domain specifications decide which properties are allowed and required for each resource use case. The OSLC common properties include properties defined in other standard vocabularies including:
+            are added by the Core TC. The properties that we list here are available for use in OSLC domain specifications
+            when defining OSLC resources, but this does not mean that they are required to be in OSLC resources. 
+            OSLC domain specifications decide which properties are allowed and required for resources needed to realize their use cases. The OSLC common properties include properties defined in other standard vocabularies including:
             <ul>
             	<li><a href="http://xmlns.com/foaf/spec/">Friend of a Friend (FOAF)</a></li>
             	<li><a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core (dcterms)</a></li>
@@ -326,7 +326,7 @@ colorConstraint
 
 		<section id="shapeDiscussion">
 			<h2>Shape: Discussion</h2>
-			<p>It is common to collect a series of comments on a lifecycle resource, often referred to as a discussion. For example: tasks, bug reports, requirements, assets and so on, are often collected across various types of resources such as project. This Discussion resource definition provides a minimal shape describing the needed properties.</p>
+			<p>It is common to collect a series of comments on a lifecycle resource, often referred to as a discussion. For example: tasks, bug reports, requirements, assets and so on, are often collected across various types of resources such as project. A project might reflect the planning of work to deliver a product that realizes the requirements as validated through test cases and bug reports. Discussions allow users to collaborate with each other for more efficient and effective delivery. This Discussion resource definition provides a minimal shape describing the needed properties.</p>
 
 			<div title='RDF Shape for Discussion'
 				data-include='shapes/Discussion-shape.ttl'
@@ -365,9 +365,6 @@ colorConstraint
 			</section>
 
 			<section id="errFormat"><h2 class="normalText">OSLC Servers SHOULD return an <a href="shapeError">Error resource</a> using the same representation format requested by the client via the HTTP <code>Accept</code> request header. [[HTTP11]]</h2>
-			</section>
-
-			<section id="errFormatShape"><h2 class="normalText">OSLC Servers SHOULD return an <a href="shapeError">Error resource</a> using the same representation format requested by the client via the HTTP <code>Accept</code> request header. [[HTTP11]]</h2>
 			</section>
 
 			<section id="errFormatStatusCode"><h2 class="normalText">OSLC Clients SHOULD treat the <code>oslc:statusCode</code> as a String that starts with digits, but may contain non-digit text.</h2>
@@ -415,7 +412,7 @@ colorConstraint
 
 			<p>For example, consider the OSLC Requirements Management (RM) property oslc_rm:validatedBy. When used as the predicate of a triple, this property is used to assert that the subject resource, e.g. a Requirement, is validated by the object resource, e.g. a TestCase. The rdfs:label for this property is “validatedBy”.</p>
 
-			<p>Now consider the user interface of a query builder that allows users to build queries about TestCases. It is natural for the query builder to present the user with a list of the properties that apply to TestCases. Suppose the user wants to build a query that returns all that Requirements that are validated by a TestCase. The query builder should describe the available properties from the point of view of the TestCase. This implies that the query builder should describe the inverse relation asserted by any triple that has the TestCase as an object. In our example, the query builder should describe oslc_rm:validatedBy as “validates”.</p>
+			<p>Now consider the user interface of a query builder that allows users to build queries about TestCases. It is natural for the query builder to present the user with a list of the properties that apply to TestCases. Suppose the user wants to build a query that returns all the Requirements that are validated by a TestCase. The query builder should describe the available properties from the point of view of the TestCase. This implies that the query builder should describe the inverse relation asserted by any triple that has the TestCase as an object. In our example, the query builder should describe oslc_rm:validatedBy as “validates”.</p>
 
 			<p>The oslc:inverseLabel property provides a human-readable label for the inverse of the subject property.</p>
 
