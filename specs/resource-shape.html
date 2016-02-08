@@ -459,7 +459,14 @@ dd {
 		<h2>Overview</h2>
 			<p>
 				A resource shape is a resource that describes the contents of, and
-				constraints on, the RDF representation of other resources. A shape
+				constraints on, the RDF representation of other resources. These constraints are intended to be applicable to OSLC core and domain vocabularies in order to express the domains sufficiently to support interoperability between clients and servers that use and support them. Resource shapes specify the minimum an implementation needs to do be considered compliant. Specifically:
+				<ul>
+					<li>All compliant implementations MUST do what the spec says when they get data that conforms to the shape.</li>
+					<li>Compliant implementations MAY also do something sensible when they get other data.</li>
+				</ul>
+				That is, the intention is not that an OSLC implementation would reject a message if it violated shape constraints, rather the intention is that implementations do what is specified by an OSLC spec when they get data that conforms to the shapes.  
+			</p> 
+			<p>A shape
 				resource itself has an RDF representation which uses the terms
 				defined by the oslc: vocabulary. The term <q>shape resource</q> or
 				simply <q>shape</q> is sometimes used as shorthand for the more
@@ -605,6 +612,7 @@ dd {
 				require that the resource satisfy the constraints defined by at
 				least one of the shapes (OR semantics).
 			</p>
+			<p>If a resource satisfies its applicable shapes, client and server implementations MUST behave as described in the defining OSLC specifications. If a resource does not satisfy its applicable shapes, implementations SHOULD attempt to complete the operation with the given data if possible. Otherwise implementations MAY reject the operation.</p>  
 		</section>
 
 		<section id="runningExample" class="informative">
