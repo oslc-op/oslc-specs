@@ -299,7 +299,7 @@ dd {
 			</h2></section>
 
 			<section id="createsTypes"><h2 class="normalText">
-				In a response to Request-URI on an LDPC, servers SHOULD include a <code>Link</code> header with the relation-type set to rel="http://open-services.net/core#resourceType" and the Target URI set to the <code>rdf:type</code> of resources that can be created in the LDPC. Note: since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
+				In a response to Request-URI on an LDPC, servers SHOULD include <code>Link</code> headers with the relation-types set to <code>rel="http://open-services.net/core#resourceType"</code> and the Target URIs set to the <code>rdf:type</code> of resources that can be created in the LDPC.  Note: An LDPC can contain multiple types of resources, and the supported member types may change over time. Since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
 			</section>
 
 			<section id="createTypesPred"><h2 class="normalText">
@@ -329,11 +329,21 @@ dd {
 				header on an HTTP response to a given Request-URI.</p>
 
 			<section id="creationFactoryResourceShape"><h2 class="normalText">
-				Servers MAY describe constraints enforced on resource representations through the <code>http://open-services.net/ns/core#resourceShape</code> property of a Creation Factory resource as described in <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Creating_an_OSLC_Defined_Resourc">Creating an OSLC Defined Resource</a>.
+				Servers MAY describe constraints enforced on resource representations through the <code>http://open-services.net/ns/core#resourceShape</code> property of a Creation Factory resource.
 			</h2></section>
 
-			<section id="createsWithShapes"><h2 class="normalText">
-				In a response to an HTTP <code>POST</code> or <code>PUT</code> method on a given Request-URI referencing an LDPC, servers SHOULD include a <code>Link</code> header with the relation-type set to rel="http://open-services.net/core#constrainedBy" and the Target URI set to the URI of a resource that defines constraints on the to-be created or updated resource representation in the LDPC. The resource referenced by Target URI is RECOMMENDED to be a machine-readable representation such as OSLC Resource Shape [[OSLCCoreVocab]], but MAY be some variant or other constraint document. See [[LDP]] <a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
+      <section id="createsWithShapes"><h2 class="normalText">
+        In a response to an HTTP <code>OPTIONS</code>, <code>HEAD</code> or <code>GET</code> method on a given Request-URI referencing an LDPC, servers SHOULD include a <code>Link</code> header with the relation-type set to <code>rel="http://open-services.net/core#constrainedBy"</code> and the Target URI set to the URI of a resource that defines constraints on the to-be created or updated resource representation in the LDPC. The resource referenced by Target URI is RECOMMENDED to be a machine-readable representation such as OSLC Resource Shape [[OSLCCoreVocab]], but MAY be some variant or other constraint document. See [[LDP]] <a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
+      </h2>
+
+        <pre class='example'>
+        Link: &lt;http://example.com/shapes/bug&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"
+        </pre>
+        <p>The link header in the example above would be returned on an OPTIONS or HEAD request to a resource of type <code>&lt;http://open-services.net/ns/cm#Bug&gt;</code> to provide the URI of the creation or update constraints.</p>
+      </section>
+
+			<section id="createError"><h2 class="normalText">
+				In a response to an HTTP <code>POST</code> or <code>PUT</code> method on a given Request-URI referencing an LDPC, servers SHOULD include a <code>Link</code> header with the relation-type set to <code>rel="http://open-services.net/core#constrainedBy"</code> and the Target URI set to the URI of a resource that defines constraints that on the to-be created or updated resource representation in the LDPC that were not satisfied. The resource referenced by Target URI is RECOMMENDED to be a machine-readable representation such as OSLC Resource Shape [[OSLCCoreVocab]], but MAY be some variant or other constraint document. See [[LDP]] <a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
 			</h2>
 
 				<pre class='example'>
