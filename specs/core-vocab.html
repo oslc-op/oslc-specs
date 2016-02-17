@@ -427,36 +427,30 @@ colorConstraint
 			<p>For example, the <a href="http://open-services.net/bin/view/Main/QmVocabulary">OSLC Quality Management (QM) vocabulary</a> defines two properties that are approximately inverse to oslc_rm:validatedBy. These are oslc_qm:validatesRequirement and oslc_qm:validatesRequirementCollection. In this case the choice of inverse label “validates” for oslc_rm:validatedBy is consistent with the actual labels of the inverse properties, namely “validatesRequirement” and “validatesRequirementCollection”.</p>
 		</section>
 
-		<section class='informative'>
+		<section id='traceabilityAndImpact'>
 			<h2>Traceability and Impact type</h2>
 
 			<p>Some RDF properties express dependency relations between artifacts, and it is often very valuable to trace the impact of a change in an artifact to those artifacts that depend on it directly or indirectly. The concept of dependency is very general. For example, the concept of trace relations is described in SysML: “A generic trace requirement relationship provides a general-purpose relationship between a requirement and any other model element. The semantics of trace include no real constraints and therefore are quite weak.”</p>
 
-			<p>As a general guideline, if any triple that uses a given predicate may become invalid if the state of either its subject or object resources change, then we may legitimately regard that predicate as expressing a dependency relation, in which case it may be useful to explicitly describe the nature of the dependency.</p>
-			
-			<p>In a dependency relationship, the dependent resource is said to be downstream from the artifact it depends on.
-			The artifact it depends on is said to be upstream from the dependent artifact. This terminology reflects the normal
-			flow of work in the sense that artifacts flow downstream where new dependent artifacts are created.</p>
+			<p>As a general guideline, if any assertion involving a given predicate may become invalid if the state of either its subject or object resources change, then we may legitimately regard that predicate as expressing a dependency relation, in which case it may be useful to explicitly describe the nature of the dependency.</p>
 
-			<p>For example, a requirement is said to be upstream from a testcase that validates it because the requirement is
-			normally created before the testcase. Of course, it is possible that the testcase gets created first and then the
-			requirement is abstracted from it. However, the conceptual relation between requirements and testcases is that
-			requirements are prior and drive the creation of testcases.</p>
+			<p>An assertion describes a link between subject and object resources whose name is the property or predicate of the assertion. A dependency relationship may be in the same direction as the link, the opposite direction, both directions, or the link may not represent any dependency whose impact might need to be assessed.</p>
+
+			<p>For example, in assertions such as {requirement validatedBy testcase}, it may be important to assess the impact of a change in the requirement or a change in the testcase. Typically test cases are updated to reflect changes in requirements in order perform the correct validation. So in this case, property validatedBy would introduce impact that follows the link, from the subject requirement to the object testcase. However, if a team is doing test-driven development, they may treat test cases as formal, executable specifications of requirements and the requirement is simply an informal description of the test case. In this case, the team might consider the impact to be opposite of the link, from the testcase to the requirement.</p>
 
 			<p>The property <code>oslc:impactType</code> asserts that the subject property is a dependency relation and gives
-			the direction of impact. The resources <code>oslc:UpstreamImpact</code> and <code>oslc:DownstreamImpact</code> identify
-			the upstream and downstream directions. In addition, <code>oslc:SymmetricImpact</code> describes a symmetric dependency
-			relation in which there is no clear upstream or downstream direction. Finally, it may in some cases be useful to assert
-			that two artifacts are independent. The latter is described using <code>oslc:NoImpact</code>.</p>
+			the direction of impact. The resources <code>oslc:FollowsLink</code> and <code>oslc:OppositeLink</code> identify
+			whether the impact follows the direction of the assertion (subject to object), or the opposite direction (object to subject). <code>oslc:SymmetricImpact</code> describes a symmetric dependency
+			relation in which the property represents a dependency from both subject to object and object to subject. <code>oslc:NoImpact</code> indicates the predicate does not represent any dependency between the subject and object resources. </p>
 
-			<p>For example, the following triple (in Turtle notation) would be added a vocabulary:</p>
+			<p>For example, the following triple (in Turtle notation) would be added a vocabulary to indicate test cases are dependent on requirements:</p>
 
-			<code><pre class='example'>ex:validatedBy oslc:impactType oslc:DownstreamImpact .</pre></code>
+			<code><pre class='example'>ex:validatedBy oslc:impactType oslc:FollowsLink .</pre></code>
 
-			<p>The following triples would be added to a vocabulary:</p>
+			<p>The same dependency could also be described from the perspective of the test case. In this case, the dependency is opposite of the validatesRequirement predicate:</p>
 
-			<code><pre class='example'>ex:validatesRequirement oslc:impactType oslc:UpstreamImpact .
-ex:validatesRequirementCollection oslc:impactType oslc:UpstreamImpact.</pre></code>
+			<code><pre class='example'>ex:validatesRequirement oslc:impactType oslc:OppositeImpact .
+ex:validatesRequirementCollection oslc:impactType oslc:OppositeImpact.</pre></code>
 		</section>
 	</section>
 
