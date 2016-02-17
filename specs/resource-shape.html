@@ -219,12 +219,8 @@ dd {
 			start to use RDFS or OWL for this purpose. However, this is a
 			misapplication of those technologies.</p>
 
-		<p>It is well-known that the semantics of RDFS and OWL are defined
-			in terms of inference rules, not constraints. Reasoners will infer
-			new triples in an attempt to satisfy RDFS or OWL ontologies.
-			Sometimes this is exactly what a programmer wants, but if errors are
-			present in the data, then the inferred triples will be nonsense and,
-			worse, they may mask the presence of errors.</p>
+			<p>RDFS and/or OWL are used to define OSLC vocabularies which specify the terms (classes and properties) and their semantic meaning. Vocabularies don't define constraints on what can be asserted, rather they define the meaning of what was asserted, often through the use of reasoners that introduce inferred assertions. However, there are also situations where a vocabulary needs to be constrained in order to be used in a specific context for a specific purpose. RDFS and OWL are often not useful for this purpose as unless the vocabularies are carefully designed, reasoners can introduce unintended assertions that are not consistent with the specified purpose.
+			</p>
 
 		<p>
 			This document describes the Resource Shape specification, a
@@ -263,7 +259,7 @@ dd {
 			<dl>
 				<dt>applicability</dt>
 				<dd>
-					Shapes associated with a resource apply to that resource if the shape's <code>oslc:describes</code> property matches the type of the assocated resource, or the shape has no <code>oslc:describes</code> property in which case it applies to all resources associated with that shape. For all shapes that "apply to" or describes an associated resource, that resource should satisfy the constraints defined by those shapes. See <a href="#associating-and-applying-shapes">Associating and Applying Shapes</a> for the definition of how shapes are associated with resources, what associated shapes apply to a resource, and what it means if multiple shapes apply to a single resource.
+					Shapes associated with a resource apply to that resource if the shape's <code>oslc:describes</code> property matches the type of the assocated resource, or the shape has no <code>oslc:describes</code> property in which case it applies to all resources associated with that shape. For all shapes that "apply to" or describe an associated resource, that resource should satisfy the constraints defined by those shapes. See <a href="#associating-and-applying-shapes">Associating and Applying Shapes</a> for the definition of how shapes are associated with resources, what associated shapes apply to a resource, and what it means if multiple shapes apply to a single resource.
 				</dd>
 
 				<dt>association</dt>
@@ -273,7 +269,7 @@ dd {
 					may link to a shape using the property <a href="#instanceShape">oslc:instanceShape</a>,
 				    the described resource may be the entity request to or response from a
 					REST service whose service description links to a shape using the
-					property <a href="#resourceShape">oslc:resourceShape</a>, or the resource may be the object value of a Property whose <a href="#valueShape">oslc:valueShape</a> links to the constraining shape. More than
+					property <a href="#resourceShape">oslc:resourceShape</a>, or the resource may be the object value of an rdf:Property whose applicable <a href="#valueShape">oslc:valueShape</a> links to the constraining shape. More than
 					one shape may become associated with a described resource in a
 					given context. The shapes associated with a resource are the set of shapes to be checked for applicability. Not all the associated shapes are necessarily
 					applicable. Refer to the definition of applicability above.
@@ -295,8 +291,7 @@ dd {
 				</dd>
 
 				<dt>described resource</dt>
-				<dd>A described resource is the resource whose RDF graph is
-					being described by a shape.</dd>
+				<dd>A described resource is a resource described by some shape.</dd>
 
 				<dt>document</dt>
 				<dd>A representation of a resource. For example, an RDF
@@ -306,7 +301,7 @@ dd {
 				<dd>An RDF document may be regarded as a directed, labeled
 					multi-graph, or, simply, a graph, in which each triple of the
 					document corresponds to an arc of the graph. For each arc in the graph, the source
-					is the subject its triple, the target is the object of
+					is the subject of its triple, the target is the object of
 					its triple, and the label is the predicate of its triple.</dd>
 
 				<dt>object property</dt>
@@ -455,16 +450,11 @@ dd {
 			<li>how to associate shape resources with resources and services</li>
 		</ul>
 
-		<section  id="overview">
+		<section  id="overview" class='informative'>
 		<h2>Overview</h2>
 			<p>
 				A resource shape is a resource that describes the contents of, and
-				constraints on, the RDF representation of other resources. These constraints are intended to be applicable to OSLC core and domain vocabularies in order to express the domains sufficiently to support interoperability between clients and servers that use and support them. Resource shapes specify the minimum an implementation needs to do be considered compliant. Specifically:
-				<ul>
-					<li>All compliant implementations MUST do what the spec says when they get data that conforms to the shape.</li>
-					<li>Compliant implementations MAY also do something sensible when they get other data.</li>
-				</ul>
-				That is, the intention is not that an OSLC implementation would reject a message if it violated shape constraints, rather the intention is that implementations do what is specified by an OSLC spec when they get data that conforms to the shapes.  
+				constraints on, the RDF representation of other resources. These constraints are intended to be applicable to OSLC core and domain vocabularies in order to express the domains sufficiently to support interoperability between clients and servers that use and support them. Resource shapes specify the minimum an implementation needs to do be considered compliant. Specifically, shape constraints say how OSLC clients and servers must behave if the resources satisfy the applicable shape constraints, but they do not say what clients and servers may do if the applicable constraints are not satisfied.  
 			</p> 
 			<p>A shape
 				resource itself has an RDF representation which uses the terms
@@ -489,7 +479,7 @@ dd {
 				resource. When the object is a resource, that resource may itself be
 				described by another shape. Thus the Shapes specification is
 				powerful enough to describe complex graphs. Although the Shapes
-				specification works well in practice, it cannot describe arbritary
+				specification works well in practice, it cannot describe arbitrary
 				RDF graphs.
 			</p>
 
@@ -588,7 +578,7 @@ dd {
 				<dt>Case 2: Typed Shape</dt>
 				<dd>
 					S applies to R when S is linked via <a href="#describes">oslc:describes</a>
-					to a rdf:type T and R has rdf:type T.
+					to an rdf:type T and R has rdf:type T.
 				</dd>
 			</dl>
 			<p>If no shapes are associated with a resource then there are no
