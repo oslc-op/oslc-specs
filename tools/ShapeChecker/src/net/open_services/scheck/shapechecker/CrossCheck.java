@@ -10,6 +10,7 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 
+
 /**
  * Check that all vocabulary terms are used in some shape,
  * and that all shape classes, property predicates, and allowed value resources are defined in vocabularies.
@@ -36,8 +37,10 @@ public class CrossCheck
 
     /**
      * Build the maps of resources in vocabs and shapes.
+     * Optionally, print list of vocabulary terms.
+     * @param printTerms if true, a list of vocabulary terms is printed
      */
-    public void buildMaps()
+    public void buildMaps(boolean printTerms)
     {
         // Add vocabulary classes to vocabs map
         ResIterator vi = resultModel.getModel().listResourcesWithProperty(RDF.type, ResultModel.VocabResult);
@@ -128,6 +131,13 @@ public class CrossCheck
                 internalProps.put(prop, true);
                 termsInVocabs.put(prop, true);
             }
+        }
+
+        if (printTerms && !termsInVocabs.isEmpty())
+        {
+            // Show list of all vocabulary terms
+            System.out.println("List of vocabulary terms:");
+            termsInVocabs.keySet().stream().map(r->r.getLocalName()).sorted().forEachOrdered(s->System.out.println(s));
         }
     }
 

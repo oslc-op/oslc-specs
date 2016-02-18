@@ -97,11 +97,14 @@ public class Main
             }
         }
 
-        if (vocabularies.size() != 0 && shapes.size() != 0)
+        if (vocabularies.size() != 0)
         {
             CrossCheck crossCheck = new CrossCheck(resultModel);
-            crossCheck.buildMaps();
-            errors += crossCheck.check();
+            crossCheck.buildMaps(verbose);
+            if (shapes.size() != 0)
+            {
+                errors += crossCheck.check();
+            }
         }
 
         resultModel.getSummary().addLiteral(ResultModel.issueCount, errors);
