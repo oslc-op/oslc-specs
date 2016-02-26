@@ -10,8 +10,7 @@
 
 <#CommonProperties>  
         a   oslc:ResourceShape ;
-oslc:describes oslc:Any ;
-        dcterms:title   """Defines common properties that may be applicable to any OSLC resource.""" ;
+        dcterms:title   """Defines common properties that may be applicable to any OSLC resource. OSLC domains SHOULD use these properties where applicable rather than defining their own properties. The cardinality, representations, ranges, and other columns of the following table indicate typical usage, but a domain is free to apply its own constraints for particular resource shapes.""" ;
         oslc:property
             <#contributor>,
             <#creator>,
@@ -24,7 +23,7 @@ oslc:describes oslc:Any ;
             <#title>,
             <#type>,
             <#member>,
-            <#servicerProvider>,
+            <#serviceProvider>,
             <#instanceShape>,
             <#shortTitle>,
             <#shortId>,
@@ -68,7 +67,7 @@ oslc:describes oslc:Any ;
     oslc:propertyDefinition dcterms:identifier ;
     oslc:occurs oslc:Zero-or-many;
     dcterms:description """A unique identifier for a resource. Typically read-only and assigned by the 
-        service provider when a resource is created. Not typically intended for end-user display."""^^rdf:XMLLiteral ;
+service provider when a resource is created. Not typically intended for end-user display."""^^rdf:XMLLiteral ;
     oslc:valueType xsd:string .
 
 <#modified> a oslc:Property ;
@@ -82,7 +81,7 @@ oslc:describes oslc:Any ;
     oslc:name "relation" ;
     oslc:propertyDefinition dcterms:relation   ;
     oslc:occurs oslc:Zero-or-many;
-    dcterms:description "   Relation which identifies a related resource."^^rdf:XMLLiteral ;
+    dcterms:description "Relation which identifies a related resource."^^rdf:XMLLiteral ;
     oslc:valueType oslc:AnyResource ;
     oslc:representation oslc:Either .
 
@@ -115,19 +114,19 @@ oslc:describes oslc:Any ;
     oslc:propertyDefinition rdfs:member  ;
     oslc:occurs oslc:Zero-or-many;
     dcterms:description """OSLC domains might define a number of member or contains relationships
-        between resources. The rdfs:member property is suitable for use when only one such relationship 
-        needs to be defined, or when no additional semantics need to be implied by the property name """^^rdf:XMLLiteral ;
+between resources. The rdfs:member property is suitable for use when only one such relationship 
+needs to be defined, or when no additional semantics need to be implied by the property name """^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Either .
 
 #OSLC Properties
-<#servicerProvider> a oslc:Property ;
-    oslc:name "servicerProvider" ;
-    oslc:propertyDefinition oslc:servicerProvider  ;
+<#serviceProvider> a oslc:Property ;
+    oslc:name "serviceProvider" ;
+    oslc:propertyDefinition oslc:serviceProvider  ;
     oslc:occurs oslc:Zero-or-many;
     dcterms:description """A link to the resource's OSLC Service Provider. There may be cases when the 
-        subject resource is available from a service provider that implements multiple domain 
-        specifications, which could result in multiple values for this property."""^^rdf:XMLLiteral ;
+subject resource is available from a service provider that implements multiple domain 
+specifications, which could result in multiple values for this property."""^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
 
@@ -136,10 +135,10 @@ oslc:describes oslc:Any ;
     oslc:propertyDefinition oslc:instanceShape  ;
     oslc:occurs oslc:Zero-or-many;
     dcterms:description """The URI of a Resource Shape that describes the possible properties, occurrence, 
-        value types, allowed values and labels. This shape information is useful in displaying the subject
-        resource as well as guiding clients in performing modifications. Instance shapes may be specific 
-        to the authenticated user associated with the request that retrieved the resource, the current 
-        state of the resource and other factors and thus should not be cached."""^^rdf:XMLLiteral ;
+value types, allowed values and labels. This shape information is useful in displaying the subject
+resource as well as guiding clients in performing modifications. Instance shapes may be specific 
+to the authenticated user associated with the request that retrieved the resource, the current 
+state of the resource and other factors and thus should not be cached."""^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
 
@@ -154,14 +153,14 @@ oslc:describes oslc:Any ;
     oslc:name "shortId" ;
     oslc:propertyDefinition oslc:shortId  ;
     oslc:occurs oslc:Zero-or-many;
-    dcterms:description "Shorter form of dcterms:identifier for the resource, such as a number."^^rdf:XMLLiteral ;
+    dcterms:description "A short, human-readable, plain text value. This value should be unique in some context that is apparent to human users of a service."^^rdf:XMLLiteral ;
     oslc:valueType xsd:string .
 
 <#discussedBy> a oslc:Property ;
     oslc:name "discussedBy" ;
     oslc:propertyDefinition oslc:discussedBy  ;
     oslc:occurs oslc:Zero-or-many;
-    dcterms:description "   A series of notes and comments about this resource."^^rdf:XMLLiteral ;
+    dcterms:description "A series of notes and comments about this resource."^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Either .
 
@@ -170,23 +169,23 @@ oslc:describes oslc:Any ;
     oslc:propertyDefinition oslc:modifiedBy  ;
     oslc:occurs oslc:Zero-or-many;
     dcterms:description """The URI of a resource describing the entity that most recently modified the 
-        subject resource. The link target is usually a foaf:Person or foaf:Agent, but could be any type. 
-        This is modeled after dcterms:creator, but Dublin Core currently has no equivalent property. """^^rdf:XMLLiteral ;
+subject resource. The link target is usually a foaf:Person or foaf:Agent, but could be any type. 
+This is modeled after dcterms:creator, but Dublin Core currently has no equivalent property. """^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Either .
 
 
 <#Person> 
     a oslc:ResourceShape ;
-    oslc:describes oslc:Any ;
-    dcterms:title """Person is a resource defined by FOAF that is used 
-         as the value for a dcterms:creator or dcterms:contributor property. This shape specifies the minimal FOAF Person
-         properties that should be provided."""^^rdf:XMLLiteral ;
+    oslc:describes foaf:Person ;
+    dcterms:title """Person is a resource defined by FOAF that is used as the value for a dcterms:creator or dcterms:contributor property.
+This shape specifies the recommended minimal FOAF Person properties that should be provided for OSLC."""^^rdf:XMLLiteral ;
     oslc:property 
         <#name>,
         <#givenName>,
-        <#familyName>
-    .
+        <#familyName> ,
+        <#nick> ,
+        <#mbox> .
 
 <#name> a oslc:Property ;
     oslc:name "name";
@@ -209,4 +208,17 @@ oslc:describes oslc:Any ;
     dcterms:description "Family name of person expressed as simple text string."^^rdf:XMLLiteral ;
     oslc:valueType xsd:string.
 
+<#nick> a oslc:Property ;
+    oslc:name "nick" ;
+    oslc:propertyDefinition foaf:nick ;
+    oslc:occurs oslc:Zero-or-many ;
+    dcterms:description "A short informal nickname or login identifer expressed as simple text string."^^rdf:XMLLiteral ;
+    oslc:valueType xsd:string .
+
+<#mbox> a oslc:Property ;
+    oslc:name "mbox" ;
+    oslc:propertyDefinition foaf:mbox ;
+    oslc:occurs oslc:Zero-or-many ;
+    dcterms:description "A personal mailbox for this person, typically identified using the mailto: URI scheme (see RFC 2368)."^^rdf:XMLLiteral ;
+    oslc:valueType xsd:string .
 
