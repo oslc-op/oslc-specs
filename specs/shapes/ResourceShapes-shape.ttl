@@ -12,8 +12,9 @@
 <#ResourceShape>
     a oslc:ResourceShape ;
     dcterms:title "A shape resource describes the contents of and constraints on some set of described resources." ;
+    dcterms:description "A resource should satisfy all the constraints defined by its applicable shapes." ;
     oslc:describes oslc:ResourceShape ;
-    oslc:property <#shapeTitle>, <#describes>, <#property>, <#hidden> .
+    oslc:property <#shapeTitle>, <#shapeDescription>, <#describes>, <#property>, <#hidden> .
 
 <#shapeTitle> a oslc:Property ;
     oslc:name "title" ;
@@ -35,7 +36,7 @@
 <#property> a oslc:Property ;
     oslc:name "property" ;
     oslc:propertyDefinition oslc:property ;
-    dcterms:description "The defined properties that are expected to be contained in the described resources associated with this shape."^^rdf:XMLLiteral ;
+    dcterms:description "Indicates an expected property of the described resources."^^rdf:XMLLiteral ;
     oslc:occurs oslc:Zero-or-many ;
     oslc:readOnly true ;
     oslc:valueType oslc:Resource ;
@@ -58,7 +59,7 @@
     oslc:property 
         <#shapeDescription>,
         <#title>,  
-        <#allowedValue>, 
+        <#anonymousAllowedValue>, 
         <#allowedValues>, 
         <#defaultValue>, 
         <#hidden>, 
@@ -77,7 +78,7 @@
     oslc:name "description" ;
     oslc:propertyDefinition dcterms:description ;
     oslc:occurs oslc:Zero-or-one;
-    dcterms:description """The description of the defined property."""^^rdf:XMLLiteral ;
+    dcterms:description """The description of the defined constraint."""^^rdf:XMLLiteral ;
     oslc:valueType rdf:XMLLiteral ;
     oslc:readOnly true .
     
@@ -88,6 +89,14 @@
     dcterms:description """The summary of the defined property."""^^rdf:XMLLiteral ;
     oslc:valueType rdf:XMLLiteral ;
     oslc:readOnly true .
+
+<#anonymousAllowedValue> a oslc:Property ;
+    oslc:name "allowedValue" ;
+    oslc:propertyDefinition oslc:allowedValue ;
+    oslc:occurs oslc:Zero-or-many;
+    oslc:readOnly true ;
+    dcterms:description "Specifies the allowed values of a property."^^rdf:XMLLiteral .
+
     
 <#allowedValues> a oslc:Property ;
     oslc:name "allowedValues" ;
@@ -153,7 +162,7 @@
     oslc:name "range" ;
     oslc:propertyDefinition oslc:range ;
     oslc:occurs oslc:One-or-many;
-    dcterms:description """For object properties, an allowed object resource type."""^^rdf:XMLLiteral ;
+    dcterms:description "For object properties, specifies what the object resource type is expected to be."^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference ;
     oslc:readOnly true .
@@ -208,7 +217,7 @@
     oslc:propertyDefinition oslc:allowedValue ;
     oslc:occurs oslc:One-or-many;
     oslc:readOnly true ;
-    dcterms:description "An allowed value of a defined property."^^rdf:XMLLiteral .
+    dcterms:description "Specifies the allow values in an AllowedValue constraint."^^rdf:XMLLiteral .
 
 
 
