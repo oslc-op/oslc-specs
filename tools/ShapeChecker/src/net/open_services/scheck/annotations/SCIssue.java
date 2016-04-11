@@ -15,6 +15,7 @@ public @interface SCIssue
 {
     /**
      * A human-readable description of the issue.
+     * @return a human-readable description of the issue
      */
     String description();
 }

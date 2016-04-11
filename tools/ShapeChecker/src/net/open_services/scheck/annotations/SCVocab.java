@@ -15,21 +15,25 @@ public @interface SCVocab
 {
     /**
      * The full URI for the vocabulary.
+     * @return the full URI for the vocabulary.
      */
     String uri();
 
     /**
      * The preferred namespace prefix for the vocabulary.
+     * @return the preferred namespace prefix for the vocabulary.
      */
     String prefix();
 
     /**
      * A short title for the vocabulary/domain.
+     * @return a short title for the vocabulary/domain.
      */
     String domain();
 
     /**
      * A longer description of the vocabulary or domain.
+     * @return a longer description of the vocabulary or domain.
      */
     String description();
 }

@@ -105,7 +105,7 @@
  * <ul>
  * <li>{@code oslc:readOnly} with a boolean value</li>
  * <li>A single {@code oslc:allowedValues} property and/or one or more {@code oslc:allowedValue} properties</li>
- * <li>{@code oslc:defaultValue} with a value of type matching the {@oslc:valueType}</li>
+ * <li>{@code oslc:defaultValue} with a value of type matching the {@code oslc:valueType}</li>
  * <li>{@code oslc:hidden} with a boolean value</li>
  * <li>{@code oslc:isMemberProperty} with a boolean value</li>
  * <li>{@code oslc:maxSize} with an integer size</li>
@@ -130,8 +130,8 @@
  * <li>Each term referenced in a shape resource that uses the namespace of one
  * of the vocabularies must be defined in that vocabulary</li>
  * <li style="margin-top:5px;">Each term defined in a vocabulary should be used by at least one shape</li>
- * // TBD: the above rules do not handle abstract base classes, properties and individuals used by discovery resources without shapes, etc.
  * </ul>
+ * <p>TBD: the above rules do not handle abstract base classes, properties and individuals used by discovery resources without shapes, etc.</p>
  *
  * <h2>Results</h2>
  * <p>

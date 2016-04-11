@@ -12,7 +12,7 @@ import org.apache.jena.riot.RiotNotFoundException;
 
 
 /**
- * Main entrypoint to OSLC Shape & Vocabulary checker.
+ * Main entrypoint to OSLC Shape and Vocabulary checker.
  * @author Nick Crossley. Released to public domain 2015.
  */
 public class Main
@@ -23,7 +23,7 @@ public class Main
     private boolean   verbose      = false;
 
     /**
-     * Main entrypoint to OSLC Shape & Vocabulary checker.
+     * Main entrypoint to OSLC Shape and Vocabulary checker.
      * @param args command line arguments specify vocabularies and shapes to be checked
      * <ul>
      * <li>Each -v argument introduces a vocabulary, by local path or by URI</li>

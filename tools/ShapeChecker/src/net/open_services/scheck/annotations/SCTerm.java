@@ -15,11 +15,13 @@ public @interface SCTerm
 {
     /**
      * The type of the term: rdfs:Class, rdf:Property, or rdfs:Resource.
+     * @return the type of the term: rdfs:Class, rdf:Property, or rdfs:Resource.
      */
     TermType type();
 
     /**
      * A human-readable description of the term.
+     * @return a human-readable description of the term.
      */
     String description();
 }
