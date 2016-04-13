@@ -2,106 +2,158 @@
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head>
 <meta charset='utf-8' />
-<title>OSLC Core</title>
+<title>OSLC Core Version 3.0. Part 1: Overview</title>
+<link rel="stylesheet" type="text/css" href="../styles/oslc-styles.css" />
+<link rel="stylesheet" type="text/css" href="../styles/table-styles.css" />
+<link rel="stylesheet" type="text/css" href="../styles/definition-styles.css" />
 <script
 	src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js'
 	async class='remove'></script>
 <script class='remove'>
 	var respecConfig = {
-		specStatus : "WD",
+		specStatus : "ED",
 		shortName : "oslc-core",
 
-      // the document's citation label
-      citationLabel: "OSLC-Core-3.0",
+    edDraftURI : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-core.html",
+    prevED : "http://open-services.net/bin/view/Main/OslcCoreSpecification",
 
-      // OSLC version number for the spec, and the revision level of the document within its stage
-      oslcVersion: "3.0",
-      revision: "01",
+    // the document's citation label
+    citationLabel: "OSLC-Core-3.0",
+
+    // OSLC version number for the spec, and the revision level of the document within its stage
+    oslcVersion: "3.0",
+    revision: "01",
       
+		// Only include h1 and h2 levels in the TOC
+    maxTocLevel: 2,
 
-		// Only include h1 and h2 level
-        maxTocLevel: 2,
+    // if your specification has a subtitle that goes below the main
+    // formal title, define it here
+    // subtitle:  "an excellent document",
+
+    // if you wish the publication date to be other than the last modification, set this
+    // publishDate:  "2009-08-06",
+
+    // if the specification's copyright date is a range of years, specify
+    // the start date here:
+    // copyrightStart: "2005"
+
+    // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+    // and its maturity status
+    // previousPublishDate:  "1977-03-15",
+    // previousMaturity:  "WD",
+
+    // if this is a LCWD, uncomment and set the end of its review period
+    // lcEnd: "2009-08-05",
+
+    // chairs and editors, add as many as you like
+    // only "name" is required
 		chairs : [ {
 			name : "Jim Amsden",
+      mailto : "jamsden@us.ibm.com",
+      company: "IBM",
 			url : "http://www.ibm.com/"
 		}, {
 			name : "Martin Sarabura",
+      mailto: "msarabura@ptc.com",
+      company: "PTC",
 			url : "http://www.ptc.com"
 		} ],
 		editors : [ {
 			name : "Jim Amsden",
+      mailto : "jamsden@us.ibm.com",
+      company: "IBM",
 			url : "http://www.ibm.com/"
 		} ],
+
 		wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+		wgShortName : "oslc-core",
 		wgURI : "https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=oslc-core",
-		wgPublicList : "oslc-core-comment@lists.oasis-open.org",
+	    // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
+		wgPublicList : "oslc-core-comment",
+
+    namespaces : [ {
+            href : "http://open-services.net/ns/core#",
+            prefix : "oslc"
+    } ],
+
+    // Other parts of multi-part spec
+    additionalArtifacts : [
+      { title: "OSLC Core Version 3.0. Part 1: Overview (this document)", href: "oslc-core.html" },
+      { title: "OSLC Core Version 3.0. Part 2: Discovery", href: "discovery.html" },
+      { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: "resource-preview.html" },
+      { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: "dialogs.html" },
+      { title: "OSLC Core Version 3.0. Part 5: Attachments", href: "attachments.html" },
+      { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: "resource-shape.html" },
+      { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: "core-vocab.html" }
+    ],
+
+    relatedWork : [
+     	{title: "OSLC Core Version 3.0: Link Guidance", href: "../supporting-docs/link-guidance.html"}
+    ],
+
 		wgPatentURI : "XXX",
-		edDraftURI : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-core.html",
+
 		localBiblio : {
-          "OSLCCore2" : {
-              title:    "OSLC Core 2.0",
-              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification",
-              authors:  ["S. Speicher", "D. Johnson"],
-              status:   "Finalized",
-              publisher:  "http://open-services.net",
-          },
-          "OSLCQuery" : {
-              title:    "OSLC Core 2.0 Query Capability",
-              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities",
-              authors:  ["S. Speicher", "D. Johnson"],
-              status:   "Finalized",
-              publisher:  "http://open-services.net",
-          },
-          "OSLCSPR" : {
-              title:    "OSLC Core 2.0 Service Provider Resources",
-              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources",
-              authors:  ["S. Speicher", "D. Johnson"],
-              status:   "Finalized",
-              publisher:  "http://open-services.net",
-          },
-          "OSLCSPV": {
-              title:    "OSLC Core 2.0 Selective Property Values",
-              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values",
-              authors:  ["S. Speicher", "D. Johnson"],
-              status:   "Finalized",
-              publisher:  "http://open-services.net",
-          },
-          "OSLCPaging": {
-              title:    "OSLC Core 2.0 Resource Paging",
-              href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging",
-              authors:  ["S. Speicher", "D. Johnson"],
-              status:   "Finalized",
-              publisher:  "http://open-services.net",
-          },
-          "OSLCShapes": {
+      "OSLCCore2" : {
+          title:    "OSLC Core 2.0",
+          href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+          authors:  ["S. Speicher", "D. Johnson"],
+          status:   "Finalized",
+          publisher:  "http://open-services.net",
+      },
+      "OSLCQuery" : {
+          title:    "OSLC Core 2.0 Query Capability",
+          href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities",
+          authors:  ["S. Speicher", "D. Johnson"],
+          status:   "Finalized",
+          publisher:  "http://open-services.net",
+      },
+      "OSLCSPR" : {
+          title:    "OSLC Core 2.0 Service Provider Resources",
+          href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources",
+          authors:  ["S. Speicher", "D. Johnson"],
+          status:   "Finalized",
+          publisher:  "http://open-services.net",
+      },
+      "OSLCSPV": {
+          title:    "OSLC Core 2.0 Selective Property Values",
+          href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values",
+          authors:  ["S. Speicher", "D. Johnson"],
+          status:   "Finalized",
+          publisher:  "http://open-services.net",
+      },
+      "OSLCPaging": {
+          title:    "OSLC Core 2.0 Resource Paging",
+          href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging",
+          authors:  ["S. Speicher", "D. Johnson"],
+          status:   "Finalized",
+          publisher:  "http://open-services.net",
+      },
+      "OSLCShapes": {
 				title : "OSLC Resource Shape 3.0",
 				href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-shape.html",
 				authors : [ "Arthur Ryman", "Jim Amsden" ],
 				publisher : "OASIS",
-          },
-          "SHACL" : {
-              title:    "Shapes Constraint Language (SHACL)",
-              href:     "https://w3c.github.io/data-shapes/shacl/",
-              authors:  ["Holger Knublauch", "Arthur Ryman"],
-              status:   "Draft",
-              publisher:  "http://www.w3.org/",
-          },
-          "OpenIDConnect" : {
-              title : "OpenID Connect",
-              href : "http://openid.net/connect/",
-              publisher : "openid.net",
-         },
-          "SPARQL" : {
-              title : "SPARQL",
-              href : "http://www.w3.org/TR/rdf-sparql-query/",
-              publisher : "www.w3c.org",
-         },
-         "LDBestPractices": {
-              title : "Linked Data Best Practices",
-              href : "https://jazz.net/wiki/bin/view/LinkedData/BestPractices",
-              publisher : "jazz.net",
-         }
+      },
+      "SHACL" : {
+          title:    "Shapes Constraint Language (SHACL)",
+          href:     "https://w3c.github.io/data-shapes/shacl/",
+          authors:  ["Holger Knublauch", "Arthur Ryman"],
+          status:   "Draft",
+          publisher:  "http://www.w3.org/",
+      },
+      "OpenIDConnect" : {
+          title : "OpenID Connect",
+          href : "http://openid.net/connect/",
+          publisher : "openid.net",
+      },
+     "LDBestPractices": {
+          title : "Linked Data Best Practices",
+          href : "https://jazz.net/wiki/bin/view/LinkedData/BestPractices",
+          publisher : "jazz.net",
       }
+    }
 	};
 </script>
 <style type="text/css">
@@ -127,17 +179,16 @@ dd {
 </style>
 </head>
 <body>
+
+
 	<section id='abstract'>
 		<p>Defines the overall approach to Open Services for Lifecycle Collaboration (OSLC) based specifications and capabilities that extend and compliment W3C Linked Data Platform
-		[[LDP]]. OSLC Core 3.0 constitutes the approach outlined in this document
+		[[!LDP]]. OSLC Core 3.0 constitutes the approach outlined in this document
 		and capabilities referenced in other documents.</p>
 	</section>
-	<section id='sotd'>
-		<p>Current in progress editor's draft, expect change.</p>
-	</section>
-
-	<section id='toc'></section>
-	<hr/>
+<section id='toc'></section>
+<hr />
+<section id='sotd'></section>
 
 <section id='intro' class='informative'>
 <h2>Introduction</h2>  
@@ -153,9 +204,9 @@ unmanageable. In order to enable integration between a heterogeneous set of
 tools and components from various sources, there is a need for a sufficient
 supporting architecture that is loosely coupled, minimal, and
 standardized. OSLC is based on World Wide Web and Linked Data principles, such
-as those defined in the W3C Linked Data Platform [[LDP]], to create a cohesive
+as those defined in the W3C Linked Data Platform [[!LDP]], to create a cohesive
 set of specifications that can enable products, services, and other
-distributed network resources to interoperate successfully [[LDP]].</p>
+distributed network resources to interoperate successfully [[!LDP]].</p>
 
 <figure>
   <img src="images/oslc-architecture.png" />
@@ -169,7 +220,7 @@ scenarios such as Application Lifecycle Management (ALM) &amp; DevOps, Product
 Lifecycle Management (PLM), and Integrated Service Management (ISM). The OSLC approach focuses on software lifecycle management to ensure it meets a core set of scenarios and requirements. Nonetheless, it can be used by tools belonging to any other domains and cross-domain scenarios such as Internet of Things, back office application integration, and customer relationship management.</p>
 
 <p>The OSLC Core specifications provide additional capabilities that expand on
-the W3C LDP capabilities, as needed, to enable key integration scenarios. These capabilities define the essential and common technical elements of OSLC domain specifications and offers guidance on common concerns for creating, updating, retrieving, and linking to lifecycle resources based on W3C [[LDP]]. These specifications have emerged from the best practices and other work of other OSLC Member Section (MS)-affiliated Technical Committees (TCs), sometime referred to as OSLC domain TCs.  OSLC domain TCs focus on a certain domain or topic. The <a href="https://www.oasis-open.org/apps/org/workgroup/oslc-core/">OSLC Core TC</a> develops technical specifications, creates best practices documents and formulates design principles that can be leveraged by other OSLC MS-affiliated TCs to enable them to focus on domain-specific concerns.</p>
+the W3C LDP capabilities, as needed, to enable key integration scenarios. These capabilities define the essential and common technical elements of OSLC domain specifications and offers guidance on common concerns for creating, updating, retrieving, and linking to lifecycle resources based on W3C [[!LDP]]. These specifications have emerged from the best practices and other work of other OSLC Member Section (MS)-affiliated Technical Committees (TCs), sometime referred to as OSLC domain TCs.  OSLC domain TCs focus on a certain domain or topic. The <a href="https://www.oasis-open.org/apps/org/workgroup/oslc-core/">OSLC Core TC</a> develops technical specifications, creates best practices documents and formulates design principles that can be leveraged by other OSLC MS-affiliated TCs to enable them to focus on domain-specific concerns.</p>
 
 <figure>
   <img src="images/oslc-overview.png" />
@@ -185,27 +236,21 @@ motivate. However, a leading goal is to minimize and eliminate unnecessary
 dependencies to simplify adoption, which may result in no dependency on OSLC
 Core 3.0 specifications for some OSLC domains.</p>
 
-<p>This work is an evolution from the OSLC Core 2.0 [[OSLCCore2]] efforts,
+<p>This work is an evolution from the OSLC Core 2.0 [[!OSLCCore2]] efforts,
 taking the experience gained from that effort along with the common
 foundation on W3C LDP, to produce an updated set of specifications that are
 simpler, built on layered capabilities and easier to adopt.</p>
 
-</section>
-
-	<section id='conformance'></section>
-	
 	<section id="terms">
 		<h1>Terminology</h1>
-		<p>Terminology is based on W3C Linked Data Platform [[LDP]], W3C's
-			Architecture of the World Wide Web [[WEBARCH]] and Hyper-text
-			Transfer Protocol [[HTTP11]].</p>
+		<p>Terminology uses and extends the terminology and capabilities of W3C Linked Data Platform [[!LDP]], W3C's	Architecture of the World Wide Web [[WEBARCH]] and Hyper-text Transfer Protocol [[!HTTP11]].</p>
 
 		<dl class="glossary">
 			<dt>OSLC Server</dt>
-			<dd>LDP Server that also supports capabilities defined by at least on OSLC-based specification. See Server [[HTTP11]] and LDP Server [[LDP]].</dd>
+			<dd>LDP Server that also supports capabilities defined by at least on OSLC-based specification. See Server [[!HTTP11]] and LDP Server [[!LDP]].</dd>
 
 			<dt>OSLC Client</dt>
-			<dd>LDP Client that uses capabilities defined by some OSLC-based specifications. See Client [[HTTP11]] and LDP Client [[LDP]]. A particular software component or application could be an OSLC Server supporting a set of domains, and an OSLC Client of other domains depending on its needs.</dd>
+			<dd>LDP Client that uses capabilities defined by some OSLC-based specifications. See Client [[!HTTP11]] and LDP Client [[!LDP]]. A particular software component or application could be an OSLC Server supporting a set of domains, and an OSLC Client of other domains depending on its needs.</dd>
 
 			<dt>Domain</dt>
 			<dd>A topic area of a specific focus area and/or collection of disciplines.  Often OASIS OSLC-affiliated TCs are organized
@@ -246,20 +291,46 @@ simpler, built on layered capabilities and easier to adopt.</p>
 
 		<section id='deprecatedterms'>
 		<h2>Deprecated terms</h2>
-		<p>Previous revisions of OSLC-based specifications [[OSLCCore2]], used
+		<p>Previous revisions of OSLC-based specifications [[!OSLCCore2]], used
 			terminology that may no longer be relevant, accurate or
 			needed any more. Some of those deprecated terms are:
 		<dl class="glossary">
 			<dt>Provider (<em>deprecated</em>)</dt>
-			<dd>See Server [[HTTP11]].</dd>
+			<dd>See Server [[!HTTP11]].</dd>
 
 			<dt>Consumer (<em>deprecated</em>)</dt>
-			<dd>See Client [[HTTP11]].</dd>
+			<dd>See Client [[!HTTP11]].</dd>
 		</dl>
 		</section>
 	</section>
 
-	<section class='informative'>
+	<section id='references'><h3>References</h3></section>
+
+<section id='namespaces'>
+  <h2>RDF Namespaces</h2>
+  <p>OSLC Core defines the namespace URI of <code>http://open-services.net/ns/core#</code> with a namespace prefix of <code>oslc</code>.</p>
+   OSLC Core uses the following prefixes:
+   <table class="ruled">
+     <tr><th>Prefix</th><th>Namespace</th></tr>
+     <tr><td>dcterms</td><td><a href="http://purl.org/dc/terms/" target="_blank">http://purl.org/dc/terms/</a></td></tr>
+     <tr><td>foaf</td><td><a href="http://xmlns.com/foaf/0.1/" target="_blank">http://xmlns.com/foaf/0.1/</a></td></tr>
+     <tr><td>ldp</td><td><a href="http://www.w3.org/ns/ldp#" target="_blank">http://www.w3.org/ns/ldp#</a></td></tr>
+     <tr><td>owl</td><td><a href="http://www.w3.org/2002/07/owl#" target="_blank">http://www.w3.org/2002/07/owl#</a></td></tr>
+     <tr><td>prov</td><td><a href="http://www.w3.org/ns/prov#" target="_blank">http://www.w3.org/ns/prov#</a></td></tr>
+     <tr><td>rdf</td><td><a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#" target="_blank">http://www.w3.org/1999/02/22-rdf-syntax-ns#</a></td></tr>
+     <tr><td>rdfs</td><td><a href="http://www.w3.org/2000/01/rdf-schema#" target="_blank">http://www.w3.org/2000/01/rdf-schema#</a></td></tr>
+     <tr><td>vann</td><td><a href="http://purl.org/vocab/vann/" target="_blank">http://purl.org/vocab/vann/</a></td></tr>
+     <tr><td>vs</td><td><a href="http://www.w3.org/2003/06/sw-vocab-status/ns#" target="_blank">http://www.w3.org/2003/06/sw-vocab-status/ns#</a></td></tr>
+     <tr><td>xsd</td><td><a href="http://www.w3.org/2001/XMLSchema#" target="_blank">http://www.w3.org/2001/XMLSchema#</a></td></tr>
+   </table>
+</section>
+		
+    <section id='conventions'></section>
+	</section>
+
+	
+
+	<section id='motivation' class='informative'>
 		<h2>Goals/Motivation</h2>
 		<p>The primary goal of OSLC is to enable integration of federated, shared information across tools that support different, but related domains. OSLC was initially focused on development of Information Technology (IT) solutions involving processes, activities, work products and supporting tools for Application Lifecycle Management (ALM). However, OSLC capabilities could be applicable to other domains. The specific goals for OSLC Core 3.0 are to build on the existing OSLC Core 2.0 specifications to further facilitate the development and integration of domains and supporting tools that address additional integration needs. Specifically:
 		<ul>
@@ -306,7 +377,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
 
 	<section class='informative'>
 		<h2>Architecture</h2>
-		<p>In support of the previously stated goals and motivation, it is desired to have a consistent and recommended architecture. The architecture needs to support scenarios requiring a protocol to access, create, update and delete resources. [[LDP]] is the foundation for this protocol. Resources need to relate, or link, to one another utilizing a consistent, standard and web-scale data model. Resource Description Framework (RDF) [[rdf11-concepts]] is the foundation for this. The ability to work with these data models over HTTP protocols, is based on [[LDP]].  </p>
+		<p>In support of the previously stated goals and motivation, it is desired to have a consistent and recommended architecture. The architecture needs to support scenarios requiring a protocol to access, create, update and delete resources. [[!LDP]] is the foundation for this protocol. Resources need to relate, or link, to one another utilizing a consistent, standard and web-scale data model. Resource Description Framework (RDF) [[rdf11-concepts]] is the foundation for this. The ability to work with these data models over HTTP protocols, is based on [[!LDP]].  </p>
 
 		<p>Some scenarios require the need to integrate user interface components: either within a desktop or mobile web-browser, mobile device application, or rich desktop applications.  For these scenarios the technology is rapidly evolving and changing.  Priority should be based on existing standards such as HTML5, with use of <code>iframe</code> and <code>postMessage()</code>. [[HTML5]]</p>
 
@@ -337,7 +408,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
 				OSLC 3.0 servers MAY protect resources with HTTP Basic Authentication. OSLC Services that use HTTP Basic Authentication SHOULD do so only via SSL.
 			</h2></section>
 			<section id="oauth-auth"><h2 class="normalText">
-				OSLC 3.0 servers SHOULD protect resources with [[rfc6749]] Authentication utilizing [[OpenIDConnect]].
+				OSLC 3.0 servers SHOULD protect resources with [[!rfc6749]] Authentication utilizing [[!OpenIDConnect]].
 			</h2></section>
 		</section>
 		<section id="resourceDiscovery">
@@ -350,7 +421,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
 
 			<p>OSLC domain specifications specify the representations needed for the specific scenarios that they are addressing, and should recognize that different representations are appropriate for different purposes. For example, browser oriented scenarios might be best addressed by JSON or Atom format representations.</p>
 
-			<p>OSLC domain specifications are also expected to follow common practices and conventions that are in concert with existing industry standards and which offer consistency across domains. All of the OSLC specifications are built upon the standard RDF data model, allowing OSLC to align with the Linked-Data Platform [[LDP]]. In addition, all OSLC specifications have adopted the convention to illustrate most examples using Turtle and/or JSON-LD representations and will typically require these representations to enable consistency across OSLC implementations. </p>
+			<p>OSLC domain specifications are also expected to follow common practices and conventions that are in concert with existing industry standards and which offer consistency across domains. All of the OSLC specifications are built upon the standard RDF data model, allowing OSLC to align with the Linked-Data Platform [[!LDP]]. In addition, all OSLC specifications have adopted the convention to illustrate most examples using Turtle and/or JSON-LD representations and will typically require these representations to enable consistency across OSLC implementations. </p>
 
 			<section id="ldpRepresentations"><h2 class="normalText">
 				OSLC Services MUST provide and accept text/turtle and application/ld+json representations for each OSLC resource.</h2>
@@ -372,7 +443,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
 			<h2>Resource Operations</h2>
 			<p>Resource Operations specify how clients create, read, update and delete resources managed by servers.</p>
 			<section id="crudOperations"><h2 class="normalText">
-				OSLC Services use HTTP for create, retrieve, update and delete operations on resources. OSLC Services MUST comply with the HTTP specification [[HTTP11]]. 
+				OSLC Services use HTTP for create, retrieve, update and delete operations on resources. OSLC Services MUST comply with the HTTP specification [[!HTTP11]]. 
 			</h2></section>	
 			<section id="updatedOperation"><h2 class="normalText">
 				Because the update process may involve first getting a resource, modifying it and then later putting it back to the server, there is the possibility of a conflict, e.g. some other client may have have updated the resource since the GET. To mitigate this problem, OSLC Services SHOULD use the HTTP <code>If-Match</code> header on a PUT request:
@@ -383,7 +454,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
 				</ul> 		
 			</h2></section>	
 			<section id="selectiveProperties"><h2 class="normalText">
-				OSLC Services MAY support a technique called <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values">Selective Property Values</a> as defined in [[OSLCCore2]] to enable clients to retrieve only selected property values. This capability is included to preserve compatibility with [[OSLCCore2]].
+				OSLC Services MAY support a technique called <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values">Selective Property Values</a> as defined in [[!OSLCCore2]] to enable clients to retrieve only selected property values. This capability is included to preserve compatibility with [[!OSLCCore2]].
 			</h2></section>	
 		</section>
 		<section id="resourcePreview">
@@ -396,9 +467,9 @@ simpler, built on layered capabilities and easier to adopt.</p>
 		</section>
 		<section id="query" class='informative'>
 			<h2>Query</h2>
-			<p>OSLC servers will often manage large amounts of potentially complex link-data entities. Practical use of this information will require some query capability that minimally supports selection of matching elements, filtering of desired properties and ordering. Ideally OSLC Core would rely on existing standard query services such as [[SPARQL]] that may be integrated with [[LDP]]. The <a href="https://www.w3.org/community/ldql/">Linked Data Query Language Community Group</a> is currently working on a Query Language for [[LDP]]. However, the reality is that many OSLC servers are adapters built on existing data management capabilities that are not built on an RDF foundation and do not provide SPARQL endpoints for query. In order to address the need for standard query capability to enable integration, [[OSLCCore2]] introduced a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Capability</a> and a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Syntax</a> that were intended to be simple enough that they could be implemented on a wide range of existing server architectures. In practice this has proven to be more difficult than anticipated. But the need is still there. OSLC Core 3.0 is built on [[LDP]] and future OSLC domain servers may provide more consistent access to SPARQL endpoints. Eventually that may lead to the deprecation of OSLC Core 2.0 Query Capability. In the meantime, OSLC Core 2.0 Query Capability is still available for OSLC domain specifications that need it.</p>
+			<p>OSLC servers will often manage large amounts of potentially complex link-data entities. Practical use of this information will require some query capability that minimally supports selection of matching elements, filtering of desired properties and ordering. Ideally OSLC Core would rely on existing standard query services such as [[RDF-SPARQL-QUERY]] that may be integrated with [[!LDP]]. The <a href="https://www.w3.org/community/ldql/">Linked Data Query Language Community Group</a> is currently working on a Query Language for [[!LDP]]. However, the reality is that many OSLC servers are adapters built on existing data management capabilities that are not built on an RDF foundation and do not provide SPARQL endpoints for query. In order to address the need for standard query capability to enable integration, [[!OSLCCore2]] introduced a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Capability</a> and a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Syntax</a> that were intended to be simple enough that they could be implemented on a wide range of existing server architectures. In practice this has proven to be more difficult than anticipated. But the need is still there. OSLC Core 3.0 is built on [[!LDP]] and future OSLC domain servers may provide more consistent access to SPARQL endpoints. Eventually that may lead to the deprecation of OSLC Core 2.0 Query Capability. In the meantime, OSLC Core 2.0 Query Capability is still available for OSLC domain specifications that need it.</p>
 			<section id="queryCapability"><h2 class="normalText">
-				OSLC Servers MAY support a <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities">Query Capability</a> as defined in [[OSLCCore2]] to enable clients to perform selection and projection operations in order to retrieve a selected subset of resources and property values from an LDPC. This capability is included to preserve compatibility with [[OSLCCore2]].
+				OSLC Servers MAY support a <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities">Query Capability</a> as defined in [[!OSLCCore2]] to enable clients to perform selection and projection operations in order to retrieve a selected subset of resources and property values from an LDPC. This capability is included to preserve compatibility with [[!OSLCCore2]].
 			</h2></section>	
 		</section>
 		<section id="resourcePaging">
@@ -408,12 +479,12 @@ simpler, built on layered capabilities and easier to adopt.</p>
 				OSLC Services SHOULD support <a href="https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp-paging.html">Linked Data Platform Paging 1.0</a> to enable clients to retrieve large LDP resources (LDPRs) a page at a time.
 			</h2></section>	
 			<section id="pagingCapability"><h2 class="normalText">
-				OSLC Services MAY support a <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Resource Paging Capability</a> as defined in [[OSLCCore2]] to enable clients to retrieve large resources a page at a time. This capability is included to preserve compatibility with [[OSLCCore2]].
+				OSLC Services MAY support a <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Resource Paging Capability</a> as defined in [[!OSLCCore2]] to enable clients to retrieve large resources a page at a time. This capability is included to preserve compatibility with [[!OSLCCore2]].
 			</h2></section>	
 		</section>
 		<section id="attachments">
 			<h2>Attachments</h2>
-			<p><a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/attachments.html">Attachments</a> describes a minimal way to manage attachments related to web resources using LDP-Containers and Non-RDF Source [[LDP]].</p>
+			<p><a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/attachments.html">Attachments</a> describes a minimal way to manage attachments related to web resources using LDP-Containers and Non-RDF Source [[!LDP]].</p>
 		</section>
 		<section id="errorResponses">
 			<h2>Error Responses</h2>
@@ -437,31 +508,35 @@ simpler, built on layered capabilities and easier to adopt.</p>
 			</ul>
 		</p>
 
-		<p>OSLC Core 3.0 does not address compatibility with versions of OSLC prior to [[OSLCCore2]]. Servers wishing to support compatibility with versions prior to 2.0 should follow <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Specification_Versioning">OSLC Core 2.0 Specification Versioning</a>.</p>
+		<p>OSLC Core 3.0 does not address compatibility with versions of OSLC prior to [[!OSLCCore2]]. Servers wishing to support compatibility with versions prior to 2.0 should follow <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Specification_Versioning">OSLC Core 2.0 Specification Versioning</a>.</p>
 	</section>
 
-	<section class="appendix informative" id="history">
-	<h2>Change History</h2>
-	<p>Below is a summary of some of the changes in this draft</p>
+<section class='appendix informative'>
+	<h2>Acknowledgements</h2>
+	<p>The following individuals have participated in the creation of this specification and are gratefully acknowledged:</p>
 
-	<ul>
-        <li>2015-08-03 Updates required for OSLC Core 2.0 compatibility</li>
-        <li>2015-03-18 Removed actions and authentication links that are out of scope for 3.0 (SP)</li>
-        <li>2015-03-16 Add links for Discovery and Common Vocabulary Terms (SP)</li>
-	    <li>2015-01-22 Various improvements from feedback from Jad El-khoury (SS)</li>
-	    <li>2015-01-21 Added definition of Resource Shape (SS)</li>
-	    <li>2015-01-21 Various improvements from feedback from Arthur Ryman (SS)</li>
-	    <li>2015-01-21 Various improvements from feedback from Martin Pain (SS)</li>
-	    <li>2015-01-15 Various improvements from feedback from Sam Padgett (SS)</li>
-	    <li>2015-01-15 Various improvements from feedback from Lonnie VanZandt (SS)</li>
-	    <li>2014-12-03 Renamed from overview and created list of capability specs/docs (SS)</li>
-	</ul>
-	</section>
+<p><b>Participants</b>:</p><p style="margin-left: 40px">
+James Amsden, IBM (Chair)<br>
+Nick Crossley, IBM<br>
+Jad El-khoury,  Swedish Royal Institute of Technology<br>
+Ian Green, IBM<br>
+David Honey, IBM<br>
+Jean-Luc Johnson, Airbus Group SAS<br>
+Harish Krishnaswamy, Software AG, Inc.<br>
+Arnaud LeHors, IBM<br>
+Sam Padget, IBM<br>
+Martin Pain, IBM<br>
+Arthur Ryman, IBM<br>
+Martin Sarabura, PTC (Chair)<br>
+Steve Speicher, IBM</p>
+</section>
 
-	<section class='appendix informative'>
-		<h2>Acknowledgments</h2>
-		<p>Editor would like to thank to OSLC Core TC for contributions and feedback, especially: Jad El-khoury, David Green,
-		Samuel Padgett, Martin Pain, Arthur Ryman, Lonnie VanZandt</p>
-	</section>
+<section class="appendix informative" id="history">
+<h2>Change History</h2>
+<p>Below is a summary of some of the changes since Committee Specification Draft:</p>
+
+<ul>
+</ul>
+</section>
 </body>
 </html>

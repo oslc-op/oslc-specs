@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>OSLC Core Vocabulary</title>
+<title>OSLC Core Version 3.0. Part 7: Vocabulary</title>
 <meta charset='utf-8'>
 <link rel="stylesheet" type="text/css" href="../../styles/oslc-styles.css" />
 <link rel="stylesheet" type="text/css" href="../../styles/table-styles.css" />
@@ -11,27 +11,25 @@
 	var respecConfig = {
 		// specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN). If in doubt use WD.
 		// See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
-		specStatus : "WD",
+		specStatus : "ED",
+		// if there a publicly available Editor's Draft, this is the link
+		edDraftURI:           "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/core-vocab.html",
+    prevED : "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA",
 
-        // Only include h1 and h2 level
-        maxTocLevel: 2,
+    // Only include h1 and h2 level
+    maxTocLevel: 2,
 
 		// the specification's short name, as in http://oasis-open.org/
 		shortName : "oslc-core",
 
-      // the document's citation label
-      citationLabel: "OSLC-CoreVocab-3.0",
+	  // the document's citation label
+	  citationLabel: "OSLC-CoreVocab-3.0",
 
-      // OSLC version number for the spec, and the revision level of the document within its stage
-      oslcVersion: "3.0",
-      revision: "01",
+	  // OSLC version number for the spec, and the revision level of the document within its stage
+	  revision: "01",
 
-      // if your specification has a subtitle that goes below the main
-      // formal title, define it here
-      subtitle:             "Configuration Resources",
-
-		// if your specification has a subtitle that goes below the main
-		// formal title, define it here
+	  // if your specification has a subtitle that goes below the main
+	  // formal title, define it here
 		subtitle   :  "Core Vocabulary",
 
 		// if you wish the publication date to be other than the last modification, set this
@@ -42,37 +40,52 @@
 		// previousPublishDate:  "1977-03-15",
 		// previousMaturity:  "WD",
 
-		// if there a publicly available Editor's Draft, this is the link
-		edDraftURI:           "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/core-vocab.html",
 
 		// if this is a LCWD, uncomment and set the end of its review period
 		// lcEnd: "2009-08-05",
 
 		// chairs, 1 or many
-		chairs : [ {
-			name : "Jim Amsden",
-			url : "http://www.ibm.com/"
-		}, {
-			name : "Martin Sarabura",
-			url : "http://www.ptc.com"
-		} ],
-		editors : [ {
-			name : "Jim Amsden",
-			url : "http://www.ibm.com/"
-		}, {
-			name : "Steve Speicher",
-			url : "http://stevespeicher.me/",
-			mailto : "sspeiche@us.ibm.com",
-			company : "IBM",
-			companyURL : "http://ibm.com/"
-		} ],
-		wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
-		wgURI : "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
-		namespaces : [ {
-			href : "http://open-services.net/ns/core#",
-			prefix : "oslc"
-		} ],
-		wgPublicList : "oslc-core-comments",
+    chairs : [ {
+      name : "Jim Amsden",
+      mailto : "jamsden@us.ibm.com",
+      company: "IBM",
+      url : "http://www.ibm.com/"
+    }, {
+      name : "Martin Sarabura",
+      mailto: "msarabura@ptc.com",
+      company: "PTC",
+      url : "http://www.ptc.com"
+    } ],
+    editors : [ {
+      name : "Jim Amsden",
+      mailto : "jamsden@us.ibm.com",
+      company: "IBM",
+      url : "http://www.ibm.com/"
+    } ],
+
+    wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+    wgShortName : "oslc-core",
+    wgURI : "https://www.oasis-open.org/apps/org/workgroup/oslc-core/",
+    wgPublicList : "oslc-core-comments",
+
+    namespaces : [ {
+            href : "http://open-services.net/ns/core#",
+            prefix : "oslc"
+    } ],
+
+    additionalArtifacts : [
+      { title: "OSLC Core Version 3.0. Part 1: Overview", href: "oslc-core.html" },
+      { title: "OSLC Core Version 3.0. Part 2: Discovery", href: "discovery.html" },
+      { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: "resource-preview.html" },
+      { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: "dialogs.html" },
+      { title: "OSLC Core Version 3.0. Part 5: Attachments", href: "attachments.html" },
+      { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: "resource-shape.html" },
+      { title: "OSLC Core Version 3.0. Part 7: Vocabulary (this document)", href: "core-vocab.html" }
+    ],
+
+    relatedWork : [
+     	{title: "OSLC Core Version 3.0: Link Guidance", href: "../supporting-docs/link-guidance.html"}
+    ],
 
 		localBiblio : {
 			"OSLCCore3" : {
@@ -144,27 +157,28 @@ dd {
 
 	<section id='abstract'>Core Vocabulary defines the OSLC Core RDF vocabulary terms and resources, that have broad applicability across various domains.</section>
 
-	<section id='sotd'><em>Evolving editor's working draft, expect changes. Feedback welcome.</em></section>
-
-	<section id='toc'></section>
-	<hr/>
+  <section id='toc'></section>
+  <hr />
+  <section id='sotd'></section>
 
 	<section id='intro' class='informative'>
 		<h2>Introduction</h2>
 		<p>Various resources and properties may be so commonly used or apply so broadly that it makes sense to define them in one place so they can be easily reused.  Some common examples are short names or labels, error messages, discussion threads, traceability/impacts relationship behavior or annotating other vocabulary terms.</p>
-	</section>
-
-	<section id='conformance'></section>
 
 	<section id="terms">
 		<h1>Terminology</h1>
-		<p>Terminology is based on OSLC Core Overview [[OSLCCore3]], W3C Linked Data Platform [[LDP]], W3C's
+		<p>Terminology uses and extends the terminology and capabilities of OSLC Core Overview [[!OSLCCore3]], W3C Linked Data Platform [[!LDP]], W3C's
 			Architecture of the World Wide Web [[WEBARCH]],  Hyper-text
-			Transfer Protocol [[HTTP11]].</p>
+			Transfer Protocol [[!HTTP11]].</p>
 		<dl>
 			<dt class='loc-heading'><dfn>Archived Resource</dfn></dt>
 			<dd>A resource in which an explicit action has been performed to mark the resource as no longer active and may be removed from typical user interactions.  As a consequence, an archived resource should be considered immutable.</dd>
 		</dl>
+	</section>
+
+  <section id='references'><h3>References</h3></section>
+	<section id='conventions'></section>
+
 	</section>
 
 	<section id="motivation" class='informative'>
@@ -196,7 +210,7 @@ dd {
 			<li>Specify what servers all allow for prefilling delegated dialogs.</li>
 			<li>Describe the results of query operations.</li> 
 		</ul></p>
-		<p>Constraints on OSLC Core and Domain resources SHOULD be described using [[ResourceShapes]] which is included as part of the OSLC Core multi-part specifications. Servers MAY use other constraint languages such as [[SHACL]] to define resource constraints.</p>
+		<p>Constraints on OSLC Core and Domain resources SHOULD be described using [[!ResourceShapes]] which is included as part of the OSLC Core multi-part specifications. Servers MAY use other constraint languages such as [[SHACL]] to define resource constraints.</p>
 	</section>
 
 	<section id="enumerations" class="informative">
@@ -312,8 +326,8 @@ colorConstraint
 			</h2></section>
 
 			<section id="vocabReuse"><h2 class="normalText">
-			OSLC Core, domain and other extensions SHOULD reuse existing vocabulary terms from stable vocabularies such as [[DC-TERMS]], RDF [[rdf11-concepts]], RDF Schema [[rdf-schema]],
-			[[FOAF]], [[skos-reference]] and OSLC.  New vocabulary terms should only be created when there is no clear existing choice available. See the [[LDP]] <a href="http://www.w3.org/TR/ldp/#ldprs-gen-reusevocabsuchas">similar clause on reuse</a>.
+			OSLC Core, domain and other extensions SHOULD reuse existing vocabulary terms from stable vocabularies such as [[!DC-TERMS]], RDF [[!rdf11-concepts]], RDF Schema [[!rdf-schema]],
+			[[!FOAF]], [[skos-reference]] and OSLC.  New vocabulary terms should only be created when there is no clear existing choice available. See the [[!LDP]] <a href="http://www.w3.org/TR/ldp/#ldprs-gen-reusevocabsuchas">similar clause on reuse</a>.
 			</h2></section>
 
 			<p>See <a href="#rdfvocab" class="sectionRef"></a> for details on common property terms.</p>
@@ -363,7 +377,7 @@ colorConstraint
 			<section id="errMsg"><h2 class="normalText">OSLC Servers SHOULD use the <a href="shapeError">Error resource</a> defined below as the basis for forming error responses.</h2>
 			</section>
 
-			<section id="errFormat"><h2 class="normalText">OSLC Servers SHOULD return an <a href="shapeError">Error resource</a> using the same representation format requested by the client via the HTTP <code>Accept</code> request header. [[HTTP11]]</h2>
+			<section id="errFormat"><h2 class="normalText">OSLC Servers SHOULD return an <a href="shapeError">Error resource</a> using the same representation format requested by the client via the HTTP <code>Accept</code> request header. [[!HTTP11]]</h2>
 			</section>
 
 			<section id="errFormatStatusCode"><h2 class="normalText">OSLC Clients SHOULD treat the <code>oslc:statusCode</code> as a String that starts with digits, but may contain non-digit text.</h2>
@@ -459,7 +473,7 @@ ex:validatesRequirementCollection oslc:impactType oslc:OppositeImpact.</pre></co
 		at advertised URLs.</p>
 	</section>
 
-	<section class='appendix' id="rdfvocab">
+	<section id="rdfvocab">
 		<h2>Terms</h2>
 
 			<div title='RDF Vocabulary for OSLC Core Common'
@@ -471,27 +485,14 @@ ex:validatesRequirementCollection oslc:impactType oslc:OppositeImpact.</pre></co
 
 	</section>
 
-	<section class='appendix informative'>
-		<h2>Acknowledgments</h2>
-		<p>Many thanks to the various OASIS Core TC members and other key contributors and reviewers.</p>
-	</section>
+<section class="appendix informative" id="history">
+<h2>Change History</h2>
+<p>Below is a summary of some of the changes since Committee Specification Draft:</p>
 
-<!--
-	<section class='appendix informative'>
-		<h2>Change History</h2>
-		<p>The change history is up to the editors to insert a brief summary of
-changes, ordered by most recent changes first and with heading from which
-public draft it has been changed from.</p>
- -->
-<!--
-	<section>
-		<h2>Detailed history</h2>
-<!-- <blockquote><em><a href="http://sspeiche.github.io/respec/examples/oslc/template-spec.html">Working Draft</a></em></blockquote> -->
-<!--
-		<ul>
-			<li>2014-10-20 - Provide history, prefer autogen from SCM tool...conclude with initials (SS)</li>
-		</ul>
-	</section>-->
+<ul>
+</ul>
+
+</section>
 
 </body>
 </html>
