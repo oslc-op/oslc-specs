@@ -155,7 +155,7 @@ Now that we've defined our terminology, let's move on to expressing relationship
 <p>The RDF data model gives us a number of value-types to express
 relationships, some more complex than others. We expect that the
 majority of links will be expressed with the most simple option, URI
-Reference or as it is known in conversation, a Link. In this simple case, 
+Reference or as it is known in conversation, a Link. In this simple case,
 a Link refers to a RDF assertion where the predicate is the URI. It is the
 subject, predicate, object that represents the relationship.
 For more complex
@@ -226,19 +226,34 @@ providers when an unexpected type is encountered:</p>
 
 <section id="link-in-one-place">
 <h2>Store link information in one place</h2>
-<p>By "store" we mean the resource that contains the link assertion. Link information should be captured in one place to avoid information redundancy and the associated information maintenance issues.</p> 
+<p>By "place" we mean the resource that contains the link assertion.
+In most cases, link information should be captured in one place to avoid information redundancy and the associated information maintenance issues.</p>
 
 <p>There are two general sources of information redundancy:
 <ol>
   <li>Inverse properties</li>
   <li>Duplicate assertions</li>
 </ol>
-Inverse properties create significant information redundancy. For example, assertions A ex:affects B and B ex:isAffectedBy A require both assertions to be updated in order to maintain information integrity. One of these assertions, perhaps the "isAffectedBy", predicate should not exist. The predicate to keep depends on the direction of the relationship that is most often known or requested by users. Inverse properties are also usually unnecessary because it is often easy to specify queries that specify the subject or object, allowing the relationship to be "navigated" in either direction.</p>
+Inverse properties create significant information redundancy.
+For example, assertions A ex:affects B and B ex:isAffectedBy A require both assertions to be updated in order to maintain information integrity.
+Inverse properties are also usually unnecessary because it is often easy to specify queries that specify the subject or object,
+allowing the relationship to be "navigated" in either direction.
+One of these assertions, perhaps the "isAffectedBy", should not exist.
+The predicate to keep is a design choice, depending partly on the direction of the relationship that is most often known or requested by users,
+and partly on the expected ordering of development of the resources involved.
+It is often better to have a link stored in the resource that is developed later (the 'downstream' artifact),
+so that the previously completed end of the link does not need to be updated when creating the link.
+</p>
 
-<p>Duplicated triples have the same problem as any redundancy, and should be avoided whenever possible. There are times when duplicate triples are necessary, and there is a preferred way to use them. For example, a request to GET resource A might respond with triple "A ex:affects B", and a request to GET resource B might also respond with the same "A ex:affects B" triple. If they are on different servers then B's assertion might get out of date. However the client should be able to tell that this assertion is from a non-definitive source as the subject's URI has a different host/port than the request URI. This redundancy may be required to provide the information independently from different servers. But it must be handled with care to avoid data integrity issues.</p> 
+<p>Duplicated triples have the same problem as any redundancy, and should be avoided whenever possible.
+This redundancy may be required to provide the information independently from different servers,
+but it must be handled with care to avoid data integrity issues.</p>
+There are times when duplicate triples are necessary, and there is a preferred way to use them.
+For example, a request to GET resource A might respond with triple "A ex:affects B", and a request to GET resource B might also respond with the same "A ex:affects B" triple.
+If they are on different servers then B's assertion might get out of date.
+Clients may judge the authority of any RDF statement based on its origin or provenance.
 
-<p>Storing the link in one place simplifies updates and eliminates the need to
-rely on inferencing to determine inverse property values.</p>
+<p>Storing the link in one place simplifies updates.</p>
 </section>
 </section>
 
@@ -324,11 +339,10 @@ Assuming the subscriber scenario, the example <a href="#eg2">below</a> shows how
 
 &lt;/rdf:RDF&gt;
 </pre>
-<p>And here's how to express the same within the JSON format specified by
-OSLC Core. Because we already represent valueType Resource as a JSON
-object, we can simply add annotating property-values directly into
-that. In this case, adding <code>terms:expirationDate</code> to the
-<code>terms:subscribesTo</code> object.</p>
+<p>And here's how to express the same within the JSON format specified by OSLC Core.
+Because we already represent valueType Resource as a JSON object,
+we can simply add annotating property-values directly into that.
+In this case, adding <code>terms:expirationDate</code> to the <code>terms:subscribesTo</code> object.</p>
 
 <pre class="example" id="eg4" title="Link as reified statement in OSLC JSON format">
 {
@@ -354,7 +368,13 @@ that. In this case, adding <code>terms:expirationDate</code> to the
 }
 </pre>
 <p>
-Although the approaches above work to allow anchors to represent links with properties, reification can have entailment and inferencing issues. When there is a need to reify a statement in order to make statements about the stagement (called hearsay), this may be an indication that there is a missing class in the RDF vocabulary. Rather than reifying the statement, the modeler can create a separate class and create specific relationships to that class. That may actually improve the model. The example above could be modeled by introducing a Subscription to capture information about a customer and their magazine subscriptions.
+Although the approaches above work to allow anchors to represent links with properties,
+reification can have entailment and inferencing issues.
+When there is a need to reify a statement in order to make statements about the stagement (called hearsay),
+this may be an indication that there is a missing class in the RDF vocabulary.
+Rather than reifying the statement, the modeler can create a separate class and create specific relationships to that class.
+That may actually improve the model.
+The example above could be modeled by introducing a Subscription to capture information about a customer and their magazine subscriptions.
 This is sometimes called an associative object.
 </p>
 <pre class="example" id="eg5" title="Using an associative object using Turtle syntax">
@@ -381,74 +401,56 @@ This is sometimes called an associative object.
         terms:expirationDate  &quot;2010-06-03&quot; .
 </pre>
 <p>In this example, the Subscription subject has all the required information including the magazine, subscriber,
-anual price, etc. There is no need to reify any statements. A simple query will provide the list of magazines 
+anual price, etc. There is no need to reify any statements. A simple query will provide the list of magazines
 a customer subscribes to.</p>
 </section>
 </section>
 
 <section id="Antipattern">
 <h2>Anti-patterns</h2>
-<p>There are also some link anti-patterns that clients and servers should avoid.</p>
-<section id="link-with-inline-values">
- <h2>Link with inlined values of target</h2>
+<p>There are also some anti-patterns that clients and servers should avoid.</p>
+<section id="use-of-blank-node">
+ <h2>Use of Blank Nodes</h2>
 
-<p>Using in-lined values from the target of a link may make it is possible to get properties from the target of the
- link. This allows a client to get links and some information from the
- target of each link in one HTTP request per page of results, saving
- the client the expense of dereferencing each link. Although this pattern may be useful, is not recommended in OSLC resource design.</p>
+<p>Blank nodes may be a convenient shorthand to use in examples -
+especially in Turtle where the [ ... ] syntax makes blank nodes easy to use.
+However, blank nodes may make queries and updates much harder, since there is no way to reference a specific blank node later.
+Introducing an explicit resource with its own URI is usually better practice.</p>
 
 <p>
-Below is an example of a Blog Entry resource containing a link to an
-uploaded-file resource of type <code>oslc_blog:UploadedFile</code> and
-with the <code>dcterms:title</code> of that resource inlined. This
-enables the client to know the type and title of the target resource
-without having to do a separate HTTP GET request.
-<pre class="example" id="eg6" title="Blog entry with in-lined title">
-&lt;rdf:RDF
-  xmlns:oslc_blog=&quot;http://open-services.net/ns/bogus/blog#&quot;
-  xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
-  xmlns:dcterms=&quot;http://purl.org/dc/terms/&quot;&gt;
+Below is an example of a Blog Entry resource with a blank node for an uploaded-file resource.
 
-     &lt;oslc_blog:BlogEntry rdf:about=&quot;http://example.com/blogs/entry/5&quot;&gt;
-        &lt;dcterms:title&gt;New Wink release available&lt;/dcterms:title&gt;
-        &lt;!-- other property values --&gt;
-        &lt;oslc_blog:attachment&gt;
-           &lt;oslc_blog:UploadedFile rdf:about=&quot;http://example.com/attachments/2&quot;&gt;
-             &lt;dcterms:title&gt;wink-0.9.6.jar&lt;/dcterms:title&gt;
-           &lt;/oslc_blog:UploadedFile&gt;
-        &lt;/oslc_blog:attachment&gt;
-     &lt;/oslc_blog:BlogEntry&gt;
-&lt;/rdf:RDF&gt;
+<pre class="example" id="eg6" title="Blog Entry with blank node for file">
+@prefix dcterms:  &lt;http://purl.org/dc/terms/&gt; .
+@prefix blog:     &lt;http://open-services.net/ns/bogus/blog#&gt; .
+
+&lt;http://example.com/blogs/entry/5&gt;
+  a blog:BlogEntry ;
+  dcterms:title "New Wink release available" ;
+  blog:attachment [
+    a blog:UploadedFile ;
+    dcterms:title "wink-0.9.6.jar"
+  ] .
 </pre>
-<p>
- In OSLC defined resource terminology, the <code>oslc_blog:attachment</code> property value above is of type
- Resource with representation Inline. The problem with this is that it
- adds redundant property-values to a resource. When you link to a
- target resource that has a dcterms:title value and you inline that
- dcterms:title in the subject resource with a different value, in the RDF data model this means that you have just given the object resource two titles. Which is the correct title? Can a client change the title in the subject resource?
-<p>
-<p>Rather the content should be captured as:</p>
-<pre class="example" id="eg7" title="Blog Entry with no in-lined information">
-&lt;rdf:RDF
-    xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
-    xmlns:dcterms=&quot;http://purl.org/dc/terms/&quot;
-    xmlns:oslc_blog=&quot;http://open-services.net/ns/bogus/blog#&quot; &gt; 
+<p>It would be better to represent the uploaded-file resource with an explicit URI.
+Note that having an explicit URI does not mean the resource has to be sent in a different http request;
+in this example, we use a hash URI to have the uploaded-file resource returned in the same http request
+as its parent blog entry resource.</p>
+<pre class="example" id="eg7" title="Blog Entry with hash URI for file">
+@prefix dcterms:  &lt;http://purl.org/dc/terms/&gt; .
+@prefix blog:     &lt;http://open-services.net/ns/bogus/blog#&gt; .
 
-  &lt;rdf:Description rdf:about=&quot;http://example.com/attachments/2&quot;&gt;
-    &lt;dcterms:title&gt;wink-0.9.6.jar&lt;/dcterms:title&gt;
-    &lt;rdf:type rdf:resource=&quot;http://open-services.net/ns/bogus/blog#UploadedFile&quot;/&gt;
-  &lt;/rdf:Description&gt;
+&lt;http://example.com/blogs/entry/5&gt;
+  a blog:BlogEntry ;
+  dcterms:title "New Wink release available" ;
+  blog:attachment <#file> .
 
-  &lt;rdf:Description rdf:about=&quot;http://example.com/blogs/entry/5&quot;&gt;
-    &lt;oslc_blog:attachment rdf:resource=&quot;http://example.com/attachments/2&quot;/&gt;
-    &lt;dcterms:title&gt;New Wink release available&lt;/dcterms:title&gt;
-    &lt;rdf:type rdf:resource=&quot;http://open-services.net/ns/bogus/blog#BlogEntry&quot;/&gt;
-  &lt;/rdf:Description&gt;
-&lt;/rdf:RDF&gt;
+<#file>
+  a blog:UploadedFile ;
+  dcterms:title "wink-0.9.6.jar" .
 </pre>
 </p>
-<p>That brings us to the end of the guidance. Please provide feedback to
-the OSLC Core Workgroup mailing-list.</p>
+<p>Feedback should be directed to the OSLC Core Workgroup mailing-list. TBD - put link here.</p>
 </section>
 </section>
 
