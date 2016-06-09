@@ -31,6 +31,7 @@ public class VocabularyCheck
     private Model       modelCopy;
     private ResultModel resultModel;
     private Resource    vocabResult;
+    private Property    preferredNameSpace;
 
 
     /**
@@ -49,6 +50,7 @@ public class VocabularyCheck
         vocabResult = this.resultModel.createOuterResult(ResultModel.VocabResult);
         vocabResult.addProperty(DCTerms.source,resultModel.getModel().createResource(document.toString()));
         vocabResult.addLiteral(DCTerms.extent, vocabModel.size());
+        preferredNameSpace = vocabModel.createProperty("http://purl.org/vocab/vann/preferredNamespacePrefix");
     }
 
 
@@ -130,8 +132,7 @@ public class VocabularyCheck
         errors += node.checkNode(DCTerms.license, Occurrence.ZeroOrOne);
         errors += node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
-        errors += node.checkLiteral(vocabModel.createProperty("http://purl.org/vocab/vann/preferredNamespacePrefix"),
-            null, Occurrence.ZeroOrOne, null);
+        errors += node.checkLiteral(preferredNameSpace, null, Occurrence.ZeroOrOne, null);
 
         errors += node.checkURI(RDFS.seeAlso, Occurrence.ZeroOrMany, null);
 
@@ -224,12 +225,10 @@ public class VocabularyCheck
             {
                 resultModel.createIssue(termResult, ResultModel.NotResource, RDF.type, tnode);
                 errCount++;
-                it.remove();
             }
             else
             {
                 termType = tnode.asResource();
-                it.remove();
             }
         }
         if (it.hasNext())
