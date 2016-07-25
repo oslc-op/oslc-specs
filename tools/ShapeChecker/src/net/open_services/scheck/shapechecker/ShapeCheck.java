@@ -69,7 +69,7 @@ public class ShapeCheck
 
         // Look for the required  properties
         NodeCheck node = new NodeCheck(shape, httpHandler, shapeModel, shapeCopy, resultModel, shapeResult);
-        errors += node.checkURI(OSLC.describes, Occurrence.OneOrMany,
+        errors += node.checkURI(OSLC.describes, Occurrence.ExactlyOne,
             (uri)->{shapeResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri)); return checkUnique(describes,uri);});
 
         // Look for the optional properties
