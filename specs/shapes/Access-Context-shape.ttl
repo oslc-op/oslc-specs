@@ -1,0 +1,54 @@
+@prefix dcterms:        <http://purl.org/dc/terms/> .
+@prefix foaf:           <http://xmlns.com/foaf/0.1/> .
+@prefix ldp:            <http://www.w3.org/ns/ldp#> .
+@prefix oslc:           <http://open-services.net/ns/core#> .
+@prefix rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:            <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix acc:       <http://open-services.net/ns/core/acc#> .
+
+# OSLC Core Access Context Constraints
+
+<#Resource>
+        a   oslc:ResourceShape ;
+        dcterms:title   """A resource can have an access context.""" ;
+        oslc:property
+            <#accessContext> .
+
+<#accessContext>
+    a                        oslc:Property ;
+    oslc:name                "accessContext" ;
+    oslc:propertyDefinition  acc:accessContext ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            true ;
+    dcterms:description      """Indicates a Resource belongs to an Access Context."""^^rdf:XMLLiteral .
+
+<#AccessContext>
+        a   oslc:ResourceShape ;
+        dcterms:title   """An Access Context used to control access to resources.""" ;
+        oslc:describes acc:AccessContext ;
+        oslc:property
+            <#title> ,
+            <#description> .
+
+<#title> a oslc:Property ;
+    oslc:name "title" ;
+    oslc:propertyDefinition dcterms:title  ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description "A human-readable string describing the Access Context."^^rdf:XMLLiteral ;
+    oslc:valueType xsd:string .
+
+<#description> a oslc:Property ;
+    oslc:name "description" ;
+    oslc:propertyDefinition dcterms:description ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description "A human-readable string describing the Access Context in more detail."^^rdf:XMLLiteral ;
+    oslc:valueType xsd:string .
+
+<#AccessContextList>
+        a   oslc:ResourceShape ;
+        oslc:describes acc:AccessContextList ;
+        dcterms:title   """Supports discovery of the access contexts for an indexable linked data resource.""" .
