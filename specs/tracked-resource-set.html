@@ -3,7 +3,7 @@
 <meta charset='utf-8' />
 <head>
 <title>OSLC Tracked Resource Specification</title>
-<link rel="stylesheet" type="text/css" href="../styles/oslc-ccm-styles.css" />
+<link rel="stylesheet" type="text/css" href="../styles/oslc-styles.css" />
 <link rel="stylesheet" type="text/css" href="../styles/table-styles.css" />
 <link rel="stylesheet" type="text/css" href="../styles/definition-styles.css" />
 <script src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
@@ -79,6 +79,7 @@
     namespaces : [ 
       { href: "http://open-services.net/ns/core/trs#", prefix: "trs" },
       { href: "http://open-services.net/ns/core/acc#", prefix: "acc" },
+      { href: "http://open-services.net/ns/core/trspatch#", prefix: "trspatch" }
      ],
 
         // For multi-part specifications, each part must list the other parts
@@ -127,6 +128,27 @@
         },
     };
 </script>
+<style type="text/css">
+.normalText {
+    color: black;
+    font-family: inherit;
+    font-size: 100%;
+    font-weight: normal;
+}
+
+code {
+    font-weight:bold;
+}
+
+.rfc2119 {
+    font-weight:bold;
+}
+
+dd {
+    padding-top: 5px;
+    padding-bottom: 10px;
+}
+</style>
 </head>
 <body>
 <section id='abstract'>
@@ -137,6 +159,10 @@
 <section id='sotd'></section>
 <section id='intro' class='informative'>
   <h2>Introduction</h2>
+  <p>OSLC Tracked Resource Set provides a general-purpose mechanism for making a large set of resource URIs discoverable and for reporting ongoing changes affecting the set. This allows lifecycle tool web applications to exposes a live feed of of linked lifecycle data via a tracked resource set, in a way that permits others tool to build and maintain live, searchable indexes based on that linked data.</p>
+
+  <p>A particular pool of linked data resources exposed through a particular Tracked Resource Set is referred to as an Indexable Linked Data Source. When exposing a live feed of its linked lifecycle data, a lifecycle tool server is playing the role of Indexable Linked Data Provider. An Indexable Linked Data Consumer is a client (usually another server) that works with linked lifecycle data coming from an Indexable Linked Data Source.</p>
+
   <p>The Server maintains a Resource Set. A Resource Set consists of a finite, enumerable set of Resources. Each Resource is identified by a URI. The Server will have its own criteria for determining the exact set of member Resources at any point in time. However, clients need not be aware of the Server’s criteria, and will instead discover a Resource Set’s members by interacting with the Server using the Tracked Resource Set protocol.</p>
 
   <p>The Server MUST provide an HTTP(S) URI corresponding to its Resource Set. This is referred to as the Tracked Resource Set URI.</p>
@@ -149,10 +175,6 @@
 
 <section class='informative'>
   <h2>Motivation</h2>
-  <p>OSLC Tracked Resource Set provides a general-purpose mechanism for making a large set of resource URIs discoverable and for reporting ongoing changes affecting the set. This allows lifecycle tool web applications to exposes a live feed of of linked lifecycle data via a tracked resource set, in a way that permits others tool to build and maintain live, searchable indexes based on that linked data.</p>
-
-  <p>A particular pool of linked data resources exposed through a particular Tracked Resource Set is referred to as an Indexable Linked Data Source. When exposing a live feed of its linked lifecycle data, a lifecycle tool server is playing the role of Indexable Linked Data Provider. An Indexable Linked Data Consumer is a client (usually another server) that works with linked lifecycle data coming from an Indexable Linked Data Source.</p>
-
   <p>Clients can use server provider tracked resource sets to build and maintain their own replica of the server’s resources. They read the TRS and get the base resource members. They then do a get on each member and copy the required properties into their own persistent store. When the client polls the TRS, it gets the change log and iterates through that, adding new resources, deleting resources or updating modified resources according to change events in the change log.</p>
 
   <p>A single client could get information from many different servers and tracked resource sets in order to aggregate information into a repository for more efficient federated access to the resource data, or for access using a different protocol.</p>
@@ -175,6 +197,14 @@
     <dd>web resource identified by URI; the Resource Set members</dd>
     <dt><dfn>Tracked Resource Set (TRS)</dfn></dt>
     <dd>describes the set of Resources in a Resource Set, expressed as a Base and a Change Log</dd>
+    <dt><dfn>Index Resource</dfn></dt>
+    <dd>Resource whose URI is listed in the Tracked Resource Set of an Indexable Linked Data Source.</dd>
+    <dt><dfn>Indexable Linked Data Source</dfn></dt>
+    <dd>Pool of linked data resources.</dd>
+    <dt><dfn>Indexable Linked Data Consumer </dfn></dt>
+    <dd>Client application that uses an Indexable Linked Data Source to discover a set of linked data resources and track changes to them.</dd>
+    <dt><dfn>Indexable Linked Data Provider</dfn></dt>
+    <dd>Server that implements an Indexable Linked Data Source.</dd>
     <dt><dfn>Base</dfn></dt>
     <dd>portion of a Tracked Resource Set representation that lists member Resources</dd>
     <dt><dfn>Change Log</dfn></dt>
@@ -185,6 +215,9 @@
     <dd>Grouping of resources with similar security requirements.</dd>
     <dt><dfn>Access Context List</dfn></dt>
     <dd>Resource describing a list of Access Contexts.</dd>
+    <dt><dfn>TRS Patch</dfn></dt>
+    <dd>An extended Change Event in a Tracked Resource Set detailing a change to the resource’s RDF representation.</dd>
+
   </dl>
 </section>
 <section id='concepts' class='informative'>
@@ -218,6 +251,21 @@
   <p>A Tracked Resource Set MUST provide references to the Base and Change Log using the trs:base and trs:changeLog predicates respectively.</p>
 
   <p>A typical Client will periodically poll the Tracked Resource Set looking for recent Change Events. In order to cater to this usage, the Tracked Resource Set’s representation MUST contain the triples for the referenced Change Log (i.e., via a Blank Node, or an inline named Resource). Specifically the Tracked Resource Set representation will contain a triple <code>{TRS-URL, rdf:type, trs:TrackedResourceSet}</code> including the triples for the Change Events themselves enumerated in <code>{TRS-URL, trs:change, ChangeEvent-URI}</code> where the Change Events MUST be present in the Tracked Resource Set’s representation. The Server SHOULD also support etags, caching, and conditional GETs for Tracked Resource Set resources and relegate the Base to separate resources.</p>
+
+  <section id='ildpDataSources'>
+  <h2>Indexable Linked Data Sources</h2>
+  <section id='ildp1'><h2 class=normalText>An Indexable Linked Data Provider MAY offer one or more Indexable Linked Data Sources.</h2></section>
+
+  <section id='ildp1'><h2 class=normalText>Each Indexable Linked Data Source has a set of linked data resources, called Index Resources. The Indexable Linked Data Provider decides which particular Index Resources are in a particular Indexable Linked Data Source at any moment. Both the set of Index Resources and the linked data contents of each Index Resource MAY vary over time.</h2></section>
+
+  <section id='ildp1'><h2 class=normalText>Each Indexable Linked Data Source consists of a Tracked Resource Set (TRS) resource conforming to the Tracked Resource Set 2.0 specification. The resource URIs listed in a Tracked Resource Set MUST be exactly those of the Indexable Linked Data Source’s Index Resources.</h2></section>
+
+  <section id='ildp1'><h2 class=normalText>Index Resources MUST have a RDF linked data representation, and SHOULD support GET requests specifying text/turtle as the acceptable media type and returning a Turtle serialization of RDF content in response. Index Resources MAY support other RDF media types as well. The RDF content of an Index Resource is one RDF data graph representing one of the Indexable Linked Data Provider’s linked data resources.</h2></section>
+
+  <section id='ildp1'><h2 class=normalText>Index Resources MAY be Linked Data Platform RDF Sources (LDP-RS) Linked Data Platform, and MAY support paging Linked Data Platform Paging.</h2></section>
+
+  <section id='ildp1'><h2 class=normalText>By retrieving the Indexable Linked Data Source’s Tracked Resource Set, an Indexable Linked Data Consumer can discover the URIs of the Indexable Linked Data Source’s Index Resources. By retrieving the Index Resources, an Indexable Linked Data Consumer MAY discover the linked data representation of that Index Resource.</h2></section>
+  </section> <!--ildpDataSources-->
 
   <section id="changeLog">
     <h2>Change Log</h2>
@@ -398,7 +446,271 @@ Link: &lt;http://cm1.example.com/baseResources/page1&gt;; rel=&quot;first&quot;,
     </section>
   </section>
 
+  <section id='trsPatch' class='informative'>
+  <h2>TRS Patch</h2>
+  <p>An Indexable Linked Data Provider uses a Tracked Resource Set (TRS) resource to expose a live stream of events affecting a set of Index Resources with RDF representations. Each time an Index Resource is changed, the Provider adds a Change Event to the TRS’s Change Log. A typical Indexable Linked Data Consumer polls the TRS to discover new Change Events appearing in the Change Log, and uses HTTP GET to retrieve the current state (RDF representation) of the affected Index Resource.</p>
+
+  <p>For an Index Resource that changes regularly, the typical Consumer retrieves the same Index Resource over and over again. When the current state (RDF representation) of the Index Resource is large and the differences between adjacent states can be described compactly, including additional information in the trs:Modification Change Event can allow the Consumer to infer the Index Resource’s resultant state and thereby avoid having to re-retrieve the Index Resource.</p>
+
+  <p>Similiarly, in versioned worlds each change to a versioned resource may result in the creation of a new Index Resource representing an immutable version of the resource. The typical Consumer generally retrieves each Index Resource as it is created. The state of the new Index Resource is often quite similar to the state of Index Resource corresponding to a previous version. When the state of one Index Resource is similar to that of another Index Resource and the differences between the two can be described compactly, including additional information in the trs:Creation Change Event can allow the Consumer to infer the new Index Resource’s resultant state from the potentially-known state of a previously-retrieved Index Resource and thereby avoid having to retrieve the new Index Resource.</p>
+
+  <p>This section describes an extension to Change Events allowing them to carry detailed information about modifications to resources with an RDF representation.</p>
+
+  <section id="createdFrom"><h2 class="normalText">
+    The <code>trspatch:createdFrom</code> property, when present, identifies the antecedent resource. If omitted, the antecedent resource is the resource referenced in the trs:changed property. The antecedent resource is the one that supplies the “before” state.
+  </h2></section>
+
+  <section id="rdfPatch"><h2 class="normalText">
+    The <code>trspatch:rdfPatch</code> property, when present, describes a patch applied to the antecedent resource’s representation. The result of applying the patch describes the representation of the resource referenced in the <code>trs:changed</code> property. The <code>trspatch:rdfPatch</code> property is used with <code>trs:Modification</code> and <code>trs:Creation</code> Change Events; it is not meaningful for <code>trs:Deletion</code> Change Events. The value of the <code>trspatch:rdfPatch</code> property is an LD Patch. The <code>trspatch:rdfPatch</code> property is meaningful only for resources with RDF representations.
+  </h2></section>
+
+  <section id="beforeEtag"><h2 class="normalText">
+    The <code>trspatch:beforeETag</code> property, when present, gives the initial HTTP entity tag of the antecedent resource. This is the entity-tag value that would be returned in the HTTP ETag response header if the antecedent resource is retrieved immediately before the change.
+  </h2></section>
+
+  <section id="afterEtag"><h2 class="normalText">
+    The <code>trspatch:afterETag</code> property, when present, gives the final HTTP entity tag of the resource referenced in the trs:changed property. For a <code>trs:Modification</code> (trs:Creation) Change Event, this is the entity tag of the resource immediately after it was modified (created, respectively). This is the entity-tag value that would be returned in the HTTP ETag response header if the resource is retrieved immediately after the change.
+  </h2></section>
+
+  <p>Note that these properties are can be used with any resource having both an RDF representation and an entity tag. This includes all Linked Data Platform RDF Source (LDP-RS) resources, which have both.</p>
+
+  <p>Note also that the trspatch:beforeETag and trspatch:afterETag properties are meaningful for any kind of resource, not just ones with RDF representations.</p>
+
+    <section id='ldPatch' class='informative'>
+    <h2>LD Patch</h2>
+      <p>The Linked Data Patch (LD Patch) specification is currently under development by the W3C LDP WG. Our intention is to adopt the syntax and semantics of LD patches from the LD Patch specification rather than specifying our own. However, the LD Patch effort is only just beginning, and the First Public Working Draft was published on 18 September 2014.</p>
+
+      <p>In an effort to insulate Providers for changes to the LD Patch specification while it is being refined, this document proposes that Providers temporarily limit themselves to generating LD patches in a limited subset which we call Core format. Core format is extremely simple (no prefixes, no variables, and no Binds) but perfectly adequate for describing patches to graphs not involving blank nodes. (Core format is based on an early (and unofficial) precursor called RDF Patch.)</p>
+
+      <p>A Core format patch consists of a sequence of rows. A row with ‘A’ (or ‘D’) in the first column describes the addition (deletion) of one RDF triple from the resource’s RDF data graph. The subject, predicate, and object of the triples are described in columns 2-4 in the form of absolute IRI references enclosed between ‘<’ and ‘>’. Each row is delimited by a ‘.’ and may have white space between the various terms in a row, including newlines.</p>
+
+      <p>Example of a Core format patch that deletes one RDF triple (subject <code>http://example.com/bob</code>, predicate <code>http://xmlns.com/foaf/0.1/knows</code>, object <code>https://example.com/alice</code>) and adds another an RDF triple (subject <code>https://example.com/fred</code>, predicate <code>http://http://xmlns.com/foaf/0.1/member</code>, object <code>http://example.com/old-timers</code>):</p>
+
+      <pre class='example'>
+D &lt;http://example.com/bob&gt; &lt;http://xmlns.com/foaf/0.1/knows&gt; &lt;http://example.com/alice&gt; .
+A &lt;http://example.com/fred&gt; &lt;http://http://xmlns.com/foaf/0.1/member&gt; &lt;http://example.com/old-timers&gt; .
+      </pre>
+    </section>
+
+    <section id='patchEx1' class='informative'>
+    <h2>TRS Patch Example 1</h2>
+    <p>Turtle representation for the resource <code>https://a.example.com/config/a1</code> in state 1. Assume that when the resource is retrieved in this state, the entity tag <code>15687ds9gha6s7</code> is returned in the ETag response header:</p>
+    <pre class='example'>
+# The following is the representation of
+# https://a.example.com/config/a1
+# in the state with entity tag 15687ds9gha6s7
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+@prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
+&lt;https://a.example.com/config/a1&gt;
+  a ldp:BasicContainer;
+  dcterms:title &quot;Component configuration A1&quot;;
+  ldp:member &lt;https://a.example.com/version/s/143&gt;;
+  ldp:member &lt;https://a.example.com/version/r/577&gt;;
+  ldp:member &lt;https://a.example.com/version/t/033&gt;.
+    </pre>
+    <p>Turtle representation for the same resource <code>https://a.example.com/config/a1</code> in state 2. Assume that when the resource is retrieved in this state, the entity tag <code>285d4h2ffgddd9</code> is returned in the ETag response header:</p>
+    <pre class='example'>
+# The following is the representation of
+# https://a.example.com/config/a1
+# in the state with entity tag 285d4h2ffgddd9
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+@prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
+&lt;https://a.example.com/config/a1&gt;
+  a ldp:BasicContainer;
+  dcterms:title &quot;Component configuration A1&quot;;
+  ldp:member &lt;https://a.example.com/version/s/143&gt;;
+  ldp:member &lt;https://a.example.com/version/r/578&gt;;
+  ldp:member &lt;https://a.example.com/version/t/033&gt;.
+    </pre>
+    <p>Turtle representation for a Change Event describing resource <code>https://a.example.com/config/a1</code> changing from state 1 to state 2:</p>
+    <pre class='example'>
+# The following is the representation of a change event
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
+@prefix trs: &lt;http://open-services.net/ns/core/trs#&gt;.
+@prefix trspatch: &lt;http://open-services.net/ns/core/trspatch#&gt;.
+&lt;urn:urn-3:a.example.com:2014-04-28T17:39:32.000Z:102&gt;
+  a trs:Modification;
+  trs:changed &lt;https://a.example.com/config/a1&gt;;
+  trs:order &quot;102&quot;^^xsd:integer;
+  trspatch:beforeEtag &quot;15687ds9gha6s7&quot;;
+  trspatch:afterEtag &quot;285d4h2ffgddd9&quot;;
+  trspatch:rdfPatch
+    &quot;&quot;&quot;
+     D &lt;https://a.example.com/config/a1&gt; &lt;http://www.w3.org/ns/ldp#member&gt; &lt;https://a.example.com/version/r/577&gt; .
+     A &lt;https://a.example.com/config/a1&gt; &lt;http://www.w3.org/ns/ldp#member&gt; &lt;https://a.example.com/version/r/578&gt; .
+    &quot;&quot;&quot;.
+    </pre>
+    </section>
+
+    <section id='patchEx2' class='informative'>
+    <h2>TRS Patch Example 2</h2>
+    <p>Turtle representation for the resource <code>https://a.example.com/sw-movie/versions/1</code>. Assume that when the resource is retrieved in this state, the entity tag <code>783xhaty95</code> is returned in the ETag response header:</p>
+    <pre class='example'>
+# The following is the representation of
+# https://a.example.com/sw-movie/versions/1
+# in the state with entity tag 783xhaty95
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+@prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
+&lt;https://a.example.com/sw-movie/versions/1&gt;
+  dcterms:isVersionOf &lt;https://a.example.com/sw-movie&gt; .
+&lt;https://a.example.com/sw-movie&gt;
+  a ldp:Resource;
+  dcterms:title &quot;Star Wars&quot;.
+    </pre>
+    <p>Turtle representation for the resource <code>https://a.example.com/sw-movie/versions/2</code>. Assume that when the resource is retrieved in this state, the entity tag <code>212gyysxx8</code> is returned in the ETag response header:</p>
+    <pre class='example'>
+# The following is the representation of
+# https://a.example.com/sw-movie/versions/2
+# in the state with entity tag 212gyysxx8
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+@prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
+&lt;https://a.example.com/sw-movie/versions/2&gt;
+  dcterms:isVersionOf &lt;https://a.example.com/sw-movie&gt; .
+&lt;https://a.example.com/sw-movie&gt;
+  a ldp:Resource;
+  dcterms:title &quot;Star Wars: Episode IV - A New Hope&quot;.
+    </pre>
+    <p>Turtle representation for a Change Event describing the creation of the resource <code>https://a.example.com/sw-movie/versions/2</code>. The TRS patch describes the state of this new resource in terms of the state of resource <code>https://a.example.com/sw-movie/versions/1</code>:</p>
+    <pre class='example'>
+# The following is the representation of a change event
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
+@prefix trs: &lt;http://open-services.net/ns/core/trs#&gt;.
+@prefix trspatch: &lt;http://open-services.net/ns/core/trspatch#&gt;.
+&lt;urn:urn-3:a.example.com:2014-11-20T13:08:00.000Z:102&gt;
+  a trs:Creation;
+  trs:changed &lt;https://a.example.com/sw-movie/version/2&gt;;
+  trs:order &quot;192&quot;^^xsd:integer;
+  trspatch:createdFrom &lt;https://a.example.com/sw-movie/version/1&gt;;
+  trspatch:beforeEtag &quot;783xhaty95&quot;;
+  trspatch:afterEtag &quot;212gyysxx8&quot;;
+  trspatch:rdfPatch
+    &quot;&quot;&quot;
+     D &lt;https://a.example.com/sw-movie/versions/1&gt;  &lt;http://purl.org/dc/terms/isVersionOf&gt; &lt;https://a.example.com/sw-movie&gt; .
+     A &lt;https://a.example.com/sw-movie/versions/2&gt;  &lt;http://purl.org/dc/terms/isVersionOf&gt; &lt;https://a.example.com/sw-movie&gt; .
+     D &lt;https://a.example.com/sw-movie&gt; &lt;http://purl.org/dc/terms/title&gt; \&quot;Star Wars\&quot;.
+     A &lt;https://a.example.com/sw-movie&gt; &lt;http://purl.org/dc/terms/title&gt; \&quot;Star Wars: Episode IV - A New Hope\&quot;.
+    &quot;&quot;&quot;.
+    </pre>
+    </section>
+  </section>
 </section>
+
+<section> id='accessContext' class='informative'>
+<h2>Access Context</h2>
+<p>An Indexable Linked Data Consumer that makes a copy of linked data obtained from an Indexable Linked Data Source will likely need to control access to its copy of the data. It is simple enough for an Indexable Linked Data Consumer to allow some users to access its copy, while denying access to other users.</p>
+
+<p>In order to make it feasible for Indexable Linked Data Consumers to offer access control at a finer grain than the whole Indexable Linked Data Source, an Indexable Linked Data Provider can define one or more Access Contexts and associate each of its linked data resources with an Access Context. When configuring an Indexable Linked Data Consumer to work with a particular Indexable Linked Data Source, the administrator can query the Indexable Linked Data Provider for a list of Access Contexts relevant to a particular Indexable Linked Data Source. This allows the administrator to configure access control at the level of Access Contexts within an Indexable Linked Data Source, not just at the level of whole Indexable Linked Data Sources.</p>
+
+<p>For its part, the Indexable Linked Data Provider associates individual resources to Access Contexts, which it reflects with a statement (triple) in the resource’s RDF representation. When the Indexable Linked Data Consumer copies a resource from an Indexable Linked Data Source, this triple brings a record of the association(s) between resource and Access Context(s). This lets the Indexable Linked Data Consumer connect access control rules expressed at the level of Access Contexts with the resource representations copied from the Indexable Linked Data Source. Adding a resource to an Access Context, or removing one from it, changes the RDF representation of the resource. Like other changes affecting the RDF representation of the resource, this change is reported as a Change Event in the Tracked Resource Set for the Indexable Linked Data Source. This lets the Indexable Linked Data Consumer work with Indexable Linked Data Sources with Access Contexts whose set of resources varies dynamically.</p>
+
+<p>This set of Access Contexts within an Indexable Linked Data Source can also change over time. Adding a new Access Context to an Indexable Linked Data Source will generally require an administrator to configure the Indexable Linked Data Consumers working with that Indexable Linked Data Source to add an access control rule for dealing with the additional Access Context.</p>
+
+  <section id='accAssociations'>
+  <h2>Associations between Resources and Access Contexts</h2>
+  <p>The RDF acc:accessContext property is used to indicate that a resource belongs to an Access Context. The resource is the subject; the Access Context is the object.</p>
+  <ul>
+    <li>Property Name: accessContext</li>
+    <li>Description: Access Context of the resource</li>
+    <li>Property URI: http://open-services.net/ns/core/acc#accessContext</li>
+  </ul>
+  <p>For example, the RDF statement (in Turtle):</p>
+  <pre class='example'>
+@prefix acc: &lt;http://open-services.net/ns/core/acc#&gt; .
+&lt;https://a.example.com/defect/2314&gt; acc:accessContext &lt;https://a.example.com/acclist#alpha&gt; .
+  </pre>
+  <p>declares the resource <code>https://a.example.com/defect/2314</code> to be in the Access Context <code>https://a.example.com/acclist#alpha</code>.</p>
+
+  <section id='accessContextPredicate'><h2 class='normalText'>A linked data resource of an Indexable Linked Data Source that is deemed (by the Indexable Linked Data Provider) to be in an Access Context MUST use the <code>acc:accessContext</code> predicate in its RDF representation to assert a relation between the linked data resource (subject) and an Access Context.</h2></section>
+  <p>For example, the above RDF statement embedded in the representation of resource <code>https://a.example.com/defect/2314</code> asserts that this resource is in Access Context <code>https://a.example.com/acclist#alpha</code>. The RDF representation of a linked data resource in several Access Contexts will have multiple such RDF statements; for a linked data resource not in any Access Context, there will be none.</p>
+  </section>
+
+  <section id='accList'>
+  <h2>Access Context List Resource</h2>
+  <p>If an Indexable Linked Data Provider uses Access Contexts within the resources of an Indexable Linked Data Source, the Indexable Linked Data Provider MUST provide an Access Context List resource for the Indexable Linked Data Source. If an Indexable Linked Data Provider has more than one Indexable Linked Data Source, it MUST designate an Access Context List resource for each Indexable Linked Data Source; several Indexable Linked Data Sources MAY share the same Access Context List resource.</p>
+
+  <p>The Access Context List resource is intended to be accessed by administrator for the purpose of configuring an Indexable Linked Data Consumer that is working with linked data obtained from that Indexable Linked Data Source. The representation of the Access Context resource is itself linked data.</p>
+
+  <section id='ildpGet'><h2 class='normalText'>The Indexable Linked Data Provider MUST support the use of the HTTP GET method for the Access Context List resource. The Indexable Linked Data Provider SHOULD require the use of TLS when sending requests to the Access Context List resource. The Indexable Linked Data Provider SHOULD require authentication for the Access Context List resource, and SHOULD allow access only to users with administrative privileges. The Indexable Linked Data Provider’s response MUST support the JSON-LD media type (application/ld+json), and MAY support other linked data representations. The response SHOULD include an ETag header.</h2></section>
+
+  <p>A client uses an HTTP GET request to retrieve a representation of the Access Context List resource, specifying JSON-LD as an acceptable format. For example:</p>
+  <pre class='example'>
+GET https://a.example.com/acclist HTTP/1.1
+Accept: application/ld+json
+Authorization: Basic [missing - admin user credentials]
+</pre>
+
+  <section id='accResponce'><h2 class='normalText'>The response MUST be a JSON-LD format string with a node for the Access Context List along with a node for each Access Context. The response SHOULD use the simple @graph form with a default graph as shown in the example below. The response SHOULD use the @context value shown below (i.e., as a boilerplate header), and SHOULD NOT use other advanced JSON-LD features, since these can make the response more difficult to understand for human readers who only know JSON, and more difficult to processed programmatically by scripts without the benefit of a full JSON-LD library. The node’s type property gives the type of the node - either <code>acc:AccessContextList</code> or <code>acc:AccessContext</code>; the node’s id property gives the Access Context URL; the title and description properties give the title and description, respectively.</h2></section>
+
+  <p>Example of a response:</p>
+  <pre class='example'>
+HTTP/1.1 200 OK
+Content-Type: application/ld+json;charset=UTF-8
+ETag: 68djsgg82
+{
+  &quot;@context&quot;: {
+    &quot;acc&quot;: &quot;http://open-services.net/ns/core/acc#&quot;,
+    &quot;id&quot;: &quot;@id&quot;,
+    &quot;type&quot;: &quot;@type&quot;,
+    &quot;title&quot;: &quot;http://purl.org/dc/terms/title&quot;,
+    &quot;description&quot;: &quot;http://purl.org/dc/terms/description&quot;
+  },
+  &quot;@graph&quot;: [{
+     &quot;id&quot;: &quot;https://a.example.com/acclist&quot;,
+     &quot;type&quot;: &quot;acc:AccessContextList&quot;
+    }, {
+     &quot;id&quot;: &quot;https://a.example.com/acclist#alpha&quot;,
+     &quot;type&quot;: &quot;acc:AccessContext&quot;,
+     &quot;title&quot;: &quot;Alpha&quot;,
+     &quot;description&quot;: &quot;Resources for Alpha project&quot;
+    }, {
+     &quot;id&quot;: &quot;https://a.example.com/acclist#beta&quot;,
+     &quot;type&quot;: &quot;acc:AccessContext&quot;,
+     &quot;title&quot;: &quot;Beta&quot;,
+     &quot;description&quot;: &quot;Resources for Beta project&quot;
+  }]
+}
+</pre>
+  <section id='otherProps'><h2 class='normalText'>The response MAY include other properties. A client MUST ignore any properties that it does not understand.</h2>
+  </section> <!--accList-->
+
+  <section id='uriStability' class='informative'>
+  <h2>URI Stability</h2>
+  <p>Access Context List and Access Context resources should have stable URIs. When Access Context URIs are based on an Access Context List URI with the addition of local id in the fragment (e.g., the Access Context URI <code>https://a.example.com/acclist#alpha</code> is based on the Access Context List URI <code>https://a.example.com/acclist</code>), the Indexable Linked Data Provider should ensure that each Access Context has a stable local id that is unique within the Access Context List.</p>
+  </section> <!--uriStability-->
+
+</section> <!--accList-->
+</section> <!--AccessContext-->
+
+<section>
+    <h2>Discovery</h2>
+    <p>The documentation for an Indexable Linked Data Provider MUST document its tracked resources and Indexable Linked Data Sources, including the URL of each Indexable Linked Data Source’s Tracked Resource Set resource and designated Access Context List resource.</p>
+
+    <p>In order to help an administrator of an Indexable Linked Data Consumer in configuring its access to Indexable Linked Data Sources, an Indexable Linked Data Provider MAY also make its Indexable Linked Data Sources discoverable. Discoverability is a convenience; an administrator can configure an Indexable Linked Data Consumer with a particular Indexable Linked Data Source knowing just the URLs of the Indexable Linked Data Source’s Tracked Resource Set and designated Access Context List resource. An administrator can retrieve the Access Context List resource to discover the titles and URIs of the Access Contexts being used with that Indexable Linked Data Source.</p>
+
+    <p>The RDF <code>trs:trackedResourceSet</code> property can be used to declare the whereabouts of a Tracked Resource Set resource. The Tracked Resource Set resource is the object.</p>
+
+    <p>This allows the existence and location of an Indexable Linked Data Source’s Tracked Resource Set resource to be declared with an RDF statement like the following (rendered here in Turtle):</p>
+    <pre class='example'>
+@prefix trs: &lt;http://open-services.net/ns/core/trs#&gt; .
+&lt;&gt; trs:trackedResourceSet &lt;https://a.example.com/trs1&gt; . 
+    </pre>
+
+    <p>The RDF acc:accessContextList property declares the whereabouts of an Access Context List resource. The Access Context List resource is the object.</p>
+    <ul>
+      <li>Property Name: accessContextList</li>
+      <li>Description: URL of Access Context List resource</li>
+      <li>Property URI: http://open-services.net/ns/core/acc#accessContextList</li>
+    </ul>
+
+    <p>This allows the existence and location of an Access Context List resource to be declared with an RDF statement like the following (rendered here in Turtle):</p>
+    <pre class='example'>
+@prefix acc: &lt;http://open-services.net/ns/core/acc#&gt; .
+&lt;&gt; acc:accessContextList &lt;https://a.example.com/acclist&gt; . 
+    </pre>
+    <p>Where such RDF statements might be found is outside the scope of this specification.</p>
+    <p>Applications MAY provide multiple Tracked Resource Sets.</p>
+  </section>
+
 
 <section id="resources">
 <h2>Resource Constraints</h2>
@@ -408,7 +720,7 @@ Link: &lt;http://cm1.example.com/baseResources/page1&gt;; rel=&quot;first&quot;,
   <section>
     <h2>TrackedResourceSet</h2>
     <div title='TrackedResourceSet'
-        data-include='./shapes/trs-shapes.ttl#TrackedResourceSet'
+        data-include='./shapes/trs-shape.ttl#TrackedResourceSet'
         data-oninclude='shapeToSpec'
         data-include-sync='true'
         data-include-replace='true'
@@ -417,7 +729,7 @@ Link: &lt;http://cm1.example.com/baseResources/page1&gt;; rel=&quot;first&quot;,
   <section>
     <h2>Base</h2>
     <div title='Base'
-        data-include='./shapes/trs-shapes.ttl#Base'
+        data-include='./shapes/trs-shape.ttl#Base'
         data-oninclude='shapeToSpec'
         data-include-sync='true'
         data-include-replace='true'
@@ -426,16 +738,61 @@ Link: &lt;http://cm1.example.com/baseResources/page1&gt;; rel=&quot;first&quot;,
   <section>
     <h2>ChangeLog</h2>
     <div title='ChangeLog'
-        data-include='./shapes/trs-shapes.ttl#ChangeLog'
+        data-include='./shapes/trs-shape.ttl#ChangeLog'
         data-oninclude='shapeToSpec'
         data-include-sync='true'
         data-include-replace='true'
         data-include-format='html'></div>
   </section>
   <section>
-    <h2>ChangeEvent</h2>
-    <div title='ChangeEvent'
-        data-include='./shapes/trs-shapes.ttl#ChangeEvent'
+    <h2>CreationEvent</h2>
+    <div title='CreationEvent'
+        data-include='./shapes/trs-shape.ttl#CreationEvent'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+  </section>
+  <section>
+    <h2>ModificationEvent</h2>
+    <div title='ModificationEvent'
+        data-include='./shapes/trs-shape.ttl#ModificationEvent'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+  </section>
+  <section>
+    <h2>DeletionEvent</h2>
+    <div title='DeletionEvent'
+        data-include='./shapes/trs-shape.ttl#DeletionEvent'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+  </section>
+  <section>
+    <h2>Resource</h2>
+    <div title='Resource'
+        data-include='./shapes/Access-Context-shape.ttl#Resource'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+  </section>
+  <section>
+    <h2>AccessContext</h2>
+    <div title='AccessContext'
+        data-include='./shapes/Access-Context-shape.ttl#AccessContext'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+  </section>
+  <section>
+    <h2>AccessContextList</h2>
+    <div title='AccessContextList'
+        data-include='./shapes/Access-Context-shape.ttl#AccessContextList'
         data-oninclude='shapeToSpec'
         data-include-sync='true'
         data-include-replace='true'
@@ -444,8 +801,11 @@ Link: &lt;http://cm1.example.com/baseResources/page1&gt;; rel=&quot;first&quot;,
 
 </section>
 
-  <section id='clientBehavior' class='informative'>
-  <h2>Client Behavior</h2>
+  <section id='generalGuidance' class='appendix informative'>
+  <h2>General Guidance</h2>
+  <p>The following sections provide some general guidance on how to servers provide and clients can consume Tracked Resource Sets.</p>
+  <section id='localReplica' class='informative'>
+  <h2>Building a Local Replica</h2>
   <p>This section describes one (relatively straightforward) way that a Client can use the Tracked Resource Set protocol to build and maintain its own local replica of a Server’s Resource Set.</p>
     <section id='initializationProcedure' class='informative'>
     <h2>Initialization procedure</h2>
@@ -474,27 +834,122 @@ Link: &lt;http://cm1.example.com/baseResources/page1&gt;; rel=&quot;first&quot;,
   <p>Once the Incremental Update procedure fails, it is unlikely to succeed in the future. The Client has reached an impasse. The Client’s only way forward is to discard its local replica and start over.</p>
    </section>
   </section>
+  <section id='providerGuidance' class='informative'>
+  <h2>General Guidance for TRS Providers</h2>
+  <p>There are a number of possible ways that a lifecycle tool could go about exposing its linked lifecycle data. Here is some general guidance:</p>
+  <ul>
+    <li>An Indexable Linked Data Provider should restrict itself to a small number of Indexable Linked Data Sources. When configuring an Indexable Linked Data Consumer, an administrator will typically have to select Indexable Linked Data Sources one at a time.</li>
+    <li>An Indexable Linked Data Provider should restrict itself to a static set of Indexable Linked Data Sources. When an Indexable Linked Data Source gets created dynamically, the administrator would be required to update the configurations of Indexable Linked Data Consumers in order to make the new Indexable Linked Data Source available to Consumers.</li>
+    <li>An Indexable Linked Data Provider’s Indexable Linked Data Sources should contain pairwise-disjoint sets of Index Resources. That is, a resource should not appear as an Index Resource of more than one Indexable Linked Data Source. An Indexable Linked Data Provider should document any overlap between Indexable Linked Data Sources. (Some Indexable Linked Data Consumers are unable to work with overlapping Indexable Linked Data Sources.)</li>
+    <li>An Indexable Linked Data Source’s Index Resources should be linked data resources under the control of the Indexable Linked Data Provider itself, rather than linked data resources of some other lifecycle tool. In other words, a lifecycle tool should expose its own resources, not those of others.</li>
+    <li>The RDF content of an Indexable Linked Data Source’s Index Resources should be statements about linked data resources under the control of the Indexable Linked Data Provider itself, rather than statements about linked data resources of some other lifecycle tool. In other words, the subjects of a lifecycle tool claims should be its own resources, as opposed to resources of some other lifecycle tool.</li>
+    <li>An Index Resource may be one of the Indexable Linked Data Provider regular linked lifecycle data resources, or it may be a resource containing an RDF data graph used specifically for exposing some linked data though an Indexable Linked Data Source.</li>
+    <li>An Indexable Linked Data Provider’s should expose all of its linked lifecycle data via Index Resources in one of its Indexable Linked Data Sources. Any information that is held back will be unavailable to Indexable Linked Data Consumers.</li>
+    <li>An Indexable Linked Data Provider’s combined RDF dataset should not repeat the same RDF statements.</li>
+    <li>An Indexable Linked Data Provider’s combined RDF dataset should not contain contradictory RDF statements.</li>
+    <li>It is recommended that an Indexable Linked Data Provider report changes to its linked lifecycle data (including resource creations, deletions, and modifications) within 1 second of the changes being committed. Changes are reported via the Indexable Linked Data Source’s Tracked Resource Set Change Log. This helps ensure that Indexable Linked Data Consumers are able to obtain a live feed of changes in nearly real-time.</li>
+    <li>It is recommended that an Indexable Linked Data Source’s Tracked Resource Set include a Base not older than 7 days. This helps ensure that Indexable Linked Data Consumers are able to initially build an index without having to process Change Events older than 7 days.</li>
+    <li>It is recommended that an Indexable Linked Data Source’s Tracked Resource Set Change Log retain Change Events for at least 7 days. This helps ensure that there are sufficient Change Events to allow an Indexable Linked Data Consumer tracking the Indexable Linked Data Source to incrementally update an out-of-date index after a lengthy downtime or network outage.</li>
+  </ul>
+  </section>
+  <section id='consumerGuidance' class='informative'>
+  <h2>General Guidance for TRS Consumers</h2>
+  <p>What the Consumer building an index does is akin to what a Web crawler (wikipedia) does, and most of the same considerations apply.</p>
 
-  <section>
-    <h2>Discovery</h2>
-    <p>The TRS servers MUST document the URLs of its Tracked Resource Set resources in the their documentation.</p>
+  <p>In its role as Indexable Linked Data Consumer, the client plays follower to the Indexable Linked Data Provider’s leader. A Consumer retrieves the TRS, Change Logs, and Base Resources, as well as some or all the Index Resources listed in the TRS. Except for the TRS Resource URI itself, the Consumer is blindly retrieving a succession of URIs that the Provider feeds to it. An insufficiently wary Consumer can come to grief when it interacts with an imperfect or untrustworthy Provider.</p>
 
-    <p>In order to help an administrator of a TRS client-based application in configuring its TRS server endpoints, a TRS server MAY also make its Tracked Resource Sets discoverable. Discoverability is a convenience; an administrator can configure a TRS client with a particular Tracked Resource Set knowing just its URL.</p>
+  <p>Most of the risks are always present: networks connecting Consumer to Provider may experience delays and outages; and Provider implementations may be imperfect (bugs in code, database corruptions). Moreover, when the Provider is untrusted - when there is a concern of the Provider could attempt something nefarious - the Consumer needs to take extra steps to prevent itself from being misused or abused.</p>
 
-    <p>An application declares the existence and location of a Tracked Resource Set with a statement of the following form:</p>
-    <pre class='example'>
-@prefix trs: &lt;http://open-services.net/ns/core/trs#&gt; .
+  <p>Here are risks and general guidance for Indexable Linked Data Consumers:</p>
+  <ul>
+    <li>The size and rate of change of a Data Source reflects the amount of linked data that a Provider has to make available and how often that data changes. These vary considerably and are often difficult to estimate in advance. A Consumer that is maintaining a copy of a Data Source should establish reasonable limits and monitor the size and rate of change so that a misbehaving Provider does not cause the Consumer to spend an unreasonable amount of effort (network communication and storage) in doing so. This should include caps on the number and representation sizes of resources (including TRS Change Logs, TRS Base pages, and Index Resources).</li>
+    <li>Since the Consumer is retrieving resources of various kinds over the network from the Provider, which takes time and network connections, the Consumer should do so in a way that does not prevent it from doing other useful work while waiting for responses. The Consumer should be tolerant of failures due to network Provider failures and outages, and carry over important work until the blockage has been removed. On the other hand, the Consumer should not allow its queue of work to grow without bound since that may make it difficult for the Consumer to clear the backlog. The Consumer should also be polite to the Provider, and avoid making multiple requests per second and/or downloading large files that might make it hard for the Provider to keep up with its normal workload.</li>
+    <li>A Data Source’s Index Resources should be linked data resources under the control of the Provider itself, rather than linked data resources of some other lifecycle tool. A Consumer that does not trust a Provider in this regard should mitigate the risk by keeping a server whitelist for each Data Source and refusing to retrieve the Index Resources of a given Data Source if the server is not on the whitelist. Without something like this, a Consumer can be tricked into retrieving and indexing resources that it should not, such as other resources located on a different Provider that the Consumer also happens to have access to.</li>
+    <li>The RDF content of a Data Source’s Index Resources should be statements about linked data resources under the control of the Provider itself, rather than statements about linked data resources of some other lifecycle tool. In other words, the subjects of a lifecycle tool claims should be its own resources, as opposed to resources of some other lifecycle tool. A Consumer that does not trust a Provider in this regard should mitigate the risk by keeping a content whitelist for each Data Source and rejecting the RDF content coming from Index Resources of a given Data Source if the URIs of subjects are not all on the content whitelist. Without something like this, a Provider can pollute an index with arbitrary claims which may interfere with or contradict authoritative claims made by the legitimate owner.</li>
+  </ul>
+  </section>
+  <section id='accGuidance' class='informative'>
+  <h2>Access Context Guidance</h2>
+  <p>There are several things to consider when deciding how a lifecycle tool can make use of Access Contexts. Before suggesting possible designs, here are some characteristics that will help ensure a lifecycle tool will be useful to administrators tasked with configuring access for Indexable Linked Data Consumers to a tool’s Indexable Linked Data Sources:</p>
+  <ul>
+    <li><b>Optional</b>. An Indexable Linked Data Provider should only use Access Contexts if there are reasons why an administrator might want to impose differential access in external Indexable Linked Data Consumers.</li>
+    <li><b>Understandable</b>. An administrator should be able to intuit from the Access Context name and description what kinds of resources are in it.</li>
+    <li><b>Useful collections</b>. An Access Context should contain resources that can be treated similarly.
+    Same security classification. An Access Context should contain resources with the same security classification.</li>
+    <li><b>Reasonable number</b>. The list of Access Contexts should not be so long as to overwhelm the administrator.
+    Stable. The set of Access Contexts should be more or less static. Changes to the Access Context list will generally require the administrator to update configurations of Indexable Linked Data Consumers.</li>
+    <li><b>Centralized</b>. An Indexable Linked Data Provider should host a single Access Context List resource enumerating the Access Contexts used in any of its Indexable Linked Data Sources, unless there are reasons to do otherwise.</li>
+  </ul>
+  <p>The following recipes suggest some of the designs that are possible.</p>
 
-&lt;http://cm1.example.com/app/&gt; trs:trackedResourceSet &lt;trackedResourceSet&gt;.
-</pre>
-    <p>Applications MAY provide multiple Tracked Resource Sets.</p>
+  <p><b>Recipe 1</b>: Your tool has top-level objects called workspaces. New workspaces are created infrequently, and only by administrators. Each linked data resource is associated with a single workspace. Teams of users work in the context of a single workspace. All the resources in a workspace have the same security classification.</p>
+
+  <p>Your tool should treat each workspace as a separate Indexable Linked Data Source, and not use Access Contexts.</p>
+
+  <p>An administrator can always control access to the linked data in an Indexable Linked Data Consumer on an Indexable Linked Data Source by Indexable Linked Data Source basis, and grant users access to linked data from some workspaces but not others.</p>
+
+  <p><b>Recipe 2</b>: Your tool has top-level objects called projects. New projects are created infrequently, and only by administrators. Each linked data resource is associated with a single project. Teams of users work in the context of a set of projects. All the resources in a project have the same security classification.</p>
+
+  <p>Your tool should treat all projects as part of a single Indexable Linked Data Source, and automatically create Access Contexts in 1-1 correspondence with projects, taking on the name and description of the project.</p>
+
+  <p>An administrator can control access to the linked data in an Indexable Linked Data Consumer on a project by project basis, and grant users access to linked data from some projects but not others.</p>
+
+  <p><b>Recipe 3</b>: Your tool has resources that can be tagged as containing confidential customer information. Teams of users work in the context of your tool. In the customer’s organization, only some employees are allowed access to confidential customer information.</p>
+
+  <p>Your tool should have a single Indexable Linked Data Source, and automatically create an Access Context named “Confidential Customer Data” and assigns all tagged resources to this Access Context. Other resources are left “loose”; i.e., not included in any Access Context.</p>
+
+  <p>An administrator for an Indexable Linked Data Consumer can control access to the confidential customer information separately from the regular linked data.</p>
+
+  <p><b>Recipe 4</b>: Your tool has many resources. Teams of users work in the context of your tool. The customer’s organization has strict policies on what information can be shown to which employees.</p>
+
+  <p>Your tool should have a single Indexable Linked Data Source. Your tool should let an administrator define a set of custom Access Contexts. Your tool should let users (or possibly just administrators) associate resources with these Access Contexts.</p>
+
+  <p>An administrator can control access to the linked data in an Indexable Linked Data Consumer based on these custom Access Contexts.</p>
   </section>
 
+  <section id='patchGuidance' class='informative'>
+  <h2>TRS Patch Guidance</h2>
+  <p>The following sections provide general guidlines on using the TRS Patch capability.</p>
+    <section id='patchProviderGuidance' class='informative'>
+    <h3>TRS Patch Guidance for Providers</h3>
+    <p>When the state of an Index Resource changes, the Provider adds a <code>trs:Modification</code> Change Event to the Change Log of the Indexable Linked Data Source’s Tracked Resource Set. The Change Event describes a transition between two definite states of the Index Resource. In principle, the entity tags of the two states, and the LD patch between the two RDF representations, are all well-defined. This much is true whether or not the Provider chooses to embed those pieces of information in the Change Event.</p>
+
+    <p>The decision as to whether to provide an LD Patch for a <code>trs:Modification</code> Change Event should be made on a case-by-case basis. Just because one Change Event for a resource includes an LD Patch, that does not mean that all Change Events for the same resource should also include an LD Patch.</p>
+
+    <p>Provider writers should remember that a Consumer wishing to discover the current state of a resource can always do so using HTTP GET to retrieve the resource. Including an LD Patch in a Change Event is an optional embellishment that allows some Consumers under the right circumstances to infer the new current state of a resource instead of re-retrieving the resource. It is up to the Provider to decide whether including an LD patch is likely to be worthwhile.</p>
+
+    <p>However, whenever a <code>trs:Modification</code> Change Event includes a <code>trspatch:rdfPatch</code>, it should also include accurate <code>trspatch:beforeETag</code> and <code>trspatch:afterETag</code> properties. Without all 3 pieces of information, a Consumer is unlikely to be able to do better than re-retrieving the resource to discover its updated state.</p>
+
+    <p>When the RDF representation of the resource contains a large number of RDF triples and the number of rows in the LD Patch is small, including the LD patch in the Change Event is recommended, and may improve overall system performance by allowing Consumers to avoid having to re-retrieve the resource to discover its updated state. Similiarly, whenever a <code>trs:Creation</code> Change Event includes a <code>trspatch:rdfPatch</code>, it should also include a <code>trspatch:createdFrom</code> along with accurate <code>trspatch:beforeETag</code> and <code>trspatch:afterETag</code> properties.</p>
+
+    <p>Conversely, when the number of affected RDF triples is large, the size of the LD Patch becomes significant. Including the LD Patch in the Change Event is not recommended because it bloats the size of Change Events in the Change Log, which may negatively impact performance. Omitting the LD patch from the Change Event is likely to give better overall performance.</p>
+  </section>
+    <section id='patchConsumerGuidance' class='informative'>
+    <h3>TRS Patch Guidance for Consumers</h3>
+    <p>A typical Indexable Linked Data Consumer is tracking the state of some or all Index Resources in the Indexable Linked Data Source. When the Consumer first discovers the Index Resource, whether through a <code>trs:Creation</code> Change Event in the Change Log or an entry in the Base of the Indexable Linked Data Source’s Tracked Resource Set, the Consumer uses HTTP GET to retrieve the current state of the Index Resource and gets back its RDF representation. When the response includes an entity tag for the resource in its current state, as it will when the Index Resource is a LDP-RS, the Consumer remembers both the RDF representation and entity tag as the state of that Index Resource.
+
+    <p>When the Consumer processes a <code>trs:Modification</code> Change Event for the Index Resource in the Change Log of the Indexable Linked Data Source’s Tracked Resource Set, the Consumer learns that the Index Resource has changed state. This means that the Consumer’s remembered RDF representation and entity tag for the Index Resource are no longer accurate, which cues the Consumer to discard the remembered RDF representation and re-retrieve the Index Resource. However, when the Change Event includes a TRS Patch, the Consumer may have a second option. When the <code>trspatch:beforeETag</code> value matches the Consumer’s remembered entity tag, the Consumer can apply the <code>trspatch:rdfPatch</code> to the Consumer’s remembered RDF representation to compute a replacement RDF representation, which can be remembered along with the <code>trspatch:afterETag</code> value as the entity tag. When this happens, the Consumer can process the <code>trs:Modification</code> Change Event for the Index Resource without having to re-retrieve the Index Resource. It is clearly advantageous for a Consumer to behave this way whenever possible. On the other hand, if the <code>trspatch:beforeETag</code> value does not match the Consumer’s remembered entity tag, the Consumer cannot apply the <code>trspatch:rdfPatch</code>, and should treat the Change Event as if the TRS Patch were absent.</p>
+
+    <p>Similarly, when the Consumer processes a <code>trs:Creation</code> Change Event for the Index Resource in the Change Log of the Indexable Linked Data Source’s Tracked Resource Set, the Consumer learns of the existence of a new Index Resource. This cues the Consumer to retrieve the new Index Resource. However, when the Change Event includes a TRS Patch, the Consumer may have a second option. When the Consumer has previously retrieved and remembered the resource identified by <code>trspatch:createdFrom</code> in the state with entity tag matching <code>trspatch:beforeETag</code>, the Consumer can apply the <code>trspatch:rdfPatch</code> to the Consumer’s remembered RDF representation to compute an RDF representation of the new Index Resource, which can be remembered along with the <code>trspatch:afterETag</code> value as the entity tag. When this happens, the Consumer can process the <code>trs:Modification</code> Change Event for the Index Resource without having to retrieve the new Index Resource. It is clearly advantageous for a Consumer to behave this way whenever possible. On the other hand, if the <code>trspatch:beforeETag</code> value does not match the Consumer’s remembered entity tag, the Consumer cannot apply the <code>trspatch:rdfPatch</code> and should treat the Change Event as if the TRS Patch were absent.
+
+    <p>Risk-wise, TRS Patches provide a way for a Provider to tamper with the RDF representations of another server’s resources in the Consumer’s index without the other server’s involvement. The mitigations covered in General Guidance for Consumers, above, will address this risk as well. The Consumer’s server whitelist for an untrusted Data Source should be used to vet <code>trspatch:createdFrom</code> URIs, and its content whitelist should be used to vet subjects in the results of applying TRS patches.</p>
+  </section>
+  </section>
+  </section>
+
+  
 <section class='appendix'>
   <h2>RDF Vocabulary</h2>
   <p>This section defines the resources of the Tracked Resource Set specification. TRS servers MUST support Turtle (i.e., text/turtle) representations of these resources. TRS servers MAY provide representations of the requested TRS resources beyond those necessary to conform to this specification, using standard HTTP content negotiation. If the client does not indicate a preference, text/turtle MUST be returned.</p>
   <div title='RDF Vocabulary for Tracked Resource Set'
   data-include='./vocab/trs-vocab.ttl'
+  data-oninclude='vocabToSpec'
+  data-include-sync='true'
+  data-include-replace='true'
+  data-include-format='html'></div>
+
+  <div title='RDF Vocabulary for Access Context'
+  data-include='./vocab/acc-vocab.ttl'
   data-oninclude='vocabToSpec'
   data-include-sync='true'
   data-include-replace='true'
