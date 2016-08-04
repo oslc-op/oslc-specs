@@ -7,8 +7,8 @@
 @prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix vann:        <http://purl.org/vocab/vann/> .
 
-@prefix acc:         <http://open-services.net/ns/core/acc#> .
 @prefix trs:         <http://open-services.net/ns/core/trs#> .
+@prefix trspatch:    <http://open-services.net/ns/core/trspatch#> .
 
 # the vocabulary
 
@@ -17,6 +17,7 @@ trs:
     dcterms:title "OSLC Core Tracked Resource Set vocabulary" ;
     rdfs:label "OSLC Core Tracked Resource Set vocabulary" ;
     dcterms:description "The OSLC Core Tracked Resource Set vocabulary defines terms used in describing Tracked Resource Sets." ;
+    dcterms:source <https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/vocab/trs-vocab.ttl> ;
     vann:preferredNamespacePrefix "trs" .
 
 # Classes
@@ -68,7 +69,7 @@ trs:Creation
   rdfs:label "Creation" ;
   rdfs:comment "Represents a resource creation change event." .
 
-trs:Modifiction
+trs:Modification
   a rdfs:Class ;
   rdfs:isDefinedBy trs: ;
   rdfs:label "Modification" ;
@@ -118,95 +119,36 @@ trs:trackedResourceSet
     rdfs:comment "A Tracked Resource Set" .
 
 
-# Individuals
-
-trs:Creation
-    a rdf:Description ;
-    rdfs:isDefinedBy trs: ;
-    rdfs:label "Creation" ;
-    rdfs:seeAlso <http://open-services.net/wiki/core/TrackedResourceSet-2.0/> ;
-    rdfs:comment "A creation Change Event." .
-
-trs:Modification
-    a rdf:Description ;
-    rdfs:isDefinedBy trs: ;
-    rdfs:label "Modification" ;
-    rdfs:seeAlso <http://open-services.net/wiki/core/TrackedResourceSet-2.0/> ;
-    rdfs:comment "A modification Change Event." .
-
-trs:Deletion
-    a rdf:Description ;
-    rdfs:isDefinedBy trs: ;
-    rdfs:label "Deletion" ;
-    rdfs:seeAlso <http://open-services.net/wiki/core/TrackedResourceSet-2.0/> ;
-    rdfs:comment "A deletion Change Event." .
-
-
-# TRS Patch
+# TRS Patch properties for change events
 
 trspatch:createdFrom
     a rdf:Property ;
-    rdfs:isDefinedBy trspatch: ;
+    rdfs:isDefinedBy trs: ;
     rdfs:label "createdFrom" ;
     rdfs:seeAlso <http://open-services.net/wiki/core/IndexableLinkedDataProvider-2.0/> ;
     rdfs:comment "URI of antecedent resource. Required for trs:Creation Change Events." .
 
 trspatch:rdfPatch
     a rdf:Property ;
-    rdfs:isDefinedBy trspatch: ;
+    rdfs:isDefinedBy trs: ;
     rdfs:label "rdfPatch" ;
     rdfs:seeAlso <http://open-services.net/wiki/core/IndexableLinkedDataProvider-2.0/> ;
     rdfs:comment "LD Patch describing a modification to the resourceís RDF representation." .
 
 trspatch:beforeETag
     a rdf:Property ;
-    rdfs:isDefinedBy trspatch: ;
+    rdfs:isDefinedBy trs: ;
     rdfs:label "beforeETag" ;
     rdfs:seeAlso <http://open-services.net/wiki/core/IndexableLinkedDataProvider-2.0/> ;
     rdfs:comment "HTTP entity tag of resource immediately before this change." .
 
 trspatch:afterETag
     a rdf:Property ;
-    rdfs:isDefinedBy trspatch: ;
+    rdfs:isDefinedBy trs: ;
     rdfs:label "afterETag" ;
     rdfs:seeAlso <http://open-services.net/wiki/core/IndexableLinkedDataProvider-2.0/> ;
     rdfs:comment "HTTP entity tag of resource immediately after this change." .
 
 
-# TRS Access Context
-
-
-acc:
-    a owl:Ontology ;
-    dcterms:title "OSLC Core Access Contexts vocabulary" ;
-    rdfs:label "OSLC Core Access Contexts vocabulary" ;
-    dcterms:description "The OSLC Core Access Contexts vocabulary defines terms used in describing Access Contexts." ;
-    vann:preferredNamespacePrefix "acc" .
-
-# Classes
-
-acc:AccessContext
-    a rdfs:Class ;
-    rdfs:isDefinedBy trs: ;
-    rdfs:label "AccessContext" ;
-    rdfs:seeAlso <http://open-services.net/wiki/core/IndexableLinkedDataProvider-2.0/> ;
-    rdfs:comment "An Access Context" .
-
-acc:AccessContextList
-    a rdfs:Class ;
-    rdfs:isDefinedBy trs: ;
-    rdfs:label "AccessContextList" ;
-    rdfs:seeAlso <http://open-services.net/wiki/core/IndexableLinkedDataProvider-2.0/> ;
-    rdfs:comment "An Access Context List" .
-
-# Properties
-
-acc:accessContext
-    a rdf:Property ;
-    rdfs:isDefinedBy acc: ;
-    rdfs:label "accessContext" ;
-    rdfs:range acc:AccessContext ;
-    rdfs:seeAlso <http://open-services.net/wiki/core/IndexableLinkedDataProvider-2.0/> ;
-    rdfs:comment "An Access Context to which this resource belongs." .
 
 
