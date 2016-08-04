@@ -1,0 +1,155 @@
+@prefix dcterms:        <http://purl.org/dc/terms/> .
+@prefix foaf:           <http://xmlns.com/foaf/0.1/> .
+@prefix ldp:            <http://www.w3.org/ns/ldp#> .
+@prefix oslc:           <http://open-services.net/ns/core#> .
+@prefix rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:            <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix trs:       <http://open-services.net/ns/core/trs#> .
+
+
+# OSLC Core Tracked Resource Sets Constraints
+
+<#TrackedResourceSet>
+    a                       oslc:ResourceShape ;
+	dcterms:title           "TrackedResourceSet" ;
+	dcterms:description     "A Tracked Resource Set provides a representation of the current state of a Resource Set."^^rdf:XMLLiteral ;
+	oslc:describes          trs:TrackedResourceSet ;
+	oslc:property
+        <#base> ,
+        <#changeLog> .
+
+<#base>
+    a                        oslc:Property ;
+    oslc:name                "base" ;
+    oslc:propertyDefinition  trs:base ;
+    oslc:occurs              oslc:Exactly-one ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:range               ldp:DirectContainer ;
+    oslc:readOnly            true ;
+    dcterms:description      """An enumeration of the Resources in the Resource Set."""^^rdf:XMLLiteral .
+
+<#changeLog>
+    a                        oslc:Property ;
+    oslc:name                "changeLog" ;
+    oslc:propertyDefinition  trs:changeLog ;
+    oslc:occurs              oslc:Exactly-one ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               trs:ChangeLog ;
+    oslc:readOnly            true ;
+    dcterms:description      """A Change Log providing a time series of incremental adjustments to the Resource Set."""^^rdf:XMLLiteral .
+
+
+<#Base>
+    a                       oslc:ResourceShape ;
+    dcterms:title           "Base" ;
+    dcterms:description     "A Base shape constrains an ldp:DirectContainer which enumerates the members of a Tracked Resource Set."^^rdf:XMLLiteral ;
+    oslc:describes          ldp:DirectContainer ;
+    oslc:property
+        <#member> ,
+        <#cutoffEvent> .
+
+<#member>
+    a                        oslc:Property ;
+    oslc:name                "member" ;
+    oslc:propertyDefinition  ldp:member ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            true ;
+    dcterms:description      """A member Resource of the Resource Set. ldp:member is the preferred predicate, 
+in either case it will be indicated by ldp:hasMemberRelation"""^^rdf:XMLLiteral .
+
+<#cutoffEvent>
+    a                        oslc:Property ;
+    oslc:name                "cutoffEvent" ;
+    oslc:propertyDefinition  trs:cutoffEvent ;
+    oslc:occurs              oslc:Exactly-one ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               trs:Creation, trs:Modification, trs:Deletion ;
+    oslc:readOnly            true ;
+    dcterms:description      """A Change Log providing a time series of incremental adjustments to the Resource Set."""^^rdf:XMLLiteral .
+
+<#ChangeLog>
+    a                       oslc:ResourceShape ;
+    dcterms:title           "ChangeLog" ;
+    dcterms:description     "A Change Log describes what resources have been created, modified or deleted, and when."^^rdf:XMLLiteral ;
+    oslc:describes          trs:ChangeLog ;
+    oslc:property
+        <#change> ,
+        <#previous> .
+
+<#change>
+    a                        oslc:Property ;
+    oslc:name                "change" ;
+    oslc:propertyDefinition  trs:change ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               trs:Creation, trs:Modification, trs:Deletion ;
+    oslc:readOnly            true ;
+    dcterms:description      """A Change Log providing a time series of incremental adjustments to the Resource Set."""^^rdf:XMLLiteral .
+
+<#previous>
+    a                        oslc:Property ;
+    oslc:name                "previous" ;
+    oslc:propertyDefinition  trs:previous ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               trs:ChangeLog ;
+    oslc:readOnly            true ;
+    dcterms:description      """The continuation of the Change Log, containing the next group of chronologically earlier Change Events."""^^rdf:XMLLiteral .
+
+<#CreationEvent>
+    a                       oslc:ResourceShape ;
+    dcterms:title           "Creation Event" ;
+    dcterms:description     "Represents a creation event of a resource at a point in time."^^rdf:XMLLiteral ;
+    oslc:describes          trs:Creation ;
+    oslc:property
+        <#changed> ,
+        <#order> .
+
+<#ModificationEvent>
+    a                       oslc:ResourceShape ;
+    dcterms:title           "Modification Event" ;
+    dcterms:description     "Represents a modification event of a resource at a point in time."^^rdf:XMLLiteral ;
+    oslc:describes          trs:Modification ;
+    oslc:property
+        <#changed> ,
+        <#order> .
+
+<#DeletionEvent>
+    a                       oslc:ResourceShape ;
+    dcterms:title           "Deletion Event" ;
+    dcterms:description     "Represents a deletion event on a resource at a point in time."^^rdf:XMLLiteral ;
+    oslc:describes          trs:Deletion ;
+    oslc:property
+        <#changed> ,
+        <#order> .
+
+<#changed>
+    a                        oslc:Property ;
+    oslc:name                "changed" ;
+    oslc:propertyDefinition  trs:changed ;
+    oslc:occurs              oslc:Exactly-one ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:readOnly            true ;
+    dcterms:description      """The Resource that has changed."""^^rdf:XMLLiteral .
+
+<#order>  a oslc:Property ;
+    oslc:name "order" ;
+    oslc:propertyDefinition trs:order ;
+    oslc:occurs oslc:Exactly-one;
+    dcterms:description """The sequence in time of the Change Event."""^^rdf:XMLLiteral ;
+    oslc:valueType xsd:integer ;
+    oslc:readOnly true .
+    
+
+
+
