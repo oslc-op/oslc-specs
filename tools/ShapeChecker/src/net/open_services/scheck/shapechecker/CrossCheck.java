@@ -146,6 +146,7 @@ public class CrossCheck
      * Check consistency of the vocabs and shapes.
      * @return the number of errors
      */
+    @javax.annotation.CheckReturnValue
     public int check()
     {
         int errors = 0;

@@ -116,6 +116,7 @@ public class Main
     }
 
 
+    @javax.annotation.CheckReturnValue
     private boolean checkUsage(String[] args, ResultModel resultModel, HttpHandler httpHandler)
     {
         int     index  = 0;
@@ -191,6 +192,7 @@ public class Main
      * @return a URI that is either one formed from the provided string, or a file: URI for a local path
      * @throws URISyntaxException if the URI is not valid
      */
+    @javax.annotation.CheckReturnValue
     public URI checkFileOrURI(String argVal) throws URISyntaxException
     {
         if (argVal.startsWith("http://") || argVal.startsWith("https://"))
