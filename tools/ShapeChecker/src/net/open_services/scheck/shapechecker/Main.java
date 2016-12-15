@@ -4,11 +4,15 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.RiotNotFoundException;
+
+import net.open_services.scheck.util.GlobExpander;
+
 
 
 /**
@@ -144,12 +148,12 @@ public class Main
                 else if (args[index].equals("-v") || args[index].equals("-vocab"))
                 {
                     index++;
-                    vocabularies.add(checkFileOrURI(args[index++]));
+                    vocabularies.addAll(checkFileOrURI(args[index++]));
                 }
                 else if (args[index].equals("-s") || args[index].equals("-shape"))
                 {
                     index++;
-                    shapes.add(checkFileOrURI(args[index++]));
+                    shapes.addAll(checkFileOrURI(args[index++]));
                 }
                 else if (args[index].equals("-q") || args[index].equals("-quiet"))
                 {
@@ -193,15 +197,20 @@ public class Main
      * @throws URISyntaxException if the URI is not valid
      */
     @javax.annotation.CheckReturnValue
-    public URI checkFileOrURI(String argVal) throws URISyntaxException
+    public List<URI> checkFileOrURI(String argVal) throws URISyntaxException
     {
         if (argVal.startsWith("http://") || argVal.startsWith("https://"))
         {
-            return new URI(argVal);
+            return Collections.singletonList(new URI(argVal));
         }
         else
         {
-            return new File(argVal).toURI();
+           List<URI> uris = new ArrayList<>();
+           for (String path : GlobExpander.expand(argVal))
+           {
+               uris.add(new File(path).toURI());
+           }
+           return uris;
         }
     }
 }
