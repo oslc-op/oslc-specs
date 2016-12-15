@@ -15,7 +15,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.RiotException;
 
@@ -67,7 +66,7 @@ public class HttpHandler
 
         if (foundRDFResources.contains(uri))
         {
-            // Resource previously found
+            // Resource previously found, or noted as undefined
             return;
         }
 
@@ -105,6 +104,7 @@ public class HttpHandler
      * @return the uri minus any fragment part
      * @throws URISyntaxException if the URI is invalid
      */
+    @javax.annotation.CheckReturnValue
     public URI removeFragment(String uri) throws URISyntaxException
     {
         URI httpUri = new URI(uri);
@@ -161,26 +161,33 @@ public class HttpHandler
     }
 
 
-    private Resource findRDFResource(URI httpUri, String uri)
+    @javax.annotation.CheckReturnValue
+    private void findRDFResource(URI httpUri, String uri) throws ShapeCheckException
     {
         if (httpUri.toString().equals(uri) || !httpResourceIsRDF.get(httpUri))
         {
             // The HTTP resource itself has already been found
             // We do not check non-RDF hash resources
-            return null;
+            return;
         }
         else if (foundRDFResources.contains(uri))
         {
             // RDF Resource has been found
-            return null;
+            return;
         }
         else
         {
-            return ResultModel.Unreachable;
+            // Not found - but add it so we report an error only once
+            foundRDFResources.add(uri);
+            throw new ShapeCheckException(
+                ResultModel.UndefinedTerm,
+                ResourceFactory.createResource(uri),
+                ResourceFactory.createResource(httpUri.toString()));
         }
     }
 
 
+    @javax.annotation.CheckReturnValue
     private boolean isRDF(URI httpUri) throws ShapeCheckException, IOException
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();

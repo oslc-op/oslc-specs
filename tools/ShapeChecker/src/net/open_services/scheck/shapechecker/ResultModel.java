@@ -221,6 +221,10 @@ public class ResultModel
     @SCIssue(description="This term does not have rdfs:isDefinedBy its parent ontology.")
     public static final Resource TermNotInVocab   = resource("TermNotInVocab");
 
+    /** Error class for an undefined term. */
+    @SCIssue(description="This resource is not defined in its parent vocabulary.")
+    public static final Resource UndefinedTerm    = resource("UndefinedTerm");
+
     /** Error class for an unreachable resource. */
     @SCIssue(description="This resource is not fetchable.")
     public static final Resource Unreachable      = resource("Unreachable");
@@ -315,6 +319,7 @@ public class ResultModel
      * @param type the type of the outer node ({@code VocabResult} or {@code ShapesResult})
      * @return the resource created
      */
+    @javax.annotation.CheckReturnValue
     public Resource createOuterResult(Resource type)
     {
         return resultModel.createResource().addProperty(RDF.type, type);
@@ -328,6 +333,7 @@ public class ResultModel
      * (@code OntologyResult}, {@code TermResult}, {@code ShapeResult}, or {@code PropertyResult})
      * @return the resource created
      */
+    @javax.annotation.CheckReturnValue
     public Resource createInnerResult(Resource parent, Resource type)
     {
         Resource inner = resultModel.createResource().addProperty(RDF.type, type);
