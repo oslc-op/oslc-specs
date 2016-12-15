@@ -35,6 +35,7 @@ public class Main
      * <li>Each -q argument names an issue to be ignored
      * </ul>
      * The arguments may be repeated to check multiple vocabulary and shape documents.
+     * The vocabulary and shape arguments can use globs (*.ttl, etc.)
      */
     public static void main(String[] args)
     {
