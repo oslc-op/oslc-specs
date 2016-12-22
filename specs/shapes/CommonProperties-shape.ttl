@@ -19,6 +19,7 @@
             <#identifier>,
             <#modified>,
             <#relation>,
+            <#references>,
             <#subject>,
             <#title>,
             <#type>,
@@ -28,7 +29,8 @@
             <#shortTitle>,
             <#shortId>,
             <#discussedBy>,
-            <#modifiedBy>
+            <#modifiedBy>,
+            <#error>
         .
 
 <#contributor>  a                 oslc:Property ;
@@ -78,6 +80,14 @@ service provider when a resource is created. Not typically intended for end-user
     oslc:occurs oslc:Zero-or-many;
     dcterms:description "Timestamp of latest resource modification."^^rdf:XMLLiteral ;
     oslc:valueType xsd:dateTime .
+
+<#references> a oslc:Property ;
+    oslc:name "references" ;
+    oslc:propertyDefinition dcterms:references   ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description "A related resource that is referenced, cited, or otherwise pointed to by the described resource."^^rdf:XMLLiteral ;
+    oslc:valueType oslc:AnyResource ;
+    oslc:representation oslc:Either .
 
 <#relation> a oslc:Property ;
     oslc:name "relation" ;
@@ -137,7 +147,7 @@ specifications, which could result in multiple values for this property."""^^rdf
 <#instanceShape> a oslc:Property ;
     oslc:name "instanceShape" ;
     oslc:propertyDefinition oslc:instanceShape  ;
-    oslc:range oslc:ResouceShape ;
+    oslc:range oslc:ResourceShape ;
     oslc:occurs oslc:Zero-or-many;
     dcterms:description """The URI of a Resource Shape that describes the possible properties, occurrence, 
 value types, allowed values and labels. This shape information is useful in displaying the subject
@@ -180,6 +190,15 @@ subject resource. The link target is usually a foaf:Person or foaf:Agent, but co
 This is modeled after dcterms:creator, but Dublin Core currently has no equivalent property. """^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Either .
+
+<#error> a oslc:Property ;
+    oslc:name "error" ;
+    oslc:propertyDefinition oslc:error  ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description "A series of errors associated with this resource."^^rdf:XMLLiteral ;
+    oslc:valueType oslc:AnyResource ;
+    oslc:representation oslc:Either .
+
 
 
 <#Person> 
