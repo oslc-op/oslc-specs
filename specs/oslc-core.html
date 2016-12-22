@@ -400,6 +400,28 @@ simpler, built on layered capabilities and easier to adopt.</p>
 		<h2>Resource Constraints</h2>
 		<p>Constraints on OSLC Core and Domain resources SHOULD be described using <a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-shape.html">OSLC Resource Shape 3.0</a> which is included as part of the OSLC Core multi-part specifications. Servers MAY use other constraint languages such as [[SHACL]] to define resource constraints. The shape of an RDF resource is a description of the set of triples it is expected to contain and the integrity constraints those triples are required to satisfy. Applications of shapes include validating RDF data, documenting RDF APIs, and providing metadata to tools that handle RDF data such as form and query builders.
 		</p>
+    <section id="basic-auth"><h2 class="normalText">
+    Shapes are different than vocabularies in that shapes may change with new revisions of resource definitions, whereas vocabularies should evolve in place in a compatible manner.</p>
+    <p>OSLC Domain specifications SHOULD use the following URI pattern when publishing each individual resource shape:
+    <pre>
+        http://open-services.net/ns/[vocab short name]/shapes/[version]/[shape-name]
+    </pre></p>
+    <p>For example, for Change Management 3.0, a shape describing the base Change Request resource type might have the shape URI:
+      <pre>
+        http://open-services.net/ns/cm/shapes/3.0/changerequest
+      </pre></section>
+    <section id="basic-auth"><h2 class="normalText">
+      Not all shapes would necessarily be updated at the same time. To allow different versions of individual shapes to be reused in different versions of a domain specification while still allowing a client to browse the set of possible shapes, domains SHOULD provide an LDPC for all the shapes for a spec version, at a URI defined by the following pattern:
+    <pre>
+      http://open-services.net/ns/[vocab short name]/shapes/[SPEC-version]
+    </pre></p>
+    <p>For example, for Change Management 3.0, there should be a container at: <code>http://open-services.net/ns/cm/shapes/3.0</code> with members such as:
+    <pre>
+        http://open-services.net/ns/cm/shapes/3.0/changerequest
+        http://open-services.net/ns/cm/shapes/3.0/somenewshape
+        http://open-services.net/ns/cm/shapes/2.0/unchangedshape
+    </pre>
+    </section>
 	</section>
 
 		<section id="authentication">
@@ -551,6 +573,11 @@ Steve Speicher, IBM</p>
   <td>07/06/2016</td>
   <td>Jim Amsden</td>
   <td>CSD was approved and published.</td>
+ </tr>
+  <td>2</td>
+  <td>12/16/2016</td>
+  <td>Jim Amsden</td>
+  <td>Added recommendations on stable URIs for resource constraints.</td>
  </tr>
 </table>
 </section>
