@@ -69,7 +69,9 @@ public class GlobExpanderTest
         List<String> files = GlobExpander.expand("./test/**/*.java");
         System.out.println("Matched "+files.size()+" files");
         for (String s : files)
+        {
             System.out.println(s);
+        }
         assertThat(files, hasItem("./test/net/open_services/scheck/util/GlobExpanderTest.java"));
         assertThat(files, not(hasItem("./src/net/open_services/scheck/util/GlobExpander.java")));
     }
