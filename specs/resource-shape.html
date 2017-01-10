@@ -283,7 +283,7 @@ dd {
 		<p>Well-established programming technologies such as relational
 			databases, object-oriented programming languages, and XML utilize <a href="https://en.wikipedia.org/wiki/Closed-world_assumption">closed-world assumptions</a> to provide
 			schemas or type definitions that encode integrity constraints.
-			Applications utilizing RDF and <a href="https://en.wikipedia.org/wiki/Open-world_assumption">open-world assmuptions</a> may need a similar mechanism to constrain the open-world for a particular context, and frequently
+			Applications utilizing RDF and <a href="https://en.wikipedia.org/wiki/Open-world_assumption">open-world assumptions</a> may need a similar mechanism to constrain the open-world for a particular context, and frequently
 			start to use RDFS or OWL for this purpose. However, this is a
 			misapplication of those technologies.</p>
 
@@ -761,7 +761,7 @@ dd {
 
 				<p>
 					The RDF representation contains one <a href="#resourceShape">oslc:ResourceShape</a>
-					resource and two <a href="#property">oslc:Property</a> resources.
+					resource and two <a href="#property-shape">oslc:Property</a> resources.
 					The <a href="#resourceShape">oslc:ResourceShape</a> resource
 					contains a short description of the shape using <a href="#dcterms:title">dcterms:title</a>, gives the RDF type of the
 					resource being described using <a href="#describes">oslc:describes</a>,
@@ -771,8 +771,8 @@ dd {
 
 				<p>
 					The contained properties, <a href="#dcterms:title">dcterms:title</a>
-					and oslc_cm:status are described in <a href="#property">oslc:Property</a>
-					resources. Each <a href="#property">oslc:Property</a> resource
+					and oslc_cm:status are described in <a href="#property-shape">oslc:Property</a>
+					resources. Each <a href="#property-shape">oslc:Property</a> resource
 					specifies the URI of the RDF property it is defining using <a href="#propertyDefinition">oslc:propertyDefinition</a>, and the
 					occurrence of that property using <a href="#occurs">oslc:occurs</a>.
 					The occurrence of each property is specified using the terms <a href="#Exactly-one">oslc:Exactly-one</a> and <a href="#Zero-or-one">oslc:Zero-or-one</a> which indicate that the
@@ -792,7 +792,7 @@ dd {
 					The definition of oslc_cm:status refers to
 					<code>http://example.com/shape/status-allowed-values</code>
 					using <a href="#allowedValues">oslc:allowedValues</a>. That
-					resource has the rdf:type <a href="#allowedValues">oslc:AllowedValues</a>.
+					resource has the rdf:type <a href="#allowedValue-shape">oslc:AllowedValues</a>.
 					It specifies the allowed values of the oslc_cm:status property. It
 					has the following RDF representation:
 				</p>
@@ -812,7 +812,7 @@ dd {
 			<p>
 				Property tables are used below to describe the resources defined by
 				the Shapes specification, namely <a href="#resourceShape">oslc:ResourceShape</a>,
-				<a href="#property">oslc:Property</a>, and <a href="#allowedValues">oslc:AllowedValues</a>.
+				<a href="#property-shape">oslc:Property</a>, and <a href="#allowedValue-shape">oslc:AllowedValues</a>.
 				A property table is a tabular depiction of a subset of the
 				information that can be specified using shapes. Each table describes
 				one type of resource. Each row describes one property of the
@@ -925,7 +925,7 @@ dd {
 			<p>
 				<code>dcterms:title</code> is used to provide a summary of <a
 					href="#resourceShape">oslc:ResourceShape</a> and <a
-					href="#property">oslc:Property</a> resources. Its value <span
+					href="#property-shape">oslc:Property</a> resources. Its value <span
 					class="rfc2119">SHOULD</span> be a literal of type rdf:XMLLiteral
 				that is valid content for an XHTML
 				<code>&lt;span&gt;</code>
@@ -938,7 +938,7 @@ dd {
 		<div>
 			<p>
 				<code>dcterms:description</code> is used to provide a description of <a
-					href="#property">oslc:Property</a> resources. Its value <span
+					href="#property-shape">oslc:Property</a> resources. Its value <span
 					class="rfc2119">SHOULD</span> be a literal of type rdf:XMLLiteral
 				that is valid content for an XHTML
 				<code>&lt;div&gt;</code>
@@ -973,16 +973,16 @@ dd {
 				<code>oslc:property</code> is used to list the defined properties that are
 				expected to be contained in described resources associated with this
 				shape. The object of this property <span class="rfc2119">MUST</span>
-				be an <a href="#property">oslc:Property</a> resource whose
+				be an <a href="#property-shape">oslc:Property</a> resource whose
 				representation is contained in the shape document.
 			</p>
 
 			<p>
 				If a described resource contains a property described by some <a
-					href="#property">oslc:Property</a> resource, then a REST service is
+					href="#property-shape">oslc:Property</a> resource, then a REST service is
 				expected to process that property in some useful way as defined by
 				the service's API contract. If there is no matching <a
-					href="#property">oslc:Property</a> resource then the behavior of
+					href="#property-shape">oslc:Property</a> resource then the behavior of
 				the service is undefined.
 			</p>
 		</div>
@@ -1003,14 +1003,14 @@ dd {
 				<code>oslc:allowedValue</code> is used to specify an allowed value of the defined
 				property. The object of this property <span class="rfc2119">SHOULD</span>
 				be compatible with the type specified by the <a href="#valueType">oslc:valueType</a>
-				property if present. An <a href="#property">oslc:Property</a>
+				property if present. An <a href="#property-shape">oslc:Property</a>
 				resource <span class="rfc2119">MAY</span> contain one or more
 				oslc:allowedValue properties and an optional <a
 					href="#allowedValues">oslc:allowedValues</a> property which links
-				to an <a href="#allowedValues">oslc:AllowedValues</a> resource. The
+				to an <a href="#allowedValue-shape">oslc:AllowedValues</a> resource. The
 				complete set of allowed values is the union of all the values
-				specified directly in the <a href="#property">oslc:Property</a>
-				resource and the linked <a href="#allowedValues">oslc:AllowedValues</a>
+				specified directly in the <a href="#property-shape">oslc:Property</a>
+				resource and the linked <a href="#allowedValue-shape">oslc:AllowedValues</a>
 				resource.
 			</p>
 		</div>
@@ -1018,7 +1018,7 @@ dd {
 		<h3 id="allowedValues">oslc:allowedValues Property</h3>
 		<div>
 			<p>
-				<code>oslc:allowedValues</code> specifies a link to an <a href="#allowedValues">oslc:AllowedValues</a>
+				<code>oslc:allowedValues</code> specifies a link to an <a href="#allowedValue-shape">oslc:AllowedValues</a>
 				resource which defines a set of allowed values for the defined
 				property. See <a href="#allowedValue">oslc:allowedValue</a> for a
 				description of how the complete set of allowed values is defined.
@@ -1352,6 +1352,12 @@ dd {
   <td>12/16/2016</td>
   <td>Jim Amsden</td>
   <td>Added rdf:langString to literal value types, and that xsd:string and rdf:langString are treated the same.</td>
+ </tr>
+ <tr>
+  <td>02</td>
+  <td>12/16/2016</td>
+  <td>Jim Amsden</td>
+  <td>Added guidance for vocabulary designers to prefer oslc:representation oslc:Either when prossible to provide flexible resource representations.</td>
  </tr>
 </table>
 
