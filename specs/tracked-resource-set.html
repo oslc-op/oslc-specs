@@ -161,19 +161,19 @@ dd {
   <h2>Introduction</h2>
   <p>OSLC Tracked Resource Set provides a general-purpose mechanism for making a large set of resource URIs discoverable and for reporting ongoing changes affecting the set. This allows tools to exposes a live feed of linked lifecycle data via a tracked resource set in a way that permits others tool to build and maintain live, searchable information based on that linked data.</p>
 
-  <p>A Tracked Resource Set (TRS) Provider maintains one or more Resource Sets. A Resource Set consists of a finite, enumerable set of Tracked Resources identified by a URI.  A Tracked Resource Set Consumer can discover the Resources Sets provided by a TRS Provider and use this information to track changes to Tracked Resources for its purposes. The TRS Provider will have its own criteria for determining the exact set of Tracked Resources in its Resource Sets at any point in time. However, TRS Consumers need not be aware of the TRS Provider's criteria, and will instead discover a Resource Set’s members by interacting with the TRS Provider using the Tracked Resource Set protocol.</p>
+  <p>A Tracked Resource Set (TRS) Provider maintains one or more Resource Sets. A Resource Set consists of a finite, enumerable set of Tracked Resources identified by a URI.  A Tracked Resource Set Consumer can discover the Resources Sets provided by a TRS Server and use this information to track changes to Tracked Resources for its purposes. The TRS Server will have its own criteria for determining the exact set of Tracked Resources in its Resource Sets at any point in time. However, TRS Clients need not be aware of the TRS Server's criteria, and will instead discover a Resource Set’s members by interacting with the TRS Server using the Tracked Resource Set protocol.</p>
 
-  <p>A TRS Provider specifies an HTTP(S) URI corresponding to its Resource Set. This is referred to as the Tracked Resource Set URI.</p>
+  <p>A TRS Server specifies an HTTP(S) URI corresponding to its Resource Set. This is referred to as the Tracked Resource Set URI.</p>
 
-  <p>A Tracked Resource Set is a resource representing the state of the Resource Set characterized in terms of a Base and a Change Log. The Base provides a point-in-time enumeration of the Tracked Resource members of the Resource Set while the Change Log provides a time series of adjustments describing changes to members of the Resource Set. This information can be used by TRS Consumers to see what resources are tracked and to address changes to those resources as needed by the consumer.</p>
+  <p>A Tracked Resource Set is a resource representing the state of the Resource Set characterized in terms of a Base and a Change Log. The Base provides a point-in-time enumeration of the Tracked Resource members of the Resource Set while the Change Log provides a time series of adjustments describing changes to members of the Resource Set. This information can be used by TRS Clients to see what resources are tracked and to address changes to those resources as needed by the consumer.</p>
 
 <section id='conventions'></section>
 
 <section class='informative'>
   <h2>Motivation</h2>
-  <p>TRS Consumers can use TRS Provider tracked resource sets to build and maintain their own replica of the provider's resources. They read the TRS and get the base tracked resource members. They then may do a GET on each member and copy the required properties into their own persistent store. When the TRS Consumer polls the TRS, it gets the change log and iterates through that, adding new tracked resources, deleting resources or updating modified resources according to change events in the change log.</p>
+  <p>TRS Clients can use TRS Server tracked resource sets to build and maintain their own replica of the provider's resources. They read the TRS and get the base tracked resource members. They then may do a GET on each member and copy the required properties into their own persistent store. When the TRS Client polls the TRS, it gets the change log and iterates through that, adding new tracked resources, deleting resources or updating modified resources according to change events in the change log.</p>
 
-  <p>A single TRS Consumer could get information from many different TRS Providers and tracked resource sets in order to aggregate information into a repository for more efficient federated access to the resource data, or for access using a different query language or protocol.</p>
+  <p>A single TRS Client could get information from many different TRS Servers and tracked resource sets in order to aggregate information into a repository for more efficient federated access to the resource data, or for access using a different query language or protocol.</p>
 
   <p>For example, a reporting server could provide SPARQL query access to lifecycle data exposed through tracked resource sets. The reporting server could support a SPARQL endpoint to query data provided by tools that support TRS. Lifecycle tools could make data available for indexing by using tracked resource sets (TRS); members of the TRS are retrievable resources with resource description framework (RDF) representations, called tracked resources. Clients can create and run SPARQL queries on the RDF dataset that aggregates the RDF graphs of the tracked resources. These queries include data from across the lifecycle tools; they also include cross-tool links between the resources. The change log in the tracked resource set captures any changes that happen to tracked resources, and the changes are propagated to the reporting server's repository, keeping it up to date.</p>
 
@@ -188,43 +188,53 @@ dd {
     and Hyper-text Transfer Protocol [[HTTP11]].</p>
   <dl class="spaced">
     <dt><dfn>Tracked Resource Set (TRS)</dfn></dt>
-    <dd>Describes a set of Tracked Resources expressed as a Base and a Change Log</dd>
+    <dd>Describes a resource that defines a set of Tracked Resources expressed as a Base and a Change Log.</dd>
+
     <dt><dfn>Tracked Resource</dfn></dt>
-    <dd>A Web resource identified by URI that is a member of one or more Tracked Resource Sets.</dd>
-    <dt><dfn>TRS Consumer </dfn></dt>
-    <dd>A Client application that uses TRS resources to discover a set of resources and track changes to them.</dd>
-    <dt><dfn>TRS Provider</dfn></dt>
-    <dd>A Server that provides Tracked Resource Sets.</dd>
+    <dd>A resource identified by URI that is a member of one or more Tracked Resource Sets.</dd>
+
     <dt><dfn>Base</dfn></dt>
-    <dd>The portion of a Tracked Resource Set representation that lists Tracked Resources</dd>
+    <dd>The portion of a Tracked Resource Set representation that lists the Tracked Resources at some specific point in time. Change Events in the Change Log are relative to the Base.</dd>
+
     <dt><dfn>Change Log</dfn></dt>
-    <dd>The portion of a Tracked Resource Set representation detailing a series of Change Events</dd>
+    <dd>The portion of a Tracked Resource Set representation detailing a series of Change Events on Tracked Resources.</dd>
+
     <dt><dfn>Change Event</dfn></dt>
-    <dd>Describes the addition, removal, or state change of a Tracked Resource in a Tracked Resource Set</dd>
-    <dt><dfn>Access Context</dfn></dt>
-    <dd>A grouping of resources with similar security requirements.</dd>
-    <dt><dfn>Access Context List</dfn></dt>
-    <dd>A resource describing a list of Access Contexts.</dd>
+    <dd>Describes the addition, removal, or state change of a Tracked Resource in a Tracked Resource Set.</dd>
+
     <dt><dfn>TRS Patch</dfn></dt>
     <dd>An extended Change Event in a Tracked Resource Set detailing a change to the resource’s RDF representation.</dd>
 
+    <dt><dfn>TRS Client</dfn></dt>
+    <dd>An application or application component that consumes TRS resources to discover a set of resources and track changes to them.</dd>
+
+    <dt><dfn>TRS Server</dfn></dt>
+    <dd>An application or application component that provides Tracked Resource Sets.</dd>
+
+    <dt><dfn>Access Context</dfn></dt>
+    <dd>A grouping of resources with similar security requirements.</dd>
+
+    <dt><dfn>Access Context List</dfn></dt>
+    <dd>A resource describing a list of Access Contexts.</dd>
   </dl>
 </section>
 <section id='concepts' class='informative'>
   <h2>Basic Concepts</h2>
-  <p>The TRS Provider maintains one or more Tracked Resource Sets. The members of a Tracked Resource Set consist of a finite, enumerable set of Resource URIs. The TRS Provider will have its own criteria for determining the exact set of Tracked Resources at any point in time. TRS Consumers can discover a Tracked Resource Set’s members by interacting with the TRS Provider using the Tracked Resource Set protocol.</p>
+  <p>The TRS Server maintains one or more Tracked Resource Sets. The members of a Tracked Resource Set consist of a finite, enumerable set of Resource URIs. The TRS Server will have its own criteria for determining the exact set of Tracked Resources at any point in time. TRS Clients can discover a Tracked Resource Set’s members by interacting with the TRS Server using the Tracked Resource Set protocol.</p>
 
-  <p>A HTTP GET request sent to the Tracked Resource Set URI returns a representation of the state of the Tracked Resource Set characterized in terms of a Base and a Change Log. The Base provides a point-in-time enumeration of the Tracked Resource members of the Tracked Resource Set. The Change Log provides a time series of adjustments describing changes to the Tracked Resources. When the Base is empty, the Change Log describes a history of how the Tracked Resource Set has grown and evolved since its inception. When the Change Log is empty, the Base is a simple enumeration of the Tracked Resources in the Tracked Resource Set. This hybrid base+delta form gives the TRS Provider flexibility to structure the representation in ways that are most useful to its TRS Consumers. A TRS Provider may periodically provide a TRS with just a Base in order to reset the Change Log to avoid excessively large Change Logs.</p>
+  <p>A HTTP GET request sent to the Tracked Resource Set URI returns a representation of the state of the Tracked Resource Set characterized in terms of a Base and a Change Log. The Base provides a point-in-time enumeration of the Tracked Resource members of the Tracked Resource Set. The Change Log provides a time series of adjustments describing changes to the Tracked Resources. When the Base is empty, the Change Log describes a history of how the Tracked Resource Set has grown and evolved since its inception. When the Change Log is empty, the Base is a simple enumeration of the Tracked Resources in the Tracked Resource Set. This hybrid base+delta form gives the TRS Server flexibility to structure the representation in ways that are most useful to its TRS Clients. A TRS Server may periodically provide a TRS with just a Base in order to reset the Change Log to avoid excessively large Change Logs.</p>
 
-  <p>The Base portion of a Tracked Resource Set representation is a Linked Data Platform (LDP) Container where each member references a Tracked Resource that was in the Tracked Resource Set at the time the Base was computed. The Change Log portion is represented as multiple same-subject and same-predicate triples, where the objects correspond to Change Events. The order information is indicated within the Change Event entry itself. There must not be a gap between the Base portion and the Change Log portion of a Tracked Resource Set representation. However, the Change Log portion may contain earlier Change Event entries that would be accounted for by the Base portion. A “cutoff” property of the Base identifies the point in the Change Log at which processing of Change Events can be cut off because older changes are already covered by the Base portion. TRS Consumers use the Base to establish the resources to track, and the Change Log to address changes to those resources. TRS Consumers are responsible for knowing what change events they have already processed in the Change Log, and should only process new change events.</p>
+  <p>The Base portion of a Tracked Resource Set representation is a Linked Data Platform (LDP) Container where each member references a Tracked Resource that was in the Tracked Resource Set at the time the Base was computed. The Change Log portion is represented as multiple same-subject and same-predicate triples, where the objects correspond to Change Events. The order information is indicated within the Change Event entry itself. There must not be a gap between the Base portion and the Change Log portion of a Tracked Resource Set representation. However, the Change Log portion may contain earlier Change Event entries that would be accounted for by the Base portion. A “cutoff” property of the Base identifies the point in the Change Log at which processing of Change Events can be cut off because older changes are already covered by the Base portion. TRS Clients use the Base to establish the resources to track, and the Change Log to address changes to those resources. TRS Clients are responsible for knowing what change events they have already processed in the Change Log, and should only process new change events.</p>
 </section>
 </section>
 
 <section>
   <h2>Tracked Resource Set</h2>
+  <section>
+  <h2>General Rules</h2>
   <p>An HTTP GET on a Tracked Resource Set URI returns a representation structured as follows.</p>
 
-<section id='trs1'><h2 class=normalText>A TRS Provider MUST provide HTTP(S) URIs corresponding to its Resource Sets. These are referred to as the Tracked Resource Set URIs.</h2></section>
+<section id='trs1'><h2 class=normalText>A TRS Server MUST provide HTTP(S) URIs corresponding to its Resource Sets. These are referred to as the Tracked Resource Set URIs.</h2></section>
 
   <pre class='example'>
 # Resource: http://cm1.example.com/trackedResourceSet
@@ -240,19 +250,20 @@ dd {
   </pre>
   <section id='trs2'><h2 class=normalText>A Tracked Resource Set MUST provide references to the Base and Change Log using the trs:base and trs:changeLog predicates respectively.</h2></section>
 
-  <section id='trs3'><h2 class=normalText>A typical TRS Consumer will periodically poll the Tracked Resource Set looking for recent Change Events. In order to cater to this usage, the Tracked Resource Set’s representation MUST contain the triples for the referenced Change Log (i.e., via a Blank Node, or an inline named resource). Specifically the Tracked Resource Set representation will contain a triple <code>{TRS-URL, rdf:type, trs:TrackedResourceSet}</code> including the triples for the Change Events themselves enumerated in <code>{TRS-URL, trs:change, ChangeEvent-URI}</code> where the Change Events MUST be present in the Tracked Resource Set’s representation. The TRS Provider SHOULD also support ETags, caching, and conditional GETs for Tracked Resource Set resources and relegate the Base to separate resources.</h2></section>
+  <section id='trs3'><h2 class=normalText>A typical TRS Client will periodically poll the Tracked Resource Set looking for recent Change Events. In order to cater to this usage, the Tracked Resource Set’s representation MUST contain the triples for the referenced Change Log (i.e., via a Blank Node, or an inline named resource). Specifically the Tracked Resource Set representation will contain a triple <code>{TRS-URL, rdf:type, trs:TrackedResourceSet}</code> including the triples for the Change Events themselves enumerated in <code>{TRS-URL, trs:change, ChangeEvent-URI}</code> where the Change Events MUST be present in the Tracked Resource Set’s representation. The TRS Server SHOULD also support ETags, caching, and conditional GETs for Tracked Resource Set resources and relegate the Base to separate resources.</h2></section>
+  </section>
 
   <section id='resourceSet'>
-  <h2>Resource Set</h2>
-  <section id='rs1'><h2 class=normalText>A TRS Provider MAY offer one or more Resource Sets.</h2></section>
+  <h2>TRS Resource</h2>
+  <section id='rs1'><h2 class=normalText>A TRS Server MAY offer one or more Tracked Resource Sets.</h2></section>
 
-  <section id='rs2'><h2 class=normalText>Each Resource Set has a set of URLs to linked data Resources called Tracked Resources. The TRS Provider decides which particular Tracked Resources are in a particular Tracked Resource Set at any moment. Both the Tracked Resource Sets and the linked data contents of each Tracked Resource MAY vary over time.</h2></section>
+  <section id='rs2'><h2 class=normalText>Each Tracked Resource Set has a set of URLs to linked data Resources called Tracked Resources. The TRS Server decides which particular Tracked Resources are in a particular Tracked Resource Set at any moment. Both the Tracked Resource Sets and the linked data contents of each Tracked Resource MAY vary over time.</h2></section>
 
-  <section id='rs4'><h2 class=normalText>Tracked Resources MUST have a RDF linked data representation, and SHOULD support GET requests specifying <code>text/turtle</code> as the acceptable media type and returning a Turtle serialization of RDF content in response. TRS Providers MAY support other RDF media types as well. The RDF content of an Tracked Resource is one RDF data graph representing one of the TRS Provider’s linked data resources.</h2></section>
+  <section id='rs4'><h2 class=normalText>Tracked Resources MUST have a RDF linked data representation, and SHOULD support GET requests specifying <code>text/turtle</code> as the acceptable media type and returning a Turtle serialization of RDF content in response. TRS Servers MAY support other RDF media types as well. The RDF content of an Tracked Resource is one RDF data graph representing one of the TRS Server’s linked data resources.</h2></section>
 
   <section id='rs5'><h2 class=normalText>Tracked Resources MAY be Linked Data Platform RDF Sources (LDP-RS), and MAY support OSLC or LDP paging.</h2></section>
 
-  <section id='rs6'><h2 class=normalText>By retrieving a TRS Providers' Tracked Resource Set, an TRS Consumer can discover the URIs Tracked Resources. By retrieving the Tracked Resources, an TRS Consumer MAY discover the linked data representation of that resource.</h2></section>
+  <section id='rs6'><h2 class=normalText>By retrieving a TRS Servers' Tracked Resource Set, an TRS Client can discover the URIs Tracked Resources. By retrieving the Tracked Resources, an TRS Client MAY discover the linked data representation of that resource.</h2></section>
   </section> <!--ildpDataSources-->
 
   <section id="changeLog">
@@ -294,13 +305,13 @@ dd {
 
   <section id='cl1'><h2 class=normalText>Change Events MUST have URIs (i.e., they cannot be Blank Nodes) to allow Clients to recognize entries they have seen before. The URI is only used to identify an event (i.e., it need not be HTTP GETable) and therefore MAY be a URN, as shown in the example.</h2></section>
 
-  <section id='cl2'><h2 class=normalText>Each Change Event has a sequence number, trs:order; sequence numbers are non-negative integer values that increase over time. A Change Event entry carries the URI of the changed Tracked Resource, trs:changed, and an indication, via rdf:type (a.k.a. “a” in Turtle), of whether the Tracked Resource was added to the Tracked Resource Set, removed from the Tracked Resource Set, or changed state while a member of the Tracked Resource Set. The entry with the highest trs:order value (i.e., 103 in this example) is the most recent change. As changes continue to occur, a TRS Provider MUST add new Change Events to the newest Change Log segment. The sequence number (i.e., trs:order) of newer entries MUST be greater than previous ones. The sequence numbers MAY be consecutive numbers but need not be.</h2></section>
+  <section id='cl2'><h2 class=normalText>Each Change Event has a sequence number, trs:order; sequence numbers are non-negative integer values that increase over time. A Change Event entry carries the URI of the changed Tracked Resource, trs:changed, and an indication, via rdf:type (a.k.a. “a” in Turtle), of whether the Tracked Resource was added to the Tracked Resource Set, removed from the Tracked Resource Set, or changed state while a member of the Tracked Resource Set. The entry with the highest trs:order value (i.e., 103 in this example) is the most recent change. As changes continue to occur, a TRS Server MUST add new Change Events to the newest Change Log segment. The sequence number (i.e., trs:order) of newer entries MUST be greater than previous ones. The sequence numbers MAY be consecutive numbers but need not be.</h2></section>
 
   <p>Note that the actual time of change is not included in a Change Event. Only a sequence number, representing the “sequence in time” of each change is provided. The URI of a Change Event MUST be guaranteed unique, even in the wake of a Server rollback where sequence numbers get reused. A time stamp MAY be used to generate such a URI, as in the above example, although other ways of generating a unique URI are also possible.</p>
 
-  <section id='cl3'><h2 class=normalText>A Change Log represents a series of changes to its corresponding Tracked Resource Set over some period of time. The Change Log MUST contain Change Events for every Tracked Resource creation, deletion, and modification during that period. A TRS Provider MUST report a Tracked Resource modification event if a GET on it would return a semantically different response from previously. For a resource with RDF content, a modification is anything that would affect the set of RDF triples in a significant way. A TRS Provider MAY safely report a modification event even in cases where there would be no significant difference in response. Some cases of modifications that would be considered semantically different from previous or significant difference would be: inserted triple, removed triple, triple replaced (new object/literal, e.g. changing boolean literal “true” to “false”), replaced vocabulary term used (e.g. change from dcterms:title to rdfs:label).</h2></section>
+  <section id='cl3'><h2 class=normalText>A Change Log represents a series of changes to its corresponding Tracked Resource Set over some period of time. The Change Log MUST contain Change Events for every Tracked Resource creation, deletion, and modification during that period. A TRS Server MUST report a Tracked Resource modification event if a GET on it would return a semantically different response from previously. For a resource with RDF content, a modification is anything that would affect the set of RDF triples in a significant way. A TRS Server MAY safely report a modification event even in cases where there would be no significant difference in response. Some cases of modifications that would be considered semantically different from previous or significant difference would be: inserted triple, removed triple, triple replaced (new object/literal, e.g. changing boolean literal “true” to “false”), replaced vocabulary term used (e.g. change from dcterms:title to rdfs:label).</h2></section>
 
-  <section id='cl4'><h2 class=normalText>The TRS Provider SHOULD NOT report unnecessary Change Events although it might happen, for example, if changes occur while the Base is being computed. A TRS Consumer SHOULD ignore a creation event for a Tracked Resource that is already a member of the Tracked Resource Set, and SHOULD ignore a deletion or modification event for a Tracked Resource that is not a member of the Tracked Resource Set.</h2></section>
+  <section id='cl4'><h2 class=normalText>The TRS Server SHOULD NOT report unnecessary Change Events although it might happen, for example, if changes occur while the Base is being computed. A TRS Client SHOULD ignore a creation event for a Tracked Resource that is already a member of the Tracked Resource Set, and SHOULD ignore a deletion or modification event for a Tracked Resource that is not a member of the Tracked Resource Set.</h2></section>
 
   <section id="changeLogFormat">
     <h2>Change Log Format</h2>
@@ -335,16 +346,16 @@ dd {
 &lt;urn:urn-3:cm1.example.com:2010-10-27T17:39:30.000Z:100&gt;
 ...
   </pre>
-  <p>As shown, the trs:previous reference is used in this case to connect to the Change Log resource containing the next group of chronologically earlier Change Events. The most recent Change Events are included in the Tracked Resource Set itself. This allows a TRS Consumer to easily discover the most recent Change Event, and retrieve successively older Change Log resources until it encounters a Change Event that has already been processed (on a previous check). The protocol does not attach significance to where a TRS Provider breaks the Change Log into separate parts, i.e., the number of entries in a trs:ChangeLog is entirely up to the Server.</p>
+  <p>As shown, the trs:previous reference is used in this case to connect to the Change Log resource containing the next group of chronologically earlier Change Events. The most recent Change Events are included in the Tracked Resource Set itself. This allows a TRS Client to easily discover the most recent Change Event, and retrieve successively older Change Log resources until it encounters a Change Event that has already been processed (on a previous check). The protocol does not attach significance to where a TRS Server breaks the Change Log into separate parts, i.e., the number of entries in a trs:ChangeLog is entirely up to the Server.</p>
 
-  <section id='cl4'><h2 class=normalText>To allow TRS Consumers to retrieve the Change Events in a Change Log segment using a single HTTP GET request, TRS Providers MUST include all of the triples corresponding to a Change Log segment in the same HTTP response (i.e., in the representation of either the Tracked Resource Set or a trs:previous Change Log). This includes triples whose subject is the Change Log, the trs:change entries, and the Change Events themselves. Other than the Change Events, all of these MAY be represented using Blank Nodes.</h2></section>
+  <section id='cl4'><h2 class=normalText>To allow TRS Clients to retrieve the Change Events in a Change Log segment using a single HTTP GET request, TRS Servers MUST include all of the triples corresponding to a Change Log segment in the same HTTP response (i.e., in the representation of either the Tracked Resource Set or a trs:previous Change Log). This includes triples whose subject is the Change Log, the trs:change entries, and the Change Events themselves. Other than the Change Events, all of these MAY be represented using Blank Nodes.</h2></section>
   </section>
 
   <section id="truncatedChangeLogs">
   <h2>Truncated Change Logs</h2>
-  <section id='cl5'><h2 class=normalText>A chain of Change Logs MAY continue all the way back to the inception of the Resource Set and contain Change Events for every change made since then. However, to avoid maintaining this ever growing list of Change Logs indefinitely, a TRS Provider MAY truncate the log at a suitable point in the chain. This can be accomplished by deleting the oldest segments of the Change Log and/or by removing the triples that reference them. In any case, TRS Consumers MUST be prepared to receive HTTP status code 404 (Not found) when navigating the “previous” reference from a final or stale Change Log segment.</h2></section>
+  <section id='cl5'><h2 class=normalText>A chain of Change Logs MAY continue all the way back to the inception of the Resource Set and contain Change Events for every change made since then. However, to avoid maintaining this ever growing list of Change Logs indefinitely, a TRS Server MAY truncate the log at a suitable point in the chain. This can be accomplished by deleting the oldest segments of the Change Log and/or by removing the triples that reference them. In any case, TRS Clients MUST be prepared to receive HTTP status code 404 (Not found) when navigating the “previous” reference from a final or stale Change Log segment.</h2></section>
 
-  <section id='cl6'><h2 class=normalText>To ensure that a new TRS Consumer can always get started, the Change Log MUST contain the base cutoff event of the corresponding Base, and all Change Events more recent than it. Thus the TRS Provider is only allowed to truncate Change Events older than the base cutoff event. When the Base has no base cutoff event (i.e., the Base enumerates the Tracked Resource Set at the start of time), the Change Log MUST contain all Change Events back to the start of time; i.e., no truncation is allowed.</h2></section>
+  <section id='cl6'><h2 class=normalText>To ensure that a new TRS Client can always get started, the Change Log MUST contain the base cutoff event of the corresponding Base, and all Change Events more recent than it. Thus the TRS Server is only allowed to truncate Change Events older than the base cutoff event. When the Base has no base cutoff event (i.e., the Base enumerates the Tracked Resource Set at the start of time), the Change Log MUST contain all Change Events back to the start of time; i.e., no truncation is allowed.</h2></section>
 
   <section id='cl7'><h2 class=normalText>To minimize the likelihood of Clients falling too far behind and losing information, it is STRONGLY RECOMMENDED that a Server retain a minimum of seven days worth of Change Events.</h2></section>
   </section>
@@ -373,11 +384,11 @@ dd {
   </pre>
   <section id='br2'><h2 class=normalText>Each Tracked Resource in the Tracked Resource Set MUST be referenced from the container using an LDP membership predicate.</h2></section>
 
-  <section id='br3'><h2 class=normalText>Because of the highly dynamic nature of the Tracked Resource Set, a TRS Provider may have difficulty enumerating the exact set of resources at a point in time. Because of that, the Base can be only an approximation of the Tracked Resource Set. A Base might omit mention of a resource that ought to have been included or include a resource that ought to have been omitted. For each erroneously reported resource in the Base, the TRS Provider MUST at some point include a corrective Change Event in the Change Log more recent that the base cutoff event. The corrective Change Event corrects the picture for that Tracked Resource, allowing the TRS Consumer to compute the correct set of member Tracked Resources. A corrective Change Event might not appear in the Change Log that was retrieved when the TRS Consumer dereferenced the Tracked Resource Set URI. The TRS Consumer might only see a corrective Change Event when it processes the Change Log resource obtained by dereferencing the Tracked Resource Set URI on later occasions.</h2></section>
+  <section id='br3'><h2 class=normalText>Because of the highly dynamic nature of the Tracked Resource Set, a TRS Server may have difficulty enumerating the exact set of resources at a point in time. Because of that, the Base can be only an approximation of the Tracked Resource Set. A Base might omit mention of a resource that ought to have been included or include a resource that ought to have been omitted. For each erroneously reported resource in the Base, the TRS Server MUST at some point include a corrective Change Event in the Change Log more recent that the base cutoff event. The corrective Change Event corrects the picture for that Tracked Resource, allowing the TRS Client to compute the correct set of member Tracked Resources. A corrective Change Event might not appear in the Change Log that was retrieved when the TRS Client dereferenced the Tracked Resource Set URI. The TRS Client might only see a corrective Change Event when it processes the Change Log resource obtained by dereferencing the Tracked Resource Set URI on later occasions.</h2></section>
 
-  <section id='br4'><h2 class=normalText>A TRS Provider MUST refer to a given resource using the exact same URI in the Base (membership triple) and every Change Event (trs:changed reference) for that resource.</h2></section>
+  <section id='br4'><h2 class=normalText>A TRS Server MUST refer to a given resource using the exact same URI in the Base (membership triple) and every Change Event (trs:changed reference) for that resource.</h2></section>
 
-  <section id='br5'><h2 class=normalText>The response representation of a Base MUST include a trs:cutoffEvent property, whose value is the URI of the most recent Change Event in the corresponding Change Log that is already reflected in the Base. This corresponds to the latest point in the Change Log from which a TRS Consumer can begin incremental monitoring/updating if it wants to remain synchronized with further changes to the Tracked Resource Set. As mentioned above, the cutoff Change Event MUST appear in the non-truncated portion of the Change Log. When the trs:cutoffEvent is rdf:nil, the Base enumerates the (possibly empty) Tracked Resource at the beginning of time.</h2></section>
+  <section id='br5'><h2 class=normalText>The response representation of a Base MUST include a trs:cutoffEvent property, whose value is the URI of the most recent Change Event in the corresponding Change Log that is already reflected in the Base. This corresponds to the latest point in the Change Log from which a TRS Client can begin incremental monitoring/updating if it wants to remain synchronized with further changes to the Tracked Resource Set. As mentioned above, the cutoff Change Event MUST appear in the non-truncated portion of the Change Log. When the trs:cutoffEvent is rdf:nil, the Base enumerates the (possibly empty) Tracked Resource at the beginning of time.</h2></section>
 
     <section id='pagedBase'>
     <h2>Paged Base</h2>
@@ -824,7 +835,7 @@ ETag: 68djsgg82
    </section>
   </section>
   <section id='providerGuidance' class='informative'>
-  <h2>General Guidance for TRS Providers</h2>
+  <h2>General Guidance for TRS Servers</h2>
   <p>There are a number of possible ways that a lifecycle tool could go about exposing its linked lifecycle data. Here is some general guidance:</p>
   <ul>
     <li>An Indexable Linked Data Provider should restrict itself to a small number of Indexable Linked Data Sources. When configuring an Indexable Linked Data Consumer, an administrator will typically have to select Indexable Linked Data Sources one at a time.</li>
@@ -842,7 +853,7 @@ ETag: 68djsgg82
   </ul>
   </section>
   <section id='consumerGuidance' class='informative'>
-  <h2>General Guidance for TRS Consumers</h2>
+  <h2>General Guidance for TRS Clients</h2>
   <p>What the Consumer building an index does is akin to what a Web crawler (wikipedia) does, and most of the same considerations apply.</p>
 
   <p>In its role as Indexable Linked Data Consumer, the client plays follower to the Indexable Linked Data Provider’s leader. A Consumer retrieves the TRS, Change Logs, and Base Resources, as well as some or all the Index Resources listed in the TRS. Except for the TRS Resource URI itself, the Consumer is blindly retrieving a succession of URIs that the Provider feeds to it. An insufficiently wary Consumer can come to grief when it interacts with an imperfect or untrustworthy Provider.</p>
