@@ -19,7 +19,8 @@ and a prettier presentation of the results.
 Command line usage
 ------------------
 
-    net.open_services.shapechecker.Main -q suppressedIssue ... -s shapeFile|shapeURI ... -v vocabFile|vocabURI ...
+    net.open_services.shapechecker.Main -s shapeFile|shapeURI ... -v vocabFile|vocabURI ...
+        -q suppressedIssue ... -x suppressedURI ...
 
 where:
 
@@ -40,6 +41,14 @@ containing the Turtle source for one or more OSLC Shape resources.
 
 Each `-v` argument provides the path to a local file, or the URI for a file,
 containing the Turtle source for a single RDF vocabulary.
+
+    -x suppressedURI ...
+
+Each `-x` argument specifies a URI not to be loaded when chasing down cross-references
+from vocabularies or shapes being checked. Use this to exclude older versions of the
+vocabularies or shapes being checked, or vocabularies or shapes not yet published to
+their intended location. Use `@base` in the source to specify the intended location
+of a not-yet-published vocabulary or shape.
 
 The RDF model with the summary and warnings is described in the Javadoc for `net.open_services.shapechecker.ResultModel`.
 Note that not all 'issues' that are noted are necessarily errors - for example, a vocabulary may define some terms used
