@@ -19,18 +19,11 @@ and a prettier presentation of the results.
 Command line usage
 ------------------
 
-    net.open_services.shapechecker.Main -s shapeFile|shapeURI ... -v vocabFile|vocabURI ...
-        -q suppressedIssue ... -x suppressedURI ...
+    net.open_services.shapechecker.Main [-s shapeFile|shapeURI ...] [-v vocabFile|vocabURI ...]
+        [-q suppressedIssue ...] [-x suppressedURI ...]
+        [-V|--verbose] [-D]
 
 where:
-
-
-    -q suppressedIssue ...
-
-Each `-q` argument provides the local name of a warning to be suppressed.
-Warning names are defined in `net.open_services.shapechecker.ResultModel`.
-For example, `-q BadTermStatus` suppresses warnings about uses of
-`vs:term_status` with values other than `stable` or `archaic`.
 
     -s shapeFile|shapeURI ...
 
@@ -42,14 +35,25 @@ containing the Turtle source for one or more OSLC Shape resources.
 Each `-v` argument provides the path to a local file, or the URI for a file,
 containing the Turtle source for a single RDF vocabulary.
 
+    -q suppressedIssue ...
+
+Each `-q` argument provides the local name of a warning to be suppressed.
+Warning names are defined in `net.open_services.shapechecker.ResultModel`.
+For example, `-q BadTermStatus` suppresses warnings about uses of
+`vs:term_status` with values other than `stable` or `archaic`.
+
     -x suppressedURI ...
 
-Each `-x` argument specifies a URI not to be loaded when chasing down cross-references
+Each `-x` argument specifies a URI **not** to be loaded when chasing down cross-references
 from vocabularies or shapes being checked. Use this to exclude older versions of the
 vocabularies or shapes being checked, or vocabularies or shapes not yet published to
 their intended location. Use `@base` in the source to specify the intended location
 of a not-yet-published vocabulary or shape.
 
+    --verbose -D
+
+These optional flags enable extra progress or debugging information.
+
 The RDF model with the summary and warnings is described in the Javadoc for `net.open_services.shapechecker.ResultModel`.
 Note that not all 'issues' that are noted are necessarily errors - for example, a vocabulary may define some terms used
-in resource discovery and that are not defined in any resource shape.
+in resource discovery that are not defined in any resource shape.

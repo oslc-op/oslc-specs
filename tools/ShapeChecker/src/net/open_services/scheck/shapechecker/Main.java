@@ -55,7 +55,7 @@ public class Main
                 + " [-v vocabFile|vocabURI ...]"
                 + " [-q suppressedIssue ...]"
                 + " [-x excludeURI ...]"
-                + " [-D]"
+                + " [-V|--verbose] [-D]"
                 );
         }
 
