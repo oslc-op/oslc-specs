@@ -61,6 +61,18 @@ public class Main
 
         int errors = 0;
 
+        // TODO: there's a fundamental problem here in the way the tables are built for the cross-check.
+        // Instantiation of VocabularyCheck loads a voabulary document into memory (good), and
+        // runs the checks on that vocabulary, which in turn loads many of the resources referenced from
+        // vocabulary (bad). It is bad because those references might be part of a second or subsequent
+        // vocabulary document to be checked, but which has not yet been loaded or processed. So
+        // references between vocabularies, or references from shapes to items loaded from resources that
+        // were rederenced from vocabularies can end up looking at out-of-date vocabularies loaded from
+        // their real locations on the internet, and not from the source being checked.
+        // TODO: to fix this, separate vocabulary loading from checking, and pre-load all the vocabs first.
+        // Meanwhile, work around this by setting @base in the source to make the URIs for terms reflect the
+        // intended target, and use the -x command line option to exclude that (presumably older) target.
+
         for (URI vocab : vocabularies)
         {
             try
