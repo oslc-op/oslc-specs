@@ -322,7 +322,7 @@ Host: example.com
 Accept: application/x-oslc-compact+xml
 </pre>
 
-  <p>This returns a Compact resource with <code>Content-Type: application/x-oslc-compact+xml</code> as defined in [[!OSLCUIPreview20]].</p>
+  <p>This returns a Compact resource with <code>Content-Type: application/x-oslc-compact+xml</code> as defined in <a href="#xmlFormat"></a>.</p>
 </section>
 
 <section class="informative" id="linkHeader">
@@ -1086,6 +1086,73 @@ oslc-preview-height:277
         title="JSON Schema for a Compact Resource">
 </pre>
 </section>
+</section>
+
+<section id="xmlFormat" class="appendix">
+<h2>XML Representation Format</h2>
+
+<p>A Compact resource XML representation woould look like the following for the
+    target resource <code>http://example.com/bugs/12345</code>:</p>
+
+<pre class="example" id="ex_compact_xml" title="Compact Resource XML">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;rdf:RDF
+   xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+   xmlns:dcterms=&quot;http://purl.org/dc/terms/&quot;
+   xmlns:oslc=&quot;http://open-services.net/ns/core#&quot;&gt;
+
+ &lt;oslc:Compact
+   rdf:about=&quot;http://example.com/bugs/12345&quot;&gt;
+
+   &lt;dcterms:title&gt; 12345: Need a &amp;quot;fix&amp;quot; &amp;lt;em&amp;gt;NOW&amp;lt;/em&amp;gt; &lt;/dcterms:title&gt;
+   &lt;oslc:shortTitle&gt; 12345 &lt;/oslc:shortTitle&gt;
+   &lt;oslc:icon rdf:resource=&quot;http://example.com/icons/defect.jpg&quot; /&gt;
+   &lt;oslc:iconAltLabel&gt;Defect&lt;/oslc:iconAltLabel&gt;
+   &lt;oslc:iconTitle&gt;Defect&lt;/oslc:iconTitle&gt;
+
+   &lt;oslc:smallPreview&gt;
+      &lt;oslc:Preview&gt;
+         &lt;oslc:document rdf:resource=&quot;http://example.com/bugs/12345?hover=small&quot; /&gt;
+      &lt;/oslc:Preview&gt;
+   &lt;/oslc:smallPreview&gt;
+
+
+   &lt;oslc:largePreview&gt;
+      &lt;oslc:Preview&gt;
+         &lt;oslc:document rdf:resource=&quot;http://example.com/bugs/12345?hover=large&quot; /&gt;
+         &lt;oslc:hintWidth&gt; 60em &lt;/oslc:hintWidth&gt;
+         &lt;oslc:hintHeight&gt; 20em &lt;/oslc:hintHeight&gt;
+      &lt;/oslc:Preview&gt;
+   &lt;/oslc:largePreview&gt;
+
+ &lt;/oslc:Compact&gt;
+
+&lt;/rdf:RDF&gt;
+</pre>
+<p>The XML representation has the following syntactic and semantic constraints:</p> 
+<ul>
+<li> The root element <strong>MUST</strong> be <code>rdf:RDF</code> and <strong>SHOULD</strong> identify the namespaces for RDF ( <code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code>), Dublin Core ( <code>http://purl.org/dc/terms/</code>), and OSLC ( <code>http://open-services.net/ns/core#</code>), as well as namespaces for any additional Provider supplied properties.
+</li> <li> The <code>oslc:Compact</code> element <strong>MUST</strong> be a child of the root element and <strong>MUST</strong> specify an <code>rdf:about</code> attribute whose value is the URI of the target resource.  <ul>
+<li> The <code>oslc:Compact</code> element <strong>MAY</strong> have any number of child elements, including none. Each child element specifies one property of the target resource. The order of child elements is not significant.
+</li> <li> Each of the <code>dcterms:title</code>, <code>oslc:shortTitle</code>, <code>oslc:icon</code>, <code>oslc:smallPreview</code>, and <code>oslc:largePreview</code> child elements <strong>MAY</strong> occur at most once.
+</li> <li> The content of a <code>dcterms:title</code> or <code>oslc:shortTitle</code> element <strong>MUST</strong> be limited to any XHTML &lt;span&gt; element. To afford clients the greatest flexibility to style the text to match the context in which it is being displayed, the titles <strong>SHOULD</strong> be plain text with XHTML markup used only to emphasize words or phrases or to convey additional information about the target resource.
+</li> <li> An <code>oslc:icon</code> element <strong>MUST</strong> have an <code>rdf:resource</code> attribute whose value is a URI of an image. The image <strong>SHOULD</strong> be 16x16 pixels in size.
+</li> <li> The <code>oslc:iconAltLabel</code> and <code>oslc:iconTitle</code> elements <strong>MUST</strong> only have string content. 
+</li> <li> The <code>oslc:smallPreview</code> and <code>oslc:largePreview</code> elements <strong>MAY</strong> have any number of child elements, including none.  <ul>
+<li> The <code>oslc:Preview</code> element <strong>MUST</strong> be a child of an <code>oslc:smallPreview</code> or <code>oslc:largePreview</code> element and <strong>MAY</strong> occur at most once.  <ul>
+<li> An <code>oslc:Preview</code> element <strong>MAY</strong> have any number of child elements, including none. Each child element specifies one property of the Preview. The order of child elements is not significant.
+</li> <li> Each of the <code>oslc:document</code>, <code>oslc:hintWidth</code>, <code>oslc:hintHeight</code>, and <code>oslc:initialHeight</code> child elements <strong>MAY</strong> occur at most once.
+</li> <li> The <code>oslc:document</code> element <strong>MUST</strong> have an <code>rdf:resource</code> attribute whose value is a URI of a document containing a preview of the resource.
+</li> <li> The content of an <code>oslc:hintWidth</code>, <code>oslc:hintHeight</code>, or <code>oslc:initialHeight</code> element <strong>MUST</strong> be a valid relative length value.
+</li></ul> 
+</li></ul> 
+</li></ul> 
+</li> <li> All elements <strong>MAY</strong> have additional atttributes not specified here. All elements, other than <code>dcterms:title</code> and <code>oslc:shortTitle</code>, <strong>MAY</strong> include additional child elements not specified here. Consumers <strong>MUST</strong> quietly ignore unknown elements and attributes encountered in a Compact representation.
+</li>
+</ul> 
+
+
 </section>
 
 <section class="appendix informative" id="history">
