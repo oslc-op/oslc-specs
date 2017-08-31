@@ -104,12 +104,12 @@
           status:   "Finalized",
           publisher:  "http://open-services.net",
       },
-      "OSLCQuery" : {
-          title:    "OSLC Core 2.0 Query Capability",
-          href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities",
-          authors:  ["S. Speicher", "D. Johnson"],
-          status:   "Finalized",
-          publisher:  "http://open-services.net",
+      "OSLCQuery3" : {
+          title:    "OSLC Core 3.0 Query Capability",
+          href:     "https://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/oslc-query.html",
+          authors:  ["Jim Amsden"],
+          status:   "Draft",
+          publisher:  "OASIS",
       },
       "OSLCSPR" : {
           title:    "OSLC Core 2.0 Service Provider Resources",
@@ -442,10 +442,12 @@ simpler, built on layered capabilities and easier to adopt.</p>
 				OSLC 3.0 servers SHOULD protect resources with [[!rfc6749]] Authentication utilizing [[!OpenIDConnect]].
 			</h2></section>
 		</section>
+
 		<section id="resourceDiscovery">
 			<h2>Resource Discovery</h2>
 			<p>Resource <a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/discovery.html">Discovery</a> defines a common approach for HTTP/LDP-based servers to be able to publish their RESTful API capabilities and how clients can discover and use them.</p>
 		</section>
+
 		<section id="resourceRepresentations" class='informative'>
 			<h2>Resource Representations</h2>
 			<p> OSLC resource representations come in many forms and are subject to standard HTTP and mechanisms for content negotiation.</p>
@@ -466,10 +468,12 @@ simpler, built on layered capabilities and easier to adopt.</p>
 				OSLC Services MAY provide and accept existing standard or emerging standard formats such as XML, HTML, and the Atom Syndication Format.</h2>
 			</section>
 		</section>
+
 		<section id="commonVocabulary">
 			<h2>Common Vocabulary</h2>
 			<p><a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/core-vocab.html">Common Vocabulary Terms</a> defines a number of commonly used RDF vocabulary terms and resources (shapes), that have broad applicability across various domains.</p>
 		</section>
+
 		<section id="resourceOperations">
 			<h2>Resource Operations</h2>
 			<p>Resource Operations specify how clients create, read, update and delete resources managed by servers.</p>
@@ -483,11 +487,50 @@ simpler, built on layered capabilities and easier to adopt.</p>
 					<li>If the HTTP <code>If-Match</code> header is present OSLC Services MUST behave as described in the HTTP specification, returning an HTTP Precondition Failed (412) error to indicate that the header does not match.</li>
 					<li>If the HTTP <code>If-Match</code> header is present and it matches, but there is some other problem or conflict with the update then OSLC Services MAY return an HTTP Conflict (409) to indicate that problem.</li>
 				</ul> 		
-			</h2></section>	
-			<section id="selectiveProperties"><h2 class="normalText">
-				OSLC Services MAY support a technique called <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values">Selective Property Values</a> as defined in [[!OSLCCore2]] to enable clients to retrieve only selected property values. This capability is included to preserve compatibility with [[!OSLCCore2]].
-			</h2></section>	
+      </h2></section> 
 		</section>
+
+    <section id="selectiveProperties"><h2>Selective Properties</h2>
+      <section id="selectivePropertiesOption"><h2 class="normalText">OSLC Services MAY support a technique called Selective Properties to enable clients to retrieve only selected property values.</h2></section>
+
+      <p>By adding the key=value pair <code>oslc.properties</code>, specified below, to a resource URI, a client can request a new resource with a subset of the original resource's values. An additional key=value pair <code>oslc.prefix</code> can be used to define prefixes used to identify the selected properties.</p>
+
+      <p>The <code>oslc.properties</code> key=value pair lets you specify the set of properties to be included in the response. Both immediate and nested properties may be specified. A nested property is a property that belongs to the resource referenced by another property. Nested properties are enclosed in brace brackets, and this nesting may be done recursively, i.e. a nested property may contain other nested properties.</p>
+
+      <p>For example, suppose we have a bug report resource at the following URL:</p>
+      <pre class="example" title="Bug Report URL">
+http://example.com/bugs/4242
+      </pre>
+      <p>Suppose this bug resource has properties such as <code>dcterms:title</code>, <code>dcterms:description</code>, and <code>dcterms:creator</code>, and that <code>dcterms:creator</code> refers to a person resource that has properties such as <code>foaf:givenName</code> and <code>foaf:familyName</code>. Suppose you want a representation of the bug report that includes its <code>dcterms:title</code> and the <code>foaf:givenName</code> and <code>foaf:familyName</code> of the person referred to by its <code>dcterms:creator</code>. The following URL illustrates the use of the <code>oslc.properties</code> query value to include those properties:</p>
+      <pre class="example" title="Selective Properies URL">
+http://example.com/bugs/4242?oslc.properties=dcterms:title,dcterms:creator{foaf:givenName,foaf:familyName}
+      </pre>
+      <p>The <code>oslc.properties</code> pair is defined by the oslc_properties term in the following BNF grammar:</p>
+      <pre>
+oslc_properties ::= "oslc.properties=" properties
+properties      ::= property ("," property)*
+property        ::= identifier | wildcard | nested_prop
+nested_prop     ::= (identifier | wildcard) "{" properties "}"
+wildcard        ::= "*" 
+identifier      ::= PrefixedName 
+PrefixedName    ::= /* see "SPARQL Query Lanaguage for RDF", http://www.w3.org/TR/rdf-sparql-query/#rPrefixedName */      </pre>
+      <p>In our examples of <code>oslc.properties</code>, property names include a URI prefix, i.e. dcterms: or foaf:. Here we assume that OSLC has predefined the Dublin Core ( dcterms:) and Friend of a Friend ( foaf:) prefixes. However, OSLC resources should also be open to new content, which means that new properties may not have predefined URI prefixes. We therefore need a way to define new URI prefixes in resource requests. The oslc.prefix value lets you specify URI prefixes used in property names. For example, suppose the foaf: prefix was not predefined. The following URL illustrates the use of the oslc.prefix value to define it:</p>
+<pre class="example" title="Example URL with oslc.prefix">
+http://example.com/bugs/4242?oslc.prefix=foaf=<http://xmlns.com/foaf/0.1/>&amp;oslc.properties=foaf:lastName,...
+</pre>
+      <section id="prefixDefinition"><h2 class="normalText">An OSLC Service SHOULD predefine URI prefixes for its properties.</h2></section>
+
+      <p>The syntax of the <code>oslc.prefix</code> is defined by the oslc_prefix term in the following BNF grammar:</p>
+<pre>
+oslc_prefix ::= "oslc.prefix=" prefix_defs
+prefix_defs ::= prefix_def ("," prefix_def)*
+prefix_def  ::= prefix "=" uri_ref_esc
+prefix      ::= PN_PREFIX
+PN_PREFIX   ::= /* see "SPARQL Query Lanaguage for RDF", http://www.w3.org/TR/rdf-sparql-query/#rPN_PREFIX */
+uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are \-escaped. */
+</pre>
+    </section>  
+
 		<section id="resourcePreview">
 			<h2>Resource Preview</h2>
 			<p><a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-preview.html">Resource Preview</a> specifies a technique to get a minimal HTML representation of a resource identified by a URL. Applications often use this representation to display a link with an appropriate icon, a label, or display a small or large preview when a user makes some gesture over a link.</p>
@@ -496,13 +539,15 @@ simpler, built on layered capabilities and easier to adopt.</p>
 			<h2>Delegated Dialogs</h2>
 			<p><a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/dialogs.html">Delegated Dialogs</a> allow one application to embed a creation or selection UI into another using HTML <code>iframe</code> elements and JavaScript code. The embedded dialog notifies the parent page of events using HTML5 <code>postMessage</code>.</p>
 		</section>
+
 		<section id="query" class='informative'>
 			<h2>Query</h2>
 			<p>OSLC servers will often manage large amounts of potentially complex link-data entities. Practical use of this information will require some query capability that minimally supports selection of matching elements, filtering of desired properties and ordering. Ideally OSLC Core would rely on existing standard query services such as [[RDF-SPARQL-QUERY]] that may be integrated with [[!LDP]]. The <a href="https://www.w3.org/community/ldql/">Linked Data Query Language Community Group</a> is currently working on a Query Language for [[!LDP]]. However, the reality is that many OSLC servers are adapters built on existing data management capabilities that are not built on an RDF foundation and do not provide SPARQL endpoints for query. In order to address the need for standard query capability to enable integration, [[!OSLCCore2]] introduced a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Capability</a> and a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Syntax</a> that were intended to be simple enough that they could be implemented on a wide range of existing server architectures. In practice this has proven to be more difficult than anticipated. But the need is still there. OSLC Core 3.0 is built on [[!LDP]] and future OSLC domain servers may provide more consistent access to SPARQL endpoints. Eventually that may lead to the deprecation of OSLC Core 2.0 Query Capability. In the meantime, OSLC Core 2.0 Query Capability is still available for OSLC domain specifications that need it.</p>
 			<section id="queryCapability"><h2 class="normalText">
-				OSLC Servers MAY support a <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities">Query Capability</a> as defined in [[!OSLCCore2]] to enable clients to perform selection and projection operations in order to retrieve a selected subset of resources and property values from an LDPC. This capability is included to preserve compatibility with [[!OSLCCore2]].
+				OSLC Servers MAY support a <em>Query Capability</em> as defined in [[!OSLCQuery3]] to enable clients to perform selection and projection operations in order to retrieve a selected subset of resources and property values from an LDPC.
 			</h2></section>	
 		</section>
+
 		<section id="resourcePaging">
 			<h2>Resource Paging</h2>
 			<p>Resource Paging specifies a capability for servers to make the state of large resources available as a list of smaller subset resources (pages) whose representation is easier to produce by the server and consume by clients. Resource paging is particularly useful in handling results from the query capability or the contents of an LDP container.</p>
@@ -513,6 +558,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
 				OSLC Services MAY support a <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Resource Paging Capability</a> as defined in [[!OSLCCore2]] to enable clients to retrieve large resources a page at a time. This capability is included to preserve compatibility with [[!OSLCCore2]].
 			</h2></section>	
 		</section>
+
 		<section id="attachments">
 			<h2>Attachments</h2>
 			<p><a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/attachments.html">Attachments</a> describes a minimal way to manage attachments related to web resources using LDP-Containers and Non-RDF Source [[!LDP]].</p>
@@ -581,6 +627,7 @@ Steve Speicher, IBM</p>
   <td>Jim Amsden</td>
   <td>CSD was approved and published.</td>
  </tr>
+ <tr>
   <td>02</td>
   <td>12/16/2016</td>
   <td>Jim Amsden</td>
