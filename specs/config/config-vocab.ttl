@@ -1,0 +1,312 @@
+# RDF Vocabulary document for OSLC Configuration Management
+
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix owl:         <http://www.w3.org/2002/07/owl#> .
+@prefix oslc:        <http://open-services.net/ns/core#> .
+@prefix oslc_config: <http://open-services.net/ns/config#> .
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann:        <http://purl.org/vocab/vann/> .
+@prefix vs:          <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
+
+
+# the vocabulary
+
+oslc_config:
+    a owl:Ontology ;
+    dcterms:title "OSLC Configuration Management vocabulary" ;
+    dcterms:description "The OSLC Configuration Management vocabulary defines terms for versioned resources and configurations of those versioned resources." ;
+    rdfs:label "OSLC Configuration Management vocabulary" ;
+    vann:preferredNamespacePrefix "oslc_config" ;
+
+    # TBD - where should this point in the real spec? At a tag in svn, or elsewhere?
+    dcterms:source <http://tools.oasis-open.org/version-control/svn/oslc-ccm/trunk/specs/config-mgt/config-vocab.ttl> ;
+
+    # TBD - what should the license and copyright info be here?
+    dcterms:license "TBD" ;
+    dcterms:dateCopyrighted "2012-2015" .
+
+
+# Classes
+
+oslc_config:Activity
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "Activity" ;
+    rdfs:comment "An activity is a read-only resource representing a long-running operation, such as recursive baseline or stream creation." .
+
+oslc_config:Baseline
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "Baseline" ;
+    rdfs:subClassOf oslc_config:Configuration ;
+    rdfs:comment "An immutable configuration, with immutable contributions and immutable selections of immutable resources. All contributions to this configuration MUST be baselines." .
+
+oslc_config:ChangeSet
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "ChangeSet" ;
+    rdfs:subClassOf oslc_config:Configuration ;
+    rdfs:comment "A change set configuration represents a set of changes (including additions and removals) to some other configuration." .
+
+oslc_config:ChangeSetSelections
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "ChangeSetSelections" ;
+    rdfs:subClassOf oslc_config:Selections ;
+    rdfs:comment "A resource listing the version resources selected by a change set configuration." .
+
+oslc_config:Component
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "Component" ;
+    rdfs:comment "A unit of organization consisting of a set of versioned resources. Components are the units of configurability, and form reusable assets or building blocks." .
+
+oslc_config:Configuration
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "Configuration" ;
+    rdfs:comment "A configuration identifies a set of versions of resources in a component. Configurations commonly identify exactly one version of each resource in a component. Configurations can also assemble other configurations into a shared context across multiple components." .
+
+oslc_config:ConfigurationMatches
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "ConfigurationMatches" ;
+    rdfs:comment "Information about the matches for configurations of a component containing a resource." .
+
+oslc_config:ConfigurationMatch
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "ConfigurationMatch" ;
+    rdfs:comment "Details of a single match for a given concept resource contained in the component of a configuration context, or one of the configurations contributed to that context." .
+
+oslc_config:ConfigurationSettings
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "ConfigurationSettings" ;
+    rdfs:comment "Information about settings and preferences for a Configuration Management service." .
+
+oslc_config:Contribution
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "Contribution" ;
+    rdfs:comment "A contribution represents the contribution of one configuration to another." .
+
+oslc_config:PersonalConfiguration
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "Contribution" ;
+    rdfs:subClassOf oslc_config:Configuration ;
+    rdfs:comment "A configuration intended for use by a single agent, rather than shared." .
+
+oslc_config:Selections
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "Selections" ;
+    rdfs:comment "A resource listing the version resources selected by a configuration." .
+
+oslc_config:Removals
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "Removals" ;
+    rdfs:comment "For a change set, the selections to be removed from an overridden configuration." .
+
+oslc_config:RemoveAll
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "RemovalAll" ;
+    rdfs:comment "For a change set, an indicator that all selections in the overriden configuration are to be ignored; all selections are defined by the change set." .
+
+oslc_config:Stream
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "Stream" ;
+    rdfs:subClassOf oslc_config:Configuration ;
+    rdfs:comment "A mutable configuration. Contributions to this configuration can be streams or baselines." .
+
+oslc_config:VersionResource
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "VersionResource" ;
+    rdfs:comment "This type is used as a marker for any version resource." .
+
+
+# Properties
+
+oslc_config:accepts
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "accepts" ;
+    rdfs:range oslc_config:Configuration ;
+    rdfs:comment "A type of configuration acceptable as a contribution to the subject configuration." .
+
+oslc_config:acceptedBy
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "acceptedBy" ;
+    rdfs:range oslc_config:Configuration ;
+    rdfs:comment "A type of configuration accepted as a contribution by the subject configuration." .
+
+oslc_config:baselineOfStream
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "baselineOfStream" ;
+    rdfs:range oslc_config:Stream ;
+    rdfs:comment "The stream from which a baseline was made." .
+
+oslc_config:baselines
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "baselines" ;
+    rdfs:comment "A Linked Data Platform Container for baselines of a stream." .
+
+oslc_config:branch
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "branch" ;
+    rdfs:comment "Identifies a resource as one for a specific branch or variant of the component." .
+
+oslc_config:committed
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "committed" ;
+    rdfs:comment "Date and time a resource was committed, or checked in." .
+
+oslc_config:committer
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "committer" ;
+    rdfs:comment "The entity that committed or checked in this resource." .
+
+oslc_config:component
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "component" ;
+    rdfs:comment "A reference to a Component resource." .
+
+oslc_config:configuration
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "configuration" ;
+    rdfs:comment "A reference to a Configuration resource." .
+
+oslc_config:configurations
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "configurations" ;
+    rdfs:comment "A Linked Data Platform Container for configurations of a component." .
+
+oslc_config:configurationSettings
+    a rdfs:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "configurationSettings" ;
+    rdfs:comment "A reference to information about settings and preferences for a Configuration Management service." .
+
+oslc_config:contribution
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "contribution" ;
+    rdfs:range oslc_config:Contribution ;
+    rdfs:comment "A reference to a Contribution resource." .
+
+oslc_config:contributionOrder
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "contributionOrder" ;
+    rdfs:comment "The ordering value for a contribution." .
+
+oslc_config:match
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "matchOrder" ;
+    rdfs:range oslc_config:ConfigurationMatch ;
+    rdfs:comment "A reference to a match of a resource or component in a configuration." .
+
+oslc_config:matchOrder
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "match" ;
+    rdfs:comment "The ordering value for a configuration match." .
+
+oslc_config:overrides
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "overrides" ;
+    rdfs:comment "A reference to a configuration modified by a change set configuration." .
+
+oslc_config:previousBaseline
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "previousBaseline" ;
+    rdfs:range oslc_config:Baseline ;
+    rdfs:comment "For a stream or a baseline, a link to the most recent baseline of the same stream." .
+
+oslc_config:progressMessage
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "progressMessage" ;
+    rdfs:comment "Text describing the progress of an operation." .
+
+oslc_config:selections
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "selections" ;
+    rdfs:range oslc_config:Selections ;
+    rdfs:comment "A reference to a Selections resource." .
+
+oslc_config:selects
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "selects" ;
+    rdfs:comment "A reference to a selected version resource." .
+
+oslc_config:streams
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "streams" ;
+    rdfs:comment "A Linked Data Platform Container for streams created from a baseline." .
+
+oslc_config:versionId
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "versionId" ;
+    rdfs:comment "A human-readable version identifier." .
+
+
+# Obsolete terms
+
+oslc_config:derivedFrom
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "derivedFrom" ;
+    vs:term_status "archaic" ;
+    rdfs:comment "A resource from which this resource was derived; the use of prov:wasDerivedFrom is preferred." .
+
+oslc_config:mutable
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "mutable" ;
+    vs:term_status "archaic" ;
+    rdfs:comment "A boolean property indicating whether or not a resource is modifiable; replaced by use of Baseline and Stream types." .
+
+
+# Individuals
+
+oslc_config:allMatches
+    a rdfs:Resource ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "allMatches" ;
+    rdfs:comment "Used to request that all possible matches are found for a concept resource in one or more components in a configuration context." .
+
+oslc_config:firstMatch
+    a rdfs:Resource ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "firstMatch" ;
+    rdfs:comment "Used to request that only the first match is found for a concept resource in one or more components in a configuration context." .
+
+oslc_config:globalConfigurationService
+    a rdfs:Resource ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "globalConfigurationService" ;
+    rdfs:comment "An oslc:usage value marking a global configuration service." .

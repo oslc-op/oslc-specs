@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta charset='utf-8' />
+<title>OSLC Configuration Management 1.0 Part 1: Overview</title>
+<link rel="stylesheet" type="text/css" href="../../styles/oslc-ccm-styles.css" />
+<link rel="stylesheet" type="text/css" href="../../styles/table-styles.css" />
+<link rel="stylesheet" type="text/css" href="../../styles/definition-styles.css" />
+<script src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script class='remove'>
+  var respecConfig = {
+      // document status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
+      specStatus:    "ED",
+      edDraftURI:    "http://tools.oasis-open.org/version-control/svn/oslc-ccm/trunk/specs/config-mgt/oslc-config-mgt.html",
+      prevED:        "http://tools.oasis-open.org/version-control/svn/oslc-ccm/trunk/specs/config-mgt.html",
+
+      // the document's short name, as in http://www.w3.org/TR/short-name/
+      shortName: "oslc-config-mgmt-10",
+
+      // the document's citation label
+      citationLabel: "OSLC-ConfigMgmt-v1.0-Overview",
+
+      // OSLC version number for the spec, and the revision level of the document within its stage
+      revision: "01",
+
+      // if you wish the publication date to be other than the last modification, set this
+      // publishDate:  "2009-08-06",
+
+      // if the specification's copyright date is a range of years, specify
+      // the start date here:
+      // copyrightStart: "2005"
+
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+
+      // if this is a LCWD, uncomment and set the end of its review period
+      // lcEnd: "2009-08-05",
+
+      // chairs and editors, add as many as you like
+      // only "name" is required
+      editors:  [
+          {
+              name:       "Nick Crossley"
+          ,   mailto:     "nick_crossley@us.ibm.com"
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          },
+      ],
+
+      // name of the WG
+      wg:           "OASIS OSLC Change and Configuration Management (OSLC CCM) TC",
+      wgShortName:  "oslc-ccm",
+
+      // URI of the public WG page
+      wgURI:        "http://www.oasis-open.org/apps/org/workgroup/oslc-ccm/",
+
+      // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
+      wgPublicList: "oslc-ccm",
+
+      // Namespaces defined by this TC
+      namespaces : [ { href: "http://open-services.net/ns/config#"} ],
+
+      additionalArtifacts : [
+         { title: "OSLC Configuration Management 1.0 Part 1: Overview (this document)", href: "oslc-config-mgt.html" },
+         { title: "OSLC Configuration Management 1.0 Part 2: Versioned Resources", href: "versioned-resources.html" },
+         { title: "OSLC Configuration Management 1.0 Part 3: Configuration Specification", href: "config-resources.html" },
+         { title: "OSLC Configuration Management 1.0 Part 4: RDF Vocabulary", href: "config-vocab.html" },
+         ],
+
+      // Related work
+      // relatedWork : [
+      //    { title: "Some title", href: "http://example.com/relatedDocument.html" },
+      //    ],
+      // supersedes : [
+      //    { title: "Some title", href: "http://example.com/supercededDocument.html" },
+      //    ],
+
+      localBiblio : {
+        "OSLCCore2": {
+            title:     "OSLC Core 2.0",
+            href:      "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+            authors:   ["S. Speicher", "D. Johnson"],
+            status:    "Finalized",
+            publisher: "http://open-services.net"
+        },
+        "OSLCCore3": {
+            title:     "OSLC Core 3.0",
+            href:      "http://tools.oasis-open.org/version-control/svn/oslc-core/specs/oslc-core-v3.html",
+            authors:   [ "Steve Speicher", "Jim Amsden" ],
+            publisher: "OASIS",
+        },
+        "TRS": {
+            title:     "OSLC Tracked Resource Set",
+            href:      "http://open-services.net/wiki/core/TrackedResourceSet-2.0/",
+            authors:   [ "Steve Speicher", "Frank Budinsky", "Vivek Garg" ],
+            publisher: "http://open-services.net",
+        },
+        "ILDP": {
+            title:     "OSLC Indexable Linked Data Provider Specification",
+            href:      "http://open-services.net/wiki/core/IndexableLinkedDataProvider-2.0/",
+            authors:   [ "Jim des Rivieres" ],
+            publisher: "http://open-services.net",
+        },
+        "ITSM": {
+            title:     "IT Service Management",
+            href:      "http://en.wikipedia.org/wiki/IT_service_management"
+        },
+        "ITIL": {
+            title:     "Information Technology Infrastructure Library",
+            href:      "http://en.wikipedia.org/wiki/Information_Technology_Infrastructure_Library"
+        },
+      },
+ };
+</script>
+</head>
+<body>
+<section id='abstract'>
+  <p>OSLC Configuration Management defines an RDF vocabulary and a set of REST APIs for managing versions and configurations
+    of linked data resources from multiple domains.</p>
+</section>
+<section id='toc'></section>
+<hr />
+<section id='sotd'></section>
+<section id='intro' class='informative'>
+  <h2>Introduction</h2>
+  <p>The specification:</p>
+  <ul>
+    <li>defines RDF representations of configurations and versioned resources</li>
+    <li>defines methods for creation, updating, and deletion of aggregate (<em>global</em>) configurations</li>
+    <li>defines how a version of a given resource is identified within the context of a configuration (global or local)</li>
+    <li>defines how configurations local to a tool or domain contribute to a global configuration</li>
+    <li>recommends but does not mandate creation, updating, and deletion of configurations local to a tool or domain</li>
+    <li>allows but does not mandate capabilities for creation, deletion, and other management of versions of resources other than configurations themselves.</li>
+  </ul>
+  <p>While the scope of this specification does not include all of [[ITIL]] or [[ITSM]],
+    a configuration as defined by this specification shall be able to contain or reference a set of Configuration Items (CIs) and their specific versions,
+    and hence participate in the Identification, Control, and Monitoring activities of ITIL.</p>
+<section id='conventions'></section>
+<section id='motivation' class='informative'>
+  <h3>Motivation</h3>
+  <p><b>Problem</b></p>
+  <p>Any software development project team creating anything but the simplest, short-lived solutions knows the value of source code management (SCM).
+    Without SCM, teams could not reliably recreate the source files that were used to build a specific release,
+    making it impossible to reliably maintain what the team has delivered.</p>
+  <p>However, a large development project involves much more shared information that just source files.
+    Complex products and systems are mix of software, electronics, and hardware, with software taking an increasing role.
+    Solution components are often developed by different organizations, using different method and tools,
+    with lifecycle information stored in different repositories.
+    The design and development of these complex systems requires many kinds of artifacts.
+    Engineers in specialist disciplines produce these artifacts employing various engineering methods, disciplines and tools.
+    However, these artifacts typically are not under Configuration Management, or if they are, it is done manually: with half-measures that incur trade-offs.
+    These challenges exist for software-only systems, yet their magnitude is much greater for products with physical, electrical and software aspects.</p>
+  <p>For example, specific requirements are often associated with a particular release of components of a system.
+    Analysis and design artifacts are created to understand how to address the impact of, or realize those requirements.
+    Test cases and test results are used to validate that the work done on the systems actually meets the requirements.</p>
+  <p>All this shared information is generally not available under the control of a single organization, set of tools or content management system,
+    and it is often stored in repositories, not files in the file system.
+    Like source files, all this shared information should be managed in a controllable, predictable way that is coordinated with specific solution releases.</p>
+  <p>Development teams need an efficient, effective means of managing versions and variants of artifacts across the whole systems development lifecycle.
+    They need to be able to capture, preserve, compare, merge and potentially recreate specific sets of versioned information covering the whole lifecycle
+    in order to know who did what, when, and why.</p>
+  <p><b>Solution</b></p>
+  <p>The OSLC Configuration Management specification defines an RDF vocabulary and a set of REST APIs for managing versions and configurations
+    of linked data resources from multiple domains.
+    Using client and server applications that implement the configuration management vocabulary and REST APIs allow a team administrator
+    to create configurations of versioned resources contributed from tools and data sources across the lifecycle.
+    These contributions can be assembled into aggregate (<em>global</em>) configurations that are used to resolve references to artifacts
+    in a particular, well defined, and reproducible context.</p>
+  <p>Team members set the configuration context in each of the tools they use to refer to the particular global configuration
+    that represents the state of the systems they are working on.
+    They can create branches to support parallel development, and compare and merge branches to flow changes as needed.
+    Product managers can create branches that represent different variants of a product in order to separate variation points
+    and ensure changes are only applied to the appropriate variants.</p>
+  <p>Development teams can create baselines that preserve the state of the federated, shared information in order to be able to recreate that state for any reason,
+    including for regulatory compliance or for applying maintenance updates to released versions and/or variants of a product.</p>
+  <p><b>Business Value</b></p>
+  <p>The primary purpose for versioning and configuration management is to be able to establish and restore or recover a particular set of related resources
+    in order to know and manage who changed what, when, and why.
+    Applying these techniques to other disciplines, and combining them together,
+    offers new opportunities for parallel development, managing change, reuse, and management of product variants in complex development projects.</p>
+  <p>The benefits of source-code management are well known.
+    However, achieving those benefits across all of the information that goes into designing, building, managing and governing the source code can be a challenge.
+    This is because having multiple change and configuration management solutions for different artifact types
+    requires manual coordination of versions and variants across the tools.
+    The OSLC Configuration Management specification specifies a standard way in which different tools, developed by different suppliers, at different times,
+    using different repositories and data representations can contribute version and configuration information across the whole lifecycle.</p>
+  <p>The resulting business value includes:</p>
+  <ul>
+    <li>Cross-tool version and configuration management related shared information</li>
+    <li>Support for context-specific link navigation and management</li>
+    <li>Automatic configuration management of complex solutions and systems</li>
+    <li>Enable parallel, independent, development streams with branching and merging of all lifecycle information</li>
+    <li>Save and restore consistent sets of related information for any purpose including regulatory compliance and product maintenance releases</li>
+    <li>Manage different variants of a related set of deliverables, solutions and/or products</li>
+    <li>Reuse utilizing commonality/variability for Product Line Engineering</li>
+  </ul>
+  <p>Some typical uses of versioning and configuration management capabilities include:</p>
+  <ul>
+    <li>Creating baselines of development streams in order to capture and preserve the state of a system at different points in time</li>
+    <li>Use release stabilization streams to complete development of specific releases while allowing ongoing future development to continue in parallel</li>
+    <li>Branching streams for different purposes including experimentation, A/B testing, gradual production rollout, importing from a supplier, etc.,
+      and delivering changes on streams to a common shared stream in a controlled manner.</li>
+    <li>Parallel development on shared artifacts, overlapping releases or the common parts of product variants with the ability to compare
+      different streams and flow changes as needed to meet requirements, enforce enterprise asset management and governance, and promote reuse.</li>
+    <li>Create maintenance branches and control propagation of maintenance changes into ongoing development streams in a controlled, predictable manner</li>
+    <li>Managing configurations of related, federated, shared information across the whole lifecycle.</li>
+    <li>Isolate changes for different variants on different streams while also managing common, reusable components.</li>
+    <li>Enable reuse of lifecycle artifacts including requirements and test cases, as well as the relationships between them,
+      including regulatory and security requirements and test cases.</li>
+    <li>Enable analysts and designers to work one iteration ahead in agile projects in order to better inform iteration planning and development.</li>
+    <li>Enable progressive contribution of parts of a large system with baselines that capture each significant evolution of the system.</li>
+    <li>Support different approaches to reuse by branching from product streams that are closes to the new variant,
+      or branching from a common base that is maintained as a reusable enterprise asset.</li>
+    <li>Enable concurrent development of shared enterprise assets in different product delivery streams (requirements delivery life-cycles)
+      while at the same time managing and governing changes to long-lived enterprise assets (asset management life-cycles).</li>
+  </ul>
+</section>
+<section id='terminology' class='informative'>
+  <h3>Terminology</h3>
+  <dl class="spaced">
+    <dt><dfn>Baseline</dfn></dt>
+    <dd>An immutable configuration of one or more components that corresponds to some meaningful state of its resources.
+      The set of configuration items in a baseline cannot be changed; the state of each of those items cannot be changed.
+      Some of the metadata on the baseline itself can be changed, such as tags, comments, etc.
+      Baselines are useful for recording deliverables, enabling a team to work with a known configuration, or as an initial state for some new stream of work.</dd>
+    <dt><dfn>Branch</dfn></dt>
+    <dd>(<em>verb</em>) to create a configuration for parallel or insulated development.<br />
+      (<em>noun</em>) the result of parallel or insulated development after branching - that is, a sequence of baselines, usually with a stream at the end of the branch.</dd>
+    <dt><dfn>Change Set</dfn></dt>
+    <dd>A change set is a related set of changes, introducing new versions of resources, grouped together to ensure coherence and consistency.
+       In some systems, a change set may be treated as a configuration that contains a delta to some other configuration;
+       this standard allows but does not require change sets to be represented as configurations.</dd>
+    <dt><dfn>Component</dfn></dt>
+    <dd>A unit of organization consisting of a set of version resources.
+      For a particular versioned resource, different versions can be in different components.
+      Components are the units of configurability, and form reusable assets or building blocks.
+      The granularity of a component varies between providers, but typically it contains the set of resources used in some product, project, or a subdivision of such a set.</dd>
+    <dt><dfn>Concept Resource</dfn></dt>
+    <dd>An artifact (a requirement, test case, source code file, etc.) as an overall entity, independent of any specific version of that artifact.</dd>
+    <dt><dfn>Configuration</dfn></dt>
+    <dd>A configuration identifies a set of versions of resources in a component.
+      Configurations commonly identify exactly one version of each resource in a component.
+      Configurations can also aggregate other configurations ('contributions'),
+      identifying further sets of versions of resources in other components, thus assembling a shared context across multiple components.</dd>
+    <dt><dfn>Container</dfn></dt>
+    <dd>A <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container</a>, often abbreviated to <em><strong>LDPC</strong></em>.</dd>
+    <dt><dfn>Contribution</dfn></dt>
+    <dd>A configuration that is a member of the set of configurations making up a configuration.
+      The set of versioned resources in a configuration is the union of the set of versioned resources in that configuration and all its contributions;
+      contributions are ordered to resolve any conflicts between that set.</dd>
+    <dt><dfn>Global Configuration</dfn></dt>
+    <dd>A configuration that identifies a set of configurations contributed by multiple tools or configuration management servers,
+      allowing you to define all the relevant resources for a system.
+      Using global configurations, you can establish a configuration context across multiple tools,
+      even when each tool stores its resources in otherwise unrelated configurations and repositories.</dd>
+    <dt><dfn>Revision</dfn></dt>
+    <dt><dfn>Selections</dfn></dt>
+    <dd>The set of versions of resources identified by a given configuration.</dd>
+    <dd>This term is not used formally by the specifications, but informally it may refer to a version of a resource that is designed to replace an earlier version,
+      such as an edited version of a source file, or a modified requirement.</dd>
+    <dt><dfn>Stream</dfn></dt>
+    <dd>A modifiable configuration of resources. For example, team members deliver to a stream when they want to make their changes visible to other team members.
+      In many systems, changes to versioned resources can only be made in a stream.</dd>
+    <dt><dfn>Tag</dfn></dt>
+    <dd>A short string used to find, mark, qualify, or indentify some resource.
+      Resources can have multiple tags.
+      Tags can be used to indicate the intended purpose of a resource, or to flag it for some intention.</dd>
+    <dt><dfn>Variant</dfn></dt>
+    <dd>This term is not used formally by the specifications, but informally it may refer to a version of a resource that is identified by
+      a specific set of characteristics that distinguish it from other versions of that resource,
+      where each variant can exist at the same time as those other versions of the resource.</dd>
+    <dt><dfn>Version</dfn></dt>
+    <dd>A referenceable state of a resource. A resource with separable referenceable versions is called a <em><strong>versioned resource</strong></em>.
+      Each version of such a resource is called a <em><strong>version resource</strong></em>, and can be referenced with a distinct URI.</dd>
+  </dl>
+</section>
+<section id='concepts' class='informative'>
+  <h3>Concept resources, version resources, and configuration context</h3>
+  <p>All the major &ldquo;Artifacts&rdquo; or &ldquo;Entities&rdquo; in OSLC domains are <strong><em>concept resources</em></strong>.
+    Examples are defects, tasks, products, projects, users, tests cases requirements, plans and so on. Like all resources, concept resources have URLs.
+    Except in a few technical and specialized scenarios, URLs of concept resources are used throughout the system.
+    &ldquo;Entities&rdquo; are addressed in HTTP messages via their concept resource URLs.
+    Links are typically established using the URL of a concept resource.</p>
+  <p>The state (including the properties) of a concept resource can vary over time, or for other reasons.
+    A <strong><em>versioned resource</em></strong> is a concept resource that keeps track of different states.
+    a <strong><em>version resource</em></strong> is a resource that represents one specific state of a versioned resource.
+    Not every past state is necessarily kept; a server may elide or discard states that are no longer referenced.</p>
+  <p>Not all resource types need be versioned - for example, OSLC change requests are typically not versioned. OSLC configurations and components need not be versioned.</p>
+  <p>For a versioned resource, a GET on the URI of a concept resource resolves that URI to an appropriate state of (version of) that concept resource
+    for the appropriate configuration context (see later).
+    The returned http resource will contain RDF statements about both the version resource and the concept resource;
+    most statements should use the concept resource as the subject, because a version resource reflects the state of (properties of) the concept resource as it appeared at some time.
+    Using the concept resource URI as the subject of RDF statements is more consistent with the handling of non-versioned resources;
+    using the versioned resource URI as the subject of RDF statements requires more client knowledge of versioning.</p>
+  <p>Since different versions reflecting different states of the concept resource may return conflicting RDF statements about the same subject,
+    it is important for clients handling multiple versions (multiple configurations) to keep track of the relevant versions; this can be done using RDF named graphs.</p>
+  <p>As an example, <code>GET http://example.com/conceptResourceA</code> in one configuration context might return:</p>
+  <pre class='example'>:conceptResourceA-version23
+    a oslc_config:VersionResource ;
+    dcterms:isVersionOf :conceptResourceA . # dcterms:isVersionOf relates the version resource itself to its concept resource
+:conceptResourceA
+    a :someType ;
+    oslc_config:versionId &quot;23&quot; ;
+    dcterms:title &quot;Concept Resource A&quot; ;
+    :color &quot;blue&quot; ;
+    dcterms:description &quot;Concept resource A as it appears in the state with the URI :conceptResourceA-version23&quot; .</pre>
+  <p>while in a different configuration context it might return:</p>
+  <pre class='example'>:conceptResourceA-version17
+    a oslc_config:VersionResource ;
+    dcterms:isVersionOf :conceptResourceA .
+:conceptResourceA
+    a :someType ;
+    oslc_config:versionId &quot;17&quot; ;
+    dcterms:title &quot;Concept Resource A&quot; ;
+    :color &quot;red&quot; ;
+    dcterms:description &quot;Concept resource A as it appears in the state with the URI :conceptResourceA-version17&quot; .</pre>
+  <p>To keep track of which version represented which state of the conflicting color statements, use of RDF named graphs is recommended, as shown here using <a href="http://www.w3.org/2010/01/Turtle/Trig">TriG</a>:</p>
+  <pre class='example'>:conceptResourceA-version23 = {
+    :conceptResourceA-version23
+        a oslc_config:VersionResource ;
+        dcterms:isVersionOf :conceptResourceA .
+    :conceptResourceA
+        a :someType ;
+        oslc_config:versionId &quot;23&quot; ;
+        dcterms:title &quot;Concept Resource A&quot; ;
+        :color &quot;blue&quot; ;
+        dcterms:description &quot;Concept resource A as it appears in the state with the URI :conceptResourceA-version23&quot; .
+}.
+
+:conceptResourceA-version17 = {
+    :conceptResourceA-version17
+        a oslc_config:VersionResource ;
+        dcterms:isVersionOf :conceptResourceA .
+    :conceptResourceA
+        a :someType ;
+        oslc_config:versionId &quot;17&quot; ;
+        dcterms:title &quot;Concept Resource A&quot; ;
+        :color &quot;red&quot; ;
+        dcterms:description &quot;Concept resource A as it appears in the state with the URI :conceptResourceA-version17&quot; .
+}.</pre>
+  <p>Updating a versioned resource is typically performed in a stream, and usually results in the creation of a new version of the same concept resource.
+    In some systems, a related batch of changes to one or more resources can be grouped into a <em>change set</em>;
+    this version of OSLC Configuration Management does not define how change sets might work.</p>
+  <p>Since concept resource URIs for versioned resources do not inherently identify a specific version of that resource,
+    a client needs to provide a configuration context within which the concept resource is resolved to a specific version. </p>
+  <p>A client requests a specific configuration context in a <a href="config-resources.html#configcontext">header or a query string</a>.</p>
+</section>
+<section id='conformance'>
+  <h3>Conformance to other standards</h3>
+  <p>OSLC Configuration Management 1.0 servers MUST conform to [[!OSLCCore2]], and SHOULD conform to [[!OSLCCore3]] (and hence [[!LDP]]).</p>
+  <p>All Configuration Management resources SHOULD be compliant with [[!LDP]].</p>
+  <p>All Tracked Resource Sets for Configuration Management resources MUST be compliant with [[!TRS]],
+    and configuration servers providing such Tracked Resource Sets SHOULD follow the guidance in [[!ILDP]].</p>
+</section>
+<section id='references'>
+  <h3>References</h3>
+</section>
+</section>
+<section id='namespaces'>
+  <h2>RDF Namespaces</h2>
+  <p>OSLC Configuration Management defines the namespace URI of <code>http://open-services.net/ns/config#</code> with a namespace prefix of <code>oslc_config</code>.</p>
+   OSLC Configuration Management uses the following prefixes:
+   <table class="ruled">
+     <tr><th>Prefix</th><th>Namespace</th></tr>
+     <tr><td>acc</td><td><a href="http://open-services.net/ns/core/acc#" target="_blank">http://open-services.net/ns/core/acc#</a></td></tr>
+     <tr><td>dcterms</td><td><a href="http://purl.org/dc/terms/" target="_blank">http://purl.org/dc/terms/</a></td></tr>
+     <tr><td>foaf</td><td><a href="http://xmlns.com/foaf/0.1/" target="_blank">http://xmlns.com/foaf/0.1/</a></td></tr>
+     <tr><td>ldp</td><td><a href="http://www.w3.org/ns/ldp#" target="_blank">http://www.w3.org/ns/ldp#</a></td></tr>
+     <tr><td>oslc</td><td><a href="http://open-services.net/ns/core#" target="_blank">http://open-services.net/ns/core#</a></td></tr>
+     <tr><td>oslc_auto</td><td><a href="http://open-services.net/ns/auto#" target="_blank">http://open-services.net/ns/auto#</a></td></tr>
+     <tr><td>oslc_config</td><td><a href="http://open-services.net/ns/config#" target="_blank">http://open-services.net/ns/config#</a></td></tr>
+     <tr><td>owl</td><td><a href="http://www.w3.org/2002/07/owl#" target="_blank">http://www.w3.org/2002/07/owl#</a></td></tr>
+     <tr><td>prov</td><td><a href="http://www.w3.org/ns/prov#" target="_blank">http://www.w3.org/ns/prov#</a></td></tr>
+     <tr><td>rdf</td><td><a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#" target="_blank">http://www.w3.org/1999/02/22-rdf-syntax-ns#</a></td></tr>
+     <tr><td>rdfs</td><td><a href="http://www.w3.org/2000/01/rdf-schema#" target="_blank">http://www.w3.org/2000/01/rdf-schema#</a></td></tr>
+     <tr><td>vann</td><td><a href="http://purl.org/vocab/vann/" target="_blank">http://purl.org/vocab/vann/</a></td></tr>
+     <tr><td>vs</td><td><a href="http://www.w3.org/2003/06/sw-vocab-status/ns#" target="_blank">http://www.w3.org/2003/06/sw-vocab-status/ns#</a></td></tr>
+     <tr><td>xsd</td><td><a href="http://www.w3.org/2001/XMLSchema#" target="_blank">http://www.w3.org/2001/XMLSchema#</a></td></tr>
+   </table>
+</section>
+<section id='specparts'>
+  <h2>Specification and Vocabulary Documents</h2>
+  <p>The OSLC Configuration Management Specification consists of the following parts.
+    Each part includes the associated <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#oslc_ResourceShape_Resource" target="_blank">OSLC 2.0 resource shapes</a>.</p>
+  <dl class="spaced">
+    <dt><a href="versioned-resources.html">Versioned Resource Specification</a></dt>
+    <dd>All versioned resources, and servers providing such resources, MUST be compliant with this specification.</dd>
+    <dt><a href="config-resources.html">Configuration Specification</a></dt>
+    <dd>All configuration resources (including global configurations), and providers of such resources, MUST be compliant with this specification.
+      Configuration and component resources MAY be versioned;
+      versioned configuration and component resources MUST be compliant with both the Configuration Specification and the Versioned Resource Specification.</dd>
+    <dt>Client Requirements</dt>
+    <dd>TBD - This document defines the required behavior for clients of configurations and versioned resources</dd>
+    <dt><a href="config-vocab.html">RDF Vocabulary</a></dt>
+    <dd>The RDF vocabulary for versioned resources, configurations, and related resources.</dd>
+  </dl>
+</section>
+<section id='non-rdf'>
+  <h2>Non-RDF Sources</h2>
+  <p>All resources described in this specification are RDF resources. Providers SHOULD follow the Linked Data Platform recommendation for handling <a href="http://www.w3.org/TR/ldp/#ldpnr" target="_blank">non-RDF data sources</a>.</p>
+</section>
+</body>
+</html>
