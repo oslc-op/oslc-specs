@@ -67,8 +67,12 @@ public class ShapeCheck
     {
         int errors = 0;
 
-        // Look for the required  properties
         NodeCheck node = new NodeCheck(shape, httpHandler, shapeModel, shapeCopy, resultModel, shapeResult);
+
+        // Look for the required properties
+        // TODO Note that oslc:describes is not truly required, but we check for it because almost all shapes should have one.
+        // Shapes that are introduced by use of oslc:valueShape need not have an oslc:describes property,
+        // but this code has no way to check for that yet.
         errors += node.checkURI(OSLC.describes, Occurrence.ExactlyOne,
             (uri)->{shapeResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri)); return checkUnique(describes,uri);});
 
