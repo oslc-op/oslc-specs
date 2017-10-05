@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -31,7 +32,7 @@ public class HttpHandler
 
     private Map<URI,Boolean> httpResourceIsRDF = new HashMap<>();
     private Set<String> foundRDFResources = new HashSet<>();
-    private Set<String> skipURIs = new HashSet<>();
+    private Set<Pattern> skipURIPatterns = new HashSet<>();
     private boolean verbose = false;
 
 
@@ -46,12 +47,12 @@ public class HttpHandler
 
 
     /**
-     * Exclude a URI from being fetched and parsed.
-     * @param uri the URI to be skipped
+     * Exclude a URI pattern from being fetched and parsed.
+     * @param uri the URI pattern to be skipped
      */
-    public void excludeURI(String uri)
+    public void excludeURIPattern(String uri)
     {
-        skipURIs.add(uri);
+        skipURIPatterns.add(Pattern.compile(uri));
     }
 
 
@@ -128,7 +129,7 @@ public class HttpHandler
         {
             // Resource previously found
         }
-        else if (skipURIs.contains(httpUri.toString()))
+        else if (containsMatch(skipURIPatterns,httpUri.toString()))
         {
             // Do not try to read or parse this
             httpResourceIsRDF.put(httpUri, false);
@@ -158,6 +159,19 @@ public class HttpHandler
                 }
             }
         }
+    }
+
+
+    private static boolean containsMatch(Set<Pattern> patterns, String str)
+    {
+        for (Pattern p : patterns)
+        {
+            if (p.matcher(str).matches())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 

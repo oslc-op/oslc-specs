@@ -33,6 +33,7 @@ public class Main
      * <li>Each -v argument introduces a vocabulary, by local path or by URI</li>
      * <li>Each -s argument introduces a shape, by local path or by URI</li>
      * <li>Each -q argument names an issue to be ignored
+     * <li>Each -x argument specifies a regular expression for URIs not to be read</li
      * </ul>
      * The arguments may be repeated to check multiple vocabulary and shape documents.
      * The vocabulary and shape arguments can use globs (*.ttl, etc.)
@@ -54,7 +55,7 @@ public class Main
                 + " [-s shapeFile|shapeURI ...]"
                 + " [-v vocabFile|vocabURI ...]"
                 + " [-q suppressedIssue ...]"
-                + " [-x excludeURI ...]"
+                + " [-x excludeURIPattern ...]"
                 + " [-V|--verbose] [-D]"
                 );
         }
@@ -62,7 +63,7 @@ public class Main
         int errors = 0;
 
         // TODO: there's a fundamental problem here in the way the tables are built for the cross-check.
-        // Instantiation of VocabularyCheck loads a voabulary document into memory (good), and
+        // Instantiation of VocabularyCheck loads a vocabulary document into memory (good), and
         // runs the checks on that vocabulary, which in turn loads many of the resources referenced from
         // vocabulary (bad). It is bad because those references might be part of a second or subsequent
         // vocabulary document to be checked, but which has not yet been loaded or processed. So
@@ -176,7 +177,7 @@ public class Main
                 else if (args[index].equals("-x") || args[index].equals("-exclude"))
                 {
                     index++;
-                    httpHandler.excludeURI(args[index++]);
+                    httpHandler.excludeURIPattern(args[index++]);
                 }
                 else
                 {
