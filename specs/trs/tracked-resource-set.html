@@ -447,8 +447,256 @@ dd {
 </section>
 <section id='trs-patch'>
   <h2>TRS Patch</h2>
-  <p class='red'>TBD</p>
+     <p class="ednote" title="TBD">
+       <strong>Editor: Why is this non-normative? (img)</strong>
+     </p>
+     <p class="ednote" title="TBD">
+       <strong>Editor: need some words here motivating the need for TRS Patch.
+       Version 432 motivated using Indexable provider, which i think we agreed was
+       not appropriate. (img)</strong>
+     </p>
+     <p>
+       For a Resource that changes frequently, a typical Client may retrieve the
+       same Resource over and over again. When the representation
+       of the Resource is large and the differences between adjacent representations can
+       be described compactly, including additional information in the
+       trs:Modification Change Event can allow the Client to determine the
+       Resource’s current representation and thereby avoid having to retrieve the
+       Resource.
+     </p>
+     <p>
+       Similiarly, in versioned worlds each change to a versioned resource may
+       result in the creation of a new Resource representing an immutable version of
+       the resource. The typical Client retrieves each such Resource as it is created. The
+       state of the new Resource is often quite similar to the state of a
+       Resource corresponding to a previous version. When the state of one
+       Resource is similar to that of another Resource and the differences
+       between the two can be described compactly, including additional information
+       in the trs:Creation Change Event can allow the Client to determine the new
+       Resource’s resultant state from the potentially-known state of a
+       previously-retrieved  Resource and thereby avoid having to retrieve the
+       new Resource.
+     </p>
+     <p>
+       This section describes an extension to Change Events allowing them to carry
+       detailed information about modifications to resources with an RDF
+       representation.
+     </p>
+     <section id="createdFrom">
+       <p class="normalText">
+         The <code>trspatch:createdFrom</code> property, when present, identifies the
+         antecedent resource. If omitted, the antecedent resource is the resource
+         referenced in the <code>trs:changed</code> property. The antecedent resource
+         is the one that supplies the “before” state.
+       </p>
+     </section>
+     <section id="rdfPatch">
+       <p class="normalText">
+         The <code>trspatch:rdfPatch</code> property, when present, describes a patch
+         applied to the antecedent resource’s representation. The result of applying
+         the patch describes the representation of the resource referenced in
+         the <code>trs:changed</code> property.
+         The <code>trspatch:rdfPatch</code> property is used with <code>trs:Modification</code> and <code>trs:Creation</code> Change Events;
+         it is not meaningful
+         for <code>trs:Deletion</code> Change Events. The value of
+         the <code>trspatch:rdfPatch</code> property is an LD
+         Patch. The <code>trspatch:rdfPatch</code> property is meaningful only for
+         resources with RDF representations.
+       </p>
+     </section>
+     <section id="beforeEtag">
+       <p class="normalText">
+         The <code>trspatch:beforeETag</code> property, when present, gives the
+         initial HTTP entity tag of the antecedent resource. This is the entity-tag
+         value that would be returned in the HTTP ETag response header if the
+         antecedent resource is retrieved immediately before the change.
+       </p>
+     </section>
+     <section id="afterEtag">
+       <p class="normalText">
+         The <code>trspatch:afterETag</code> property, when present, gives the final
+         HTTP entity tag of the resource referenced in the trs:changed property. For
+         a <code>trs:Modification</code> (<code>trs:Creation</code>) Change Event, this is the
+         entity tag of the resource immediately after it was modified (created,
+         respectively). This is the entity-tag value that would be returned in the
+         HTTP ETag response header if the resource is retrieved immediately after the
+         change.
+       </p>
+     </section>
+     <p>
+       Note that these properties are can be used with any resource having both an
+       RDF representation and an entity tag. This includes all Linked Data Platform
+       RDF Source (LDP-RS) resources, which have both.
+     </p>
+     <p>
+       Note also that the <code>trspatch:beforeETag</code> and <code>trspatch:afterETag</code> properties
+       are meaningful for any kind of resource, not just ones with RDF
+       representations.
+     </p>
+     <section id='ldPatch' class='informative'>
+       <h2>LD Patch</h2>
+       <p class="ednote" title="TBD">
+         <strong>Editor: the LD Patch spec has moved up to working group note 28 july
+         2015. (img)</strong>
+       </p>
+       <p class="ednote" title="TBD">
+         <strong>Editor: the meaning of "temporarily" below is not clear. (img)</strong>
+       </p>
+       <p>
+         The Linked Data Patch (LD Patch) specification is currently under
+         development by the W3C LDP WG. Our intention is to adopt the syntax and
+         semantics of LD patches from the LD Patch specification rather than
+         specifying our own. However, the LD Patch effort is only just beginning,
+         and the First Public Working Draft was published on 18 September 2014.
+       </p>
+       <p>
+         In an effort to insulate Servers from changes to the LD Patch
+         specification while it is being refined, this document proposes that
+         Servers temporarily limit themselves to generating LD patches in a
+         limited subset which we call Core format. Core format is extremely simple
+         (no prefixes, no variables, and no Binds) but perfectly adequate for
+         describing patches to graphs not involving blank nodes. (Core format is
+         based on an early (and unofficial) precursor called RDF Patch.)
+       </p>
+       <p>
+         A Core format patch consists of a sequence of rows. A row with ‘A’ (or
+         ‘D’) in the first column describes the addition (deletion) of one RDF
+         triple from the resource’s RDF data graph. The subject, predicate, and
+         object of the triples are described in columns 2-4 in the form of absolute
+         URI references enclosed between ‘&lt;’ and ‘&gt;’. Each row is delimited by a
+         ‘.’ and may have white space between the various terms in a row, including
+         newlines.
+       </p>
+       <p>
+         Example of a Core format patch that deletes one RDF triple (subject <code>http://example.com/bob</code>,
+         predicate <code>http://xmlns.com/foaf/0.1/knows</code>, object <code>https://example.com/alice</code>)
+         and adds another an RDF triple (subject <code>https://example.com/fred</code>, predicate <code>http://http://xmlns.com/foaf/0.1/member</code>,
+         object <code>http://example.com/old-timers</code>):
+       </p>
+       <pre class='example'>
+  D &lt;http://example.com/bob&gt; &lt;http://xmlns.com/foaf/0.1/knows&gt; &lt;http://example.com/alice&gt; .
+  A &lt;http://example.com/fred&gt; &lt;http://http://xmlns.com/foaf/0.1/member&gt; &lt;http://example.com/old-timers&gt; .
+         </pre>
+     </section>
+     <section id='patchEx1' class='informative'>
+       <h2>TRS Patch Example 1</h2>
+       <p>
+         Turtle representation for the resource <code>https://a.example.com/config/a1</code> in state 1.
+         Assume that when the resource is retrieved in this state, the entity tag <code>15687ds9gha6s7</code> is returned in the ETag response header:
+       </p>
+       <pre class='example'>
+  # The following is the representation of
+  # https://a.example.com/config/a1
+  # in the state with entity tag 15687ds9gha6s7
+  @prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+  @prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
+  &lt;https://a.example.com/config/a1&gt;
+     a ldp:BasicContainer;
+     dcterms:title &quot;Component configuration A1&quot;;
+     ldp:member &lt;https://a.example.com/version/s/143&gt;;
+     ldp:member &lt;https://a.example.com/version/r/577&gt;;
+     ldp:member &lt;https://a.example.com/version/t/033&gt;.
+       </pre>
+       <p>
+         Turtle representation for the same resource <code>https://a.example.com/config/a1</code> in state 2.
+         Assume that when the resource is retrieved in this state, the entity tag <code>285d4h2ffgddd9</code> is returned in the ETag response header:
+       </p>
+       <pre class='example'>
+  # The following is the representation of
+  # https://a.example.com/config/a1
+  # in the state with entity tag 285d4h2ffgddd9
+  @prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+  @prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
+  &lt;https://a.example.com/config/a1&gt;
+     a ldp:BasicContainer;
+     dcterms:title &quot;Component configuration A1&quot;;
+     ldp:member &lt;https://a.example.com/version/s/143&gt;;
+     ldp:member &lt;https://a.example.com/version/r/578&gt;;
+     ldp:member &lt;https://a.example.com/version/t/033&gt;.
+       </pre>
+       <p>
+         Turtle representation for a Change Event describing resource <code>https://a.example.com/config/a1</code> changing from state 1 to state 2:
+       </p>
+       <pre class='example'>
+  # The following is the representation of a change event
+  @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
+  @prefix trs: &lt;http://open-services.net/ns/core/trs#&gt;.
+  @prefix trspatch: &lt;http://open-services.net/ns/core/trspatch#&gt;.
+  &lt;urn:urn-3:a.example.com:2014-04-28T17:39:32.000Z:102&gt;
+     a trs:Modification;
+     trs:changed &lt;https://a.example.com/config/a1&gt;;
+     trs:order &quot;102&quot;^^xsd:integer;
+     trspatch:beforeEtag &quot;15687ds9gha6s7&quot;;
+     trspatch:afterEtag &quot;285d4h2ffgddd9&quot;;
+     trspatch:rdfPatch
+       &quot;&quot;&quot;
+        D &lt;https://a.example.com/config/a1&gt; &lt;http://www.w3.org/ns/ldp#member&gt; &lt;https://a.example.com/version/r/577&gt; .
+        A &lt;https://a.example.com/config/a1&gt; &lt;http://www.w3.org/ns/ldp#member&gt; &lt;https://a.example.com/version/r/578&gt; .
+       &quot;&quot;&quot;.
+       </pre>
+     </section>
+     <section id='patchEx2' class='informative'>
+       <h2>TRS Patch Example 2</h2>
+       <p>
+         Turtle representation for the resource <code>https://a.example.com/sw-movie/versions/1</code>.
+         Assume that when the resource is retrieved in this state, the entity tag <code>783xhaty95</code> is returned in the ETag response header:
+       </p>
+       <pre class='example'>
+  # The following is the representation of
+  # https://a.example.com/sw-movie/versions/1
+  # in the state with entity tag 783xhaty95
+  @prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+  @prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
+  &lt;https://a.example.com/sw-movie/versions/1&gt;
+     dcterms:isVersionOf &lt;https://a.example.com/sw-movie&gt; .
+  &lt;https://a.example.com/sw-movie&gt;
+     a ldp:Resource;
+     dcterms:title &quot;Star Wars&quot;.
+       </pre>
+       <p>
+         Turtle representation for the resource <code>https://a.example.com/sw-movie/versions/2</code>.
+         Assume that when the resource is retrieved in this state, the entity tag <code>212gyysxx8</code> is returned in the ETag response header:
+       </p>
+       <pre class='example'>
+  # The following is the representation of
+  # https://a.example.com/sw-movie/versions/2
+  # in the state with entity tag 212gyysxx8
+  @prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+  @prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
+  &lt;https://a.example.com/sw-movie/versions/2&gt;
+     dcterms:isVersionOf &lt;https://a.example.com/sw-movie&gt; .
+  &lt;https://a.example.com/sw-movie&gt;
+     a ldp:Resource;
+     dcterms:title &quot;Star Wars: Episode IV - A New Hope&quot;.
+       </pre>
+       <p>
+         Turtle representation for a Change Event describing the creation of the resource <code>https://a.example.com/sw-movie/versions/2</code>.
+         The TRS patch describes the state of this new resource in terms of the state of resource <code>https://a.example.com/sw-movie/versions/1</code>:
+       </p>
+       <pre class='example'>
+  # The following is the representation of a change event
+  @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
+  @prefix trs: &lt;http://open-services.net/ns/core/trs#&gt;.
+  @prefix trspatch: &lt;http://open-services.net/ns/core/trspatch#&gt;.
+  &lt;urn:urn-3:a.example.com:2014-11-20T13:08:00.000Z:102&gt;
+     a trs:Creation;
+     trs:changed &lt;https://a.example.com/sw-movie/version/2&gt;;
+     trs:order &quot;192&quot;^^xsd:integer;
+     trspatch:createdFrom &lt;https://a.example.com/sw-movie/version/1&gt;;
+     trspatch:beforeEtag &quot;783xhaty95&quot;;
+     trspatch:afterEtag &quot;212gyysxx8&quot;;
+     trspatch:rdfPatch
+       &quot;&quot;&quot;
+        D &lt;https://a.example.com/sw-movie/versions/1&gt;  &lt;http://purl.org/dc/terms/isVersionOf&gt; &lt;https://a.example.com/sw-movie&gt; .
+        A &lt;https://a.example.com/sw-movie/versions/2&gt;  &lt;http://purl.org/dc/terms/isVersionOf&gt; &lt;https://a.example.com/sw-movie&gt; .
+        D &lt;https://a.example.com/sw-movie&gt; &lt;http://purl.org/dc/terms/title&gt; \&quot;Star Wars\&quot;.
+        A &lt;https://a.example.com/sw-movie&gt; &lt;http://purl.org/dc/terms/title&gt; \&quot;Star Wars: Episode IV - A New Hope\&quot;.
+       &quot;&quot;&quot;.
+       </pre>
+     </section>
 </section>
+
+
 <section id='trs-examples' class='informative'>
   <h2>TRS Examples</h2>
   <p>In this example of a change log, time stamps are used to generate unique URNs
