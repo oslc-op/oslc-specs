@@ -25,7 +25,7 @@
     // OSLC version number for the spec, and the revision level of the document within its stage
     oslcVersion: "3.0",
     revision: "02",
-      
+
 		// Only include h1 and h2 levels in the TOC
     maxTocLevel: 2,
 
@@ -87,7 +87,8 @@
       { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: "dialogs.html" },
       { title: "OSLC Core Version 3.0. Part 5: Attachments", href: "attachments.html" },
       { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: "resource-shape.html" },
-      { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: "core-vocab.html" }
+      { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: "core-vocab.html" },
+			{ title: "OSLC Core Version 3.0. Part 8: Query", href: "oslc-query.html" }
     ],
 
     relatedWork : [
@@ -200,7 +201,7 @@ dd {
 <section id='sotd'></section>
 
 <section id='intro' class='informative'>
-<h2>Introduction</h2>  
+<h2>Introduction</h2>
 
 <p>Information Technology (IT) enterprises are constantly addressing demands
 to do more with less. To meet this demand they need more efficient development
@@ -333,11 +334,11 @@ simpler, built on layered capabilities and easier to adopt.</p>
      <tr><td>xsd</td><td><a href="http://www.w3.org/2001/XMLSchema#" target="_blank">http://www.w3.org/2001/XMLSchema#</a></td></tr>
    </table>
 </section>
-		
+
     <section id='conventions'></section>
 	</section>
 
-	
+
 
 	<section id='motivation' class='informative'>
 		<h2>Goals/Motivation</h2>
@@ -464,7 +465,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
 				OSLC Services SHOULD provide and accept RDF/XML representations for each OSLC resource.</h2>
 			</section>
 
-			<section id="otherRepresentations"><h2 class="normalText"> 
+			<section id="otherRepresentations"><h2 class="normalText">
 				OSLC Services MAY provide and accept existing standard or emerging standard formats such as XML, HTML, and the Atom Syndication Format.</h2>
 			</section>
 		</section>
@@ -478,16 +479,16 @@ simpler, built on layered capabilities and easier to adopt.</p>
 			<h2>Resource Operations</h2>
 			<p>Resource Operations specify how clients create, read, update and delete resources managed by servers.</p>
 			<section id="crudOperations"><h2 class="normalText">
-				OSLC Services use HTTP for create, retrieve, update and delete operations on resources. OSLC Services MUST comply with the HTTP specification [[!HTTP11]]. 
-			</h2></section>	
+				OSLC Services use HTTP for create, retrieve, update and delete operations on resources. OSLC Services MUST comply with the HTTP specification [[!HTTP11]].
+			</h2></section>
 			<section id="updatedOperation"><h2 class="normalText">
 				Because the update process may involve first getting a resource, modifying it and then later putting it back to the server, there is the possibility of a conflict, e.g. some other client may have have updated the resource since the GET. To mitigate this problem, OSLC Services SHOULD use the HTTP <code>If-Match</code> header on a PUT request:
 				<ul>
 					<li>If the HTTP <code>If-Match</code> header is missing OSLC Services SHOULD return HTTP Bad Request (400) status code to indicate that the header is required.</li>
 					<li>If the HTTP <code>If-Match</code> header is present OSLC Services MUST behave as described in the HTTP specification, returning an HTTP Precondition Failed (412) error to indicate that the header does not match.</li>
 					<li>If the HTTP <code>If-Match</code> header is present and it matches, but there is some other problem or conflict with the update then OSLC Services MAY return an HTTP Conflict (409) to indicate that problem.</li>
-				</ul> 		
-      </h2></section> 
+				</ul>
+      </h2></section>
 		</section>
 
     <section id="selectiveProperties"><h2>Selective Properties</h2>
@@ -511,8 +512,8 @@ oslc_properties ::= "oslc.properties=" properties
 properties      ::= property ("," property)*
 property        ::= identifier | wildcard | nested_prop
 nested_prop     ::= (identifier | wildcard) "{" properties "}"
-wildcard        ::= "*" 
-identifier      ::= PrefixedName 
+wildcard        ::= "*"
+identifier      ::= PrefixedName
 PrefixedName    ::= /* see "SPARQL Query Lanaguage for RDF", http://www.w3.org/TR/rdf-sparql-query/#rPrefixedName */      </pre>
       <p>In our examples of <code>oslc.properties</code>, property names include a URI prefix, i.e. dcterms: or foaf:. Here we assume that OSLC has predefined the Dublin Core ( dcterms:) and Friend of a Friend ( foaf:) prefixes. However, OSLC resources should also be open to new content, which means that new properties may not have predefined URI prefixes. We therefore need a way to define new URI prefixes in resource requests. The oslc.prefix value lets you specify URI prefixes used in property names. For example, suppose the foaf: prefix was not predefined. The following URL illustrates the use of the oslc.prefix value to define it:</p>
 <pre class="example" title="Example URL with oslc.prefix">
@@ -529,7 +530,7 @@ prefix      ::= PN_PREFIX
 PN_PREFIX   ::= /* see "SPARQL Query Lanaguage for RDF", http://www.w3.org/TR/rdf-sparql-query/#rPN_PREFIX */
 uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are \-escaped. */
 </pre>
-    </section>  
+    </section>
 
 		<section id="resourcePreview">
 			<h2>Resource Preview</h2>
@@ -545,7 +546,7 @@ uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are
 			<p>OSLC servers will often manage large amounts of potentially complex link-data entities. Practical use of this information will require some query capability that minimally supports selection of matching elements, filtering of desired properties and ordering. Ideally OSLC Core would rely on existing standard query services such as [[RDF-SPARQL-QUERY]] that may be integrated with [[!LDP]]. The <a href="https://www.w3.org/community/ldql/">Linked Data Query Language Community Group</a> is currently working on a Query Language for [[!LDP]]. However, the reality is that many OSLC servers are adapters built on existing data management capabilities that are not built on an RDF foundation and do not provide SPARQL endpoints for query. In order to address the need for standard query capability to enable integration, [[!OSLCCore2]] introduced a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Capability</a> and a <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">Query Syntax</a> that were intended to be simple enough that they could be implemented on a wide range of existing server architectures. In practice this has proven to be more difficult than anticipated. But the need is still there. OSLC Core 3.0 is built on [[!LDP]] and future OSLC domain servers may provide more consistent access to SPARQL endpoints. Eventually that may lead to the deprecation of OSLC Core 2.0 Query Capability. In the meantime, OSLC Core 2.0 Query Capability is still available for OSLC domain specifications that need it.</p>
 			<section id="queryCapability"><h2 class="normalText">
 				OSLC Servers MAY support a <em>Query Capability</em> as defined in [[!OSLCQuery3]] to enable clients to perform selection and projection operations in order to retrieve a selected subset of resources and property values from an LDPC.
-			</h2></section>	
+			</h2></section>
 		</section>
 
 		<section id="resourcePaging">
@@ -553,10 +554,10 @@ uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are
 			<p>Resource Paging specifies a capability for servers to make the state of large resources available as a list of smaller subset resources (pages) whose representation is easier to produce by the server and consume by clients. Resource paging is particularly useful in handling results from the query capability or the contents of an LDP container.</p>
 			<section id="ldpPagingCapability"><h2 class="normalText">
 				OSLC Services SHOULD support [[!LDPPaging]] to enable clients to retrieve large LDP resources (LDPRs) a page at a time.
-			</h2></section>	
+			</h2></section>
 			<section id="pagingCapability"><h2 class="normalText">
 				OSLC Services MAY support a <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Resource Paging Capability</a> as defined in [[!OSLCCore2]] to enable clients to retrieve large resources a page at a time. This capability is included to preserve compatibility with [[!OSLCCore2]].
-			</h2></section>	
+			</h2></section>
 		</section>
 
 		<section id="attachments">
@@ -571,7 +572,7 @@ uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are
 
 	<section id="versionCompatibility" class="informative">
 		<h2>Version Compatibility</h2>
-		<p>OSLC is intended to provide a foundation for (lifecycle) application interoperability. A significant number of OSLC domains, and client and server implementations already exist and are in common use. Interoperability issues between applications on incompatible OSLC versions could result in negative impact to end users. One of the goals of the OSLC initiative is to mitigate or eliminate the need for lock-step version upgrades, where clients or servers target one version of a specification and break when new versions are introduced -- requiring all services to be upgraded simultaneously.</p> 
+		<p>OSLC is intended to provide a foundation for (lifecycle) application interoperability. A significant number of OSLC domains, and client and server implementations already exist and are in common use. Interoperability issues between applications on incompatible OSLC versions could result in negative impact to end users. One of the goals of the OSLC initiative is to mitigate or eliminate the need for lock-step version upgrades, where clients or servers target one version of a specification and break when new versions are introduced -- requiring all services to be upgraded simultaneously.</p>
 
 		<p>OSLC Core and domain specifications will each be versioned independently, and may specify version numbers. Existing OSLC 2.0 clients and servers use the OSLC-Core-Version header described in <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Specification_Versioning">OSLC Core 2.0 Specification Versioning</a> to indicate what OSLC version they expect or support. But exposing version numbers in OSLC implementations could lead to interoperability issues. Ultimately each domain will decide its compatibility needs. OSLC Core 3.0 does not introduce any changes that would break existing OSLC 2.0 clients. Because of this, there is no need for OSLC Core 3.0 to require servers or clients to utilize an OSLC-Core-Version header with a value of 3.0.</p>
 
