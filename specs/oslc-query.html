@@ -29,7 +29,7 @@
     revision: "02",
 
     // if you wish the publication date to be other than the last modification, set this
-    publishDate:  "2017-01-05",
+    publishDate:  "2017-10-13",
 
     // if the specification's copyright date is a range of years, specify the start date here:
     // copyrightStart: "2005"
@@ -221,7 +221,7 @@ border-style: solid;
 border-collapse: collapse;
 }
 
-td { min-width: 100px; } 
+td { min-width: 100px; }
 <style type="text/css">
 .normalText {
     color: black;
@@ -308,8 +308,8 @@ dd {
 <section id="namespaces">
 	<h2>Namespaces</h2>
 
-	<p>In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>, <code>dcterms</code> and <code>foaf</code> 
-	defined in the [OSLCCore3], OSLC core defines the namespace URI of <code>http://open-services.net/ns/core#</code> with a namespace prefix 
+	<p>In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>, <code>dcterms</code> and <code>foaf</code>
+	defined in the [OSLCCore3], OSLC core defines the namespace URI of <code>http://open-services.net/ns/core#</code> with a namespace prefix
 	of <code>oslc_core</code>.</p>
 
 	<p>This specification also uses these namespace prefix definitions:</p>
@@ -324,46 +324,46 @@ dd {
 <section id="graphPatterns">
 	<h2>Graph Patterns</h2>
 
-	<p>The OSLC standard query parameters define <i>graph patterns</i> that are matched against the resources managed by the service, which 
+	<p>The OSLC standard query parameters define <i>graph patterns</i> that are matched against the resources managed by the service, which
 	we view as comprising an RDF graph. The pattern matching process begins at some starting subject resource and matches a set of triples
 	in the RDF graph [[RDF-CONCEPTS]]. The starting subject resources used for pattern matching are determined by
 	the the Query Capability. A Query Capability defines a starting subject resource, namely the base URI itself (see <code>oslc:queryBase</code>
 	in the <a href="discovery.html#queryCapabilityShape">OSLC Core Specification - Query Capability Resource</a>
 	<a href="https://issues.oasis-open.org/browse/OSLCCORE-100"><font color="red">[OSLCCORE-100]</font></a>).
-	The result of the query is the set of all triples matched by the pattern, beginning the 
+	The result of the query is the set of all triples matched by the pattern, beginning the
 	matching processing with the starting subject resource defined by the Query Capability.</p>
 
 	<p>The full graph pattern defined by the query parameters is composed of two kinds of graph pattern, which we refer to as property tree patterns
-	and member list patterns. These patterns MAY be used individually or MAY be combined in a single query, but one or the other MUST be present. 
+	and member list patterns. These patterns MAY be used individually or MAY be combined in a single query, but one or the other MUST be present.
 	The result of matching the full graph pattern is the union of the results of matching each kind of pattern.</p>
 
 	<section id="propertyTreePatterns">
 		<h3>Property Tree Patterns</h3>
 		<p>A property tree pattern is defined by the presence of the <code>oslc.properties</code> query parameter
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-101"><font color="red">[OSLCCORE-101]</font></a>. The data model of a
-		resource is viewed as consisting of a set of properties of the resource. The values of these properties are either literal values, 
+		resource is viewed as consisting of a set of properties of the resource. The values of these properties are either literal values,
 		such as numbers, strings, and dates, or links to other resources. Linked resources may link to other resources, which may have their
-		own properties, and so on, to arbitrary depths. However, the scope of the query MAY be limited to the boundaries of the service as 
-		defined by the appropriate domain specification. Properties of linked resources may be viewed as nested properties of the initial 
-		resource, where a nested property is a property of an object of a property of the starting resource. 
+		own properties, and so on, to arbitrary depths. However, the scope of the query MAY be limited to the boundaries of the service as
+		defined by the appropriate domain specification. Properties of linked resources may be viewed as nested properties of the initial
+		resource, where a nested property is a property of an object of a property of the starting resource.
 		The <code>oslc.properties</code> query parameter lets you match both the immediate and nested properties of a starting subject resource.</p>
 	</section>
-	
+
 	<section id="memberListPatterns">
 		<h3>Member List Patterns</h3>
-		<p>A member list pattern is defined by the presence of at least one of the following query parameters: 
+		<p>A member list pattern is defined by the presence of at least one of the following query parameters:
 		<code>oslc.where</code>, <code>oslc.searchTerms</code>, <code>oslc.orderBy</code>, and <code>oslc.select</code>.
-		In this pattern, the starting subject resource is viewed as a container of other resources. The members of the container are 
+		In this pattern, the starting subject resource is viewed as a container of other resources. The members of the container are
 		defined by one or more multi-valued membership properties of the starting subject resource. The membership properties are given
-		by the properties described as membership properties (via <code>oslc:isMemberProperty</code>) in the Resource Shape of the starting 
+		by the properties described as membership properties (via <code>oslc:isMemberProperty</code>) in the Resource Shape of the starting
 		subject resource.<a href="https://issues.oasis-open.org/browse/OSLCCORE-102"><font color="red">[OSLCCORE-102]</font></a>
-		The pattern matching process is summarized by the following sequence of steps, and fully defined in later sections. 
+		The pattern matching process is summarized by the following sequence of steps, and fully defined in later sections.
 		Default processing occurs in steps where the corresponding query parameter is not present:
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-103"><font color="red">[OSLCCORE-103]</font></a>
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red">[OSLCCORE-105]</font></a>
 		</p>
 		<ol>
-			<li><code>oslc.where</code> - filter the member list, keeping only those member resources that satisfy the boolean test on 
+			<li><code>oslc.where</code> - filter the member list, keeping only those member resources that satisfy the boolean test on
 			the member resource properties.</li>
 			<li><code>oslc.searchTerms</code> - score each member resource using a full text search on it text-valued properties, and sort them
 			in descending order of score.</li>
@@ -372,18 +372,18 @@ dd {
 			<a href="https://issues.oasis-open.org/browse/OSLCCORE-104"><font color="red">[OSLCCORE-104]</font></a>).</li>
 		</ol>
 	</section>
-	
-	
+
+
 	<section id="prefixedNames">
 		<h3>Prefixed Names</h3>
-		<p>In addition to the preceding query parameters, we also define <code>oslc.prefix</code> which is used to define the prefixes for 
+		<p>In addition to the preceding query parameters, we also define <code>oslc.prefix</code> which is used to define the prefixes for
 		prefixed names that appear in the other query parameters.
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-107"><font color="red">[OSLCCORE-107]</font></a>
 		The <code>oslc.prefix</code> query parameter is not itself part of the
-		graph pattern. Other specifications MAY use <code>oslc.prefix</code> to define prefixes for prefixed name used in other query parameters. 
+		graph pattern. Other specifications MAY use <code>oslc.prefix</code> to define prefixes for prefixed name used in other query parameters.
 		A prefixed name is an abbreviation for a URI as defined in the SPARQL Query Language [[SPARQL11-QUERY]].</p>
 	</section>
-	
+
 </section>
 
 
@@ -396,67 +396,67 @@ dd {
 
 		<p>The query parameters defined here are intended to satisfy simple query requirements, and be easy to both use and implement.
 		More complex query requirements should be satisfied using a full query language, e.g. SQL or SPARQL.</p>
-	
+
 		<p>This specification formally defines the syntax of the query parameters using Extended Backus-Naur Form [[EBNF]]
-		and informally illustrates  their semantics with simple examples. For an additional discussion of the semantics of the 
+		and informally illustrates  their semantics with simple examples. For an additional discussion of the semantics of the
 		query parameters see
 		<a href="https://open-services.net/bin/view/Main/OslcSimpleQuerySemanticsV1">OSLC Simple Query Semantics V1</a>
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-108"><font color="red">[OSLCCORE-108]</font></a>.
-		If there is any disagreement between that reference and this specification, then this 
+		If there is any disagreement between that reference and this specification, then this
 		specification takes priority.<p>
-	
-		<p>The query parameters MAY contain characters that MUST be URL encoded when transmitted in an HTTP request. The examples below show unencoded 
+
+		<p>The query parameters MAY contain characters that MUST be URL encoded when transmitted in an HTTP request. The examples below show unencoded
 		query parameters for clarity. See <a href="#URL.Encoding">URL Encoding</a> for a further discussion of this topic.</p>
 
 		<p>This specification defines the syntax of a set of related query parameters that MAY be used to perform queries.
-		We have adopted a consistent naming convention for these query parameters to identify them as common across all OSLC specifications, 
-		namely all query parameter names are prefixed with the characters &quot;<code>oslc.</code>&quot; The following sections define 
+		We have adopted a consistent naming convention for these query parameters to identify them as common across all OSLC specifications,
+		namely all query parameter names are prefixed with the characters &quot;<code>oslc.</code>&quot; The following sections define
 		these query parameters.</p>
 
-		<p>An OSLC domain specification MAY use some or all of these query parameters, and SHOULD use these rather than defining new query parameters 
-		that have the same or very similar meanings. Each of these query parameters SHOULD appear at most once in a query. The behavior is undefined 
+		<p>An OSLC domain specification MAY use some or all of these query parameters, and SHOULD use these rather than defining new query parameters
+		that have the same or very similar meanings. Each of these query parameters SHOULD appear at most once in a query. The behavior is undefined
 		when a query parameter appears more than once.</p>
 
-		<p>In the following sections, syntax is formally defined using a common extended form of BNF. Informal definitions and comments are delimited 
-		by <code>/*</code> and <code>*/</code>.</p>	
+		<p>In the following sections, syntax is formally defined using a common extended form of BNF. Informal definitions and comments are delimited
+		by <code>/*</code> and <code>*/</code>.</p>
 	</section>
 
 
 	<section id="oslc.where">
 		<h3>oslc.where</h3>
-		<p>This query parameter defines part of a member list pattern. If a member list pattern is defined but this query parameter is not present 
+		<p>This query parameter defines part of a member list pattern. If a member list pattern is defined but this query parameter is not present
 		then it defaults to the boolean condition <code>true</code>, i.e. it matches all members of the member list.</p>
 
 		<p>A resource may have an associated set of related resources defined by one or more membership properties. Service consumers often need
 		to search for subsets of these related resources that satisfy certain conditions. The <code>oslc.where</code> query parameter lets
 		you specify the conditions that these related resources must satisfy. It is like the <code>WHERE</code> clause of a SQL statement.</p>
-		
-		<p>For example, suppose that the following URL represents the set of all bug resources managed by a service, and that is has a 
+
+		<p>For example, suppose that the following URL represents the set of all bug resources managed by a service, and that is has a
 		single membership property, <code>cm:memberBug</code>:</p>
 		<pre class="example" title="Bug Report URL">
 	    http://example.com/bugs
 		</pre>
-		
-		<p>Suppose bug reports have a <code>dcterms:identifier</code> property that gives their bug number, e.g. "4242". 
-		The following URL filters this set and selects only those bugs that have a <code>dcterms:identifier</code> property 
+
+		<p>Suppose bug reports have a <code>dcterms:identifier</code> property that gives their bug number, e.g. "4242".
+		The following URL filters this set and selects only those bugs that have a <code>dcterms:identifier</code> property
 		whose value is "4242":</p>
 		<pre class="example" title="Query on dcterms:identifier 4242">
 	    http://example.com/bugs?oslc.where=dcterms:identifier="4242"
 		</pre>
-		
+
 		<p>Note that the preceding query there is only one membership property, namely <code>cm:memberBug</code>.</p>
-		
+
 		<p>Conditions may use the usual binary comparison operators and be combined using the boolean conjunction operator, " and ".
 		For example, suppose bugs have <code>cm:severity</code>code> and <code>dcterms:created</code> properties.
 		The following example finds high severity bugs created after April 1, 2010:
 		<pre class="example" title="Query high severity bugs created after April 1, 2010">
 	    http://example.com/bugs?oslc.where=cm:severity="high" and dcterms:created>"2010-04-01"
 		</pre>
-		
+
 		<p>In this example, the ISO 601 date format [[ISO8601]] is used since the
-		<code>xsd:dateTime</code> format is recommended for use with the <code>dcterms:created</code> property. In general, the format 
+		<code>xsd:dateTime</code> format is recommended for use with the <code>dcterms:created</code> property. In general, the format
 		used for a property depends on the definition of the property.</p>
-		
+
 		<p>The following URL illustrates the use of nested properties. It finds the set of bugs created by John Smith:</p>
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-106"><font color="red">[OSLCCORE-106]</font></a>
 		<pre class="example" title="Query bugs created by John Smith">
@@ -464,16 +464,16 @@ dd {
 		</pre>
 
 		<p>Property values will often refer to or be other resources (in RDF/XML the rdf:resource attribute is used to identify the resource).
-		Suppose bugs are linked to test cases using a property name <code>qm:testcase</code> where the prefix <code>qm:</code> stands for the 
+		Suppose bugs are linked to test cases using a property name <code>qm:testcase</code> where the prefix <code>qm:</code> stands for the
 		URI http://qm.example.com/ns. The following query finds all bugs that are linked to test case http://example.com/tests/31459:
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-109"><font color="red">[OSLCCORE-109]</font></a></p>
 		<pre class="example" title="Query bugs linked to test case 31459">
 	    http://example.com/bugs?oslc.prefix=qm=&lt;http://qm.example.com/ns>
-	        &amp;oslc.where=qm:testcase=&lt;http://example.com/tests/31459> 
+	        &amp;oslc.where=qm:testcase=&lt;http://example.com/tests/31459>
 		</pre>
 	</section>
-	
-	
+
+
 	<section id="oslc.where.syntax">
 		<b>oslc.where Syntax</b><br>
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-110"><font color="red">[OSLCCORE-110]</font></a>
@@ -500,7 +500,7 @@ dd {
 	string_esc    ::= /* a string enclosed in double quotes, with certain characters escaped. See below. */
 	LANGTAG       ::= /* see "SPARQL Query Language for RDF", http://www.w3.org/TR/rdf-sparql-query/#rLANGTAG */
 		</pre>
-	
+
 		<div style="margin-left: 2em">
 			<code>wildcard</code><br>
 			As in the case of <code>oslc.properties</code>, the "*" <code>wildcard</code> matches any property.
@@ -511,7 +511,7 @@ dd {
 			boolean expression. The only boolean operation allowed is " and " which represents conjunction. The boolean operator " or " for disjunction
 			is not allowed in the interests of keeping the syntax simple. The effect of " or " in the simple case of testing a property for equality
 			with one of several values can be achieved through the use of the " in " operator.
-			For example, the following query finds bugs with severity "high" or "medium": 
+			For example, the following query finds bugs with severity "high" or "medium":
 			<pre class="example">
 		    http://example.com/bugs?oslc.where=cm:severity in ["high","medium"]
 			</pre>
@@ -565,15 +565,15 @@ dd {
 			<code>literal_value</code><br>
 			The <code>literal_value</code> term represents either a plain literal or a typed literal.
 			A plain literal is a quoted string (<code>string_esc</code>), optionally followed by a language tag (<code>LANGTAG</code>).
-			For example, "Bonjour"@fr is a plain literal with a language tag for French. If the range of a property is National Language 
-			strings and no language tag is provided in a literal value, then the service SHOULD infer the language tag from the HTTP request 
+			For example, "Bonjour"@fr is a plain literal with a language tag for French. If the range of a property is National Language
+			strings and no language tag is provided in a literal value, then the service SHOULD infer the language tag from the HTTP request
 			or provide a default value.
 
-			<p>A typed literal is formed by suffixing a quoted string (<code>string_esc</code>) with "^^" followed by 
-			the prefixed name (<code>PrefixedName</code>) of a datatype URI. If the range of a property includes literal values from more than 
-			one datatype, then a typed literal MUST be used in order to avoid ambiguity. Otherwise a plain literal MAY be used and the service 
+			<p>A typed literal is formed by suffixing a quoted string (<code>string_esc</code>) with "^^" followed by
+			the prefixed name (<code>PrefixedName</code>) of a datatype URI. If the range of a property includes literal values from more than
+			one datatype, then a typed literal MUST be used in order to avoid ambiguity. Otherwise a plain literal MAY be used and the service
 			SHOULD infer the datatype.</p>
-		
+
 			<p>The terms <code>boolean</code> and <code>decimal</code> are short forms for typed literals.
 			For example, <code>true</code> is a short form for <code>"true"^^xsd:boolean</code>code>,
 			<code>42</code> is a short form for <code>"42"^^xsd:integer</code> and <code>3.14159</code> is a short form
@@ -582,17 +582,17 @@ dd {
 			<code>decimal</code><br>
 			The <code>decimal</code> term represents a decimal number as defined in XML Schema Part 2: Datatypes Second Edition.
 			As mentioned above, this term is a short form for typed literals whose datatype URIs are either xsd:integer or xsd:decimal.
-			An integer literal value is a special case of a decimal literal value, namely one in which the decimal point is omitted from the 
-			lexical representation. For example, 42 is a valid decimal number which happens also to be a valid integer and so it is a short 
+			An integer literal value is a special case of a decimal literal value, namely one in which the decimal point is omitted from the
+			lexical representation. For example, 42 is a valid decimal number which happens also to be a valid integer and so it is a short
 			form for the typed literal "42"^^xsd:integer.
 			<br>
 			<br>
 			<code>string_esc</code><br>
-			The <code>string_esc</code> term represents an arbritrary sequence of characters. The sequence of characters is enclosed in 
-			double quote (") characters. Therefore, the double quote character itself MUST be escaped. More generally, all occurrences of 
-			the double quote character in the string MUST be replaced by the sequence \" and all occurrences of the backslash character \ 
+			The <code>string_esc</code> term represents an arbritrary sequence of characters. The sequence of characters is enclosed in
+			double quote (") characters. Therefore, the double quote character itself MUST be escaped. More generally, all occurrences of
+			the double quote character in the string MUST be replaced by the sequence \" and all occurrences of the backslash character \
 			in the actual value MUST be replaced by the sequence \\ in the escaped value. This escaping process MUST be reversed to give the
-			actual value of the string. 
+			actual value of the string.
 		</div>
 	</section>
 
@@ -604,12 +604,12 @@ dd {
 
 		<p>Resource properties often contain text so it is useful to search for resources that contain specified terms.
 		The <code>oslc.searchTerms</code> query parameter lets you perform a full text search [[FULLTEXT-SEARCH]]
-		on a set of resources. In a full text search, each resource is matched against the list of search terms and assigned a numeric score. 
+		on a set of resources. In a full text search, each resource is matched against the list of search terms and assigned a numeric score.
 		A high score indicates a good match. The matching resources are returned in the response, sorted by the score in descending order.
-		Each resource that is returned in the response is annotated with a special property, <code>oslc:score</code>, that gives its 
+		Each resource that is returned in the response is annotated with a special property, <code>oslc:score</code>, that gives its
 		match score.</p>
 
-		<p>An OSLC domain specification that supports full text search SHOULD specify which resource properties are indexed so that search results are 
+		<p>An OSLC domain specification that supports full text search SHOULD specify which resource properties are indexed so that search results are
 		consistent across implementations.
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red">[OSLCCORE-105]</font></a></p>
 
@@ -617,7 +617,7 @@ dd {
 		<code>oslc:score</code> property. Note that <code>oslc:score</code> is not purely a property of the resource since it also depends on the
 		search terms. It is therefore a pseudo-property whose validity is limited to the HTTP response.</p>
 
-		<p>The <code>oslc:score</code> property MUST be a non-negative number and SHOULD be in the range from 0-100. 
+		<p>The <code>oslc:score</code> property MUST be a non-negative number and SHOULD be in the range from 0-100.
 		Results MUST be ordered with the entry with the largest <code>oslc:score</code> occurring first.</p>
 
 		<p>The <code>oslc.orderBy</code> query parameter MAY be used with <code>oslc.searchTerms</code>.
@@ -630,14 +630,14 @@ dd {
 		<code>oslc.searchTerms</code> then the set of resources searched for matches MUST be restricted to only those resources that satisfy
 		the conditions in <code>oslc.where</code>. For example, the following query returns the high severity bugs that deal with database performance:
 		<pre class="example">
-	    http://example.com/bugs?oslc.where=cm:severity="high"&amp;oslc.searchTerms="database","performance" 
+	    http://example.com/bugs?oslc.where=cm:severity="high"&amp;oslc.searchTerms="database","performance"
 		</pre>
 
   		<section id="oslc.searchTerms.syntax">
 			<b>Syntax</b><br>
 			<pre>
 	oslc_searchTerms ::= "oslc.searchTerms=" search_terms
-	search_terms     ::= string_esc ("," string_esc)* 
+	search_terms     ::= string_esc ("," string_esc)*
 			</pre>
   		</section>
 
@@ -647,10 +647,10 @@ dd {
 
 	<section id="oslc.orderBy">
 		<h3>oslc.orderBy</h3>
-		<p>This query parameter defines part of a member list pattern. If a member list pattern is defined but this query parameter is not present 
+		<p>This query parameter defines part of a member list pattern. If a member list pattern is defined but this query parameter is not present
 		then there are no sort keys and the matching process does NOT change the order of the member list.</p>
 
-		<p>The <code>oslc.orderBy</code> query parameter lets you sort the result set. It is like the <code>ORDER BY</code> clause of a 
+		<p>The <code>oslc.orderBy</code> query parameter lets you sort the result set. It is like the <code>ORDER BY</code> clause of a
 		SQL statement.</p>
 
 		<p>You can specify a list of one or more immediate or nested properties of the resources in the member list, and a sort direction for each
@@ -665,9 +665,9 @@ dd {
 			<b>Syntax</b><br>
 			<pre>
 	oslc_orderBy        ::= "oslc.orderBy=" sort_terms
-	sort_terms          ::= sort_term ("," sort_term)* 
+	sort_terms          ::= sort_term ("," sort_term)*
 	sort_term           ::= scoped_sort_terms | ("+" | "-") identifier
-	scoped_sort_terms   ::= identifier "{" sort_terms "}" 
+	scoped_sort_terms   ::= identifier "{" sort_terms "}"
 			</pre>
 		</section>
 	</section>
@@ -702,7 +702,7 @@ dd {
 	property    ::= identifier | wildcard | nested_prop
 	nested_prop ::= (identifier | wildcard) "{" properties "}"
 			</pre>
-		
+
 			<p>The <code>oslc.select</code> query parameter uses the same syntax as the <code>oslc.properties</code> query parameter.
 			The difference between them is in the meaning of the identifiers. In <code>oslc.properties</code>, the identifiers are the
 			names of properties of the starting subject resource. In <code>oslc.select</code>code>, the starting subject resource has an
@@ -717,11 +717,11 @@ dd {
 			<pre class="example">
 	http://example.com/bugs/4242?oslc.properties=dcterms:modified&amp;oslc.select=dcterms:modified
 			</pre>
-     
+
 			<div style="margin-left: 2em">
 				<code>wildcard</code>
 				<p>As in the case of <code>oslc.properties</code>, the wildcard is equivalent to the list of all properties of the member resources.
-				The query parameter <code>oslc.select=*</code> specifies that pattern MUST match all the properties of the resources in 
+				The query parameter <code>oslc.select=*</code> specifies that pattern MUST match all the properties of the resources in
 				the member list.</p>
 			</div>
 		</section>
