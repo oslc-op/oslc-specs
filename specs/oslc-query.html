@@ -178,17 +178,10 @@
             href : "http://openid.net/connect/",
             publisher : "openid.net",
         },
-        "OSLCRM": {
-            title:    "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
-            href:     "http://open-services.net/bin/view/Main/RmSpecificationV2",
-            authors:  ["Ian Green"],
-            status:   "Final",
-            publisher:  "http://open-services.net",
-        },
-        "OSLCQM": {
-            title:    "Open Services for Lifecycle Collaboration Quality Management Specification Version 2.0",
-            href:     "http://open-services.net/bin/view/Main/QmSpecificationV2",
-            authors:  ["Paul McMahan"],
+        "OSLCCM": {
+            title:    "Open Services for Lifecycle Collaboration Change Management Specification Version 2.0",
+            href:     "http://open-services.net/bin/view/Main/CmSpecificationV2",
+            authors:  ["Steve Speicher"],
             status:   "Final",
             publisher:  "http://open-services.net",
         },
@@ -293,16 +286,30 @@ code.noescape {
 
 <section class='informative'>
   <h2>Motivation</h2>
-  <p></p>
+  <p>
+  TBD.
+  </p>
 </section>
 
 
 
 <section id='concepts' class='informative'>
   <h2>Basic Concepts<br></h2>
-  <p>
-  This document defines a standard set of OSLC query parameters that other OSLC domain specifications MAY use to query resources.
-  </p>
+  OSLC Query provides a mechanism for a client to query or search for resources of some RDF type by performing a <code>GET</code> 
+  on a <i>query base</i> URI.
+  Clients may discover such query base URIs from a <code>oslc:queryCapability</code> declared in an OSLC service.
+  The response to a successful query is a response body that includes the RDF of a <i>query result container</i> that references the member
+  resources found by the query, and optionally contains properties of each member resource.
+
+  <p>Two separate capabilities may be provided:</p>
+  <ul>
+     <li>A query based on an optional query expression consisting of at least one property, comparison operator, and value.
+     	 The query result container only references resources whose properties match the specified query expression.
+     	 This is analogous to queries specified by SQL or SPARQL.</li>
+     <li>A full-text search based on one more search terms. The query result container only references resources
+     	 that have any text-based properties contain one or more of the search terms.</li>
+  </ul>
+  Clients may also specify which member properties should be included in the query response.
 </section>
 
 
@@ -310,7 +317,7 @@ code.noescape {
 <section id="versioning">
 	<h2 id="specificationversioningspec_versioning">Specification Versioning</h2>
 
-	<p>This specification follows the specification version guidelines given in [OSLCCore3].</p>
+	<p>This specification follows the specification version guidelines given in [[OSLCCore3]].</p>
 </section>
 
 
@@ -318,84 +325,180 @@ code.noescape {
 <section id="namespaces">
 	<h2>Namespaces</h2>
 
-	<p>In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>, <code>dcterms</code> and <code>foaf</code>
-	defined in the [OSLCCore3], OSLC core defines the namespace URI of <code>http://open-services.net/ns/core#</code> with a namespace prefix
-	of <code>oslc_core</code>.</p>
-
-	<p>This specification also uses these namespace prefix definitions:</p>
-
+	In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>, <code>rdfs</code>, <code>dcterms</code>,
+	<code>ldp</code> and <code>foaf</code> defined in the [[OSLCCore3]], this specification also uses the following namespace prefix definitions:
 	<ul>
-		<li>oslc_rm : <code>http://open-services.net/ns/rm#</code> [[OSLCRM]]</li>
-		<li>oslc_qm : <code>http://open-services.net/ns/qm#</code> [[OSLCQM]]</li>
+		<li>oslc_cm : <code>http://open-services.net/ns/cm#</code> [[OSLCCM]]</li>
 	</ul>
 </section>
 
 
-<section id="graphPatterns">
-	<h2>Graph Patterns</h2>
+<section>
+	<h2>Discovering a Query Capability</h2>
+	An <code>oslc:Service</code> MAY declare zero, one, or many query capabilities using the <code>oslc:queryCapability</code> property.
+	<p>A query capability SHOULD specify exactly one <code>oslc:resourceShape</code> and that shape SHOULD describe the query result
+	container.</p>
+	
+	<p>The resource shape referenced by <code>oslc:resourceShape</code> MUST declare exactly one OSLC property with
+	<code>oslc:isMemberProperty "true"^^xsd:boolean</code>, and that property SHOULD specify exactly one <code>oslc:valueShape</code>
+	referencing a resource shape that describes the referenced members of that container.</p>
+	
+	<pre class="example" title="Query capability resource shape">
+@prefix dcterms: &lt;http://purl.org/dc/terms/> .
+@prefix oslc: &lt;http://open-services.net/ns/core#> .
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#> .
 
-	<p>The OSLC standard query parameters define <i>graph patterns</i> that are matched against the resources managed by the service, which
-	we view as comprising an RDF graph. The pattern matching process begins at some starting subject resource and matches a set of triples
-	in the RDF graph [[RDF-CONCEPTS]]. The starting subject resources used for pattern matching are determined by
-	the the Query Capability. A Query Capability defines a starting subject resource, namely the base URI itself (see <code>oslc:queryBase</code>
-	in the <a href="discovery.html#queryCapabilityShape">OSLC Core Specification - Query Capability Resource</a>
-	<a href="https://issues.oasis-open.org/browse/OSLCCORE-100"><font color="red">[OSLCCORE-100]</font></a>).
-	The result of the query is the set of all triples matched by the pattern, beginning the
-	matching processing with the starting subject resource defined by the Query Capability.</p>
+&lt;https://jazz.net/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/trs/shapes/workitems/query> a oslc:ResourceShape ;
+	oslc:describes &lt;https://jazz.net/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems> ;
+	oslc:property &lt;https://jazz.net/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/trs/shapes/workitems/query/property/member> ;
+	dcterms:title "Shape of Work Item query resource"^^rdf:XMLLiteral .
 
-	<p>The full graph pattern defined by the query parameters is composed of two kinds of graph pattern, which we refer to as property tree patterns
-	and member list patterns. These patterns MAY be used individually or MAY be combined in a single query, but one or the other MUST be present.
-	The result of matching the full graph pattern is the union of the results of matching each kind of pattern.</p>
+&lt;https://jazz.net/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/trs/shapes/workitems/query/property/member>
+	a oslc:Property ;
+	oslc:isMemberProperty "true"^^xsd:boolean ;
+	oslc:name "member" ;
+	oslc:occurs oslc:Zero-or-many ;
+	oslc:propertyDefinition rdfs:member ;
+	oslc:range &lt;http://open-services.net/ns/cm#ChangeRequest> ;
+	oslc:readOnly "true"^^xsd:boolean ;
+	oslc:representation oslc:Inline ;
+	oslc:valueShape &lt;https://jazz.net/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/shapes/workitems/defect> ;
+	oslc:valueType oslc:AnyResource ;
+	dcterms:title "Work Item Member"^^rdf:XMLLiteral .
 
-	<section id="propertyTreePatterns">
-		<h3>Property Tree Patterns</h3>
-		<p>A property tree pattern is defined by the presence of the <code>oslc.properties</code> query parameter
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-101"><font color="red">[OSLCCORE-101]</font></a>. The data model of a
-		resource is viewed as consisting of a set of properties of the resource. The values of these properties are either literal values,
-		such as numbers, strings, and dates, or links to other resources. Linked resources may link to other resources, which may have their
-		own properties, and so on, to arbitrary depths. However, the scope of the query MAY be limited to the boundaries of the service as
-		defined by the appropriate domain specification. Properties of linked resources may be viewed as nested properties of the initial
-		resource, where a nested property is a property of an object of a property of the starting resource.
-		The <code>oslc.properties</code> query parameter lets you match both the immediate and nested properties of a starting subject resource.</p>
-	</section>
+	</pre>
+</section>
 
-	<section id="memberListPatterns">
-		<h3>Member List Patterns</h3>
-		<p>A member list pattern is defined by the presence of at least one of the following query parameters:
-		<code>oslc.where</code>, <code>oslc.searchTerms</code>, <code>oslc.orderBy</code>, and <code>oslc.select</code>.
-		In this pattern, the starting subject resource is viewed as a container of other resources. The members of the container are
-		defined by one or more multi-valued membership properties of the starting subject resource. The membership properties are given
-		by the properties described as membership properties (via <code>oslc:isMemberProperty</code>) in the Resource Shape of the starting
-		subject resource.<a href="https://issues.oasis-open.org/browse/OSLCCORE-102"><font color="red">[OSLCCORE-102]</font></a>
-		The pattern matching process is summarized by the following sequence of steps, and fully defined in later sections.
-		Default processing occurs in steps where the corresponding query parameter is not present:
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-103"><font color="red">[OSLCCORE-103]</font></a>
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red">[OSLCCORE-105]</font></a>
-		</p>
-		<ol>
-			<li><code>oslc.where</code> - filter the member list, keeping only those member resources that satisfy the boolean test on
-			the member resource properties.</li>
-			<li><code>oslc.searchTerms</code> - score each member resource using a full text search on it text-valued properties, and sort them
-			in descending order of score.</li>
-			<li><code>oslc.orderBy</code> - sort the members using the sort keys, using the full text search score as the primary key.</li>
-			<li><code>oslc.select</code> - match the immediate and nested properties of the member resources (like in <code>oslc.properties</code>
-			<a href="https://issues.oasis-open.org/browse/OSLCCORE-104"><font color="red">[OSLCCORE-104]</font></a>).</li>
-		</ol>
-	</section>
-
-
-	<section id="prefixedNames">
-		<h3>Prefixed Names</h3>
-		<p>In addition to the preceding query parameters, we also define <code>oslc.prefix</code> which is used to define the prefixes for
-		prefixed names that appear in the other query parameters.
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-107"><font color="red">[OSLCCORE-107]</font></a>
-		The <code>oslc.prefix</code> query parameter is not itself part of the
-		graph pattern. Other specifications MAY use <code>oslc.prefix</code> to define prefixes for prefixed name used in other query parameters.
-		A prefixed name is an abbreviation for a URI as defined in the SPARQL Query Language [[SPARQL11-QUERY]].</p>
-	</section>
+<section>
+	<h2>Using a Query Capability</h2>
+	Executing a query or search is achieved by executing a <code>GET</code> on the <i>query base</i> URI of a
+	query capability.
+	<p>For a successful operation:</p>
+	<ul>
+		<li>The response status code MUST be <code>200 OK</code> for a non-paged result, or for an OSLC paged result, or 
+			<code>303 See Other</code> for an LDPC paged result [[LDP]].</li>
+		<li>The response body MUST be RDF that includes a query result container whose subject is the
+			query base URI.</li>
+	</ul>
+	
+	For an unsuccessful operation:
+	<ul>
+		<li>The response status code MUST be an error status code. See <a href="#ErrorHandling">Error Handling</a> for details.</li>
+		<li>The response body MUST be RDF that describes one or more <code>oslc:Error</code>
+			resources that provide error information.</li>
+	</ul>
+	
+	The <code>GET</code> request MAY use zero, one or more of the OSLC query parameters listed in the table below.
+	<br><br>
+	<div style="margin-left: 2em">
+		<table border=1 cellspacing=0 cellpadding=0>
+			<tr>
+				<th>Query parameter</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td><code>oslc.where</code></td>
+				<td>Limits the query results to members that satisfy the specified query expression. If neither
+					<code>oslc.where</code> nor <code>oslc.searchTerms</code> is specified, then the query
+					results SHOULD be all the members of the resource type associated with the query capability.</td>
+			</tr>
+			<tr>
+				<td><code>oslc.searchTerms</code></td>
+				<td>Score each member resource using a full-text search on its text-valued properties, and sort them
+					in descending order of score. If neither
+					<code>oslc.where</code> nor <code>oslc.searchTerms</code> is specified, then the query
+					results SHOULD be all the members of the resource type associated with the query capability.</td>
+			</tr>
+			<tr>
+				<td><code>oslc.orderBy</code></td>
+				<td>Sort the members using the sort keys, using the full-text search score as the primary key.</td>
+			</tr>
+			<tr>
+				<td><code>oslc.select</code></td>
+				<td>Include the specified immediate and nested properties of the member resources.</td>
+			</tr>
+			<tr>
+				<td><code>oslc.properties</code></td>
+				<td>Only return specified <i>selective properties</i> of the <i>query result container</i>.</td>
+			</tr>
+			<tr>
+				<td><code>oslc.prefix</code></td>
+				<td>Specify a namespace prefix that may be used in <code>oslc.where</code>, <code>oslc.orderBy</code>,
+			<code>oslc.select</code>, and <code>oslc.properties</code>.</td>
+			</tr>
+		</table>
+	</div>	
 
 </section>
 
+
+<section>
+	<h2>Query result containers</h2>
+	The response body for a successful <code>GET</code> on a query base URI MUST include a query result container whose
+	subject is the query base URI.
+	
+	<p>	The container SHOULD be a <i>Linked Data Platform Container</i> (LDPC) including a <code>ldp:contains</code> referencing each member 
+	resource found by the query. The response SHOULD include a <code>Link</code> header that describes the type of LDPC returned.
+	This provides compatibility with OSLC Core 3.0 and its wider use of LDPCs. [[LDP]]</p>
+	
+	<p>	If the query capability that declared the base URI does not declare a <code>oslc:resourceShape</code> then the container 
+	MUST also include an <code>rdfs:member</code> reference to each of the result members.<p>
+	
+	<p>If the query capability that declared the base URI declares a <code>oslc:resourceShape</code> and that resource shape
+	defines a container property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code> that is not <code>ldp:contains</code>,
+	the query result container MUST also contain the specified member property for each of the query result members.</p>
+	
+
+
+	<pre class="example" title="Query result container using rdfs:member as the membership property">
+HTTP/1.1 200 OK
+Content-Type: text/turtle
+ETag: "_87e52ce291112"
+Link: &lt;http://www.w3.org/ns/ldp#DirectContainer>; rel="type",
+      &lt;http://www.w3.org/ns/ldp#Resource>; rel="type"
+
+
+@prefix dcterms: &lt;http://purl.org/dc/terms/>.
+@prefix ldp: &lt;http://www.w3.org/ns/ldp#>.
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#>.
+@prefix ex: &lt;http://example.org/>.
+
+&lt;http://example.org/queryBase/>
+   a ldp:DirectContainer;
+   ldp:membershipResource &lt;http://example.org/queryBase/>;
+   ldp:hasMemberRelation rdfs:member;
+   ldp:contains ex:member1, ex:member2;
+   rdfs:member ex:member1, ex:member2.
+	</pre>
+	
+	<p>If the query capability that declared the base URI declares a <code>oslc:resourceShape</code> and that resource shape
+	defines a container property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code> that is <code>ldp:contains</code>,
+	the query result container may use any form of LDPC, such as ldp:BasicContainer. This provides the most compact representation
+	of query result members that is compatible with OSLC Query 2.0 and conformant with LDPC [[LDP]]. All of the examples
+	showing a query response following this section assume that the query capability resource shape defines that
+	<code>ldp:contains</code> is the membership property.</p>	
+	
+	<pre class="example" title="Query result container using ldp:contains as the membership property">
+HTTP/1.1 200 OK
+Content-Type: text/turtle
+ETag: "_87e52ce291112"
+Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
+      &lt;http://www.w3.org/ns/ldp#Resource>; rel="type"
+
+
+@prefix dcterms: &lt;http://purl.org/dc/terms/>.
+@prefix ldp: &lt;http://www.w3.org/ns/ldp#>.
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#>.
+@prefix ex: &lt;http://example.org/>.
+
+&lt;http://example.org/queryBase/>
+   a ldp:BasicContainer;
+   ldp:contains ex:member1, ex:member2.
+	</pre>
+	
+</section>
 
 
 <section id="queryParameters">
@@ -408,15 +511,10 @@ code.noescape {
 		More complex query requirements should be satisfied using a full query language, e.g. SQL or SPARQL.</p>
 
 		<p>This specification formally defines the syntax of the query parameters using Extended Backus-Naur Form [[EBNF]]
-		and informally illustrates  their semantics with simple examples. For an additional discussion of the semantics of the
-		query parameters see
-		<a href="https://open-services.net/bin/view/Main/OslcSimpleQuerySemanticsV1">OSLC Simple Query Semantics V1</a>
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-108"><font color="red">[OSLCCORE-108]</font></a>.
-		If there is any disagreement between that reference and this specification, then this
-		specification takes priority.<p>
+		and informally illustrates  their semantics with simple examples. 
 
-		<p>The query parameters MAY contain characters that MUST be URL encoded when transmitted in an HTTP request. The examples below show unencoded
-		query parameters for clarity. See <a href="#URL.Encoding">URL Encoding</a> for a further discussion of this topic.</p>
+		<p>The query parameters MAY contain characters that MUST be URL encoded when transmitted in an HTTP request. The examples below show
+		both unencoded and encoded query parameters for clarity.</p>
 
 		<p>This specification defines the syntax of a set of related query parameters that MAY be used to perform queries.
 		We have adopted a consistent naming convention for these query parameters to identify them as common across all OSLC specifications,
@@ -434,53 +532,195 @@ code.noescape {
 
 	<section id="oslc.where">
 		<h3>oslc.where</h3>
-		<p>This query parameter defines part of a member list pattern. If a member list pattern is defined but this query parameter is not present
-		then it defaults to the boolean condition <code>true</code>, i.e. it matches all members of the member list.</p>
+		<p>The <code>oslc.where</code>code> query parameter defines a <i>query expression</i> that is used to query for resources
+		matching the query expression. It is serves a similar purpose to the <code>WHERE</code> clause of a SQL statement.</p>
+		
+		<p>If an implementation does not support the <code>oslc.where</code> parameter, the response should be
+		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
+		
+		<p>If the query expression references a property that is not defined for the resources associated with the
+		query capability, the response SHOULD be <code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
+		
+		<p>For example, suppose that a change management system provides a query capability with a query base of 
+		<code>https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code>,
+		and a client wants to query for all change requests created by the user <code>https://host:9443/jts/users/deb</code>.
+		This can be performed using a <code>GET</code> on 
+		<code>https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
+		query parameters shown in the table below:
+		<br><br>
+		<div style="margin-left: 2em">
+			<table border=1 cellspacing=0 cellpadding=0>
+				<tr>
+			    	<th>Parameter</th>
+			    	<th>Unencoded value</th>
+				</tr>
+				<tr>
+					<td><code>oslc.where</code></td>
+					<td><code>dcterms:creator=&lt;https://host:9443/jts/users/deb></code></td>
+				</tr>
+			</table>
+		</div>
+		
 
-		<p>A resource may have an associated set of related resources defined by one or more membership properties. Service consumers often need
-		to search for subsets of these related resources that satisfy certain conditions. The <code>oslc.where</code> query parameter lets
-		you specify the conditions that these related resources must satisfy. It is like the <code>WHERE</code> clause of a SQL statement.</p>
+		<pre class="example" title="Query for all change requests created by Deb">
+GET https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
+    ?oslc.where=dcterms%3Acreator%3D%3Chttps%3A%2F%2Fhost%3A9443%2Fjts%2Fusers%2Fdeb%3E
 
-		<p>For example, suppose that the following URL represents the set of all bug resources managed by a service, and that is has a
-		single membership property, <code>cm:memberBug</code>:</p>
-		<pre class="example" title="Bug Report URL">
-	    http://example.com/bugs
+OSLC-Core-Version: 2.0
+Accept: text/turtle
+
+ -- response --
+200 OK
+Etag:  "5f836103-c64e-3c3f-aa5e-dd0baec92511"
+OSLC-Core-Version:  2.0
+Vary:  Accept, OSLC-Core-Version
+Content-Type:  text/turtle;charset=UTF-8
+Content-Language:  en-US
+Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w3.org/ns/ldp#Resource>; rel="type"
+
+@prefix dcterms:  &lt;http://purl.org/dc/terms/> .
+@prefix ldp:     &lt;http://www.w3.org/ns/ldp#> .
+@prefix oslc:    &lt;http://open-services.net/ns/core#> .
+@prefix rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+&lt;https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
+    a ldp:BasicContainer ;
+    ldp:contains 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
 		</pre>
 
-		<p>Suppose bug reports have a <code>dcterms:identifier</code> property that gives their bug number, e.g. "4242".
-		The following URL filters this set and selects only those bugs that have a <code>dcterms:identifier</code> property
-		whose value is "4242":</p>
-		<pre class="example" title="Query on dcterms:identifier 4242">
-	    <code class="noescape">http://example.com/bugs?oslc.where=</code><code class="escape">dcterms:identifier="4242"</code>
+		Note that the query result in the above example does not contain any properties of the members found by the
+		query. If the <code>oslc.select</code> query parameter is not specified, then an implementation may return none, some, or all
+		member properties.
+		
+		<p>Conditions may use the usual binary comparison operators and be combined using the boolean conjunction operator, " and ".</p>
+		
+		<p>Suppose a client now wants to query for all change requests created by Deb that are not fixed.
+		This can be performed using a <code>GET</code> on 
+		<code>https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
+		query parameters shown in the table below:</p>
+		<br><br>
+		<div style="margin-left: 2em">
+			<table border=1 cellspacing=0 cellpadding=0>
+				<tr>
+			    	<th>Parameter</th>
+			    	<th>Unencoded value</th>
+				</tr>
+				<tr>
+					<td><code>oslc.where</code></td>
+					<td><code>dcterms:creator=&lt;https://host:9443/jts/users/deb> and oslc_cm:fixed=false</code></td>
+				</tr>
+			</table>
+		</div>
+		
+		
+				<pre class="example" title="Query for all change requests created by Deb that are not fixed">
+GET https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
+    ?oslc.where=dcterms%3Acreator%3D%3Chttps%3A%2F%2Fhost%3A9443%2Fjts%2Fusers%2Fdeb%3E%20and%20oslc_cm%3Afixed%3Dfalse
+
+OSLC-Core-Version: 2.0
+Accept: text/turtle
+
+ -- response --
+200 OK
+Etag:  "5f836103-c64e-3c3f-aa5e-dd0baec92511"
+OSLC-Core-Version:  2.0
+Vary:  Accept, OSLC-Core-Version
+Content-Type:  text/turtle;charset=UTF-8
+Content-Language:  en-US
+Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w3.org/ns/ldp#Resource>; rel="type"
+
+@prefix dcterms:  &lt;http://purl.org/dc/terms/> .
+@prefix ldp:     &lt;http://www.w3.org/ns/ldp#> .
+@prefix oslc:    &lt;http://open-services.net/ns/core#> .
+@prefix rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+&lt;https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
+    a ldp:BasicContainer ;
+    ldp:contains 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
 		</pre>
+		
+		An <code>oslc.where</code> query expression may query for nested properties. The following example
+		show a query for change requests created by any user named "Deb". This can be performed using a <code>GET</code> on 
+		<code>https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
+		query parameters shown in the table below:
+		<br><br>
+		<div style="margin-left: 2em">
+			<table border=1 cellspacing=0 cellpadding=0>
+				<tr>
+			    	<th>Parameter</th>
+				    <th>Unencoded value</th>
+				</tr>
+				<tr>
+					<td><code>oslc.where</code></td>
+					<td><code>dcterms:creator {foaf:name="Deb"}</code></td>
+				</tr>
+			</table>
+		</div>
+		
+		<pre class="example" title="Query for all change requests created by any user named 'Deb'">
+GET https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
+    ?oslc.where=dcterms%3Acreator%20%7Bfoaf%3Aname%3D%22Deb%22%7D
 
-		<p>Note that the preceding query there is only one membership property, namely <code>cm:memberBug</code>.</p>
+OSLC-Core-Version: 2.0
+Accept: text/turtle
 
-		<p>Conditions may use the usual binary comparison operators and be combined using the boolean conjunction operator, " and ".
-		For example, suppose bugs have <code>cm:severity</code>code> and <code>dcterms:created</code> properties.
-		The following example finds high severity bugs created after April 1, 2010:
-		<pre class="example" title="Query high severity bugs created after April 1, 2010">
-	    http://example.com/bugs?oslc.where=cm:severity="high" and dcterms:created>"2010-04-01"
-		</pre>
+ -- response --
+200 OK
+Etag:  "5f836103-c64e-3c3f-aa5e-dd0baec92511"
+OSLC-Core-Version:  2.0
+Vary:  Accept, OSLC-Core-Version
+Content-Type:  text/turtle;charset=UTF-8
+Content-Language:  en-US
+Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w3.org/ns/ldp#Resource>; rel="type"
 
-		<p>In this example, the ISO 8601 date format [[ISO8601]] is used since the
-		<code>xsd:dateTime</code> format is recommended for use with the <code>dcterms:created</code> property. In general, the format
-		used for a property depends on the definition of the property.</p>
+@prefix dcterms:  &lt;http://purl.org/dc/terms/> .
+@prefix ldp:     &lt;http://www.w3.org/ns/ldp#> .
+@prefix oslc:    &lt;http://open-services.net/ns/core#> .
+@prefix rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-		<p>The following URL illustrates the use of nested properties. It finds the set of bugs created by John Smith:</p>
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-106"><font color="red">[OSLCCORE-106]</font></a>
-		<pre class="example" title="Query bugs created by John Smith">
-	    http://example.com/bugs?oslc.where=dcterms:creator{foaf:givenName="John" and foaf:familyName="Smith"}
-		</pre>
+&lt;https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
+    a ldp:BasicContainer ;
+    ldp:contains
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
+		</pre>				
 
-		<p>Property values will often refer to or be other resources (in RDF/XML the rdf:resource attribute is used to identify the resource).
-		Suppose bugs are linked to test cases using a property name <code>qm:testcase</code> where the prefix <code>qm:</code> stands for the
-		URI http://qm.example.com/ns. The following query finds all bugs that are linked to test case http://example.com/tests/31459:
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-109"><font color="red">[OSLCCORE-109]</font></a></p>
-		<pre class="example" title="Query bugs linked to test case 31459">
-	    http://example.com/bugs?oslc.prefix=qm=&lt;http://qm.example.com/ns>
-	        &amp;oslc.where=qm:testcase=&lt;http://example.com/tests/31459>
-		</pre>
 	</section>
 
 
@@ -514,6 +754,9 @@ code.noescape {
 		<div style="margin-left: 2em">
 			<code>wildcard</code><br>
 			As in the case of <code>oslc.properties</code>, the "*" <code>wildcard</code> matches any property.
+			Implementations MAY support the use of the wildcard in property names and nested properties.
+			If an implementation does not support a use of wildcard, the response status SHOULD be <code>501 Not Implemented</code>
+			as described in <a href="#ErrorHandling">Error Handling</a>.
 			<br>
 			<br>
 			<code>boolean_op</code><br>
@@ -521,9 +764,25 @@ code.noescape {
 			boolean expression. The only boolean operation allowed is " and " which represents conjunction. The boolean operator " or " for disjunction
 			is not allowed in the interests of keeping the syntax simple. The effect of " or " in the simple case of testing a property for equality
 			with one of several values can be achieved through the use of the " in " operator.
-			For example, the following query finds bugs with severity "high" or "medium":
+			
+			
+			
+			For example, the following query expression might find change requests with severity "high" or "medium":
+			<br><br>
+			<div style="margin-left: 2em">
+				<table border=1 cellspacing=0 cellpadding=0>
+					<tr>
+				    	<th>Parameter</th>
+				 		<th>Unencoded value</th>
+					</tr>
+					<tr>
+						<td><code>oslc.where</code></td>
+						<td><code>oslc_cm:severity in ["high","medium"]</code></td>
+					</tr>
+				</table>
+			</div>
 			<pre class="example">
-		    http://example.com/bugs?oslc.where=cm:severity in ["high","medium"]
+		    GET http://example.com/queryBase?oslc.where=oslc_cm%3Aseverity%20in%20%5B%22high%22%2C%22medium%22%5D
 			</pre>
 			<code>space</code><br>
 			The <code>space</code> term represents a single space character. A space character MAY be used to delimit the <code>binary_op</code> term in
@@ -531,33 +790,36 @@ code.noescape {
 			<br>
 			<br>
 			<code>comparison_op</code><br>
-			The <code>comparison_op</code> term represents one of the following binary comparison operators:<br><br>
-			<table>
-				<tr>
-				  	<td>=</td>
-				  	<td>test for equality</td>
-				</tr>
-				<tr>
-					<td>!=</td>
-					<td>test for inequality</td>
-				</tr>
-				<tr>
-					<td>&lt;</td>
-					<td>test less-than</td>
-				</tr>
-				<tr>
-					<td>&gt;</td>
-					<td>test greater-than</td>
-				</tr>
-				<tr>
-					<td>&lt;=</td>
-					<td>test less-than or equal</td>
-				</tr>
-				<tr>
-					<td>&gt;=</td>
-					<td>test greater-than or equal</td>
-				</tr>
-			</table>
+			The <code>comparison_op</code> term represents one of the following binary comparison operators:
+			<br><br>
+			<div style="margin-left: 2em">
+				<table border=1 cellspacing=0 cellpadding=0>
+					<tr>
+					  	<td>=</td>
+					  	<td>test for equality</td>
+					</tr>
+					<tr>
+						<td>!=</td>
+						<td>test for inequality</td>
+					</tr>
+					<tr>
+						<td>&lt;</td>
+						<td>test less-than</td>
+					</tr>
+					<tr>
+						<td>&gt;</td>
+						<td>test greater-than</td>
+					</tr>
+					<tr>
+						<td>&lt;=</td>
+						<td>test less-than or equal</td>
+					</tr>
+					<tr>
+						<td>&gt;=</td>
+						<td>test greater-than or equal</td>
+					</tr>
+				</table>
+			</div>
 			<br>
 			Semantics of datatypes and operations on these datatypes MUST work as defined in the SPARQL Query Language [[SPARQL11-QUERY]].
 			<a href="https://issues.oasis-open.org/browse/OSLCCORE-111"><font color="red">[OSLCCORE-111]</font></a>
@@ -607,20 +869,21 @@ code.noescape {
 	</section>
 
 
-	<section id="oslc.where">
+	<section id="oslc.searchTerms">
 		<h3>oslc.searchTerms</h3>
-		<p>This query parameter defines part of a member list pattern. If a member list pattern is defined but this query parameter is not present then the
-		matching process assigns the same effective score of 0 to each member of the list and does NOT change the order of the member list.</p>
 
-		<p>Resource properties often contain text so it is useful to search for resources that contain specified terms.
-		The <code>oslc.searchTerms</code> query parameter lets you perform a full text search [[FULLTEXT-SEARCH]]
-		on a set of resources. In a full text search, each resource is matched against the list of search terms and assigned a numeric score.
+		Resource properties often contain text so it is useful to search for resources that contain specified terms.
+		The <code>oslc.searchTerms</code> query parameter lets you perform a full-text search [[FULLTEXT-SEARCH]]
+		on a set of resources. In a full-text search, each resource is matched against the list of search terms and assigned a numeric score.
 		A high score indicates a good match. The matching resources are returned in the response, sorted by the score in descending order.
 		Each resource that is returned in the response is annotated with a special property, <code>oslc:score</code>, that gives its
-		match score.</p>
+		match score.
+		
+		<p>If an implementation does not support the <code>oslc.searchTerms</code> parameter, the response should be
+		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
 
-		<p>An OSLC domain specification that supports full text search SHOULD specify which resource properties are indexed so that search results are
-		consistent across implementations.
+		<p>An OSLC domain specification that supports full-text search SHOULD specify which resource properties are indexed so that
+		search results are consistent across implementations.
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red">[OSLCCORE-105]</font></a></p>
 
 		<p>When <code>oslc.searchTerms</code> is used in the request, each matching resource (hit) in the response MAY contain an
@@ -636,11 +899,34 @@ code.noescape {
 		This behavior is like prepending the list of sort keys specified in <code>oslc.orderBy</code> with the key <code>-oslc:score</code>.
 		However, the pseudo-property <code>oslc:score</code> MUST NOT appear explicitly in <code>oslc.orderBy</code>.</p>
 
-		<p>The <code>oslc.where query</code> parameter MAY be used with <code>oslc.searchTerms</code>. When <code>oslc.where</code> is used with
-		<code>oslc.searchTerms</code> then the set of resources searched for matches MUST be restricted to only those resources that satisfy
-		the conditions in <code>oslc.where</code>. For example, the following query returns the high severity bugs that deal with database performance:
-		<pre class="example">
-	    http://example.com/bugs?oslc.where=cm:severity="high"&amp;oslc.searchTerms="database","performance"
+		<p>The <code>oslc.where query</code> parameter MAY be used with <code>oslc.searchTerms</code>. If an implementation
+		does not support such combined usage, the response should be <code>501 Not Implemented</code> as described in
+		<a href="#ErrorHandling">Error Handling</a>. When <code>oslc.where</code> is used with <code>oslc.searchTerms</code> 
+		and is supported, then the set of resources searched for matches MUST be restricted to only those resources that satisfy
+		the conditions in <code>oslc.where</code>. For example, the following query returns the high severity change requests
+		that deal with database performance:
+		<br><br>
+		<div style="margin-left: 2em">
+			<table border=1 cellspacing=0 cellpadding=0>
+				<tr>
+				   	<th>Parameter</th>
+					<th>Unencoded value</th>
+				</tr>
+				<tr>
+					<td><code>oslc.where</code></td>
+					<td><code>oslc_cm:severity="high"</code></td>
+				</tr>
+				<tr>
+					<td><code>oslc.searchTerms</code></td>
+					<td><code>"database","performance"</code></td>
+				</tr>
+			</table>
+		</div>
+		
+
+		<pre class="example">		
+    GET http://example.com/queryBase?oslc.where=oslc_cm%3Aseverity%3D%22high%22
+        &amp;oslc.searchTerms=%22database%22%2C%22performance%22
 		</pre>
 
   		<section id="oslc.searchTerms.syntax">
@@ -657,18 +943,42 @@ code.noescape {
 
 	<section id="oslc.orderBy">
 		<h3>oslc.orderBy</h3>
-		<p>This query parameter defines part of a member list pattern. If a member list pattern is defined but this query parameter is not present
-		then there are no sort keys and the matching process does NOT change the order of the member list.</p>
-
+		
 		<p>The <code>oslc.orderBy</code> query parameter lets you sort the result set. It is like the <code>ORDER BY</code> clause of a
-		SQL statement.</p>
+		SQL statement.
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-143"><font color="red">[OSLCCORE-143]</font></a></p>
+		
+		<p>If an implementation does not support the <code>oslc.orderBy</code> parameter, the response should be
+		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
 
 		<p>You can specify a list of one or more immediate or nested properties of the resources in the member list, and a sort direction for each
-		where " + " means ascending order and " -" means descending order. The following example sorts the high severity bugs by the family and
-		given names of the creator, with most recently created first:</p>
-		<pre class="example" title="Sort high severity bugs created by creator family name and given name, and created date-time">
-	http://example.com/bugs?oslc.orderBy=dcterms:creator{+foaf:familyName,+foaf:givenName},-dcterms:created
-		&amp;oslc.where=cm:severity="high"
+		where " + " means ascending order and " -" means descending order. The following example sorts the high severity change requests by 
+		the name of the creator, with most recently created first:</p>
+		
+		<br><br>
+		<div style="margin-left: 2em">
+			<table border=1 cellspacing=0 cellpadding=0>
+				<tr>
+				   	<th>Parameter</th>
+					<th>Unencoded value</th>
+				</tr>
+				<tr>
+					<td><code>oslc.where</code></td>
+					<td><code>oslc_cm:severity="high"</code></td>
+				</tr>
+				<tr>
+					<td><code>oslc.orderBy</code></td>
+					<td><code>dcterms:creator{+foaf:name},-dcterms:created</code></td>
+				</tr>
+			</table>
+		</div>
+		
+		
+		
+		<pre class="example" title="Sort high severity change requests created by creator name, and created date-time">
+	GET http://example.com/queryBase
+	    ?oslc.orderBy=dcterms%3Acreator%7B%2Bfoaf%3Aname%7D%2C-dcterms%3Acreated
+		&amp;oslc.where=oslc_cm%3Aseverity%3D%22high%22
 		</pre>
 
 		<section id="oslc.orderBy.syntax">
@@ -686,72 +996,180 @@ code.noescape {
 	<section id="oslc.select">
 		<h3>oslc.select</h3>
 
-		<p>This query parameter defines part of a member list pattern. If a member list pattern is defined but this query parameter is not present,
-		then this (absent) criterion does not affect the list of members returned.</p>
-
 		<p>The <code>oslc.select</code> query parameter lets you specify which immediate and nested properties of the resources in the member list
-		to match. It is like the <code>SELECT</code> clause of a SQL statement.</p>
+		to be included in the response. It is like the <code>SELECT</code> clause of a SQL statement.</p>
+		
+		<p>If an implementation does not support the <code>oslc.where</code> parameter, the response should be
+		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
+		
+		<p>If <code>oslc.select</code> specifies a property that is not defined for the resource type associated with
+		the query capability, the response should be <code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
 
 		<p>The syntax of the <code>oslc.select</code> query parameter is the same as that of the <code>oslc.properties</code> query parameter.
-		However, the property names that appear in the <code>oslc.select</code> query parameter are those that belong to the resources in the member
-		list as opposed to those that belong to the starting subject resource.
+		See <a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a> for the syntax.
+		However, the property names that appear in the <code>oslc.select</code> query parameter are those that belong to the 
+		resources in the member list as opposed to those that belong to the starting subject resource which is that of
+		the <i>query result container</i>.
 		<a href="https://issues.oasis-open.org/browse/OSLCCORE-122"><font color="red">[OSLCCORE-122]</font></a></p>
+		
+		<p>As in the case of <code>oslc.properties</code>, the wildcard is equivalent to the list of all properties of the member resources.
+		Implementations MAY support the use of the wildcard for immediate and/or nested properties of member resources.
+		If a specific use of the wildcard in <code>oslc.select</code> is not supported, the response should be
+		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.
+		
+		<p>A server MAY include additional member properties in the response to those specified in the 
+		<code>oslc.select</code> query parameter.
+		
+		<p>If a <code>oslc.select</code> parameter is not specified, the query response MAY contain none, some, or all
+		properties of member resources. The exact behaviour is undefined and implementation dependent.
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-123"><font color="red">[OSLCCORE-123]</font></a>
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-148"><font color="red">[OSLCCORE-148]</font></a></p>
 
-		<p>For example, the following URL finds the high severity bugs and includes their creation date and the family name of the
-		creator in the HTTP response:</p>
-		<pre class="example" title="Query the high severity bugs and includes their creation date and the family name of the creator">
-	http://example.com/bugs?oslc.select=dcterms:created,dcterms:creator{foaf:familyName}
-		&amp;oslc.where=cm:severity="high"
-		</pre>
+		<p>For example, the following query finds the change requests created by any user named "Deb" and includes the
+		<code>dcterms:title</code> and <code>dcterms:creator</code> for each change request found by the query.
+		<br><br>
+		<div style="margin-left: 2em">
+			<table border=1 cellspacing=0 cellpadding=0>
+				<tr>
+				    <th>Parameter</th>
+				    <th>Unencoded value</th>
+				</tr>
+				<tr>
+					<td><code>oslc.where</code></td>
+					<td><code>dcterms:creator {foaf:name="Deb"}</code></td>
+				</tr>
+				<tr>
+					<td><code>oslc.select</code></td>
+					<td><code>dcterms:title,dcterms:creator</code></td>
+				</tr>
+			</table>
+		</div>
+		
+		<pre class="example" title="Query for all change requests created by any user named 'Deb'">
+GET https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
+    ?oslc.where=dcterms%3Acreator%20%7Bfoaf%3Aname%3D%22Deb%22%7D
+    &amp;oslc.select=dcterms%3Atitle%2Cdcterms%3Acreator
 
-		<section id="oslc.select.syntax">
-			<b>Syntax</b><br>
-			<pre>
-	oslc_select ::= "oslc.select=" properties
-	properties  ::= property ("," property)*
-	property    ::= identifier | wildcard | nested_prop
-	nested_prop ::= (identifier | wildcard) "{" properties "}"
-			</pre>
+OSLC-Core-Version: 2.0
+Accept: text/turtle
 
-			<p>The <code>oslc.select</code> query parameter uses the same syntax as the <code>oslc.properties</code> query parameter.
-			The difference between them is in the meaning of the identifiers. In <code>oslc.properties</code>, the identifiers are the
-			names of properties of the starting subject resource. In <code>oslc.select</code>code>, the starting subject resource has an
-			associated list of member resources, and the identifiers are the names of properties of the resources that are contained in
-			the member list.
-			<a href="https://issues.oasis-open.org/browse/OSLCCORE-122"><font color="red">[OSLCCORE-122]</font></a></p>
+ -- response --
+200 OK
+Etag:  "5f836103-c64e-3c3f-aa5e-dd0baec92511"
+OSLC-Core-Version:  2.0
+Vary:  Accept, OSLC-Core-Version
+Content-Type:  text/turtle;charset=UTF-8
+Content-Language:  en-US
+Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w3.org/ns/ldp#Resource>; rel="type"
 
-			<p>For example, suppose that a bug resource has the membership property <code>cm:comment</code> that relates it to comment
-			resources, and that the bug and each comment have <code>dcterms:modified</code> properties that give their last modification dates.
-			The following query specifies that the response should include the modification date of bug 4242 and the modification date of each
-			of its comments:
-			<pre class="example">
-	http://example.com/bugs/4242?oslc.properties=dcterms:modified&amp;oslc.select=dcterms:modified
-			</pre>
+@prefix dcterms:  &lt;http://purl.org/dc/terms/> .
+@prefix ldp:     &lt;http://www.w3.org/ns/ldp#> .
+@prefix oslc:    &lt;http://open-services.net/ns/core#> .
+@prefix rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-			<div style="margin-left: 2em">
-				<code>wildcard</code>
-				<p>As in the case of <code>oslc.properties</code>, the wildcard is equivalent to the list of all properties of the member resources.
-				The query parameter <code>oslc.select=*</code> specifies that pattern MUST match all the properties of the resources in
-				the member list.</p>
-			</div>
-		</section>
+&lt;https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
+    a ldp:BasicContainer ;
+    ldp:contains
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12> , 
+        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
+        
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "To many messages logged in the console"^^rdf:XMLLiteral .
 
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Calculation error"^^rdf:XMLLiteral .
 
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Some accessibility issues"^^rdf:XMLLiteral .
 
-		<section id="URL.Encoding">
-			<h3>URL Encoding</h3>
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Browser Exception"^^rdf:XMLLiteral .
 
-			<p>The query parameter syntax defined in this specification permits the use of characters that MUST be properly encoded when
-			transmitted in HTTP requests.
-			<pre class="example" title="Not encoded">
-	?oslc.where=dcterms:title="test case 1" and dcterms:modified>="2008-12-02T18:42:30"
-			</pre>
-			<pre class="example" title="Encoded">
-	?oslc.where=dcterms%3Atitle%3D%22test%20case%201%22%20and%20dc%3Amodified%3E%3D%222008-12-02T18%3A42%3A30%22
-			</pre>
-		</section>
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Not possible to change a user password"^^rdf:XMLLiteral .
+
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Improve link colors"^^rdf:XMLLiteral .
+
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Login not working anymore"^^rdf:XMLLiteral .
+
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Increase size of overall application window"^^rdf:XMLLiteral .
+
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Improve loan calculation algorithm"^^rdf:XMLLiteral .
+
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Search is not finding this term"^^rdf:XMLLiteral .
+
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Button sizes are too small"^^rdf:XMLLiteral .
+
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Offer more services related to loans"^^rdf:XMLLiteral .
+
+&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8>
+      a       oslc_cm:ChangeRequest ;
+      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:title "Add context sensitive help support everywhere"^^rdf:XMLLiteral .
+		</pre>		
 	</section>
+</section>
 
+<section id="ErrorHandling">
+    <h2>Error Handling</h2>
+
+    If a <code>GET</code> of a query base URI cannot be executed, the response MUST include a response body whose RDF contains at least
+    one <code>oslc:Error</code> describing the cause of the error.
+    
+    <p>If the error is due to use of an OSLC query parameter that is not supported, the response status SHOULD be <code>501 Not Implemented</code>.
+    Implementations that do not support a specific query parameter need not parse its value.</p>
+
+	<p>If the error is due to a supported but malformed query parameter value, such as one that does not match the supported syntax, then
+	the response status code SHOULD be <code>400 Bad Request</code>.</p>
+	
+	<p>If the query has well-formed syntactically valid query parameter values, but the implementation does not support
+	a specific use of such a query parameter, the response status SHOULD be <code>501 Not Implemented</code>.</p>
+	
+	<p>If the query is valid, but the server failed to execute the request in some unexpected way, then the response
+	status SHOULD be <code>500 Internal Server Error</code>.</p>
 </section>
 
 
