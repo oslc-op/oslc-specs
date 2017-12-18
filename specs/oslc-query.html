@@ -29,7 +29,7 @@
     revision: "02",
 
     // if you wish the publication date to be other than the last modification, set this
-    publishDate:  "2017-10-13",
+    publishDate:  "2017-12-18",
 
     // if the specification's copyright date is a range of years, specify the start date here:
     // copyrightStart: "2005"
@@ -56,6 +56,12 @@
         company :    "IBM",
         companyURL : "http://www.ibm.com"
       },
+      {
+        name:        "David Honey",
+        mailto :     "david_honey@persistent.com",
+        company :    "Persistent Systems Ltd",
+        companyURL : "http://persistent.com"
+      }
     ],
     chairs : [ {
       name : "Jim Amsden",
@@ -274,8 +280,12 @@ code.noescape {
 
       <dt><dfn>Term2</dfn></dt>
       <dd>Definition 2.</dd>
-
     </dl>
+    <div style="margin-left: 2em">
+		<font color="red">[David]<br>
+			Are there any specific terms required here?
+		</font><br><br>
+	</div>
   </section>
 
   <section id='references'><h3>References</h3></section>
@@ -286,30 +296,46 @@ code.noescape {
 
 <section class='informative'>
   <h2>Motivation</h2>
-  <p>
   TBD.
-  </p>
+  <div style="margin-left: 2em">
+		<font color="red">[David]<br>
+			Jim, I think you volunteered to draft something for this section. I'd like to see it describe incremental
+			adoption by allowing servers to support subsets that are not overly burdensome to implement.
+			Also, persistence agnostic. We want this to be easily implementable by both traditional RDB based applications as well
+			as RDF/SPARQL ones.
+		</font><br><br>
+	</div>
 </section>
 
 
 
 <section id='concepts' class='informative'>
-  <h2>Basic Concepts<br></h2>
-  OSLC Query provides a mechanism for a client to query or search for resources of some RDF type by performing a <code>GET</code> 
-  on a <i>query base</i> URI.
-  Clients may discover such query base URIs from a <code>oslc:queryCapability</code> declared in an OSLC service.
-  The response to a successful query is a response body that includes the RDF of a <i>query result container</i> that references the member
-  resources found by the query, and optionally contains properties of each member resource.
+	<h2>Basic Concepts<br></h2>
+  
+	<div style="margin-left: 2em">
+		<font color="red">[David]<br>
+			This was missing content before. This is just a first draft that needs to be reviewed. I particularly wanted to
+			mention that there were two capabilities (property based query, full-text search) and not mandate that <b>both</b> were needed.
+			This is an attempt to allow implementations to adopt OSLC query incrementally and not be burdened with everything.
+		</font><br><br>
+	</div>
+  
+	OSLC Query provides a mechanism for a client to query or search for resources of some RDF type by performing a <code>GET</code> 
+	on a <i>query base</i> URI.
+	Clients may discover such query base URIs from a <code>oslc:queryCapability</code> declared in an OSLC service.
+	The response to a successful query is a response body that includes the RDF of a <i>query result container</i> that references the member
+	resources found by the query, and optionally contains properties of each member resource.
 
-  <p>Two separate capabilities may be provided:</p>
-  <ul>
-     <li>A query based on an optional query expression consisting of at least one property, comparison operator, and value.
-     	 The query result container only references resources whose properties match the specified query expression.
-     	 This is analogous to queries specified by SQL or SPARQL.</li>
-     <li>A full-text search based on one more search terms. The query result container only references resources
-     	 that have any text-based properties contain one or more of the search terms.</li>
-  </ul>
-  Clients may also specify which member properties should be included in the query response.
+	<p>Two separate capabilities may be provided:</p>
+	<ul>
+		<li>A query based on an optional query expression consisting of at least one property, comparison operator, and value.
+     		The query result container only references resources whose properties match the specified query expression.
+     		This is analogous to queries specified by SQL or SPARQL.</li>
+     	<li>A full-text search based on one more search terms [[FULLTEXT-SEARCH]]. The query result container only references resources
+     	 	that have any text-based properties contain one or more of the search terms.</li>
+	</ul>
+
+	Clients may also specify which member properties should be included in the query response.
 </section>
 
 
@@ -332,16 +358,60 @@ code.noescape {
 	</ul>
 </section>
 
+<div>
+	<font color="red">[David]<br>
+		The sections about Graph Patterns, Property Tree Patterns, and Member List Patterns have been intentionally removed.
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-132"><font color="red"><b>[OSLCCORE-132]</b></font></a>.
+  	</font><br><br>
+</div>
 
 <section>
 	<h2>Discovering a Query Capability</h2>
+	
+	 <div style="margin-left: 2em">
+		<font color="red">[David]<br>
+			This is a new section. There was a gap between OSLC Core and OSLC Query that was non-obvious to me and I misunderstood
+			the spec when I originally implemented OSLC Query in the Jazz GCM application. The purpose of the resource shape, the
+			usage of <code>oslc:isMemberProperty</code>, and the use of a <code>oslc:valueShape</code> was not obvious and I think
+			the spec is improved by explicitly describing how clients discover information about the query capability, and the
+			properties that might be included in an <code>oslc.where</code> query expression, and in a <code>oslc.select</code>.
+			<a href="https://issues.oasis-open.org/browse/OSLCCORE-102"><font color="red"><b>[OSLCCORE-102]</b></font></a>
+		</font><br><br>
+	 </div>
+	
+  
 	An <code>oslc:Service</code> MAY declare zero, one, or many query capabilities using the <code>oslc:queryCapability</code> property.
 	<p>A query capability SHOULD specify exactly one <code>oslc:resourceShape</code> and that shape SHOULD describe the query result
 	container.</p>
 	
+	<div style="margin-left: 4em">
+		<font color="red">[David]<br>
+		There are two reasons why I think a query capability SHOULD provide a resource shape:
+		<ol>
+			<li>Using <code>ldp:contains</code> as the member predicate results in a more concise query result container that
+				is both backwards compatible with existing 2.0 clients, and conformant with LDPC. See the section on
+				<i>Query result containers</i> for details. You can only use this if you
+				provide a resource shape and declare <code>ldp:contains</code> as the member predicate.</li>
+			<li>Without a resource shape for the query result container, you cannot discover the value shape that
+				describes the members.</li>
+		</ol>
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-102"><font color="red"><b>[OSLCCORE-102]</b></font></a>
+  		</font>
+	</div>
+	
 	<p>The resource shape referenced by <code>oslc:resourceShape</code> MUST declare exactly one OSLC property with
 	<code>oslc:isMemberProperty "true"^^xsd:boolean</code>, and that property SHOULD specify exactly one <code>oslc:valueShape</code>
 	referencing a resource shape that describes the referenced members of that container.</p>
+	
+	<div style="margin-left: 4em">
+		<font color="red">[David]<br>
+		The core and query specs were unclear about this.<br>
+		What if a container's resource shape has more than one OSLC property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code>?<br>
+		What if each of them references a different value shape?<br>
+		The easiest way of avoiding those issues is to state that one and only one membership property should be declared.
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-102"><font color="red"><b>[OSLCCORE-102]</b></font></a>
+  		</font><br><br>
+	</div>
 	
 	<pre class="example" title="Query capability resource shape">
 @prefix dcterms: &lt;http://purl.org/dc/terms/> .
@@ -367,14 +437,50 @@ code.noescape {
 	oslc:valueShape &lt;https://jazz.net/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/shapes/workitems/defect> ;
 	oslc:valueType oslc:AnyResource ;
 	dcterms:title "Work Item Member"^^rdf:XMLLiteral .
-
 	</pre>
+	
+	<p>The resource shape referenced by <code>oslc:valueShape</code> in the query result container's resource shape
+	SHOULD declare the properties that can be used in <code>oslc.select</code> and optionally <code>oslc.where</code>.
+	OSLC properties that have a <code>oslc:queryable "false"^^xsd:boolean</code> value cannot be specified in 
+	<code>oslc.where</code>. Where a member resource supports nested properties, for example, the <code>foaf:name</code>
+	of a <code>dcterms:creator</code>, the member resource shape SHOULD provide a <code>oslc:valueShape</code>
+	for that property. This allows clients to discover both immediate and nested properties that might be used.</p>
+
+	<div style="margin-left: 4em">
+		<font color="red">[David]<br>
+		The <code>oslc:queryable</code> property is a proposed new boolean property for OSLC Core 3.0 resource shapes.
+		It allows a single resource shape to describe properties that may be specified in <code>oslc.select</code>
+		and queryable in <code>oslc.where</code>. If that property is absent, the default should be to assume that
+		the property is queryable.
+  		</font><br><br>
+	</div>
+	
 </section>
+
 
 <section>
 	<h2>Using a Query Capability</h2>
+	
+	<div style="margin-left: 2em">
+		<font color="red">[David]<br>
+		This is a new section that provides more explicit information about how to use a query capability.
+		This needs reviewing.
+  		</font><br><br>
+	</div>
+	
 	Executing a query or search is achieved by executing a <code>GET</code> on the <i>query base</i> URI of a
 	query capability.
+	
+	<div style="margin-left: 4em">
+		<font color="red">[David]<br>
+		What if the URI length for the GET exceeds server limits. It's quite common to have limits as low as 2000
+		characters for a URI. Should the spec state that servers SHOULD support POST with application/x-www-form-urlencoded
+		content. CCM work item queries, QM test case queries, and GCM queries do not appear to support POST on a query base URI.
+		DNG does appear to support POST on a query base URI for requirements.
+		 <a href="https://issues.oasis-open.org/browse/OSLCCORE-124"><font color="red"><b>[OSLCCORE-124]</b></font></a>
+  		</font><br><br>
+	</div>
+	
 	<p>For a successful operation:</p>
 	<ul>
 		<li>The response status code MUST be <code>200 OK</code> for a non-paged result, or for an OSLC paged result, or 
@@ -390,12 +496,20 @@ code.noescape {
 			resources that provide error information.</li>
 	</ul>
 	
+	<div style="margin-left: 4em">
+		<font color="red">[David]<br>
+		This defines unhappy path handling.
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red"><b>[OSLCCORE-105]</b></font></a>
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-147"><font color="red"><b>[OSLCCORE-147]</b></font></a>
+  		</font><br><br>
+	</div>
+	
 	The <code>GET</code> request MAY use zero, one or more of the OSLC query parameters listed in the table below.
 	<br><br>
 	<div style="margin-left: 2em">
-		<table border=1 cellspacing=0 cellpadding=0>
+		<table class="query">
 			<tr>
-				<th>Query parameter</th>
+				<th>Parameter</th>
 				<th>Description</th>
 			</tr>
 			<tr>
@@ -426,7 +540,17 @@ code.noescape {
 			<tr>
 				<td><code>oslc.prefix</code></td>
 				<td>Specify a namespace prefix that may be used in <code>oslc.where</code>, <code>oslc.orderBy</code>,
-			<code>oslc.select</code>, and <code>oslc.properties</code>.</td>
+					<code>oslc.select</code>, and <code>oslc.properties</code>.</td>
+			</tr>
+			<tr>
+				<td><code>oslc.paging</code></td>
+				<td>Specifies whether a paged result is requested.
+					See <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Resource paging</a>.</td>
+			</tr>
+			<tr>
+				<td><code>oslc.pageSize</code></td>
+				<td>Specifies a suggested maximum page size for a paged result.
+					See <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Resource paging</a>.</td>
 			</tr>
 		</table>
 	</div>	
@@ -435,7 +559,22 @@ code.noescape {
 
 
 <section>
-	<h2>Query result containers</h2>
+	<h2>Query Result Containers</h2>
+	
+	<div style="margin-left: 2em">
+		<font color="red">[David]<br>
+		This is a new section that provides more explicit information about the response to a query and the
+		query result container. Although this wasn't in the query spec explicitly, accompanying non-normative
+		documents gave examples and I checked some existing implementations to check their returned RDF.
+		The goal here is to achieve backwards compatibility with Query 2.0 (even though the spec didn't
+		explicitly state this or give examples), and achieve conformance with LDPCs. OSLC Core 3.0 and
+		OSLC Configuration Management make extensive use of LPDCs. In many cases, an LDPC is like a
+		query result container, but not associated with a query capability and with a fixed query.
+		Making query result containers brings consistency with these other LDPCs.
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-102"><font color="red"><b>[OSLCCORE-102]</b></font></a>
+  		</font><br><br>
+	</div>
+	
 	The response body for a successful <code>GET</code> on a query base URI MUST include a query result container whose
 	subject is the query base URI.
 	
@@ -450,7 +589,13 @@ code.noescape {
 	defines a container property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code> that is not <code>ldp:contains</code>,
 	the query result container MUST also contain the specified member property for each of the query result members.</p>
 	
-
+	<div style="margin-left: 4em">
+		<font color="red">[David]<br>
+		The example below shows how an implementation can continue to use <code>rdfs:member</code>, either by default
+		because no resource shape is referenced by the query capability, or because the resource shape explicitly
+		defines rdfs:member as an OSLC property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code>.
+  		</font><br><br>
+	</div>
 
 	<pre class="example" title="Query result container using rdfs:member as the membership property">
 HTTP/1.1 200 OK
@@ -478,7 +623,14 @@ Link: &lt;http://www.w3.org/ns/ldp#DirectContainer>; rel="type",
 	the query result container may use any form of LDPC, such as ldp:BasicContainer. This provides the most compact representation
 	of query result members that is compatible with OSLC Query 2.0 and conformant with LDPC [[LDP]]. All of the examples
 	showing a query response following this section assume that the query capability resource shape defines that
-	<code>ldp:contains</code> is the membership property.</p>	
+	<code>ldp:contains</code> is the membership property.</p>
+	
+	<div style="margin-left: 4em">
+		<font color="red">[David]<br>
+		The example below shows how an implementation can implement a much simpler query result container that is
+		both backwards compatible with Query 2.0 clients, and with LDPCs.
+  		</font><br><br>
+	</div>
 	
 	<pre class="example" title="Query result container using ldp:contains as the membership property">
 HTTP/1.1 200 OK
@@ -498,6 +650,23 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
    ldp:contains ex:member1, ex:member2.
 	</pre>
 	
+</section>
+
+
+<section id="QueryResultPaging">
+	<h2>Query Result Paging</h2>
+	
+	<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+			This is a proposed new section. It should primarily reference OSLC 2.0 Paging, but add aspects that
+			are likely to be relevant to query such as:
+			<ul>
+				<li>Including a <code>oslc:ResponseInfo</code>.</li>
+				<li>The meaning of <code>oslc.pageSize</code>.</li>
+				<li>How to handle long next page URIs (POST vs GET).</li>
+			</ul>
+  			</font><br><br>
+		</div>
 </section>
 
 
@@ -535,11 +704,49 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<p>The <code>oslc.where</code>code> query parameter defines a <i>query expression</i> that is used to query for resources
 		matching the query expression. It is serves a similar purpose to the <code>WHERE</code> clause of a SQL statement.</p>
 		
-		<p>If an implementation does not support the <code>oslc.where</code> parameter, the response should be
+		<p>If an implementation does not support the <code>oslc.where</code> parameter, the response SHOULD be
 		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
 		
-		<p>If the query expression references a property that is not defined for the resources associated with the
-		query capability, the response SHOULD be <code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
+		<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+			This is a new requirement. Most implementations support <code>oslc.where</code>. However, if any do not,
+			it's possible they may have used other error codes. Hence the requirement is a SHOULD not a MUST.
+  			</font><br><br>
+		</div>
+		
+		
+		<p>If <code>oslc.where</code> specifies a property that has an undefined namespace prefix, the response SHOULD be
+		<code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
+		
+		<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+			This is a new requirement. RTC work item queries and GCM queries behave like this. However, because the
+			spec did not define the behaviour, it's possible some might use other status codes. Hence this is a
+			SHOULD not a MUST.
+  			</font><br><br>
+		</div>
+		
+		<p>If <code>oslc.where</code> specifies a property that has an defined namespace prefix, but the property is not known, for
+		example not defined in the resource shape for that type of resource, an implementation MAY do either of:</p>
+		<ol>
+			<li>Respond with a <code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.
+				This is appropriate for implementations that have finite and enumerable properties of resources that
+				cannot determine how to query for undefined properties.</li>
+			<li>Execute the query and return a normal query response. This is appropriate for implementations that
+				have open sets of properties, not all of which might be in a resource shape.</li> 
+		</ol>
+		
+		<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+			This reflects our discussion on 2017-12-14. Closed systems based on RDBs (probably the majority) will
+			have well-defined vocabularies with custom properties being managed by a type system. Both RTC work item
+			and GCM queries return 400 if a property is specified with a defined namespace but is not known.
+			It's somewhat analogous to executing a SQL query where you specify an
+			undefined column. Open systems based on RDF persistence and SPARQL might execute the
+			query successfully, but the results might not be what the user expects, for example, being empty.
+  			</font><br><br>
+		</div>
+		
 		
 		<p>For example, suppose that a change management system provides a query capability with a query base of 
 		<code>https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code>,
@@ -549,7 +756,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		query parameters shown in the table below:
 		<br><br>
 		<div style="margin-left: 2em">
-			<table border=1 cellspacing=0 cellpadding=0>
+			<table class="query">
 				<tr>
 			    	<th>Parameter</th>
 			    	<th>Unencoded value</th>
@@ -562,6 +769,15 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		</div>
 		
 
+		<div style="margin-left: 4em">
+			<font color="red"><br>[David]<br>
+			The example below was partly based on a real RTC work item query. However, I changed the host name to
+			make it anonymous, and made the container an LPDC using <code>ldp:contains</code> as the container
+			membership property (in some hypothetical resource shape).
+  			</font><br><br>
+		</div>
+		
+		
 		<pre class="example" title="Query for all change requests created by Deb">
 GET https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
     ?oslc.where=dcterms%3Acreator%3D%3Chttps%3A%2F%2Fhost%3A9443%2Fjts%2Fusers%2Fdeb%3E
@@ -603,8 +819,14 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		</pre>
 
 		Note that the query result in the above example does not contain any properties of the members found by the
-		query. If the <code>oslc.select</code> query parameter is not specified, then an implementation may return none, some, or all
-		member properties.
+		query because <code>oslc.select</code> was not specified.
+		
+		<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+			This reflects the proposal for 
+			<a href="https://issues.oasis-open.org/browse/OSLCCORE-123"><font color="red"><b>[OSLCCORE-123]</b></font></a>.
+  			</font><br><br>
+		</div>
 		
 		<p>Conditions may use the usual binary comparison operators and be combined using the boolean conjunction operator, " and ".</p>
 		
@@ -614,7 +836,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		query parameters shown in the table below:</p>
 		<br><br>
 		<div style="margin-left: 2em">
-			<table border=1 cellspacing=0 cellpadding=0>
+			<table class="query">
 				<tr>
 			    	<th>Parameter</th>
 			    	<th>Unencoded value</th>
@@ -669,7 +891,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		query parameters shown in the table below:
 		<br><br>
 		<div style="margin-left: 2em">
-			<table border=1 cellspacing=0 cellpadding=0>
+			<table class="query">
 				<tr>
 			    	<th>Parameter</th>
 				    <th>Unencoded value</th>
@@ -726,7 +948,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 
 	<section id="oslc.where.syntax">
 		<b>oslc.where Syntax</b><br>
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-110"><font color="red">[OSLCCORE-110]</font></a>
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-110"><font color="red"><b>[OSLCCORE-110]</b></font></a>
 		<pre>
 	oslc_where    ::= "oslc.where=" compound_term
 	compound_term ::= simple_term (space? boolean_op space? simple_term)*
@@ -761,16 +983,16 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 			<br>
 			<code>boolean_op</code><br>
 			The <code>boolean_op</code> term represents a boolean operation that lets you combine simple boolean expressions to form a compound
-			boolean expression. The only boolean operation allowed is " and " which represents conjunction. The boolean operator " or " for disjunction
-			is not allowed in the interests of keeping the syntax simple. The effect of " or " in the simple case of testing a property for equality
-			with one of several values can be achieved through the use of the " in " operator.
+			boolean expression. The only boolean operation allowed is " and " which represents conjunction. The boolean operator " or " for 
+			disjunction is not allowed in the interests of keeping the syntax simple. The effect of " or " in the simple case of testing a 
+			property for equality with one of several values can be achieved through the use of the " in " operator.
 			
 			
 			
 			For example, the following query expression might find change requests with severity "high" or "medium":
 			<br><br>
 			<div style="margin-left: 2em">
-				<table border=1 cellspacing=0 cellpadding=0>
+				<table class="query">
 					<tr>
 				    	<th>Parameter</th>
 				 		<th>Unencoded value</th>
@@ -793,7 +1015,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 			The <code>comparison_op</code> term represents one of the following binary comparison operators:
 			<br><br>
 			<div style="margin-left: 2em">
-				<table border=1 cellspacing=0 cellpadding=0>
+				<table class="query">
 					<tr>
 					  	<td>=</td>
 					  	<td>test for equality</td>
@@ -822,7 +1044,21 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 			</div>
 			<br>
 			Semantics of datatypes and operations on these datatypes MUST work as defined in the SPARQL Query Language [[SPARQL11-QUERY]].
-			<a href="https://issues.oasis-open.org/browse/OSLCCORE-111"><font color="red">[OSLCCORE-111]</font></a>
+			
+			<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+				There are several issues around data types, and operations:
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-111"><font color="red"><b>[OSLCCORE-111]</b></font></a>
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-134"><font color="red"><b>[OSLCCORE-134]</b></font></a>
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-138"><font color="red"><b>[OSLCCORE-138]</b></font></a>
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-153"><font color="red"><b>[OSLCCORE-153]</b></font></a>
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-157"><font color="red"><b>[OSLCCORE-157]</b></font></a>
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-158"><font color="red"><b>[OSLCCORE-158]</b></font></a>
+  			</font><br><br>
+			</div>
+			
+
+			
 			<br>
 			<br>
 			<code>in_op</code><br>
@@ -881,10 +1117,16 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		
 		<p>If an implementation does not support the <code>oslc.searchTerms</code> parameter, the response should be
 		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
+		
+		<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+				This defines unhappy paths:
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red"><b>[OSLCCORE-105]</b></font></a>
+  			</font><br><br>
+		</div>
 
 		<p>An OSLC domain specification that supports full-text search SHOULD specify which resource properties are indexed so that
 		search results are consistent across implementations.
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red">[OSLCCORE-105]</font></a></p>
 
 		<p>When <code>oslc.searchTerms</code> is used in the request, each matching resource (hit) in the response MAY contain an
 		<code>oslc:score</code> property. Note that <code>oslc:score</code> is not purely a property of the resource since it also depends on the
@@ -903,11 +1145,20 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		does not support such combined usage, the response should be <code>501 Not Implemented</code> as described in
 		<a href="#ErrorHandling">Error Handling</a>. When <code>oslc.where</code> is used with <code>oslc.searchTerms</code> 
 		and is supported, then the set of resources searched for matches MUST be restricted to only those resources that satisfy
-		the conditions in <code>oslc.where</code>. For example, the following query returns the high severity change requests
+		the conditions in <code>oslc.where</code>.
+		
+		<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+				This defines unhappy paths:
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red"><b>[OSLCCORE-105]</b></font></a>
+  			</font><br><br>
+		</div>
+		
+		For example, the following query returns the high severity change requests
 		that deal with database performance:
 		<br><br>
 		<div style="margin-left: 2em">
-			<table border=1 cellspacing=0 cellpadding=0>
+			<table class="query">
 				<tr>
 				   	<th>Parameter</th>
 					<th>Unencoded value</th>
@@ -946,7 +1197,15 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		
 		<p>The <code>oslc.orderBy</code> query parameter lets you sort the result set. It is like the <code>ORDER BY</code> clause of a
 		SQL statement.
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-143"><font color="red">[OSLCCORE-143]</font></a></p>
+		
+		<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+				The spec was unclear whether it only applied to <code>oslc.searchTerms</code> or how clients
+				could determine ordering given the query result container contains a flat list of member references.
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-143"><font color="red"><b>[OSLCCORE-143]</b></font></a>
+  			</font><br><br>
+		</div>
+		
 		
 		<p>If an implementation does not support the <code>oslc.orderBy</code> parameter, the response should be
 		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
@@ -957,7 +1216,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		
 		<br><br>
 		<div style="margin-left: 2em">
-			<table border=1 cellspacing=0 cellpadding=0>
+			<table class="query">
 				<tr>
 				   	<th>Parameter</th>
 					<th>Unencoded value</th>
@@ -999,37 +1258,64 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		<p>The <code>oslc.select</code> query parameter lets you specify which immediate and nested properties of the resources in the member list
 		to be included in the response. It is like the <code>SELECT</code> clause of a SQL statement.</p>
 		
-		<p>If an implementation does not support the <code>oslc.where</code> parameter, the response should be
+		<p>If <code>oslc.select</code> is not specified, the response SHOULD omit all properties of members in the
+		query result container.</p>
+		
+		<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+			Is this correct?
+			If we don't do that, how does a client explicitly ask that no member properties are returned?
+			CCM work item queries do that. DNG requirement queries always return rdf:type. QM test case queries seem
+			to return most, if not all, immediate properties. GCM component and configuration queries return most, if not
+			all immediate properties.
+			<a href="https://issues.oasis-open.org/browse/OSLCCORE-123"><font color="red"><b>[OSLCCORE-123]</b></font></a>
+			<a href="https://issues.oasis-open.org/browse/OSLCCORE-148"><font color="red"><b>[OSLCCORE-148]</b></font></a>
+  			</font><br><br>
+		</div>
+		
+		<p>If an implementation does not support the <code>oslc.select</code> parameter, the response SHOULD be
 		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
 		
-		<p>If <code>oslc.select</code> specifies a property that is not defined for the resource type associated with
-		the query capability, that property SHOULD be ignored.</p>
+		<p>If <code>oslc.select</code> specifies a property that has an undefined namespace prefix, the response SHOULD be
+		<code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
+		
+		<p>If <code>oslc.select</code> specifies a property that has an defined namespace prefix, but the property is not known, a
+		server SHOULD ignore the unknown property rather than report an error.
 
 		<p>The syntax of the <code>oslc.select</code> query parameter is the same as that of the <code>oslc.properties</code> query parameter.
 		See <a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a> for the syntax.
 		However, the property names that appear in the <code>oslc.select</code> query parameter are those that belong to the 
 		resources in the member list as opposed to those that belong to the starting subject resource which is that of
 		the <i>query result container</i>.
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-122"><font color="red">[OSLCCORE-122]</font></a></p>
+		<a href="https://issues.oasis-open.org/browse/OSLCCORE-122"><font color="red"><b>[OSLCCORE-122]</b></font></a></p>
 		
 		<p>As in the case of <code>oslc.properties</code>, the wildcard is equivalent to the list of all properties of the member resources.
 		Implementations MAY support the use of the wildcard for immediate and/or nested properties of member resources.
 		If a specific use of the wildcard in <code>oslc.select</code> is not supported, the response should be
 		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.
 		
+		<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+				This defines unhappy paths:
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-138"><font color="red"><b>[OSLCCORE-138]</b></font></a>
+  			</font><br><br>
+		</div>
+		
 		<p>A server MAY include additional member properties in the response to those specified in the 
 		<code>oslc.select</code> query parameter.
 		
-		<p>If a <code>oslc.select</code> parameter is not specified, the query response MAY contain none, some, or all
-		properties of member resources. The exact behaviour is undefined and implementation dependent.
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-123"><font color="red">[OSLCCORE-123]</font></a>
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-148"><font color="red">[OSLCCORE-148]</font></a></p>
+		<div style="margin-left: 4em">
+			<font color="red">[David]<br>
+				Existing implementations often include <code>rdf:type</code> with the specified properties.
+				Clients shouldn't assume that only the specified properties should be included.
+  			</font><br><br>
+		</div>
 
 		<p>For example, the following query finds the change requests created by any user named "Deb" and includes the
 		<code>dcterms:title</code> and <code>dcterms:creator</code> for each change request found by the query.
 		<br><br>
 		<div style="margin-left: 2em">
-			<table border=1 cellspacing=0 cellpadding=0>
+			<table class="query">
 				<tr>
 				    <th>Parameter</th>
 				    <th>Unencoded value</th>
@@ -1151,13 +1437,53 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
       dcterms:title "Add context sensitive help support everywhere"^^rdf:XMLLiteral .
 		</pre>		
 	</section>
+
+
+
+	<section id="oslc.properties">
+		<h3>oslc.properties</h3>
+
+		<p>The <code>oslc.properties</code> query parameter lets you specify which immediate properties of the query result
+		container to include.</p>
+		
+		<p>If <code>oslc.properties</code> is not specified, the response SHOULD include all the properties of the
+		query result container.</p>
+		
+		<p>If an implementation does not support the <code>oslc.properties</code> parameter, the response SHOULD be
+		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
+		
+		<p>If <code>oslc.oslc.properties</code> specifies a property that has an undefined namespace prefix, the response SHOULD be
+		<code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
+		
+		<p>If <code>oslc.oslc.properties</code> specifies a property that has an defined namespace prefix, but the property is not known, a
+		server SHOULD ignore the unknown property rather than report an error.
+
+		<p>The syntax of the <code>oslc.properties</code> query parameter is described in
+		<a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a>.
+	</section>
 </section>
 
 <section id="ErrorHandling">
     <h2>Error Handling</h2>
+    
+    <div style="margin-left: 4em">
+			<font color="red">[David]<br>
+				This is a new section describing unhappy paths.
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-134"><font color="red"><b>[OSLCCORE-134]</b></font></a>
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-147"><font color="red"><b>[OSLCCORE-147]</b></font></a>
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-149"><font color="red"><b>[OSLCCORE-149]</b></font></a>
+  			</font><br><br>
+		</div>
 
     If a <code>GET</code> of a query base URI cannot be executed, the response MUST include a response body whose RDF contains at least
     one <code>oslc:Error</code> describing the cause of the error.
+    
+    <div style="margin-left: 4em">
+			<font color="red">[David]<br>
+				May also have to apply to POST.
+				<a href="https://issues.oasis-open.org/browse/OSLCCORE-124"><font color="red"><b>[OSLCCORE-124]</b></font></a>
+  			</font><br><br>
+		</div>
     
     <p>If the error is due to use of an OSLC query parameter that is not supported, the response status SHOULD be <code>501 Not Implemented</code>.
     Implementations that do not support a specific query parameter need not parse its value.</p>
