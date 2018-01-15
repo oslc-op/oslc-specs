@@ -328,7 +328,7 @@ public class NodeCheck
                 if (validator != null && (validation = validator.apply(uri)) != null)
                 {
                     resultModel.createIssue(resultNode, validation, property, node);
-                     errCount++;
+                    errCount++;
                 }
             }
             shrinkingModel.remove(st);
