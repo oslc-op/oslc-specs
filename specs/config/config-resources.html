@@ -413,7 +413,7 @@ Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
       <li>Servers MAY require an overriding configuration to be for the same component as the overridden contribution.</li>
     </ul>
   </p>
-  <p>References to versioned resources in the context of a configuration are resolved using a pre-ordered traversal of the configuration
+  <p class='red'>References to versioned resources in the context of a configuration SHOULD be resolved using a pre-ordered traversal of the configuration
     and its contribution tree:</p>
   <ol>
     <li>The component for the context configuration itself is examined; if that component contains the given resource,
@@ -574,15 +574,19 @@ Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
   <p>In the presence of component or version skew, the search algorithm defined in
     <a href="#contributions">Contributions and Overrides</a>
     may find more than one reference to a component containing the given resource.
+    <span class='red'>A configuration provider SHOULD support the ability to return the version selected by the first such reference,
+    including returning a 404 error if there is no selection for the given resource in the first configuration with a matching component,
+    and MAY support or use other search algorithms.</span></p>
+  <p class='red'>
     A configuration provider MUST support the ability to return the version selected by the first such reference,
     including returning a 404 error if there is no selection for the given resource in the first configuration with a matching component.
     A configuration provider MAY also support the ability to return an ordered list of matching configurations and the versions selected (if any).</p>
-  <p>A client MAY request a search type using a <code>Prefer</code> header. To request the default first-match search,
+  <p class='red'>A client MAY request a search type using a <code>Prefer</code> header. To request the default first-match search,
     a client omits the <code>Prefer</code> header, or includes a header:</p>
   <pre class="example">Prefer: return=representation; include=&quot;http://open-services.net/ns/config#firstMatch&quot;</pre>
-  <p>To request a full search and a list of matches, the client includes a header:</p>
+  <p class='red'>To request a full search and a list of matches, the client includes a header:</p>
   <pre class="example">Prefer: return=representation; include=&quot;http://open-services.net/ns/config#allMatches&quot;</pre>
-  <p>In either case, the server MUST return the first matched selection in the body of the response
+  <p class='red'>In either case, the server MUST return the first matched selection in the body of the response
     (or a 404 error if the first matching component had no selection for this resource).
     The server MUST also respond with a <code>Preference-Applied</code> header,
     and if the <code>http://open-services.net/ns/config#allMatches</code> search was used,
