@@ -11,7 +11,7 @@
   var respecConfig = {
       // specification status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
       specStatus:           "ED",
-      edDraftURI:           "http://tools.oasis-open.org/version-control/svn/oslc-ccm/trunk/specs/config-mgt/config-resources.html",
+      edDraftURI:           "http://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/config/config-resources.html",
 
       // the document's short name, as in http://www.w3.org/TR/short-name/
       shortName: "oslc-config-mgmt-cr-10",
@@ -50,13 +50,13 @@
 
       // name of the WG
       wg:           "OASIS OSLC Change and Configuration Management (OSLC CCM) TC",
-      wgShortName:  "oslc-ccm",
+      wgShortName:  "oslc-core",
 
       // URI of the public WG page
-      wgURI:        "http://www.oasis-open.org/apps/org/workgroup/oslc-ccm/",
+      wgURI:        "http://www.oasis-open.org/apps/org/workgroup/oslc-core/",
 
       // name (without the @w3c.org) of the public mailing to which comments are due
-      wgPublicList: "oslc-ccm@lists.oasis-open.org",
+      wgPublicList: "oslc-core@lists.oasis-open.org",
 
       // Namespaces defined by this TC
       namespaces : [ { href: "http://open-services.net/ns/config#"} ],
@@ -76,6 +76,22 @@
       // supersedes : [
       //    { title: "Some title", href: "http://example.com/supercededDocument.html" },
       //    ],
+
+      localBiblio : {
+        "OSLCCore2": {
+            title:     "OSLC Core 2.0",
+            href:      "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+            authors:   ["S. Speicher", "D. Johnson"],
+            status:    "Finalized",
+            publisher: "http://open-services.net"
+        },
+        "OSLCCore3": {
+            title:     "OSLC Core 3.0",
+            href:      "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+            authors:   [ "Jim Amsden" ],
+            publisher: "OASIS",
+        },
+      },
  };
 </script>
 </head>
@@ -96,8 +112,7 @@
 <hr />
 <section id='discovery'>
   <h2>Service Discovery</h2>
-  <p>A configuration provider SHOULD implement ServiceProvider and Service resources as defined by
-    <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources">OSLC Core 2.0</a>,
+  <p>A configuration provider SHOULD implement [[OSLCCore3]] ServiceProvider and Service resources,
     where an <code>oslc:domain</code> property has the value <code>http://open-services.net/ns/config#</code>.
     A global configuration provider service resource, if provided, SHOULD include the property <code>oslc:usage</code>
     with the value <code>http://open-services.net/ns/config#globalConfigurationService</code>.
@@ -106,8 +121,7 @@
 <section id='componentcontainer'>
   <h2>Component Container</h2>
   <p>Configuration Management providers MUST provide a single <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container (LDPC)</a> for all components in that provider.</p>
-  <p>This component container MUST be advertised as an <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Creation_Factories">OSLC 2.0 Creation Factory</a>
-    in the <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Service">Service resource</a> for the configuration server.
+  <p>This component container MUST be advertised as an [[OSLCCore3]] Creation Factory in the Service resource for the configuration server.
     This creation factory SHOULD provide a resource shape describing the shape of components that can be created;
     if any properties beyond those described in this standard are required to create components, then a resource shape MUST be provided.</p>
 </section>
@@ -456,7 +470,7 @@ Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
 </section>
 <section id="compact">
   <h2>Compact Rendering</h2>
-  <p>Configuration providers SHOULD implement <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview">OSLC 2.0 UI Previews and compact rendering</a>.</p>
+  <p>Configuration providers SHOULD implement [[OSLCCore3]] UI Previews and compact rendering.</p>
   <p>Where implemented, clients MUST pass any required <a href="#configcontext">configuration context</a> on the initial request for a compact resource,
     and the configuration provider MUST return a compact resource honoring that configuration context.
     Moreover, the icon reference, the large preview reference, the small preview reference, and any image or intra-page references
@@ -474,8 +488,8 @@ Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
 </section>
 <section id='queries'>
   <h2>Query Support</h2>
-  <p>Configuration providers MAY support <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecQuery">OSLC 2.0 Query</a>
-    for configurations and components.
+  <p>Configuration providers MAY support [[OSLCCore3]] Query for configurations and components.
+  <span class='red'><i>TBD: That reference must be changed to refer to OSLC Core 3.1 once that is published, since query is not in 3.0.</i></span>
     If OSLC Query is provided, queries for the following properties using <code>oslc.where</code> and <code>oslc.select</code> SHOULD be supported:</p>
   <ul>
     <li><code>dcterms:title</code></li>
