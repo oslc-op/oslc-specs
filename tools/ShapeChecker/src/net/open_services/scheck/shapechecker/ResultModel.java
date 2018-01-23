@@ -182,8 +182,12 @@ public class ResultModel
     public static final Resource MismatchingRepresentation = resource("MismatchingRepresentation");
 
     /** Error class for a missing property of some node. */
-    @SCIssue(description="The named property should be be specified for this resource.")
+    @SCIssue(description="The named property should be specified for this resource.")
     public static final Resource Missing          = resource("Missing");
+
+    /** Error class for a missing period at the end of a description or comment. */
+    @SCIssue(description="The description or comment should end with a period (full stop).")
+    public static final Resource MissingPeriod    = resource("MissingPeriod");
 
     /** Error class for a property that occurs too many times. */
     @SCIssue(description="This property should appear at most once.")

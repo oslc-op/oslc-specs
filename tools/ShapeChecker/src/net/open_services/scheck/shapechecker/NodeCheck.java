@@ -345,4 +345,15 @@ public class NodeCheck
         }
         return errCount;
     }
+
+
+    /**
+     * Check to see if a string ends with a period (full stop).
+     * @param str the string to be checked
+     * @return true iff the string ends with a period.
+     */
+    public static Resource checkPeriod(String str)
+    {
+        return (str.endsWith(".") ? null : ResultModel.MissingPeriod);
+    }
 }

@@ -130,7 +130,8 @@ public class VocabularyCheck
 
         // Check the optional properties of the ontology
         errors += node.checkNode(DCTerms.license, Occurrence.ZeroOrOne);
-        errors += node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne, null);
+        errors += node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne,
+            (desc) -> (NodeCheck.checkPeriod(desc)));
         errors += node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(preferredNameSpace, null, Occurrence.ZeroOrOne, null);
 
@@ -163,8 +164,7 @@ public class VocabularyCheck
         Resource termResult = resultModel.createInnerResult(vocabResult, ResultModel.TermResult);
         termResult.addProperty(ResultModel.checks,term);
 
-        // Check the term is a hash resource with the same base as the
-        // vocabulary itself
+        // Check the term is a hash resource with the same base as the vocabulary itself
         if (term.isAnon() || term.getURI().matches(vocab.getURI() + "#[^/]+"))
         {
             errors++;
@@ -174,7 +174,8 @@ public class VocabularyCheck
         // Check the mandatory properties of the term
         NodeCheck node = new NodeCheck(term, httpHandler, vocabModel, modelCopy, resultModel, termResult);
         errors += node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, null);
-        errors += node.checkLiteral(RDFS.comment, null, Occurrence.ExactlyOne, null);
+        errors += node.checkLiteral(RDFS.comment, null, Occurrence.ExactlyOne,
+            (comment) -> (NodeCheck.checkPeriod(comment)));
         errors += node.checkURI(RDFS.isDefinedBy, Occurrence.ExactlyOne,
             (uri) -> (uri.equals(vocab.getURI()) ? null : ResultModel.TermNotInVocab));
 
