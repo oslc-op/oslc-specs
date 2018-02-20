@@ -854,7 +854,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 	
 			Note that the query result in the above example does not contain any properties of the members found by the
 			query because <code>oslc.select</code> was not specified, and the implementation does not have
-			provide a default set of properties.
+			a default set of properties.
 			
 			<div style="margin-left: 4em">
 				<font color="red">[David]<br>
@@ -1419,7 +1419,24 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		
 		
 		<p>If an implementation does not support the <code>oslc.orderBy</code> parameter, the response should be
-		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
+		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.
+		If <code>oslc.orderBy</code> specifies a property on which ordering is not supported, the response
+		should be <code>400 Bad Request</code>.</p>
+		
+		<p>If a server supports the <code>oslc.orderBy</code> parameter and this is specified in the request:
+		<ul>
+			<li>A paged response SHOULD reflect the ordering of members specified by <code>oslc.orderBy</code>. For example,
+				if <code>orderBy=+dcterms:created</code> is specified, the first page should contain the members that
+				were created earliest, and any subsequent pages should contain members created on or after the
+				members in the previous page.</li>
+			<li>The query result MAY include a <code>oslc:order</code> property that reflects the ordering of the
+				the members specified by <code>oslc.orderBy</code>. Note that <code>oslc:order</code> is not purely a 
+				property of the resource since it also depends on the <code>oslc.orderBy</code> value. It is therefore
+				a pseudo-property whose validity is limited to the HTTP response.</li>
+		</ul>
+		
+		<p>If <code>oslc.orderBy</code> is not specified, the ordering of the results is undefined and MAY be
+		implementation-dependent.</p>
 
 		<p>You can specify a list of one or more immediate or nested properties of the resources in the member list, and a sort direction for each
 		where " + " means ascending order and " -" means descending order. The following example sorts the high severity change requests by 
@@ -1472,9 +1489,13 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		to be included in the response. It is like the <code>SELECT</code> clause of a SQL statement.</p>
 		
 		<p>If <code>oslc.select</code> is not specified, the response MAY include some or none of the properties of members in the
-		query result container. Servers SHOULD avoid returning all properties of members by default.</p>
+		query result container. Servers SHOULD avoid returning a large number of properties of members by default. If a server chooses
+		to include a multi-valued property by default, and the query response is not paged, it MUST include all the values of that property.</p>
 		
-		<p>Servers SHOULD accept the value <code>rdf:nil</code> and, when specified, SHOULD omit all properties of the member resources.</p>
+		<p>Servers SHOULD accept the value <code>rdf:nil</code>. If specified as the only property, servers SHOULD omit all properties
+		of the member resources. If <code>oslc.select</code> specifies <code>rdf:nil</code> and other properties, servers MAY choose to
+		respond with <code>400 Bad Request</code>, or ignore the <code>rdf:nil</code>, or have other implementation dependent
+		behavior.</p>
 		
 		<p>If an implementation does not support the <code>oslc.select</code> parameter, the response SHOULD be
 		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
