@@ -413,17 +413,22 @@ Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
       <li>Servers MAY require an overriding configuration to be for the same component as the overridden contribution.</li>
     </ul>
   </p>
-  <p class='red'>References to versioned resources in the context of a configuration SHOULD be resolved using a pre-ordered traversal of the configuration
-    and its contribution tree:</p>
+</section>
+<section id='vresolution' class='red'>
+  <h2>Version Resolution</h2>
+  <p>When a request is made for a versioned resource in the context of a configuration:
   <ol>
-    <li>The component for the context configuration itself is examined; if that component contains the given resource,
-      the reference is resolved using the selections for that configuration.</li>
-    <li>The contributed configurations are examined in order of increasing lexicographic values of the <code>oslc_config:contributionOrder</code> property.
-      If that property is missing, or does not define a unique order for a contribution, then the search order for that contribution is undefined.</li>
-    <li>For each contributed configuration found in step 2, the search recurses starting at step 1.</li>
-    <li>If any contribution has an <code>oslc_config:overrides</code> property, the configuration referenced by that property MUST be ignored if and when it is encountered
-      later in the search - including any contributions to the overriden configuration.</li>
+  <li>if there is no version of that resource in any of the contributions to the context configuration,
+  nor in any of their recursive contributions,
+  the request MUST fail with a 404 Resource not found</li>
+  <li>if there is exactly one version of that resource in all the recursive contributions,
+  the request MUST return that one version</li>
+  <li>if there is more than one version of that resource in all the recursive contributions,
+  the behavior is implementation-defined.
+  A server MAY perform an ordered search using the <code>oslc_config:contributionOrder</code> property,
+  and MAY have a way to indicate multiple possible version resolutions.</li>
   </ol>
+  <p>Implementations SHOULD provide documentation on their version resolution behavior.</p>
 </section>
 <section id='changesets' class='informative'>
   <h2>Change Sets</h2>
@@ -561,74 +566,6 @@ Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
     data-include-replace='true'
     data-include-format='html'>
   </div>
-</section>
-<section id='skew'>
-  <h2>Version and Component Skew</h2>
-  <p>Version skew occurs when two or more different versions of a single configuration item (same concept resource) are present in a configuration.
-      Not all configuration management systems support version skew.</p>
-  <p>Component skew occurs when two or more configurations (typically baselines) of the same component are used in or below a parent configuration.
-    Component skew can result in version skew, where the two or more different configurations of the same component
-    select two or more different versions of the same concept resource in that component.</p>
-  <p>Version skew can also occur where there is no component skew, if the configuration management system supports different versions of the same concept
-    resource in different components (allowing refactoring of the contents of one or more components).</p>
-  <p>In the presence of component or version skew, the search algorithm defined in
-    <a href="#contributions">Contributions and Overrides</a>
-    may find more than one reference to a component containing the given resource.
-    <span class='red'>A configuration provider SHOULD support the ability to return the version selected by the first such reference,
-    including returning a 404 error if there is no selection for the given resource in the first configuration with a matching component,
-    and MAY support or use other search algorithms.</span></p>
-  <p class='red'>
-    A configuration provider MUST support the ability to return the version selected by the first such reference,
-    including returning a 404 error if there is no selection for the given resource in the first configuration with a matching component.
-    A configuration provider MAY also support the ability to return an ordered list of matching configurations and the versions selected (if any).</p>
-  <p class='red'>A client MAY request a search type using a <code>Prefer</code> header. To request the default first-match search,
-    a client omits the <code>Prefer</code> header, or includes a header:</p>
-  <pre class="example">Prefer: return=representation; include=&quot;http://open-services.net/ns/config#firstMatch&quot;</pre>
-  <p class='red'>To request a full search and a list of matches, the client includes a header:</p>
-  <pre class="example">Prefer: return=representation; include=&quot;http://open-services.net/ns/config#allMatches&quot;</pre>
-  <p class='red'>In either case, the server MUST return the first matched selection in the body of the response
-    (or a 404 error if the first matching component had no selection for this resource).
-    The server MUST also respond with a <code>Preference-Applied</code> header,
-    and if the <code>http://open-services.net/ns/config#allMatches</code> search was used,
-    the server MUST also include an <code>oslc_config:ConfigurationMatches</code> resource
-    and a set of <code>oslc_config:ConfigurationMatch</code> resources inline in the response,
-    together with a link header using the relation type <code>http://open-services.net/ns/config#matches</code>
-    referencing the <code>oslc_config:ConfigurationMatches</code> resource.
-    The <code>oslc_config:ConfigurationMatch</code> resources describe each possible matching contribution and the corresponding version selection:</p>
-  <pre class="example">Preference-Applied: return=representation; include=&quot;http://open-services.net/ns/config#allMatches&quot;
-Link: &lt;#matches&gt; rel=&quot;http://open-services.net/ns/config#matches&quot;
-
-:conceptResourceA-version17
-   a oslc_config:VersionResource ;
-   dcterms:isVersionOf :conceptResourceA .
-:conceptResourceA
-   a :someType ;
-   oslc_config:versionId &quot;17&quot; ;
-   dcterms:title &quot;Concept Resource A&quot; ;
-   :color &quot;red&quot; ;
-   dcterms:description &quot;Concept resource A as it appears in the state with the URI :conceptResourceA-version17&quot; .
-
- &lt;#matches&gt;
-   oslc_config:match
-      [
-         oslc_config:component :component1 ;
-         oslc_config:configuration :configuration1 ;
-         oslc_config:matchOrder 1 ;
-         oslc_selects :conceptResourceA-version17
-      ] ,
-      [
-         oslc_config:component :component1 ;
-         oslc_config:configuration :configuration2 ;
-         oslc_config:matchOrder 2 ;
-         oslc_selects rdf:nil
-      ] ,
-      [
-         oslc_config:component :component2 ;
-         oslc_config:configuration :configuration3 ;
-         oslc_config:matchOrder 3 ;
-         oslc_selects :conceptResourceA-version15
-      ] .
-</pre>
 </section>
 </body>
 </html>
