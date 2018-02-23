@@ -157,7 +157,7 @@ public class ResultModel
     @SCIssue(description="This property name, definition, or oslc:describes is not unique.")
     public static final Resource Duplicate        = resource("Duplicate");
 
-    /** Error class for a duplicate langauge-tagged string. */
+    /** Error class for a duplicate language-tagged string. */
     @SCIssue(description="Duplicate language on string literal.")
     public static final Resource DuplicateLangString = resource("DuplicateLangString");
 
@@ -500,25 +500,27 @@ public class ResultModel
     private void printVocabResults(Resource vocab)
     {
         int issues = vocab.getProperty(issueCount).getInt();
+        String vocabName = vocab.getProperty(ResultModel.checks).getResource().getURI();
         printStream.printf("%nChecked vocabulary %s from %s, with %d %s%n",
-            vocab.getProperty(ResultModel.checks).getResource().getURI(),
+            vocabName,
             vocab.getProperty(DCTerms.source).getResource().getURI(),
             issues, issues==1 ? "issue" : "issues");
 
         printOuterIssues(vocab);
-        printInnerIssues(vocab,"   ");
+        printInnerIssues(vocab,"   ",vocabName);
     }
 
 
     private void printShapesResults(Resource shapes)
     {
         int issues = shapes.getProperty(issueCount).getInt();
+        String shapesFrom = shapes.getProperty(DCTerms.source).getResource().getURI();
         printStream.printf("%nChecked shapes from %s, with %d %s%n",
-            shapes.getProperty(DCTerms.source).getResource().getURI(),
+            shapesFrom,
             issues, issues==1 ? "issue" : "issues");
 
         printOuterIssues(shapes);
-        printInnerIssues(shapes,"   ");
+        printInnerIssues(shapes,"   ",shapesFrom);
     }
 
 
@@ -536,24 +538,25 @@ public class ResultModel
     }
 
 
-    private void printInnerIssues(Resource inner,String prefix)
+    private void printInnerIssues(Resource inner,String prefix, String parentStr)
     {
         StmtIterator sti1 = inner.listProperties(result);
         while (sti1.hasNext())
         {
             Resource resultRes = sti1.next().getResource();
             Resource parent = resultRes.getPropertyResourceValue(ResultModel.checks);
-            String parentName = parent == null ? "" : parent.getURI();
+            String parentName = parent == null ? parentStr : parent.getURI();
             if (resultRes.hasProperty(issue))
             {
+                printStream.printf(prefix+"While examining %s:%n", parentName);
                 StmtIterator sti2 = resultRes.listProperties(issue);
                 while (sti2.hasNext())
                 {
                     Statement st = sti2.next();
-                    printIssue(prefix+parentName+":",st.getResource());
+                    printIssue(prefix+"   ",st.getResource());
                 }
             }
-            printInnerIssues(resultRes,prefix+parentName+":");
+            printInnerIssues(resultRes,prefix+"   ",parentName);
         }
     }
 
@@ -564,14 +567,23 @@ public class ResultModel
         Resource type = issueRes.getPropertyResourceValue(RDF.type);
         Resource badValue = issueRes.getPropertyResourceValue(value);
 
-        String badValStr = badValue == null ? ""
-                : badValue.isResource() ? "=" + badValue.getURI()
-                : "=" + badValue.asLiteral().getLexicalForm();
+        if (badValue == null)
+        {
+            printStream.printf("%sOn %s: %s%n",
+                prefix,
+                subjectRes.getURI(),
+                resultVocabModel.getProperty(type, RDFS.comment).getString());
+        }
+        else
+        {
+            String badValStr = badValue.isResource() ? badValue.getURI()
+                : badValue.asLiteral().getLexicalForm();
 
-        printStream.printf("%s%s%s: %s%n",
-            prefix,
-            subjectRes.getURI(),
-            badValStr,
-            resultVocabModel.getProperty(type, RDFS.comment).getString());
+            printStream.printf("%s On %s: %s (bad value %s)%n",
+                prefix,
+                subjectRes.getURI(),
+                badValStr,
+                resultVocabModel.getProperty(type, RDFS.comment).getString());
+        }
     }
 }
