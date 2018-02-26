@@ -21,7 +21,7 @@ public final class ConvertToTurtle
 
 
     /**
-     * Convert one or more RDF files form XML to Turtle.
+     * Convert one or more RDF files from XML to Turtle.
      * @param args the path names of the files to be converted
      */
     public static void main(String[] args)
@@ -47,5 +47,4 @@ public final class ConvertToTurtle
             }
         }
     }
-
 }
