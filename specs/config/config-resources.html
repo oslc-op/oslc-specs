@@ -233,17 +233,31 @@ Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
     </li>
   </ul>
   <p>TBD - define syntax of Configuration-Context header by referring to IETF RFC.</p>
+  <p>Syntax of the query string for configuration context:</p>
+  <pre class="indent">?oslc_config.context=<em>uri_ref_esc</em></pre>
+  <p>The <em>uri_ref_esc</em> is an angle bracket-delimited URI reference in which &gt; and \ are \-escaped, as defined in [[OSLCCore3]].</p>
   <p>A server MUST support both these methods of passing configuration context.</p>
   <p>If a request contains both a header and a query string, the server MUST use the query string.
-    Servers SHOULD reject requests that contain two or more different configuration contexts passed in query strings.</p>
+    Servers MUST reject requests that contain two or more different configuration contexts passed in query strings.</p>
   <p>Where the Configuration-Context header is used on a request, a server SHOULD include in the response a header
   <code>Vary=Configuration-Context</code> so that different configuration contexts do not use a previously cached response.</p>
-  <p class="note" title="Implicitly defined configuration contexts">While navigating between resources,
-    resources or links of certain types may indicate that a different context is to be used when following links from that resource.
-    Any such semantics should be defined by the specifications for such resource and link types; none are defined by this specification.</p>
+  <p>A request SHOULD contain only a single occurrence of the <code>Configuration-Context</code> header,
+    and MUST NOT contain multiple Configuration-Context headers referencing different values.
+    A server SHOULD treat multiple identical <code>Configuration-Context</code> headers as it would a single header,
+    and MUST treat multiple <code>Configuration-Context</code> headers with different configuration values as an error.</p>
   <p class='red'>If a configuration context is passed on a request for a non-versioned resource,
     the server MUST NOT treat that as an error,
     and MAY use that context to resolve references to embedded or related resources.</p>
+  <p class="note">The client is responsible for providing the correct configuration context to each request issued by that client
+    at least where the relevant resource might be a versioned resource.
+    If a resource returned from such a request contains links,
+    the client should not assume the server has returned version-specific or configuration-specific links,
+    and the client should continue to provide the correct configuration context to fetch those related resources.
+    Only in cases where the client knows that a resource is not versioned may the configuration context be omitted.
+    As noted later, the <a href="#compact">compact rendering</a> returned for UI Previews is an exception to this rule.</p>
+  <p class="note" title="Implicitly defined configuration contexts">While navigating between resources,
+    resources or links of certain types may indicate that a different context is to be used when following links from that resource.
+    Any such semantics should be defined by the specifications for such resource and link types; none are defined by this specification.</p>
 <section>
   <h4>Default configuration</h4>
     <p>If a configuration context is not provided or implied, the server MAY provide a default configuration, or the request MAY fail.
@@ -262,7 +276,7 @@ Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
   <ul>
     <li>HEAD and OPTIONS: Retrieve information about the component</li>
     <li>GET: Retrieve the current state of the component</li>
-    <li>GET on the component LDPC to find all components</li>
+    <li>GET on the component creation factory LDPC to find all components</li>
     <li>GET on the configuration LDPC for a component to find all configurations (baselines and streams) of that component</li>
   </ul>
   <p>A configuration provider SHOULD support, and a global configuration provider MUST support,
@@ -426,7 +440,11 @@ Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
   <li>if there is more than one version of that resource in all the recursive contributions,
   the behavior is implementation-defined.
   A server MAY perform an ordered search using the <code>oslc_config:contributionOrder</code> property,
-  and MAY have a way to indicate multiple possible version resolutions.</li>
+  and MAY have a way to indicate multiple possible version resolutions.
+  <p class='note'>
+  The <code>oslc_config:contributionOrder</code> property is defined as a string rather than an integer to
+  make it easier for servers to insert new contributions into an existing set without having to adjust
+  the order value of existing contributions.</p></li>
   </ol>
   <p>Implementations SHOULD provide documentation on their version resolution behavior.</p>
 </section>
