@@ -150,7 +150,7 @@
     with lifecycle information stored in different repositories.
     The design and development of these complex systems requires many kinds of artifacts.
     Engineers in specialist disciplines produce these artifacts employing various engineering methods, disciplines and tools.
-    However, these artifacts typically are not under Configuration Management, or if they are, it is done manually: with half-measures that incur trade-offs.
+    Often these artifacts are not under Configuration Management, or if they are, it is done manually with half-measures that incur trade-offs.
     These challenges exist for software-only systems, yet their magnitude is much greater for products with physical, electrical and software aspects.</p>
   <p>For example, specific requirements are often associated with a particular release of components of a system.
     Analysis and design artifacts are created to understand how to address the impact of, or realize those requirements.
@@ -167,7 +167,7 @@
     Using client and server applications that implement the configuration management vocabulary and REST APIs allow a team administrator
     to create configurations of versioned resources contributed from tools and data sources across the lifecycle.
     These contributions can be assembled into aggregate (<em>global</em>) configurations that are used to resolve references to artifacts
-    in a particular, well defined, and reproducible context.</p>
+    in a particular and reproducible context.</p>
   <p>Team members set the configuration context in each of the tools they use to refer to the particular global configuration
     that represents the state of the systems they are working on.
     They can create branches to support parallel development, and compare and merge branches to flow changes as needed.
@@ -238,7 +238,9 @@
       Components are the units of configurability, and form reusable assets or building blocks.
       The granularity of a component varies between providers, but typically it contains the set of resources used in some product, project, or a subdivision of such a set.</dd>
     <dt><dfn>Concept Resource</dfn></dt>
-    <dd>An artifact (a requirement, test case, source code file, etc.) as an overall entity, independent of any specific version of that artifact.</dd>
+    <dd>An artifact (a requirement, test case, source code file, etc.) as an overall entity, independent of any specific version of that artifact.
+      In Product Line Management (PLM) systems, this is often referred to as a 'master' item or part,
+      of which there are revisions and versions or iterations.</dd>
     <dt><dfn>Configuration</dfn></dt>
     <dd>A configuration identifies a set of versions of resources in a component.
       Configurations commonly identify exactly one version of each resource in a component.
@@ -256,6 +258,13 @@
       Using global configurations, you can establish a configuration context across multiple tools,
       even when each tool stores its resources in otherwise unrelated configurations and repositories.</dd>
     <dt><dfn>Revision</dfn></dt>
+    <dd>In PLM systems, changes to an item are often divided into more significant changes marked as new revisions,
+      and less significant changes marked as versions or iterations within the same revision.
+      The boundary between revisions is often marked by a state change,
+      such as marking the last version within a revision as 'released'.
+      This specification does not require such a distinction between major and minor changes,
+      using the generic term 'version' for both revision and version or iteration,
+      but does not prohibit systems from providing the distinction.</dd>
     <dt><dfn>Selections</dfn></dt>
     <dd>The set of versions of resources identified by a given configuration.</dd>
     <dd>This term is not used formally by the specifications, but informally it may refer to a version of a resource that is designed to replace an earlier version,
@@ -273,13 +282,14 @@
       where each variant can exist at the same time as those other versions of the resource.</dd>
     <dt><dfn>Version</dfn></dt>
     <dd>A referenceable state of a resource. A resource with separable referenceable versions is called a <em><strong>versioned resource</strong></em>.
-      Each version of such a resource is called a <em><strong>version resource</strong></em>, and can be referenced with a distinct URI.</dd>
+      Each version of such a resource is called a <em><strong>version resource</strong></em>, and can be referenced with a distinct URI.
+      In PLM systems, versions are often subdivided into revisions and versions or iterations.</dd>
   </dl>
 </section>
 <section id='concepts' class='informative'>
   <h3>Concept resources, version resources, and configuration context</h3>
   <p>All the major &ldquo;Artifacts&rdquo; or &ldquo;Entities&rdquo; in OSLC domains are <strong><em>concept resources</em></strong>.
-    Examples are defects, tasks, products, projects, users, tests cases requirements, plans and so on. Like all resources, concept resources have URLs.
+    Examples are defects, tasks, products, physical parts or items, projects, users, tests cases requirements, plans and so on. Like all resources, concept resources have URLs.
     Except in a few technical and specialized scenarios, URLs of concept resources are used throughout the system.
     &ldquo;Entities&rdquo; are addressed in HTTP messages via their concept resource URLs.
     Links are typically established using the URL of a concept resource.</p>
