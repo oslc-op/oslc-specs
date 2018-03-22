@@ -1,0 +1,49 @@
+@prefix oslc:  <http://open-services.net/ns/core#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@base <http://open-services.net/ns/core/shapes/3.0/ResponseInfo-shape.ttl> .
+
+<#ResponseInfo>
+      a               oslc:ResourceShape ;
+        oslc:property <#title> ;
+        oslc:property <#description> ;
+        oslc:property <#nextPage> ;
+        oslc:property <#totalCount> ;
+        dcterms:title   "OSLC Core Error Shape" .
+
+<#title> a oslc:Property ;
+    oslc:name "title" ;
+    oslc:propertyDefinition dcterms:title   ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description "Title of the resource represented as rich text in XHTML content."^^rdf:XMLLiteral ;
+    oslc:valueType rdf:XMLLiteral .
+
+<#description> a oslc:Property ;
+    oslc:name "description" ;
+    oslc:propertyDefinition dcterms:description ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description "Descriptive text about resource represented as rich text in XHTML content."^^rdf:XMLLiteral ;
+    oslc:valueType rdf:XMLLiteral .
+
+<#nextPage> a oslc:Property ;
+    oslc:name "nextPage" ;
+    oslc:propertyDefinition oslc:nextPage ;
+    oslc:occurs oslc:Zero-or-one ;
+    oslc:readOnly: true ;
+    dcterms:description "Link to the next page of a response."^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+<#totalCount> a oslc:Property ;
+    oslc:name "totalCount" ;
+    oslc:propertyDefinition oslc:totalCount ;
+    oslc:occurs oslc:Zero-or-one ;
+    oslc:readOnly: true ;
+    dcterms:description """This optional property indicates the total number of results across all pages,
+its value should be non-negative. In the context of a query resource, this value SHOULD be the total 
+number of results, i.e. the number of resources that match the query. In the context of other 
+resources, the value SHOULD be the total number of property values (i.e. RDF triples) of the resource. 
+Unless Stable Paging is in effect, the total count MAY vary as a client retrieves subsequent pages."""^^rdf:XMLLiteral ;
+  oslc:valueType           xsd:integer .
