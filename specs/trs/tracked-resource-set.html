@@ -263,7 +263,7 @@ dd {
 @prefix trs: &lt;http://open-services.net/ns/core/trs#&gt; .
 &lt;&gt; trs:trackedResourceSet &lt;https://a.example.com/trs1&gt; .
     </pre>
-  <p> The RDF <code>acc:accessContextList</code> property declares the
+  <p> The RDF <code>oslc_acc:accessContextList</code> property declares the
     whereabouts of an Access Context List resource. The Access Context List
     resource is the object. </p>
   <ul>
@@ -275,8 +275,8 @@ dd {
     to be declared with an RDF statement like the following (rendered here in
     Turtle): </p>
   <pre class='example'>
-@prefix acc: &lt;http://open-services.net/ns/core/acc#&gt; .
-&lt;&gt; acc:accessContextList &lt;https://a.example.com/acclist&gt; .
+@prefix oslc_acc: &lt;http://open-services.net/ns/core/acc#&gt; .
+&lt;&gt; oslc_acc:accessContextList &lt;https://a.example.com/acclist&gt; .
     </pre>
   <p> Where such RDF statements might be found is outside the scope of this specification.</p>
 </section>
@@ -369,12 +369,13 @@ dd {
 </section>
 <section id='general-behavior'>
   <h2>General Behavior></h2>
-  <p> Tracked Resources MUST have a RDF representation,
+  <p> Tracked Resources MUST have a RDF linked data representation,
     and SHOULD support GET requests conformant with [[OSLCCore2]] or [[OSLCCore3]]. </p>
   <p>The TRS Server SHOULD support ETags, caching, and conditional GETs for Tracked Resources;
       <span class='red'>TBD: TRS Servers MAY support ETags, caching, and conditional GETs for Tracked Resource Sets and Base resources</span>.</p>
   <p>TRS servers MUST support Turtle (<code>text/turtle</code>) representations of the TRS, Base, Change Log and Change Event resources,
-    and MAY support other representations, using standard HTTP content negotiation.</p>
+    and MAY support other representations, using standard HTTP content negotiation.
+    If the client does not indicate a preference, <code>text/turtle</code> MUST be returned.</p>
 </section>
 <section id='change-logs'>
   <h2>Change Logs and Change Events</h2>
@@ -621,7 +622,7 @@ dd {
   @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
   @prefix trs: &lt;http://open-services.net/ns/core/trs#&gt;.
   @prefix trspatch: &lt;http://open-services.net/ns/core/trspatch#&gt;.
-  &lt;urn:urn-3:a.example.com:2014-04-28T17:39:32.000Z:102&gt;
+  &lt;urn:example:6e8bc430:a.example.com:2014-04-28T17:39:32.000Z:102&gt;
      a trs:Modification;
      trs:changed &lt;https://a.example.com/config/a1&gt;;
      trs:order &quot;102&quot;^^xsd:integer;
@@ -677,7 +678,7 @@ dd {
   @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
   @prefix trs: &lt;http://open-services.net/ns/core/trs#&gt;.
   @prefix trspatch: &lt;http://open-services.net/ns/core/trspatch#&gt;.
-  &lt;urn:urn-3:a.example.com:2014-11-20T13:08:00.000Z:102&gt;
+  &lt;urn:example:6e8bc430:a.example.com:2014-11-20T13:08:00.000Z:102&gt;
      a trs:Creation;
      trs:changed &lt;https://a.example.com/sw-movie/version/2&gt;;
      trs:order &quot;192&quot;^^xsd:integer;
@@ -711,22 +712,22 @@ dd {
   trs:base &lt;http://cm1.example.com/baseResources/&gt; ;
   trs:changeLog [
     a trs:ChangeLog ;
-    trs:change &lt;urn:urn-3:cm1.example.com:2010-10-27T17:39:33.000Z:103&gt; ;
-    trs:change &lt;urn:urn-3:cm1.example.com:2010-10-27T17:39:32.000Z:102&gt; ;
-    trs:change &lt;urn:urn-3:cm1.example.com:2010-10-27T17:39:31.000Z:101&gt; .
+    trs:change &lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:33.000Z:103&gt; ;
+    trs:change &lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:32.000Z:102&gt; ;
+    trs:change &lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:31.000Z:101&gt; .
   ] .
 
-&lt;urn:urn-3:cm1.example.com:2010-10-27T17:39:33.000Z:103&gt;
+&lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:33.000Z:103&gt;
   a trs:Creation ;
   trs:changed &lt;http://cm1.example.com/bugs/23&gt; ;
   trs:order &quot;103&quot;^^xsd:integer .
 
-&lt;urn:urn-3:cm1.example.com:2010-10-27T17:39:32.000Z:102&gt;
+&lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:32.000Z:102&gt;
   a trs:Modification ;
   trs:changed &lt;http://cm1.example.com/bugs/22&gt; ;
   trs:order &quot;102&quot;^^xsd:integer .
 
-&lt;urn:urn-3:cm1.example.com:2010-10-27T17:39:31.000Z:101&gt;
+&lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:31.000Z:101&gt;
   a trs:Deletion ;
   trs:changed &lt;http://cm1.example.com/bugs/21&gt; ;
   trs:order &quot;101&quot;^^xsd:integer .
@@ -761,7 +762,7 @@ dd {
     the Client against that Server. </p>
   <section id='accAssociations'>
     <h2>Associations between Resources and Access Contexts</h2>
-    <p> The RDF <code>acc:accessContext</code> property is used to indicate that a resource
+    <p> The RDF <code>oslc_acc:accessContext</code> property is used to indicate that a resource
       belongs to an Access Context. The resource is the subject; the Access Context
       is the object. </p>
     <ul>
@@ -771,14 +772,14 @@ dd {
     </ul>
     <p> For example, the RDF statement (in Turtle): </p>
     <pre class='example'>
-@prefix acc: &lt;http://open-services.net/ns/core/acc#&gt; .
-&lt;https://a.example.com/defect/2314&gt; acc:accessContext &lt;https://a.example.com/acclist#alpha&gt; .
+@prefix oslc_acc: &lt;http://open-services.net/ns/core/acc#&gt; .
+&lt;https://a.example.com/defect/2314&gt; oslc_acc:accessContext &lt;https://a.example.com/acclist#alpha&gt; .
   </pre>
     <p> declares the resource <code>https://a.example.com/defect/2314</code> to be in the Access Context <code>https://a.example.com/acclist#alpha</code>. </p>
     <section id='accessContextPredicate'>
       <p> A linked data
         resource that is deemed (by the Server) to be in an Access Context MUST use
-        the <code>acc:accessContext</code> predicate in its RDF representation to
+        the <code>oslc_acc:accessContext</code> predicate in its RDF representation to
         assert a relation between the linked data resource (subject) and an Access
         Context. </p>
     </section>
@@ -829,7 +830,7 @@ Authorization: Basic [missing - admin user credentials]
         difficult to understand for human readers who only know JSON, and more
         difficult to processed programmatically by scripts without the benefit of a
         full JSON-LD library. The node’s type property gives the type of the node -
-        either <code>acc:AccessContextList</code> or <code>acc:AccessContext</code>;
+        either <code>oslc_acc:AccessContextList</code> or <code>oslc_acc:AccessContext</code>;
         the node’s id property gives the Access Context URI; the title and description
         properties give the title and description, respectively. </p>
     </section>
@@ -848,15 +849,15 @@ ETag: 68djsgg82
   },
   &quot;@graph&quot;: [{
      &quot;id&quot;: &quot;https://a.example.com/acclist&quot;,
-     &quot;type&quot;: &quot;acc:AccessContextList&quot;
+     &quot;type&quot;: &quot;oslc_acc:AccessContextList&quot;
     }, {
      &quot;id&quot;: &quot;https://a.example.com/acclist#alpha&quot;,
-     &quot;type&quot;: &quot;acc:AccessContext&quot;,
+     &quot;type&quot;: &quot;oslc_acc:AccessContext&quot;,
      &quot;title&quot;: &quot;Alpha&quot;,
      &quot;description&quot;: &quot;Resources for Alpha project&quot;
     }, {
      &quot;id&quot;: &quot;https://a.example.com/acclist#beta&quot;,
-     &quot;type&quot;: &quot;acc:AccessContext&quot;,
+     &quot;type&quot;: &quot;oslc_acc:AccessContext&quot;,
      &quot;title&quot;: &quot;Beta&quot;,
      &quot;description&quot;: &quot;Resources for Beta project&quot;
   }]
