@@ -354,6 +354,9 @@ public class NodeCheck
      */
     public static Resource checkPeriod(String str)
     {
+        // If you want to allow trailing white space, use this:
+        // return (str.matches(".*\\.\\s*$") ? null : ResultModel.MissingPeriod);
+
         return (str.endsWith(".") ? null : ResultModel.MissingPeriod);
     }
 }
