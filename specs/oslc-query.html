@@ -687,11 +687,26 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 			are likely to be relevant to query such as:
 			<ul>
 				<li>Including a <code>oslc:ResponseInfo</code>.</li>
-				<li>The meaning of <code>oslc.pageSize</code>.</li>
 				<li>How to handle long next page URIs (POST vs GET).</li>
 			</ul>
-  			</font><br><br>
-		</div>
+  			</font>
+	</div>
+	
+	
+    A query capability MAY support 
+    <a href="./oslc-core.html#resourcePaging" target="_blank">OSLC Core Resource Paging</a>. 
+    <p>
+    A paged response MAY occur automatically if the server determines that the total query result set exceeds some implementation dependent
+    threshold, or if paging is supported and the request includes a <code>oslc.paging=true</code> query parameter.
+    <p>
+    A paged response to a query SHOULD include a <a href="./core-vocab.html#responseInfo" target="_blank">oslc:ResponseInfo</a> if there is a
+    next page.
+    <p>
+    If the query was performed using a <code>POST</code> rather than a <code>GET</code>, the <code>oslc:ResponseInfo</code> SHOULD contain
+    a <code>oslc:postBody</code> and the client should get the next query results page by performing a <code>POST</code> with the specified 
+    post body using a content type of <code>application/x-www-form-urlencoded</code>.
+    <a href="https://issues.oasis-open.org/browse/OSLCCORE-164"><font color="red"><b>[OSLCCORE-164]</b></font></a>
+
 </section>    <!-- Query Result Paging -->
 
 
@@ -1418,10 +1433,10 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		</div>
 		
 		
-		<p>If an implementation does not support the <code>oslc.orderBy</code> parameter, the response should be
+		<p>If an implementation does not support the <code>oslc.orderBy</code> parameter, the response SHOULD be
 		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.
 		If <code>oslc.orderBy</code> specifies a property on which ordering is not supported, the response
-		should be <code>400 Bad Request</code>.</p>
+		SHOULD be <code>400 Bad Request</code>.</p>
 		
 		<p>If a server supports the <code>oslc.orderBy</code> parameter and this is specified in the request:
 		<ul>
@@ -1685,6 +1700,125 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		<p>The syntax of the <code>oslc.properties</code> query parameter is described in
 		<a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a>.
 	</section>    <!-- Query parameters/oslc.properties -->
+	
+	<!-- Query parameters/oslc.paging -->
+	<section id="oslc.paging">
+		<h3>oslc.paging</h3>
+		<div style="margin-left: 2em">
+		<font color="red">[David]<br>
+			I've added this section to the query specification to provide an example and because I found that some implementations 
+			either always give a paged response, or do so when the query result exceeds a certain size.
+		</font><br><br>
+	    </div>
+		Servers MAY support a <code>oslc.paging</code> query parameter. Implementations MAY choose to ignore the parameter.
+		Servers that support paging of query results SHOULD use a paged response when <code>oslc.paging=true</code>
+		is specified. Servers MAY also provide a paged response if the parameter is not specified and the query
+		result includes a large number of members or a large number of RDF statements.
+	   
+	    <pre class="example" title="Query for all change requests with paging">	
+		GET https://localhost:9443/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems&oslc.paging=true
+Accept: text/turtle
+OSLC-Core-Version: 2.0
+
+ -- response --
+200 OK
+Date:  Fri, 11 May 2018 09:49:35 GMT
+X-Powered-By:  Servlet/3.0
+Etag:  "ca3acc7e-36b4-3c35-a51c-08d29266c24c"
+Expires:  Fri, 11 May 2018 09:49:35 GMT
+OSLC-Core-Version:  2.0
+Vary:  Accept,OSLC-Core-Version
+Content-Type:  text/turtle;charset=UTF-8
+Content-Language:  en-US
+Cache-Control:  private, must-revalidate, max-age=0, no-cache=set-cookie
+X-Cluster-SA:  Node-Jazz
+Set-Cookie:  JSA_AUTH_COMPLETE=true; Path=/; Secure
+X-jazzweb3:  D=466712 t=1526032175078031
+Transfer-Encoding:  chunked
+Strict-Transport-Security:  max-age=31536000; includeSubDomains
+
+@prefix dcterms:  &lt;http://purl.org/dc/terms/> .
+@prefix rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix oslc:    &lt;http://open-services.net/ns/core#> .
+
+&lt;https://localhost:9443/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems>
+    a ldp:BasicContainer ;
+        ldp:contains 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/126544> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/163518> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/99398> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/157559> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/128024> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/126992> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/90641> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/163178> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/276059> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/95469> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/217716> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/161823> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/42317> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/70584> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/126434> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/104751> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/139381> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/263005> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/105938> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/133616> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/204463> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/250934> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/66180> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/52981> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/69789> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/112342> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/210019> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/78577> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/100271> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/109336> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/72037> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/128115> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/71659> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/104241> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/75103> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/182157> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/156808> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/108460> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/47283> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/285162> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/135240> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/206800> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/117595> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/59362> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/135620> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/222107> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/133136> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/80140> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/251947> , 
+            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/74496> .
+
+&lt;https://localhost:9443/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems?_resultToken=_nIokIFUAEeibptZOC98gng&oslc.pageSize=50&_startIndex=0>
+    a       oslc:ResponseInfo ;
+    oslc:nextPage &lt;https://localhost:9443/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems?_resultToken=_nIokIFUAEeibptZOC98gng&oslc.pageSize=50&_startIndex=50> ;
+    oslc:totalCount "82991" ;
+    dcterms:title "Work Items" .
+</pre>
+	</section>    <!-- Query parameters/oslc.paging -->
+	
+	<!-- Query parameters/oslc.pageSize -->
+	<section id="oslc.pageSize">
+		<h3>oslc.pageSize</h3>
+		<div style="margin-left: 2em">
+		<font color="red">[David]<br>
+			I've added this section to the query specification because implementations may have some practical 
+			considerations about how they determine the page boundaries.
+		</font><br><br>
+	    </div>
+	    
+		Servers MAY support a <code>oslc.pageSize</code> query parameter. Implementations MAY choose to ignore the parameter,
+		or MAY use it as a hint for how a response should be paged and use page boundaries that do not exactly match the
+		specified page size. The page size is expressed in terms of the number of RDF statements that are included in the
+		response body.
+	</section>    <!-- Query parameters/oslc.pageSize -->
 </section>    <!-- Query parameters -->
 
 
@@ -1694,13 +1828,13 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
     <h2>Error Handling</h2>
     
     <div style="margin-left: 4em">
-			<font color="red">[David]<br>
-				This is a new section describing unhappy paths.
-				<a href="https://issues.oasis-open.org/browse/OSLCCORE-134"><font color="red"><b>[OSLCCORE-134]</b></font></a>
-				<a href="https://issues.oasis-open.org/browse/OSLCCORE-147"><font color="red"><b>[OSLCCORE-147]</b></font></a>
-				<a href="https://issues.oasis-open.org/browse/OSLCCORE-149"><font color="red"><b>[OSLCCORE-149]</b></font></a>
-  			</font><br><br>
-		</div>
+		<font color="red">[David]<br>
+			This is a new section describing unhappy paths.
+			<a href="https://issues.oasis-open.org/browse/OSLCCORE-134"><font color="red"><b>[OSLCCORE-134]</b></font></a>
+			<a href="https://issues.oasis-open.org/browse/OSLCCORE-147"><font color="red"><b>[OSLCCORE-147]</b></font></a>
+			<a href="https://issues.oasis-open.org/browse/OSLCCORE-149"><font color="red"><b>[OSLCCORE-149]</b></font></a>
+  		</font><br><br>
+	</div>
 
     If a <code>GET</code> or <code>POST</code> of a query base URI cannot be executed, the response MUST include a response 
     body whose RDF contains at least one <code>oslc:Error</code> describing the cause of the error.
