@@ -7,12 +7,14 @@
 
 <#ResponseInfo>
       a               oslc:ResourceShape ;
+      dcterms:title   "The shape of a resource providing information about a paged HTTP response body." ;
       oslc:describes  oslc:ResponseInfo ;
-        oslc:property <#title> ;
-        oslc:property <#description> ;
-        oslc:property <#nextPage> ;
-        oslc:property <#totalCount> ;
-        dcterms:title   "The shape of a resource providing information about a paged HTTP response body." .
+      oslc:property 
+        <#title>,
+        <#description>,
+        <#nextPage>,
+        <#totalCount>,
+        <#postBody>.
 
 <#title> a oslc:Property ;
     oslc:name "title" ;
@@ -32,7 +34,7 @@
     oslc:name "nextPage" ;
     oslc:propertyDefinition oslc:nextPage ;
     oslc:occurs oslc:Zero-or-one ;
-    oslc:readOnly: true ;
+    oslc:readOnly true ;
     dcterms:description "Link to the next page of a response."^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
@@ -41,7 +43,7 @@
     oslc:name "postBody" ;
     oslc:propertyDefinition oslc:postBody ;
     oslc:occurs oslc:Zero-or-one ;
-    oslc:readOnly: true ;
+    oslc:readOnly true ;
     dcterms:description """The body of a POST request to return the next page if the response was to a POST request.
  Where a paged resource supports POST with an application/x-www-form-urlencoded body as an alternative to GET to
  avoid the request URI exceeding server limitations, the oslc:ResponseInfo in the response to the POST SHOULD
@@ -52,7 +54,7 @@
     oslc:name "totalCount" ;
     oslc:propertyDefinition oslc:totalCount ;
     oslc:occurs oslc:Zero-or-one ;
-    oslc:readOnly: true ;
+    oslc:readOnly true ;
     dcterms:description """This optional property indicates the total number of results across all pages,
 its value should be non-negative. In the context of a query resource, this value SHOULD be the total
 number of results, i.e. the number of resources that match the query. In the context of other
