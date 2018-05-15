@@ -43,6 +43,22 @@ public class ShapeCheckException extends Exception
 
 
     /**
+     * Construct a new ShapeCheckException with the given issue class, subject, object, and cause.
+     * @param issueClass a type of issue
+     * @param subject the subject of the issue
+     * @param object the object or value of the issue
+     * @param e an underlying exception
+     */
+    public ShapeCheckException(Resource issueClass, Resource subject, RDFNode object, Exception e)
+    {
+        super(e);
+        this.issueClass = issueClass;
+        this.subject = subject;
+        this.object = object;
+    }
+
+
+    /**
      * Get the issueClass.
      * @return returns the issueClass.
      */

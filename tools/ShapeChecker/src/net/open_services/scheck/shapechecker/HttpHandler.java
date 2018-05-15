@@ -26,9 +26,9 @@ import org.apache.jena.riot.RiotException;
  */
 public class HttpHandler
 {
-    private static final String JENA_RDF_ACCEPT_HEADER =
-            "text/turtle,application/n-triples;q=0.9,application/ld+json;q=0.8,application/rdf+xml;q=0.7,*/*;q=0.5";
-    private static final String RDF_TYPES = "turtle|n-triples|json|rdf|xml";
+    private static final String RDF_ACCEPT_HEADER =
+            "text/turtle,application/n-triples;q=0.9,application/ld+json;q=0.8,application/rdf+xml;q=0.7,text,*/*;q=0.5";
+    private static final String RDF_TYPES = "text|turtle|n-triples|json|rdf|xml";
 
     private Map<URI,Boolean> httpResourceIsRDF = new HashMap<>();
     private Set<String> foundRDFResources = new HashSet<>();
@@ -94,7 +94,8 @@ public class HttpHandler
             throw new ShapeCheckException(
                 ResultModel.InvalidRdf,
                 ResourceFactory.createResource(uri),
-                null);
+                null,
+                e1);
         }
     }
 
@@ -206,7 +207,7 @@ public class HttpHandler
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpGet get = new HttpGet(httpUri);
-        get.addHeader("Accept", JENA_RDF_ACCEPT_HEADER);
+        get.addHeader("Accept", RDF_ACCEPT_HEADER);
         HttpResponse response = httpClient.execute(get);
         int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode != 200)
