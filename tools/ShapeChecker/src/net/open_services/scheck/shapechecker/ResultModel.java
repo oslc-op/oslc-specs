@@ -262,6 +262,13 @@ public class ResultModel
     @SCTerm(type=TermType.Property,description="The value concerning which an issue is being reported.")
     public static final Property value            = property("value");
 
+    /**
+     * Predicate for a custom printf-format message for an issue.
+     * The type and value for the issue may be inserted using parameters %1 and %2.
+     */
+    @SCTerm(type=TermType.Property,description="A custom message for an issue.")
+    public static final Property message          = property("message");
+
 
     /** Summary predicate for an undefined class. */
     @SCTerm(type=TermType.Property,description="These classes are referenced in the given shapes, but not defined in the expected vocabulary:")
@@ -361,6 +368,37 @@ public class ResultModel
         else
         {
             suppressedIssues.add(r);
+        }
+    }
+
+
+    /**
+     * Create an anonymous node to hold info about an issue.
+     * @param resultNode the parent of the new anonymous node
+     * @param type the type of the issue node
+     * @param subjectResource the subject of the issue
+     * @param object the value with which there is an issue (may be null)
+     * @param msg a custom message for the issue (may be null)
+     */
+    public void createIssue(Resource resultNode, Resource type, Resource subjectResource, RDFNode object, String msg)
+    {
+        assert type != null;
+        assert subjectResource != null;
+
+        if (!suppressedIssues.contains(type))
+        {
+            Resource issueRes = resultModel.createResource()
+                    .addProperty(RDF.type, type)
+                    .addProperty(subject, subjectResource);
+            if (object != null)
+            {
+                issueRes.addProperty(value, object);
+            }
+            if (msg != null && msg.length() > 0)
+            {
+                issueRes.addProperty(message, msg);
+            }
+            resultNode.addProperty(issue, issueRes);
         }
     }
 
@@ -566,24 +604,31 @@ public class ResultModel
         Resource subjectRes = issueRes.getPropertyResourceValue(subject);
         Resource type = issueRes.getPropertyResourceValue(RDF.type);
         Resource badValue = issueRes.getPropertyResourceValue(value);
+        Resource messageProp = issueRes.getPropertyResourceValue(message);
+        String typeStr = resultVocabModel.getProperty(type, RDFS.comment).getString();
 
-        if (badValue == null)
+        printStream.printf("%sOn %s: ",
+            prefix,
+            subjectRes.getURI());
+        if (messageProp == null)
         {
-            printStream.printf("%sOn %s: %s%n",
-                prefix,
-                subjectRes.getURI(),
-                resultVocabModel.getProperty(type, RDFS.comment).getString());
+            printStream.print(typeStr);
+            if (badValue != null)
+            {
+                String badValStr = badValue.isResource() ? badValue.getURI()
+                    : badValue.asLiteral().getLexicalForm();
+
+                printStream.printf(" (bad value %s)", badValStr);
+            }
         }
         else
         {
-            String badValStr = badValue.isResource() ? badValue.getURI()
-                : badValue.asLiteral().getLexicalForm();
-
-            printStream.printf("%s On %s: %s (bad value %s)%n",
-                prefix,
-                subjectRes.getURI(),
-                badValStr,
-                resultVocabModel.getProperty(type, RDFS.comment).getString());
+            String messageStr = messageProp.asLiteral().getLexicalForm();
+            String badValStr = badValue == null ? ""
+                    : badValue.isResource() ? badValue.getURI()
+                    : badValue.asLiteral().getLexicalForm();
+             printStream.printf(messageStr, typeStr, badValStr);
         }
+        printStream.append('\n');
     }
 }
