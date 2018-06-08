@@ -325,7 +325,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
     <h2>Deprecated terms</h2>
     <p>Previous revisions of OSLC-based specifications [[!OSLCCore2]], used
       terminology that may no longer be relevant, accurate or
-      needed any more. Some of those deprecated terms are:
+      needed any more. Some of those deprecated terms are:</p>
     <dl class="glossary">
       <dt>Provider (<em>deprecated</em>)</dt>
       <dd>See Server [[!HTTP11]].</dd>
@@ -404,7 +404,7 @@ simpler, built on layered capabilities and easier to adopt.</p>
     the definition of an OSLC capability, and how those vocabulary terms are used in LDP interactions by both the clients and servers of that capability. The specification should include defining resource shapes that describe resources based on a set of vocabulary terms, which introduces any domain specific constraints on the vocabulary's usage.
     </p>
 
-    <p>OSLC domain vocabularies should follow the recommended best practices for managing RDF vocabularies described at [[LDBestPractices]].
+    <p>OSLC domain vocabularies should follow the recommended best practices for managing RDF vocabularies described at [[LDBestPractices]].</p>
   </section>
 
   <section class='informative'>
@@ -431,21 +431,21 @@ simpler, built on layered capabilities and easier to adopt.</p>
     <p>Constraints on OSLC Core and Domain resources SHOULD be described using [[!OSLCShapes]] which is included as part of the OSLC Core multi-part specifications. Servers MAY use other constraint languages such as [[SHACL]] to define resource constraints. The shape of an RDF resource is a description of the set of triples it is expected to contain and the integrity constraints those triples are required to satisfy. Applications of shapes include validating RDF data, documenting RDF APIs, and providing metadata to tools that handle RDF data such as form and query builders.
     </p>
     <section id="basic-auth"><h2 class="normalText">
-    Shapes are different than vocabularies in that shapes may change with new revisions of resource definitions, whereas vocabularies should evolve in place in a compatible manner.</p>
+    Shapes are different than vocabularies in that shapes may change with new revisions of resource definitions, whereas vocabularies should evolve in place in a compatible manner.</h2>
     <p>OSLC Domain specifications SHOULD use the following URI pattern when publishing each individual resource shape:
     <pre>
         http://open-services.net/ns/[vocab short name]/shapes/[version]/[shape-name]
     </pre></p>
-    <p>For example, for Change Management 3.0, a shape describing the base Change Request resource type might have the shape URI:
+    <p>For example, for Change Management 3.0, a shape describing the base Change Request resource type might have the shape URI:</p>
       <pre>
         http://open-services.net/ns/cm/shapes/3.0/changerequest
       </pre></section>
     <section id="basic-auth"><h2 class="normalText">
-      Not all shapes would necessarily be updated at the same time. To allow different versions of individual shapes to be reused in different versions of a domain specification while still allowing a client to browse the set of possible shapes, domains SHOULD provide an LDPC for all the shapes for a spec version, at a URI defined by the following pattern:
+      Not all shapes would necessarily be updated at the same time. To allow different versions of individual shapes to be reused in different versions of a domain specification while still allowing a client to browse the set of possible shapes, domains SHOULD provide an LDPC for all the shapes for a spec version, at a URI defined by the following pattern:</h2>
     <pre>
       http://open-services.net/ns/[vocab short name]/shapes/[SPEC-version]
-    </pre></p>
-    <p>For example, for Change Management 3.0, there should be a container at: <code>http://open-services.net/ns/cm/shapes/3.0</code> with members such as:
+    </pre>
+    <p>For example, for Change Management 3.0, there should be a container at: <code>http://open-services.net/ns/cm/shapes/3.0</code> with members such as:</p>
     <pre>
         http://open-services.net/ns/cm/shapes/3.0/changerequest
         http://open-services.net/ns/cm/shapes/3.0/somenewshape
@@ -529,10 +529,10 @@ simpler, built on layered capabilities and easier to adopt.</p>
 http://example.com/bugs/4242
       </pre>
       <p>Suppose this bug resource has properties such as <code>dcterms:title</code>, <code>dcterms:description</code>, and <code>dcterms:creator</code>, and that <code>dcterms:creator</code> refers to a person resource that has properties such as <code>foaf:givenName</code> and <code>foaf:familyName</code>. Suppose you want a representation of the bug report that includes its <code>dcterms:title</code> and the <code>foaf:givenName</code> and <code>foaf:familyName</code> of the person referred to by its <code>dcterms:creator</code>. The following URL illustrates the use of the <code>oslc.properties</code> query value to include those properties:</p>
-      <pre class="example" title="Selective Properies URL">
+      <pre class="example" title="Selective Properties URL">
 http://example.com/bugs/4242?oslc.properties=dcterms:title,dcterms:creator{foaf:givenName,foaf:familyName}
       </pre>
-      <p>The <code>oslc.properties</code> pair is defined by the oslc_properties term in the following BNF grammar:</p>
+      <section id="selectivePropsSyntax"><h2 class="normalText">The <code>oslc.properties</code> pair is defined by the oslc_properties term in the following BNF grammar:</h2>
       <pre>
 oslc_properties ::= "oslc.properties=" properties
 properties      ::= property ("," property)*
@@ -540,29 +540,29 @@ property        ::= identifier | wildcard | nested_prop
 nested_prop     ::= (identifier | wildcard) "{" properties "}"
 wildcard        ::= "*"
 identifier      ::= PrefixedName
-PrefixedName    ::= /* see "SPARQL Query Lanaguage for RDF", http://www.w3.org/TR/rdf-sparql-query/#rPrefixedName */      </pre>
+PrefixedName    ::= /* see "SPARQL Query Language for RDF", http://www.w3.org/TR/rdf-sparql-query/#rPrefixedName */      </pre>
       <p>In our examples of <code>oslc.properties</code>, property names include a URI prefix, i.e. dcterms: or foaf:. Here we assume that OSLC has predefined the Dublin Core ( dcterms:) and Friend of a Friend ( foaf:) prefixes. However, OSLC resources should also be open to new content, which means that new properties may not have predefined URI prefixes. We therefore need a way to define new URI prefixes in resource requests. The oslc.prefix value lets you specify URI prefixes used in property names. For example, suppose the foaf: prefix was not predefined. The following URL illustrates the use of the oslc.prefix value to define it:</p>
 <pre class="example" title="Example URL with oslc.prefix">
 http://example.com/bugs/4242?oslc.prefix=foaf=&lt;http://xmlns.com/foaf/0.1/&gt;&amp;oslc.properties=foaf:lastName,...
 </pre>
-      <section id="prefixDefinition"><h2 class="normalText">An OSLC Service SHOULD predefine URI prefixes for its properties.</h2></section>
-
-      <p>The syntax of the <code>oslc.prefix</code> is defined by the oslc_prefix term in the following BNF grammar:</p>
+      </section>
+      <section id="prefixDefinition"><h2 class="normalText">The syntax of the <code>oslc.prefix</code> is defined by the oslc_prefix term in the following BNF grammar:</h2>
 <pre>
 oslc_prefix ::= "oslc.prefix=" prefix_defs
 prefix_defs ::= prefix_def ("," prefix_def)*
 prefix_def  ::= prefix "=" uri_ref_esc
 prefix      ::= PN_PREFIX
-PN_PREFIX   ::= /* see "SPARQL Query Lanaguage for RDF", http://www.w3.org/TR/rdf-sparql-query/#rPN_PREFIX */
+PN_PREFIX   ::= /* see "SPARQL Query Language for RDF", http://www.w3.org/TR/rdf-sparql-query/#rPN_PREFIX */
 uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are \-escaped. */
 </pre>
 
-      <section id="predefinedPrefixes"><h2 class="normalText">An OSLC Server SHOULD support a number of commonly used PrefixDefinitions.</h2></section>
+      </section>
+      <section id="predefinedPrefixes"><h2 class="normalText">An OSLC Server SHOULD support a number of commonly used PrefixDefinitions.</h2>
       <p>OSLC Core specifies a number of predefined PrefixDefinitions for convenience. OSLC Domain specifications may specify additional pre-defined PrefixDefinitions for their purposes. The following prefixes SHOULD be predefined:</p>
       <ul>
         <li>dcterms: &lt;http://purl.org/dc/terms/&gt;</li>
         <li>foaf: &lt;http://xmlns.com/foaf/0.1/&gt;</li>
-        <li>owl: &lt;http://www.w3.org/2002/07/owl#&lt;/li&gt;
+        <li>owl: &lt;http://www.w3.org/2002/07/owl#&gt;</li>
         <li>rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;</li>
         <li>xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;</li>
         <li>rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;</li>
@@ -571,6 +571,7 @@ uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are
         <li>oslc_acc: &lt;http://open-services.net/ns/core/acc#&gt;</li>
         <li>trs: &lt;http://open-services.net/ns/core/trs#&gt;</li>
       </ul>
+      </section>
     </section>
 
 
@@ -657,18 +658,18 @@ uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are
   <p>The following individuals have participated in the creation of this specification and are gratefully acknowledged:</p>
 
 <p><b>Participants</b>:</p><p style="margin-left: 40px">
-James Amsden, IBM (Chair)<br>
-Nick Crossley, IBM<br>
-Jad El-khoury,  KTH Royal Institute of Technology<br>
-Ian Green, IBM<br>
-David Honey, IBM<br>
-Jean-Luc Johnson, Airbus Group SAS<br>
-Harish Krishnaswamy, Software AG, Inc.<br>
-Arnaud LeHors, IBM<br>
-Sam Padget, IBM<br>
-Martin Pain, IBM<br>
-Arthur Ryman, IBM<br>
-Martin Sarabura, PTC (Chair)<br>
+James Amsden, IBM (Chair)<br />
+Nick Crossley, IBM<br />
+Jad El-khoury,  KTH Royal Institute of Technology<br />
+Ian Green, IBM<br />
+David Honey, IBM<br />
+Jean-Luc Johnson, Airbus Group SAS<br />
+Harish Krishnaswamy, Software AG, Inc.<br />
+Arnaud LeHors, IBM<br />
+Sam Padget, IBM<br />
+Martin Pain, IBM<br />
+Arthur Ryman, IBM<br />
+Martin Sarabura, PTC (Chair)<br />
 Steve Speicher, IBM</p>
 </section>
 
@@ -695,8 +696,8 @@ Steve Speicher, IBM</p>
   <td>03</td>
   <td>24 May 2018</td>
   <td>Jim Amsden</td>
-  <td>Added predefined prefixes for common namespaces.<br>
-Relaxed RDF serialization format requirements.<br>
+  <td>Added predefined prefixes for common namespaces.<br />
+Relaxed RDF serialization format requirements.<br />
 Added normative references to OSLC Query, TRS and Configuration Management specifications.</td>
  </tr>
 </table>
