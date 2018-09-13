@@ -90,25 +90,13 @@
             prefix : "oslc"
     } ],
 
-    // Other parts of multi-part spec
-    additionalArtifacts : [
-      { title: "OSLC Core Version 3.0. Part 1: Overview", href: "oslc-core.html" },
-      { title: "OSLC Core Version 3.0. Part 2: Discovery", href: "discovery.html" },
-      { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: "resource-preview.html" },
-      { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: "dialogs.html" },
-      { title: "OSLC Core Version 3.0. Part 5: Attachments", href: "attachments.html" },
-      { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: "resource-shape.html" },
-      { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: "core-vocab.html" },
-      { title: "OSLC Core Version 3.0. Part 8: Query (this document)", href: "oslc-query.html" }
-	  ],
-
 
     // Related work
     // relatedWork : [
-    //    { title: "Some title", href: "http://example.com/relatedDocument.html" },
+    //    { title: "Some title", href: "http://example.org/relatedDocument.html" },
     //    ],
     // supersedes : [
-    //    { title: "Some title", href: "http://example.com/supercededDocument.html" },
+    //    { title: "Some title", href: "http://example.org/supercededDocument.html" },
     //    ],
 
     localBiblio : {
@@ -256,7 +244,11 @@ code.noescape {
 
 <body>
 <section id='abstract'>
-  <p></p>
+  <p>
+    OSLC Query provides a mechanism for a client to query or search for resources of some RDF type. 
+    The response to a successful query includes the RDF of a <i>query result container</i> that references 
+    the member resources found by the query, and optionally includes properties of each member resource.
+  </p>
 </section>
 
 <section id='toc'></section>
@@ -266,82 +258,7 @@ code.noescape {
 
 <section id='intro' class='informative'>
   <h2>Introduction</h2>
-  <p></p>
-
-  <section id='terminology' class='informative'>
-    <h3>Terminology</h3>
-    <p>Terminology is based on OSLC Core Overview [[OSLCCore3]],
-      W3C Linked Data Platform [[LDP]],
-      W3C's Architecture of the World Wide Web [[WEBARCH]],
-      and Hyper-text Transfer Protocol [[HTTP11]].</p>
-    <dl class="spaced">
-      <dt><dfn>Term1</dfn></dt>
-      <dd>Definition 1.</dd>
-
-      <dt><dfn>Term2</dfn></dt>
-      <dd>Definition 2.</dd>
-    </dl>
-    <div style="margin-left: 2em">
-		<font color="red">[David]<br>
-			Are there any specific terms required here?
-		</font><br><br>
-	</div>
-  </section>
-
-  <section id='references'><h3>References</h3></section>
-  <section id='conventions'></section>
-</section>
-
-
-
-<section class='informative'>
-  <h2>Motivation</h2>
-		OSLC servers will often manage large amounts of potentially complex link-data entities. Practical use of this information will 
-		require some query capability that minimally supports selection of matching elements, filtering of desired properties and ordering. 
-		Ideally OSLC Core would rely on existing standard query services such as [[RDF-SPARQL-QUERY]] that may be integrated with [[LDP]]. 
-		The Linked Data Query Language Community Group is currently working on a Query Language for [[LDP]]. However, the reality is that 
-		many OSLC servers are adapters built on existing data management capabilities that are not built on an RDF foundation and do not 
-		provide SPARQL endpoints for query. In order to address the need for standard query capability to enable integration, [[OSLCCore2]] 
-		introduced a Query Capability and a Query Syntax that were intended to be simple enough that they could be implemented on a 
-		wide range of existing server architectures and persistence technologies. In practice this has proven to be more difficult than 
-		anticipated:
-		<ul>
-			<li>The OSLC Query 2.0 specification did not describe how its capabilities could be implemented incrementally or distinguish
-				between core capabilities that might be expected of every implementation and those that might be optional and implemented
-				by only some implementations. This made the burden of implementation much higher than desired.</li>
-			<li>The OSLC Query 2.0 specification required strict adherence to SPARQL semantics for relational operators and
-				property comparisons. Most implementations based on a standard relational database could only satisfy that requirement
-				by maintaining RDF datasets and using SPARQL on them. Few existing implementations did this because it was overly
-				burdensome, resulting in most implementations being non-conformant.
-		</ul>
-		
-		The OSLC Query 3.0 specification addresses these concerns by:
-		<ul>
-			<li>Describing capabilities that are optional and might be omitted, or developed incrementally
-				as a requirement for them arose.</li>
-			<li>Taking a more persistence-agnostic approach that does not require or assume implementations use
-				any particular database or storage implementations, or require the use of SPARQL.</li>
-			<li>Categorizing comparison semantics for properties as MUST or MAY so that it is easier to
-				implement a core set of capabilities on any server architecture, and then leaving the
-				remainder as optional and/or implementation dependent.</li>
-		</ul>
-		
-</section>
-
-
-
-<section id='concepts' class='informative'>
-	<h2>Basic Concepts<br></h2>
-  
-	<div style="margin-left: 2em">
-		<font color="red">[David]<br>
-			This was missing content before. This is just a first draft that needs to be reviewed. I particularly wanted to
-			mention that there were two capabilities (property based query, full-text search) and not mandate that <b>both</b> were needed.
-			This is an attempt to allow implementations to adopt OSLC query incrementally and not be burdened with everything.
-		</font><br><br>
-	</div>
-  
-	OSLC Query provides a mechanism for a client to query or search for resources of some RDF type by performing a <code>GET</code> 
+  	OSLC Query provides a mechanism for a client to query or search for resources of some RDF type by performing a <code>GET</code> 
 	or <code>POST</code> on a <i>query base</i> URI.
 	Clients may discover such query base URIs from a <code>oslc:queryCapability</code> declared in an OSLC service.
 	The response to a successful query is a response body that includes the RDF of a <i>query result container</i> that references the member
@@ -355,15 +272,70 @@ code.noescape {
      	<li>A full-text search based on one more search terms [[FULLTEXT-SEARCH]]. The query result container only references resources
      	 	that have any text-based properties contain one or more of the search terms.</li>
 	</ul>
+	Servers may support a combined query and full-text search, but in practice, many implementations do not support such
+	combined usage to lower the burden of implementation. Clients may also specify which member properties should be included 
+	in the query response.
+  
 
-	Clients may also specify which member properties should be included in the query response.
+  <section id='terminology' class='informative'>
+    <h3>Terminology</h3>
+    <p>Terminology is based on OSLC Core Overview [[OSLCCore3]],
+      W3C Linked Data Platform [[LDP]],
+      W3C's Architecture of the World Wide Web [[WEBARCH]],
+      and Hyper-text Transfer Protocol [[HTTP11]].</p>
+    <dl class="spaced">
+      <dt><dfn>Query capability</dfn></dt>
+      <dd>Describes an HTTP endpoint that may be used to query for or search for artifacts of a type defined by the query capability.</dd>
+
+      <dt><dfn>Query base URI</dfn></dt>
+      <dd>The URI associated with a query capability that a GET and/or POST on will perform a query or search for artifacts.</dd>
+      
+      <dt><dfn>Query expression</dfn></dt>
+      <dd>A string that defines one or more query terms, where each term defines a property name, operator, and value.</dd>
+      
+      <dt><dfn>Query result container</dfn></dt>
+      <dd>An RDF container in the response to a successful query or search that references the resources found.</dd>
+      
+      <dt><dfn>Search term</dfn></dt>
+      <dd>A text string or keyword that is to be searched for in any text property of artifacts of a type defined by a query capability.</dd>
+      
+      <dt><dfn>Sort key</dfn></dt>
+      <dd>A property to be used to sort the results of the query based on the value of the property for each member of the
+      	query result container.</dd>
+    </dl>
+  </section>
+
 </section>
+
+
+
+<section class='informative'>
+  <h2>Motivation</h2>
+		OSLC servers will often manage large amounts of potentially complex resources. Practical use of this information will 
+		require some query capability that minimally supports selection of matching elements, filtering of desired properties and ordering. 
+		Ideally OSLC Core would rely on existing standard query services such as [[RDF-SPARQL-QUERY]]. 
+		However, the reality is that many OSLC servers are adapters built on existing data management capabilities that are not 
+		built on an RDF foundation and do not  provide SPARQL endpoints for query. 
+		In order to address the need for standard query capability to enable integration, [[OSLCCore2]] 
+		introduced a Query Capability and a Query Syntax that were intended to be simple enough that they could be implemented on a 
+		wide range of existing server architectures and persistence technologies. 
+		This specification builds on that by:
+		
+		<ul>
+			<li>Describing how its capabilities can be implemented partially and incrementally to make it
+				easier for server implementations to get started and evolve as needs arise.</li>
+			<li>Defining more relaxed semantics for query comparisons and being more agnostic of persistence and query
+				technologies that make it easier for servers to implement and be compliant.</li>
+			<li>Providing more complete information and guidance for server implementations.</li>
+			<li>Better describing how clients may discover and use query capabilities, including examples of requests and responses.</li>
+		</ul>
+</section>
+
 
 
 
 <section id="versioning">
 	<h2 id="specificationversioningspec_versioning">Specification Versioning</h2>
-
 	<p>This specification follows the specification version guidelines given in [[OSLCCore3]].</p>
 </section>
 
@@ -379,60 +351,19 @@ code.noescape {
 	</ul>
 </section>
 
-<div>
-	<font color="red">[David]<br>
-		The sections about Graph Patterns, Property Tree Patterns, and Member List Patterns have been intentionally removed.
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-132"><font color="red"><b>[OSLCCORE-132]</b></font></a>.
-  	</font><br><br>
-</div>
 
 <section>
 	<h2>Discovering a Query Capability</h2>
 	
-	<div style="margin-left: 2em">
-		<font color="red">[David]<br>
-			This is a new section. There was a gap between OSLC Core and OSLC Query that was non-obvious to me and I misunderstood
-			the spec when I originally implemented OSLC Query in the Jazz GCM application. The purpose of the resource shape, the
-			usage of <code>oslc:isMemberProperty</code>, and the use of a <code>oslc:valueShape</code> was not obvious and I think
-			the spec is improved by explicitly describing how clients discover information about the query capability, and the
-			properties that might be included in an <code>oslc.where</code> query expression, and in a <code>oslc.select</code>.
-			<a href="https://issues.oasis-open.org/browse/OSLCCORE-102"><font color="red"><b>[OSLCCORE-102]</b></font></a>
-		</font><br><br>
-	</div>
-	
-  
 	An <code>oslc:Service</code> MAY declare zero, one, or many query capabilities using the <code>oslc:queryCapability</code> property.
+	<p><img src="images/CoreDiscoveryUML.png"></p>
+	
 	<p>A query capability SHOULD specify exactly one <code>oslc:resourceShape</code> and that shape SHOULD describe the query result
 	container.</p>
-	
-	<div style="margin-left: 4em">
-		<font color="red">[David]<br>
-		There are two reasons why I think a query capability SHOULD provide a resource shape:
-		<ol>
-			<li>Using <code>ldp:contains</code> as the member predicate results in a more concise query result container that
-				is both backwards compatible with existing 2.0 clients, and conformant with LDPC. See the section on
-				<i>Query result containers</i> for details. You can only use this if you
-				provide a resource shape and declare <code>ldp:contains</code> as the member predicate.</li>
-			<li>Without a resource shape for the query result container, you cannot discover the value shape that
-				describes the members.</li>
-		</ol>
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-102"><font color="red"><b>[OSLCCORE-102]</b></font></a>
-  		</font>
-	</div>
 	
 	<p>The resource shape referenced by <code>oslc:resourceShape</code> MUST declare exactly one OSLC property with
 	<code>oslc:isMemberProperty "true"^^xsd:boolean</code>, and that property SHOULD specify exactly one <code>oslc:valueShape</code>
 	referencing a resource shape that describes the referenced members of that container.</p>
-	
-	<div style="margin-left: 4em">
-		<font color="red">[David]<br>
-		The core and query specs were unclear about this.<br>
-		What if a container's resource shape has more than one OSLC property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code>?<br>
-		What if each of them references a different value shape?<br>
-		The easiest way of avoiding those issues is to state that one and only one membership property should be declared.
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-102"><font color="red"><b>[OSLCCORE-102]</b></font></a>
-  		</font><br><br>
-	</div>
 	
 	<pre class="example" title="Query capability resource shape">
 @prefix dcterms: &lt;http://purl.org/dc/terms/> .
@@ -440,13 +371,13 @@ code.noescape {
 @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#> .
-
-&lt;https://jazz.net/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/trs/shapes/workitems/query> a oslc:ResourceShape ;
-	oslc:describes &lt;https://jazz.net/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems> ;
-	oslc:property &lt;https://jazz.net/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/trs/shapes/workitems/query/property/member> ;
+<br>
+&lt;https://example.org/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/trs/shapes/workitems/query> a oslc:ResourceShape ;
+	oslc:describes &lt;https://example.org/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems> ;
+	oslc:property &lt;https://example.org/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/trs/shapes/workitems/query/property/member> ;
 	dcterms:title "Shape of Work Item query resource"^^rdf:XMLLiteral .
-
-&lt;https://jazz.net/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/trs/shapes/workitems/query/property/member>
+<br>
+&lt;https://example.org/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/trs/shapes/workitems/query/property/member>
 	a oslc:Property ;
 	oslc:isMemberProperty "true"^^xsd:boolean ;
 	oslc:name "member" ;
@@ -455,7 +386,7 @@ code.noescape {
 	oslc:range &lt;http://open-services.net/ns/cm#ChangeRequest> ;
 	oslc:readOnly "true"^^xsd:boolean ;
 	oslc:representation oslc:Inline ;
-	oslc:valueShape &lt;https://jazz.net/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/shapes/workitems/defect> ;
+	oslc:valueShape &lt;https://example.org/jazz/oslc/context/_Q2fMII8EEd2Q-OW8dr3S5w/shapes/workitems/defect> ;
 	oslc:valueType oslc:AnyResource ;
 	dcterms:title "Work Item Member"^^rdf:XMLLiteral .
 	</pre>
@@ -465,29 +396,12 @@ code.noescape {
 	OSLC properties that have a <code>oslc:queryable "false"^^xsd:boolean</code> value cannot be specified in 
 	<code>oslc.where</code>. Where a member resource supports nested properties, for example, the <code>foaf:name</code>
 	of a <code>dcterms:creator</code>, the member resource shape MAY provide a <code>oslc:valueShape</code>
-	for that property. This allows clients to discover both immediate and nested properties that might be used.</p>
-
-	<div style="margin-left: 4em">
-		<font color="red">[David]<br>
-		The <code>oslc:queryable</code> property is a proposed new boolean property for OSLC Core 3.0 resource shapes.
-		It allows a single resource shape to describe properties that may be specified in <code>oslc.select</code>
-		and queryable in <code>oslc.where</code>. If that property is absent, the default should be to assume that
-		the property is queryable.
-  		</font><br><br>
-	</div>
-	
+	for that property. This allows clients to discover both immediate and nested properties that might be used.</p>	
 </section>
 
 
 <section>
 	<h2>Using a Query Capability</h2>
-	
-	<div style="margin-left: 2em">
-		<font color="red">[David]<br>
-		This is a new section that provides more explicit information about how to use a query capability.
-		This needs reviewing.
-  		</font><br><br>
-	</div>
 	
 	Executing a query or search is achieved by executing either of the following:
 	<ul>
@@ -506,26 +420,10 @@ code.noescape {
 	
 	<p>For a successful operation:</p>
 	<ul>
-		<li>The response status code MUST be <code>200 OK</code> for a non-paged result, or for an OSLC paged result, or 
-			<code>303 See Other</code> for an LDPC paged result [[LDP]].</li>
+		<li>The response status code MUST be <code>200 OK</code> for a non-paged result, or for an OSLC paged result.</li>
 		<li>The response body MUST be RDF that includes a query result container whose subject is the
 			query base URI.</li>
 	</ul>
-	
-	For an unsuccessful operation:
-	<ul>
-		<li>The response status code MUST be an error status code. See <a href="#ErrorHandling">Error Handling</a> for details.</li>
-		<li>The response body MUST be RDF that describes one or more <code>oslc:Error</code>
-			resources that provide error information.</li>
-	</ul>
-	
-	<div style="margin-left: 4em">
-		<font color="red">[David]<br>
-		This defines unhappy path handling.
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red"><b>[OSLCCORE-105]</b></font></a>
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-147"><font color="red"><b>[OSLCCORE-147]</b></font></a>
-  		</font><br><br>
-	</div>
 	
 	The <code>GET</code> or <code>POST</code> request MAY use zero, one or more of the OSLC query parameters listed in the table below.
 	<br><br>
@@ -539,44 +437,58 @@ code.noescape {
 				<td><code>oslc.where</code></td>
 				<td>Limits the query results to members that satisfy the specified query expression. If neither
 					<code>oslc.where</code> nor <code>oslc.searchTerms</code> is specified, then the query
-					results SHOULD be all the members of the resource type associated with the query capability.</td>
+					results SHOULD be all the members of the resource type associated with the query capability.
+					See <a href="#oslc.where">oslc.where</a> for details.</td>
 			</tr>
 			<tr>
 				<td><code>oslc.searchTerms</code></td>
 				<td>Score each member resource using a full-text search on its text-valued properties, and sort them
 					in descending order of score. If neither
 					<code>oslc.where</code> nor <code>oslc.searchTerms</code> is specified, then the query
-					results SHOULD be all the members of the resource type associated with the query capability.</td>
+					results SHOULD be all the members of the resource type associated with the query capability.
+					See <a href="#oslc.searchTerms">oslc.searchTerms</a> for details.</td>
 			</tr>
 			<tr>
 				<td><code>oslc.orderBy</code></td>
-				<td>Sort the members using the sort keys, using the full-text search score as the primary key.</td>
+				<td>Sort the members using the specified sort keys. If supported, servers SHOULD include the
+					<code>oslc:order</code> pseudo-property, and for a paged response, order the pages so that
+					the first page contains the lowest ordered members, and the last page contains the highest
+					ordered members. See <a href="#oslc.orderBy">oslc.orderBy</a> for details.</td>
 			</tr>
 			<tr>
 				<td><code>oslc.select</code></td>
-				<td>Include the specified immediate and nested properties of the member resources.</td>
+				<td>Include the specified immediate and nested properties of the member resources.
+					See <a href="#oslc.select">oslc.select</a> for details.</td>
 			</tr>
 			<tr>
 				<td><code>oslc.properties</code></td>
-				<td>Only return specified <i>selective properties</i> of the <i>query result container</i>.</td>
+				<td>Only return specified <i>selective properties</i> of the <i>query result container</i>. 
+				See <a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a> and <a href="#oslc.properties">oslc.properties</a> for details.</td>
 			</tr>
 			<tr>
 				<td><code>oslc.prefix</code></td>
 				<td>Specify a namespace prefix that may be used in <code>oslc.where</code>, <code>oslc.orderBy</code>,
-					<code>oslc.select</code>, and <code>oslc.properties</code>.</td>
+					<code>oslc.select</code>, and <code>oslc.properties</code>. See <code>oslc.prefix</code> in  
+					<a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a> for details.</td>
 			</tr>
 			<tr>
 				<td><code>oslc.paging</code></td>
 				<td>Specifies whether a paged result is requested.
-					See <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Resource paging</a>.</td>
+					See <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Resource paging</a>
+					and <a href="#oslc.paging">oslc.paging</a> for details.</td>
 			</tr>
 			<tr>
 				<td><code>oslc.pageSize</code></td>
 				<td>Specifies a suggested maximum page size for a paged result.
-					See <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Resource paging</a>.</td>
+					See <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Resource paging</a>
+					and <a href="#oslc.pageSize">oslc.pageSize</a> for details..</td>
 			</tr>
 		</table>
 	</div>	
+	<p>		
+	If a GET or POST on a query base URI neither specifies <code>oslc.where</code> nor <code>oslc.searchTerms</code>, the
+	server MUST return a query response describing all the resources that have one or more of the RDF types specified by
+	the <code>oslc:resourceType</code> of the <code>oslc:QueryCapability</code> that defines the <code>oslc:queryBase</code>.
 
 </section>
 
@@ -585,41 +497,19 @@ code.noescape {
 <section>
 	<h2>Query Result Containers</h2>
 	
-	<div style="margin-left: 2em">
-		<font color="red">[David]<br>
-		This is a new section that provides more explicit information about the response to a query and the
-		query result container. Although this wasn't in the query spec explicitly, accompanying non-normative
-		documents gave examples and I checked some existing implementations to check their returned RDF.
-		The goal here is to achieve backwards compatibility with Query 2.0 (even though the spec didn't
-		explicitly state this or give examples), and achieve conformance with LDPCs. OSLC Core 3.0 and
-		OSLC Configuration Management make extensive use of LPDCs. In many cases, an LDPC is like a
-		query result container, but not associated with a query capability and with a fixed query.
-		Making query result containers brings consistency with these other LDPCs.
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-102"><font color="red"><b>[OSLCCORE-102]</b></font></a>
-  		</font><br><br>
-	</div>
-	
 	The response body for a successful <code>GET</code> or <code>POST</code> on a query base URI MUST include a query result container whose
 	subject is the query base URI.
 	
-	<p>	The container SHOULD be a <i>Linked Data Platform Container</i> (LDPC) including a <code>ldp:contains</code> referencing each member 
+	<p>The container MUST be a <i>Linked Data Platform Container</i> (LDPC) referencing each member 
 	resource found by the query. The response SHOULD include a <code>Link</code> header that describes the type of LDPC returned.
 	This provides compatibility with OSLC Core 3.0 and its wider use of LDPCs. [[LDP]]</p>
 	
-	<p>	If the query capability that declared the base URI does not declare a <code>oslc:resourceShape</code> then the container 
-	MUST also include an <code>rdfs:member</code> reference to each of the result members.<p>
+	<p>If the query capability that declared the base URI does not declare a <code>oslc:resourceShape</code> then the container 
+	MUST include an <code>rdfs:member</code> reference to each of the result members.<p>
 	
 	<p>If the query capability that declared the base URI declares a <code>oslc:resourceShape</code> and that resource shape
-	defines a container property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code> that is not <code>ldp:contains</code>,
-	the query result container MUST also contain the specified member property for each of the query result members.</p>
-	
-	<div style="margin-left: 4em">
-		<font color="red">[David]<br>
-		The example below shows how an implementation can continue to use <code>rdfs:member</code>, either by default
-		because no resource shape is referenced by the query capability, or because the resource shape explicitly
-		defines rdfs:member as an OSLC property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code>.
-  		</font><br><br>
-	</div>
+	defines a container property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code> then
+	the query result container MUST include the specified member property referencing each of query result member.</p>
 
 	<pre class="example" title="Query result container using rdfs:member as the membership property">
 HTTP/1.1 200 OK
@@ -649,13 +539,6 @@ Link: &lt;http://www.w3.org/ns/ldp#DirectContainer>; rel="type",
 	showing a query response following this section assume that the query capability resource shape defines that
 	<code>ldp:contains</code> is the membership property.</p>
 	
-	<div style="margin-left: 4em">
-		<font color="red">[David]<br>
-		The example below shows how an implementation can implement a much simpler query result container that is
-		both backwards compatible with Query 2.0 clients, and with LDPCs.
-  		</font><br><br>
-	</div>
-	
 	<pre class="example" title="Query result container using ldp:contains as the membership property">
 HTTP/1.1 200 OK
 Content-Type: text/turtle
@@ -681,32 +564,18 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 <section id="QueryResultPaging">
 	<h2>Query Result Paging</h2>
 	
-	<div style="margin-left: 4em">
-			<font color="red">[David]<br>
-			This is a proposed new section. It should primarily reference OSLC 2.0 Paging, but add aspects that
-			are likely to be relevant to query such as:
-			<ul>
-				<li>Including a <code>oslc:ResponseInfo</code>.</li>
-				<li>How to handle long next page URIs (POST vs GET).</li>
-			</ul>
-  			</font>
-	</div>
-	
-	
     A query capability MAY support 
     <a href="./oslc-core.html#resourcePaging" target="_blank">OSLC Core Resource Paging</a>. 
     <p>
     A paged response MAY occur automatically if the server determines that the total query result set exceeds some implementation dependent
     threshold, or if paging is supported and the request includes a <code>oslc.paging=true</code> query parameter.
     <p>
-    A paged response to a query SHOULD include a <a href="./core-vocab.html#responseInfo" target="_blank">oslc:ResponseInfo</a> if there is a
+    A paged response to a query MUST include a <a href="./core-vocab.html#responseInfo" target="_blank">oslc:ResponseInfo</a> if there is a
     next page.
     <p>
     If the query was performed using a <code>POST</code> rather than a <code>GET</code>, the <code>oslc:ResponseInfo</code> SHOULD contain
     a <code>oslc:postBody</code> and the client should get the next query results page by performing a <code>POST</code> with the specified 
     post body using a content type of <code>application/x-www-form-urlencoded</code>.
-    <a href="https://issues.oasis-open.org/browse/OSLCCORE-164"><font color="red"><b>[OSLCCORE-164]</b></font></a>
-
 </section>    <!-- Query Result Paging -->
 
 
@@ -722,15 +591,14 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<p>The query parameters defined here are intended to satisfy simple query requirements, and be easy to both use and implement.
 		More complex query requirements should be satisfied using a full query language, e.g. SQL or SPARQL.</p>
 
-		<p>This specification formally defines the syntax of the query parameters using Extended Backus-Naur Form [[EBNF]]
-		and informally illustrates  their semantics with simple examples. 
+		<p>This specification formally defines the syntax of the <code>oslc.where</code>, <code>oslc.searchTerms</code>, and <code>oslc.orderBy</code> parameters using Extended Backus-Naur Form [[EBNF]]
+		and informally illustrates  their semantics with simple examples. See <a href="#oslc.where.syntax">oslc.where syntax</a>, <a href="#oslc.searchTerms.syntax">oslc.searchTerms syntax</a>, 
+		and <a href="#oslc.orderBy.syntax">oslc.orderBy syntax</a> for the formal syntax.
 
 		<p>The query parameters MAY contain characters that MUST be URL encoded when transmitted in an HTTP request. The examples below show
 		both unencoded and encoded query parameters for clarity.</p>
 
-		<p>This specification defines the syntax of a set of related query parameters that MAY be used to perform queries.
-		We have adopted a consistent naming convention for these query parameters to identify them as common across all OSLC specifications,
-		namely all query parameter names are prefixed with the characters &quot;<code>oslc.</code>&quot; The following sections define
+		<p>All query parameter names are prefixed with the characters &quot;<code>oslc.</code>&quot; The following sections define
 		these query parameters.</p>
 
 		<p>An OSLC domain specification MAY use some or all of these query parameters, and SHOULD use these rather than defining new query parameters
@@ -747,61 +615,17 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<h3>oslc.where</h3>
 		
 		<!-- Query parameters/oslc.where/introduction -->
-		<section id="oslc.where.introduction">
+		<section class="informative" id="oslc.where.introduction">
 			<h4>Introduction</h4>
 			
 			<p>The <code>oslc.where</code> query parameter defines a <i>query expression</i> that is used to query for resources
 			matching the query expression. It is serves a similar purpose to the <code>WHERE</code> clause of a SQL statement.</p>
 			
-			<p>If an implementation does not support the <code>oslc.where</code> parameter, the response SHOULD be
-			<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
-			
-			<div style="margin-left: 4em">
-				<font color="red">[David]<br>
-				This is a new requirement. Most implementations support <code>oslc.where</code>. However, if any do not,
-				it's possible they may have used other error codes. Hence the requirement is a SHOULD not a MUST.
-	  			</font><br><br>
-			</div>
-			
-			
-			<p>If <code>oslc.where</code> specifies a property that has an undefined namespace prefix, the response SHOULD be
-			<code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
-			
-			<div style="margin-left: 4em">
-				<font color="red">[David]<br>
-				This is a new requirement. RTC work item queries and GCM queries behave like this. However, because the
-				spec did not define the behaviour, it's possible some might use other status codes. Hence this is a
-				SHOULD not a MUST.
-	  			</font><br><br>
-			</div>
-			
-			<p>If <code>oslc.where</code> specifies a property that has an defined namespace prefix, but the property is not known, for
-			example not defined in the resource shape for that type of resource, an implementation MAY do either of:</p>
-			<ol>
-				<li>Respond with a <code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.
-					This is appropriate for implementations that have finite and enumerable properties of resources that
-					cannot determine how to query for undefined properties.</li>
-				<li>Execute the query and return a normal query response. This is appropriate for implementations that
-					have open sets of properties, not all of which might be in a resource shape.</li> 
-			</ol>
-			
-			<div style="margin-left: 4em">
-				<font color="red">[David]<br>
-				This reflects our discussion on 2017-12-14. Closed systems based on RDBs (probably the majority) will
-				have well-defined vocabularies with custom properties being managed by a type system. Both RTC work item
-				and GCM queries return 400 if a property is specified with a defined namespace but is not known.
-				It's somewhat analogous to executing a SQL query where you specify an
-				undefined column. Open systems based on RDF persistence and SPARQL might execute the
-				query successfully, but the results might not be what the user expects, for example, being empty.
-	  			</font><br><br>
-			</div>
-			
-			
 			<p>For example, suppose that a change management system provides a query capability with a query base of 
-			<code>https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code>,
-			and a client wants to query for all change requests created by the user <code>https://host:9443/jts/users/deb</code>.
+			<code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code>,
+			and a client wants to query for all change requests created by the user <code>https://example.org/jts/users/deb</code>.
 			This can be performed using a <code>GET</code> on 
-			<code>https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
+			<code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
 			query parameters shown in the table below:
 			<br><br>
 			<div style="margin-left: 2em">
@@ -812,24 +636,15 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 					</tr>
 					<tr>
 						<td><code>oslc.where</code></td>
-						<td><code>dcterms:creator=&lt;https://host:9443/jts/users/deb></code></td>
+						<td><code>dcterms:creator=&lt;https://example.org/jts/users/deb></code></td>
 					</tr>
 				</table>
 			</div>
 			
-	
-			<div style="margin-left: 4em">
-				<font color="red"><br>[David]<br>
-				The example below was partly based on a real RTC work item query. However, I changed the host name to
-				make it anonymous, and made the container an LPDC using <code>ldp:contains</code> as the container
-				membership property (in some hypothetical resource shape).
-	  			</font><br><br>
-			</div>
-			
 			
 			<pre class="example" title="Query for all change requests created by Deb">
-	GET https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
-	    ?oslc.where=dcterms%3Acreator%3D%3Chttps%3A%2F%2Fhost%3A9443%2Fjts%2Fusers%2Fdeb%3E
+	GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
+	    ?oslc.where=dcterms%3Acreator%3D%3Chttps%3A%2F%2Fexample.org%2Fjts%2Fusers%2Fdeb%3E
 	
 	OSLC-Core-Version: 2.0
 	Accept: text/turtle
@@ -849,41 +664,35 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 	@prefix rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#> .
 	@prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 	
-	&lt;https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
+	&lt;https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
 	    a ldp:BasicContainer ;
 	    ldp:contains 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
 			</pre>
 	
 			Note that the query result in the above example does not contain any properties of the members found by the
-			query because <code>oslc.select</code> was not specified, and the implementation does not have
-			a default set of properties.
-			
-			<div style="margin-left: 4em">
-				<font color="red">[David]<br>
-				This reflects the proposal for 
-				<a href="https://issues.oasis-open.org/browse/OSLCCORE-123"><font color="red"><b>[OSLCCORE-123]</b></font></a>.
-	  			</font><br><br>
-			</div>
+			query because <code>oslc.select</code> was not specified. Clients should specify <code>oslc.select</code> if
+			they require a specific set of member properties to be included in the response.
+
 			
 			<p>Conditions may use the usual binary comparison operators and be combined using the boolean conjunction 
 			operator, <code>and</code>.</p>
 			
 			<p>Suppose a client now wants to query for all change requests created by Deb that are not fixed.
 			This can be performed using a <code>GET</code> on 
-			<code>https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
+			<code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
 			query parameters shown in the table below:</p>
 			<br><br>
 			<div style="margin-left: 2em">
@@ -894,15 +703,15 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 					</tr>
 					<tr>
 						<td><code>oslc.where</code></td>
-						<td><code>dcterms:creator=&lt;https://host:9443/jts/users/deb> and oslc_cm:fixed=false</code></td>
+						<td><code>dcterms:creator=&lt;https://example.org/jts/users/deb> and oslc_cm:fixed=false</code></td>
 					</tr>
 				</table>
 			</div>
 			
 			
 					<pre class="example" title="Query for all change requests created by Deb that are not fixed">
-	GET https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
-	    ?oslc.where=dcterms%3Acreator%3D%3Chttps%3A%2F%2Fhost%3A9443%2Fjts%2Fusers%2Fdeb%3E%20and%20oslc_cm%3Afixed%3Dfalse
+	GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
+	    ?oslc.where=dcterms%3Acreator%3D%3Chttps%3A%2F%2Fexample.org%2Fjts%2Fusers%2Fdeb%3E%20and%20oslc_cm%3Afixed%3Dfalse
 	
 	OSLC-Core-Version: 2.0
 	Accept: text/turtle
@@ -922,23 +731,23 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 	@prefix rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#> .
 	@prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 	
-	&lt;https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
+	&lt;https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
 	    a ldp:BasicContainer ;
 	    ldp:contains 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
 			</pre>
 			
 			An <code>oslc.where</code> query expression may query for nested properties. The following example
 			show a query for change requests created by any user named "Deb". This can be performed using a <code>GET</code> on 
-			<code>https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
+			<code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
 			query parameters shown in the table below:
 			<br><br>
 			<div style="margin-left: 2em">
@@ -955,7 +764,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 			</div>
 			
 			<pre class="example" title="Query for all change requests created by any user named 'Deb'">
-	GET https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
+	GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
 	    ?oslc.where=dcterms%3Acreator%20%7Bfoaf%3Aname%3D%22Deb%22%7D
 	
 	OSLC-Core-Version: 2.0
@@ -976,22 +785,22 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 	@prefix rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#> .
 	@prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 	
-	&lt;https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
+	&lt;https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
 	    a ldp:BasicContainer ;
 	    ldp:contains
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12> , 
-	        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12> , 
+	        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
 			</pre>				
 		</section>    <!-- Query parameters/oslc.where/introduction -->
 		
@@ -1023,19 +832,12 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 	string_esc    ::= /* a string enclosed in double quotes, with certain characters escaped. See below. */
 	LANGTAG       ::= /* see "SPARQL Query Language for RDF", http://www.w3.org/TR/rdf-sparql-query/#rLANGTAG */
 			</pre>
-			
-			The only changes between this syntax and the OSLC Query 2.0 <code>oslc.where</code> syntax is the addition
-			of <code>PrefixedName</code> in the <code>value</code> element. The ability to use a prefixed name
-			in a value is useful, especially for enumerated values, and its omission was an oversight in the
-			OSLC Query 2.0 specification.
 			<p>
 
 			<div style="margin-left: 2em">
 				<code>wildcard</code><br>
 				As in the case of <code>oslc.properties</code>, the "*" <code>wildcard</code> matches any property.
 				Implementations MAY support the use of the wildcard in property names and nested properties.
-				If an implementation does not support a use of wildcard, the response status SHOULD be <code>501 Not Implemented</code>
-				as described in <a href="#ErrorHandling">Error Handling</a>.
 				<br>
 				<br>
 				<code>boolean_op</code><br>
@@ -1061,7 +863,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 					</table>
 				</div>
 				<pre class="example">
-		    GET http://example.com/queryBase?oslc.where=oslc_cm%3Aseverity%20in%20%5B%22high%22%2C%22medium%22%5D
+		    GET http://example.org/queryBase?oslc.where=oslc_cm%3Aseverity%20in%20%5B%22high%22%2C%22medium%22%5D
 				</pre>
 				<code>space</code><br>
 				The <code>space</code> term represents a single space character. A space character MAY be used to delimit the <code>binary_op</code> term in
@@ -1171,7 +973,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				<tr>
 					<td><code>rdf:XMLLiteral</code></td>
 					<td>An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the 
-						literal in the same way as a plain string literal with the data type removed such as "abc".
+						literal in the same way as a plain string literal with the data type removed such as <code>"abc"</code>.
 						<p>
 						A plain string literal, such as <code>"abc"</code> MUST be supported. A server MAY treat the literal 
 						in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.
@@ -1182,7 +984,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 						Servers MAY validate the string for compliance to the XMLLiteral standard.</td>
 					<td>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.
 						<p>
-						Servers MUST implement one of the following semantics:
+						Servers MUST implement, and SHOULD document, one of the following semantics:
 						<ul>
 							<li>case sensitive string compare</li>
 							<li>case insensitive string compare</li>
@@ -1190,7 +992,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 								and <code>_</code> means match any single character.</li>
 						</ul>
 						A server MAY choose which of the above to apply based on whether the string contains a <code>%</code> or 
-						<code>_</code> character, and/or the property being compared.
+						<code>_</code> character, and/or the property being compared. A server SHOULD document if this is the case.
 						<p>
 						Other operators MAY be supported and MAY have implementation-dependent semantics.
 						A server MAY report such usage as unsupported.</td>
@@ -1297,7 +1099,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 						with an identical value and language tag.</td>
 					<td>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.
 						<p>
-						Servers MUST implement one of the following semantics:
+						Servers MUST implement, and SHOULD document, one of the following semantics:
 						<ul>
 							<li>case sensitive string compare</li>
 							<li>case insensitive string compare</li>
@@ -1305,14 +1107,14 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 								and <code>_</code> means match any single character.</li>
 						</ul>
 						A server MAY choose which of the above to apply based on whether the string contains a <code>%</code> or 
-						<code>_</code> character, and/or the property being compared.
+						<code>_</code> character, and/or the property being compared. A server SHOULD document if this is the case.
 						<p>
 						Other operators MAY be supported and MAY have implementation-dependent semantics.
 						A server MAY report such usage as unsupported.</td>
 				</tr>
 				<tr>
 					<td><code>oslc:Resource</code></td>
-					<td>A uri_ref_esc such as <code>&lt;http://example.com&gt;</code>> MUST be supported.
+					<td>A uri_ref_esc such as <code>&lt;http://example.org&gt;</code>> MUST be supported.
 						<p>
 						A PrefixedName such as <code>oslc:Zero-or-many</code>, MAY be supported. If supported, the value
 						MUST be treated as equivalent to its corresponding uri_ref_esc.</td>
@@ -1324,6 +1126,16 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 					</td>
 				</tr>
 			</table>
+			
+			<p>If <code>oslc.where</code> specifies a property that has an defined namespace prefix, but the property is not known, 
+			for example not defined in the resource shape for that type of resource, an implementation MAY do either of:</p>
+			<ol>
+				<li>Respond with a <code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.
+				This is appropriate for implementations that have finite and enumerable properties of resources that
+				cannot determine how to query for undefined properties.</li>
+				<li>Execute the query and return a normal query response. This is appropriate for implementations that
+				have open sets of properties, not all of which might be in a resource shape.</li> 
+			</ol>
 		
 		</section>    <!-- Query parameters/oslc.where/semantics -->
 	</section>     <!-- Query parameters/oslc.where -->
@@ -1339,23 +1151,14 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		A high score indicates a good match. The matching resources are returned in the response, sorted by the score in descending order.
 		Each resource that is returned in the response is annotated with a special property, <code>oslc:score</code>, that gives its
 		match score.
-		
-		<p>If an implementation does not support the <code>oslc.searchTerms</code> parameter, the response should be
-		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
-		
-		<div style="margin-left: 4em">
-			<font color="red">[David]<br>
-				This defines unhappy paths:
-				<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red"><b>[OSLCCORE-105]</b></font></a>
-  			</font><br><br>
-		</div>
 
-		<p>An OSLC domain specification that supports full-text search SHOULD specify which resource properties are indexed so that
-		search results are consistent across implementations.
+		<p>An OSLC domain specification that supports full-text search SHOULD specify which resource properties may be
+		supported in a full-text search.
 
 		<p>When <code>oslc.searchTerms</code> is used in the request, each matching resource (hit) in the response MAY contain an
 		<code>oslc:score</code> property. Note that <code>oslc:score</code> is not purely a property of the resource since it also depends on the
-		search terms. It is therefore a pseudo-property whose validity is limited to the HTTP response.</p>
+		search terms. It is therefore a pseudo-property whose validity is limited to the HTTP response, and for a paged response,
+		its subsequent pages.</p>
 
 		<p>The <code>oslc:score</code> property MUST be a non-negative number and SHOULD be in the range from 0-100.
 		Results MUST be ordered with the entry with the largest <code>oslc:score</code> occurring first.</p>
@@ -1366,18 +1169,10 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		This behavior is like prepending the list of sort keys specified in <code>oslc.orderBy</code> with the key <code>-oslc:score</code>.
 		However, the pseudo-property <code>oslc:score</code> MUST NOT appear explicitly in <code>oslc.orderBy</code>.</p>
 
-		<p>The <code>oslc.where query</code> parameter MAY be used with <code>oslc.searchTerms</code>. If an implementation
-		does not support such combined usage, the response should be <code>501 Not Implemented</code> as described in
-		<a href="#ErrorHandling">Error Handling</a>. When <code>oslc.where</code> is used with <code>oslc.searchTerms</code> 
+		<p>The <code>oslc.where query</code> parameter MAY be used with <code>oslc.searchTerms</code>.
+		When <code>oslc.where</code> is used with <code>oslc.searchTerms</code> 
 		and is supported, then the set of resources searched for matches MUST be restricted to only those resources that satisfy
 		the conditions in <code>oslc.where</code>.
-		
-		<div style="margin-left: 4em">
-			<font color="red">[David]<br>
-				This defines unhappy paths:
-				<a href="https://issues.oasis-open.org/browse/OSLCCORE-105"><font color="red"><b>[OSLCCORE-105]</b></font></a>
-  			</font><br><br>
-		</div>
 		
 		For example, the following query returns the high severity change requests
 		that deal with database performance:
@@ -1401,7 +1196,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		
 
 		<pre class="example">		
-    GET http://example.com/queryBase?oslc.where=oslc_cm%3Aseverity%3D%22high%22
+    GET http://example.org/queryBase?oslc.where=oslc_cm%3Aseverity%3D%22high%22
         &amp;oslc.searchTerms=%22database%22%2C%22performance%22
 		</pre>
 
@@ -1424,30 +1219,17 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<p>The <code>oslc.orderBy</code> query parameter lets you sort the result set. It is like the <code>ORDER BY</code> clause of a
 		SQL statement.
 		
-		<div style="margin-left: 4em">
-			<font color="red">[David]<br>
-				The spec was unclear whether it only applied to <code>oslc.searchTerms</code> or how clients
-				could determine ordering given the query result container contains a flat list of member references.
-				<a href="https://issues.oasis-open.org/browse/OSLCCORE-143"><font color="red"><b>[OSLCCORE-143]</b></font></a>
-  			</font><br><br>
-		</div>
-		
-		
-		<p>If an implementation does not support the <code>oslc.orderBy</code> parameter, the response SHOULD be
-		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.
-		If <code>oslc.orderBy</code> specifies a property on which ordering is not supported, the response
-		SHOULD be <code>400 Bad Request</code>.</p>
-		
 		<p>If a server supports the <code>oslc.orderBy</code> parameter and this is specified in the request:
 		<ul>
-			<li>A paged response SHOULD reflect the ordering of members specified by <code>oslc.orderBy</code>. For example,
-				if <code>orderBy=+dcterms:created</code> is specified, the first page should contain the members that
-				were created earliest, and any subsequent pages should contain members created on or after the
-				members in the previous page.</li>
-			<li>The query result MAY include a <code>oslc:order</code> property that reflects the ordering of the
+			<li>A paged response SHOULD reflect the ordering of members specified by <code>oslc.orderBy</code>. The
+				first page SHOULD contain the members that are ordered first, and any subsequent pages SHOULD contain
+				members ordered after the members in the previous page.</li>
+			<li>The query result MAY include a <code>oslc:order</code> property whose positive integer value that reflects the ordering of the
 				the members specified by <code>oslc.orderBy</code>. Note that <code>oslc:order</code> is not purely a 
 				property of the resource since it also depends on the <code>oslc.orderBy</code> value. It is therefore
-				a pseudo-property whose validity is limited to the HTTP response.</li>
+				a pseudo-property whose validity is limited to the HTTP response to the query and, for a paged response,
+				its subsequent pages. For a paged response, the smallest <code>oslc:order</code> value in a page
+				MUST be greater than largest <code>oslc:order</code> value in any previous page.</li>
 		</ul>
 		
 		<p>If <code>oslc.orderBy</code> is not specified, the ordering of the results is undefined and MAY be
@@ -1478,7 +1260,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		
 		
 		<pre class="example" title="Sort high severity change requests created by creator name, and created date-time">
-	GET http://example.com/queryBase
+	GET http://example.org/queryBase
 	    ?oslc.orderBy=dcterms%3Acreator%7B%2Bfoaf%3Aname%7D%2C-dcterms%3Acreated
 		&amp;oslc.where=oslc_cm%3Aseverity%3D%22high%22
 		</pre>
@@ -1511,45 +1293,27 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		of the member resources. If <code>oslc.select</code> specifies <code>rdf:nil</code> and other properties, servers MAY choose to
 		respond with <code>400 Bad Request</code>, or ignore the <code>rdf:nil</code>, or have other implementation dependent
 		behavior.</p>
-		
-		<p>If an implementation does not support the <code>oslc.select</code> parameter, the response SHOULD be
-		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
-		
-		<p>If <code>oslc.select</code> specifies a property that has an undefined namespace prefix, the response SHOULD be
-		<code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
-		
-		<p>If <code>oslc.select</code> specifies a property that has an defined namespace prefix, but the property is not known, a
-		server SHOULD ignore the unknown property rather than report an error.
 
 		<p>The syntax of the <code>oslc.select</code> query parameter is the same as that of the <code>oslc.properties</code> query parameter.
 		See <a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a> for the syntax.
 		However, the property names that appear in the <code>oslc.select</code> query parameter are those that belong to the 
 		resources in the member list as opposed to those that belong to the starting subject resource which is that of
-		the <i>query result container</i>.
-		<a href="https://issues.oasis-open.org/browse/OSLCCORE-122"><font color="red"><b>[OSLCCORE-122]</b></font></a></p>
+		the <i>query result container</i> which uses the query base URI.
+		
+		<p><font color="red">David: We need to reference <code>oslc.properties</code> for the syntax, but there are no compelling use
+		case for <code>oslc.properties</code> for OSLC Query. So do we need further clarification, such as an example, or should
+		we just leave the reference to the syntax and not attempt to describe the difference between <code>oslc.select</code> and
+		<code>oslc.properties</code>?
+		</font>.
 		
 		<p>As in the case of <code>oslc.properties</code>, the wildcard is equivalent to the list of all properties of the member resources.
 		Implementations MAY support the use of the wildcard for immediate and/or nested properties of member resources.
-		If a specific use of the wildcard in <code>oslc.select</code> is not supported, the response should be
-		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.
-		
-		<div style="margin-left: 4em">
-			<font color="red">[David]<br>
-				This defines unhappy paths:
-				<a href="https://issues.oasis-open.org/browse/OSLCCORE-138"><font color="red"><b>[OSLCCORE-138]</b></font></a>
-  			</font><br><br>
-		</div>
+		Servers SHOULD document any restriction on the use of the wildcard.
 		
 		<p>A server MAY include additional member properties in the response to those specified in the 
 		<code>oslc.select</code> query parameter. Clients SHOULD NOT assume that only the specified
 		properties will be included.
 		
-		<div style="margin-left: 4em">
-			<font color="red">[David]<br>
-				Existing implementations often include <code>rdf:type</code> with the specified properties.
-  			</font><br><br>
-		</div>
-
 		<p>For example, the following query finds the change requests created by any user named "Deb" and includes the
 		<code>dcterms:title</code> and <code>dcterms:creator</code> for each change request found by the query.
 		<br><br>
@@ -1571,7 +1335,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		</div>
 		
 		<pre class="example" title="Query for all change requests created by any user named 'Deb'">
-GET https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
+GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
     ?oslc.where=dcterms%3Acreator%20%7Bfoaf%3Aname%3D%22Deb%22%7D
     &amp;oslc.select=dcterms%3Atitle%2Cdcterms%3Acreator
 
@@ -1593,86 +1357,86 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 @prefix rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-&lt;https://host:9443/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
+&lt;https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems>
     a ldp:BasicContainer ;
     ldp:contains
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12> , 
-        &lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12> , 
+        &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8> .
         
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "To many messages logged in the console"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Calculation error"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Some accessibility issues"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Browser Exception"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Not possible to change a user password"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Improve link colors"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Login not working anymore"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Increase size of overall application window"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Improve loan calculation algorithm"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Search is not finding this term"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Button sizes are too small"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Offer more services related to loans"^^rdf:XMLLiteral .
 
-&lt;https://host:9443/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8>
+&lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8>
       a       oslc_cm:ChangeRequest ;
-      dcterms:creator &lt;https://host:9443/jts/users/deb> ;
+      dcterms:creator &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Add context sensitive help support everywhere"^^rdf:XMLLiteral .
 		</pre>		
 	</section>    <!-- Query parameters/oslc.select -->
@@ -1685,17 +1449,12 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		<p>The <code>oslc.properties</code> query parameter lets you specify which immediate properties of the query result
 		container to include.</p>
 		
+		<p><font color="red">David: We need to reference <code>oslc.properties</code> for the syntax, but there are no compelling use
+		case for <code>oslc.properties</code> for OSLC Query. So should we remove this section?
+		</font>.
+		
 		<p>If <code>oslc.properties</code> is not specified, the response SHOULD include all the properties of the
 		query result container.</p>
-		
-		<p>If an implementation does not support the <code>oslc.properties</code> parameter, the response SHOULD be
-		<code>501 Not Implemented</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
-		
-		<p>If <code>oslc.oslc.properties</code> specifies a property that has an undefined namespace prefix, the response SHOULD be
-		<code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.</p>
-		
-		<p>If <code>oslc.oslc.properties</code> specifies a property that has an defined namespace prefix, but the property is not known, a
-		server SHOULD ignore the unknown property rather than report an error.
 
 		<p>The syntax of the <code>oslc.properties</code> query parameter is described in
 		<a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a>.
@@ -1704,19 +1463,13 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 	<!-- Query parameters/oslc.paging -->
 	<section id="oslc.paging">
 		<h3>oslc.paging</h3>
-		<div style="margin-left: 2em">
-		<font color="red">[David]<br>
-			I've added this section to the query specification to provide an example and because I found that some implementations 
-			either always give a paged response, or do so when the query result exceeds a certain size.
-		</font><br><br>
-	    </div>
 		Servers MAY support a <code>oslc.paging</code> query parameter. Implementations MAY choose to ignore the parameter.
 		Servers that support paging of query results SHOULD use a paged response when <code>oslc.paging=true</code>
 		is specified. Servers MAY also provide a paged response if the parameter is not specified and the query
 		result includes a large number of members or a large number of RDF statements.
 	   
 	    <pre class="example" title="Query for all change requests with paging">	
-		GET https://localhost:9443/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems&oslc.paging=true
+		GET https://example.org/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems&amp;oslc.paging=true
 Accept: text/turtle
 OSLC-Core-Version: 2.0
 
@@ -1742,63 +1495,63 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
 @prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix oslc:    &lt;http://open-services.net/ns/core#> .
 
-&lt;https://localhost:9443/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems>
+&lt;https://example.org/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems>
     a ldp:BasicContainer ;
         ldp:contains 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/126544> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/163518> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/99398> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/157559> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/128024> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/126992> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/90641> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/163178> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/276059> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/95469> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/217716> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/161823> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/42317> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/70584> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/126434> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/104751> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/139381> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/263005> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/105938> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/133616> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/204463> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/250934> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/66180> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/52981> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/69789> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/112342> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/210019> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/78577> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/100271> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/109336> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/72037> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/128115> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/71659> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/104241> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/75103> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/182157> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/156808> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/108460> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/47283> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/285162> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/135240> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/206800> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/117595> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/59362> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/135620> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/222107> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/133136> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/80140> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/251947> , 
-            &lt;https://localhost:9443/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/74496> .
-
-&lt;https://localhost:9443/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems?_resultToken=_nIokIFUAEeibptZOC98gng&oslc.pageSize=50&_startIndex=0>
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/126544> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/163518> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/99398> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/157559> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/128024> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/126992> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/90641> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/163178> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/276059> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/95469> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/217716> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/161823> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/42317> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/70584> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/126434> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/104751> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/139381> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/263005> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/105938> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/133616> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/204463> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/250934> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/66180> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/52981> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/69789> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/112342> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/210019> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/78577> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/100271> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/109336> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/72037> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/128115> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/71659> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/104241> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/75103> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/182157> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/156808> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/108460> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/47283> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/285162> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/135240> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/206800> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/117595> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/59362> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/135620> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/222107> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/133136> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/80140> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/251947> , 
+            &lt;https://example.org/jazz/resource/itemName/com.ibm.team.workitem.WorkItem/74496> .
+<br>
+&lt;https://example.org/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems?_resultToken=_nIokIFUAEeibptZOC98gng&amp;oslc.pageSize=50&amp;_startIndex=0>
     a       oslc:ResponseInfo ;
-    oslc:nextPage &lt;https://localhost:9443/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems?_resultToken=_nIokIFUAEeibptZOC98gng&oslc.pageSize=50&_startIndex=50> ;
+    oslc:nextPage &lt;https://example.org/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems?_resultToken=_nIokIFUAEeibptZOC98gng&amp;oslc.pageSize=50&amp;_startIndex=50> ;
     oslc:totalCount "82991" ;
     dcterms:title "Work Items" .
 </pre>
@@ -1807,13 +1560,6 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
 	<!-- Query parameters/oslc.pageSize -->
 	<section id="oslc.pageSize">
 		<h3>oslc.pageSize</h3>
-		<div style="margin-left: 2em">
-		<font color="red">[David]<br>
-			I've added this section to the query specification because implementations may have some practical 
-			considerations about how they determine the page boundaries.
-		</font><br><br>
-	    </div>
-	    
 		Servers MAY support a <code>oslc.pageSize</code> query parameter. Implementations MAY choose to ignore the parameter,
 		or MAY use it as a hint for how a response should be paged and use page boundaries that do not exactly match the
 		specified page size. The page size is expressed in terms of the number of RDF statements that are included in the
@@ -1826,27 +1572,25 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
 
 <section id="ErrorHandling">
     <h2>Error Handling</h2>
-    
-    <div style="margin-left: 4em">
-		<font color="red">[David]<br>
-			This is a new section describing unhappy paths.
-			<a href="https://issues.oasis-open.org/browse/OSLCCORE-134"><font color="red"><b>[OSLCCORE-134]</b></font></a>
-			<a href="https://issues.oasis-open.org/browse/OSLCCORE-147"><font color="red"><b>[OSLCCORE-147]</b></font></a>
-			<a href="https://issues.oasis-open.org/browse/OSLCCORE-149"><font color="red"><b>[OSLCCORE-149]</b></font></a>
-  		</font><br><br>
-	</div>
 
     If a <code>GET</code> or <code>POST</code> of a query base URI cannot be executed, the response MUST include a response 
     body whose RDF contains at least one <code>oslc:Error</code> describing the cause of the error.
     
-    <p>If the error is due to use of an OSLC query parameter that is not supported, the response status SHOULD be <code>501 Not Implemented</code>.
-    Implementations that do not support a specific query parameter need not parse its value.</p>
+    <p>If the error is due to use of <code>oslc.where</code>, <code>oslc.searchTerms</code>, <code>oslc.orderBy</code>, <code>oslc.select</code>,
+    or <code>oslc.properties</code> and that query parameter is not supported, the response status SHOULD be <code>501 Not Implemented</code>.
+    Implementations that do not support a specific query parameter need not parse or validate its value.</p>
 
 	<p>If the error is due to a supported but malformed query parameter value, such as one that does not match the supported syntax, then
 	the response status code SHOULD be <code>400 Bad Request</code>.</p>
 	
-	<p>If the query has well-formed syntactically valid query parameter values, but the implementation does not support
-	a specific use of such a query parameter, the response status SHOULD be <code>501 Not Implemented</code>.</p>
+	<p>If the error is due to a supported <code>oslc.where</code>, <code>oslc.select</code>, <code>oslc.properties</code>, or <code>oslc.orderBy</code> 
+	parameter, and its value references a namespace that is not defined by default or with <code>oslc.prefix</code>, the response status code 
+	SHOULD be <code>400 Bad Request</code>.</p>
+	
+	<p>If a query uses a supported query parameter, and the parameter value is syntactically valid, but the implementation does not support
+	a specific use of such a query parameter, the response status SHOULD be <code>501 Not Implemented</code>.
+	For example, this might apply if a specific use of the wildcard in <code>oslc.select</code> is not supported.
+	</p>
 	
 	<p>If the query is valid, but the server failed to execute the request in some unexpected way, then the response
 	status SHOULD be <code>500 Internal Server Error</code>.</p>
@@ -1873,24 +1617,96 @@ Brian Steele, IBM<br></p>
 
 
 <section class="appendix informative" id="history">
-<h2>Change History</h2>
-<table border=1 cellspacing=0 cellpadding=0>
- <tr>
-  <td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;
-  padding:0in 5.4pt 0in 5.4pt'><b>Revision</b></td>
-  <td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Date</b></td>
-  <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Editor</b></td>
-  <td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Changes Made</b></td>
- </tr>
- <tr>
-  <td>01</td>
-  <td>07/06/2016</td>
-  <td>Jim Amsden</td>
-  <td>CSD was approved and published.</td>
-</table>
+	<h2>Change History</h2>
+	<table border=1 cellspacing=0 cellpadding=0>
+		<tr>
+			<td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+				<b>Revision</b>
+			</td>
+			<td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+				<b>Date</b>
+			</td>
+			<td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+				<b>Editor</b>
+			</td>
+ 			<td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+ 				<b>Changes Made</b>
+ 			</td>
+		</tr>
+ 		<tr>
+			<td>01</td>
+			<td>2016-06-07</td>
+			<td>Jim Amsden</td>
+  			<td>Initial draft template created.</td>
+		</tr>
+		<tr>
+			<td>02</td>
+			<td>2018-08-30</td>
+			<td>David Honey</td>
+			<td>Draft 3.0 specification modified to reflect discussion on early draft and agreed changes.</td>
+		</tr>
+	</table>
+</section>
+	
+<section class="appendix informative" id="differences">
+	<h2>Compatibility with, and summary of changes from, OSLC Query 2.0</h2>
+	
+	<div>
+		<table class="query">
+			<tr>
+				<th>Topic</th>
+				<th>Details</th>
+			</tr>
+			<tr>
+				<td>Query result container</td>
+				<td>Query result containers are compatible with OSLC 2.0 clients. OSLC 2.0 clients should ignore the additional LDPC triples and
+					response headers. The default <code>rdfs:member</code> predicate when no resource shape is specified
+					ensures that OSLC 2.0 clients can consume the query response from a Query 3.0 server.</td>
+			</tr>
+			<tr>
+				<td>Query comparison semantics</td>
+				<td>The OSLC Query 2.0 specification required strict adherence to SPARQL semantics for relational operators and
+				property comparisons. Most implementations based on a standard relational database could only satisfy that requirement
+				by maintaining RDF datasets and using SPARQL on them. Few existing implementations did this because it was overly
+				burdensome, resulting in most implementations being non-compliant. In practice, few clients could assume
+				complete compliance. While it is possible that an OSLC 2.0 client might get results from a OSLC Query 3.0
+				server that are are not compliant with Query 2.0, it is expected that in the majority of cases this will
+				be inconsequential.</td>
+			</tr>
+			<tr>
+				<td><code>oslc.where</code> syntax</td>
+				<td>The only change of <code>oslc.where</code> syntax between OSLC Query 3.0 and OSLC Query 2.0 is the addition
+				of <code>PrefixedName</code> in the <code>value</code> element. The ability to use a prefixed name
+				in a value is useful, especially for enumerated values, and its omission was an oversight in the
+				OSLC Query 2.0 specification.</td>
+			</tr>
+			<tr>
+				<td>wildcard in <code>oslc.select</code> syntax</td>
+				<td>The use of a wildcard in <code>oslc.select</code> has been made optional.</td>
+			</tr>
+			<tr>
+				<td><code>oslc.orderBy</code></td>
+				<td>The semantics of <code>oslc.orderBy</code> has been clarified. A new optional <code>oslc:order</code>
+				pseudo-property has been defined to allow clients to determining the ordering of result members within
+				a non-paged or paged response.</td>
+			</tr>
+			<tr>
+				<td>Error handling</td>
+				<td>The error handling in Query 2.0 was not explicitly described. Query 3.0 clarifies expected and
+				required error handling for consistency and to make it easier for clients to consume.</td>
+			</tr>
+			<tr>
+				<td>Discovery of selectable or queryable properties</td>
+				<td>OSLC Query 2.0 described that a client could discover the resource shape of the returned members
+				but did not define whether those properties were queryable or just selectable with <code>oslc.select</code>.
+				OSLC Core 3.0 introduced a new <code>oslc:queryable</code> property for an OSLC property in an OSLC
+				resource shape. This allows OSLC 3.0 clients to differentiate which properties are supported in a query
+				expression specified by <code>oslc.where</code> or are supported in a <code>oslc.select</code> value.</td>
+			</tr>
+		</table>
+	</div>
+	
+
 </section>
 
 </body>
