@@ -41,6 +41,9 @@
 
     // Only include h1 and h2 levels in the table of contents
     maxTocLevel: 3,
+    
+    // Conformance labels for query spec
+    conformanceLabelPrefix: "QUERY",
 
     // if there a publicly available Editor's Draft, this is the link
     //edDraftURI : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-query.html",
@@ -354,14 +357,15 @@ code.noescape {
 
 <section>
 	<h2>Discovering a Query Capability</h2>
-	
-	An <code>oslc:Service</code> MAY declare zero, one, or many query capabilities using the <code>oslc:queryCapability</code> property.
+	<p class="conformance">
+		An <code>oslc:Service</code> MAY declare zero, one, or many query capabilities using the <code>oslc:queryCapability</code> property.
+	</p>
 	<p><img src="images/CoreDiscoveryUML.png"></p>
 	
-	<p>A query capability SHOULD specify exactly one <code>oslc:resourceShape</code> and that shape SHOULD describe the query result
+	<p class="conformance">A query capability SHOULD specify exactly one <code>oslc:resourceShape</code> and that shape SHOULD describe the query result
 	container.</p>
 	
-	<p>The resource shape referenced by <code>oslc:resourceShape</code> MUST declare exactly one OSLC property with
+	<p class="conformance">The resource shape referenced by <code>oslc:resourceShape</code> MUST declare exactly one OSLC property with
 	<code>oslc:isMemberProperty "true"^^xsd:boolean</code>, and that property SHOULD specify exactly one <code>oslc:valueShape</code>
 	referencing a resource shape that describes the referenced members of that container.</p>
 	
@@ -391,12 +395,16 @@ code.noescape {
 	dcterms:title "Work Item Member"^^rdf:XMLLiteral .
 	</pre>
 	
-	<p>The resource shape referenced by <code>oslc:valueShape</code> in the query result container's resource shape
-	SHOULD declare the properties that can be used in <code>oslc.select</code> and optionally <code>oslc.where</code>.
+	<p class="conformance">The resource shape referenced by <code>oslc:valueShape</code> in the query result container's resource shape
+	SHOULD declare the properties that can be used in <code>oslc.select</code> and optionally <code>oslc.where</code>.</p>
+	
 	OSLC properties that have a <code>oslc:queryable "false"^^xsd:boolean</code> value cannot be specified in 
-	<code>oslc.where</code>. Where a member resource supports nested properties, for example, the <code>foaf:name</code>
+	<code>oslc.where</code>. 
+	
+	<p class="conformance">Where a member resource supports nested properties, for example, the <code>foaf:name</code>
 	of a <code>dcterms:creator</code>, the member resource shape MAY provide a <code>oslc:valueShape</code>
-	for that property. This allows clients to discover both immediate and nested properties that might be used.</p>	
+	for that property.</p>
+	This allows clients to discover both immediate and nested properties that might be used.	
 </section>
 
 
@@ -407,25 +415,28 @@ code.noescape {
 	<ul>
 		<li>a <code>GET</code> on the <i>query base</i> URI of a query capability, with zero, one or
 			more query parameters shown in the table below.
-			Servers MUST support a GET on the <i>query base</i> URI of a query capability.
+			<p class="conformance">Servers MUST support a GET on the <i>query base</i> URI of a query capability.</p>
 			This is the simplest usage, but clients must be careful to avoid constructing URIs
-			whose length exceeds server limits. If such a GET URI exceeds 1000 characters,
-			clients SHOULD use the POST mechanism described below.</li>
+			whose length exceeds server limits.
+			<p class="conformance">If such a GET URI exceeds 1000 characters, clients SHOULD use the POST mechanism described below.</p>
+		</li>
 		<li>a <code>POST</code> on the <i>query base</i> URI of a query capability with a
 			<code>application/x-www-form-urlencoded</code> body containing zero, one or
 			more query parameters shown in the table below.
-			Servers SHOULD support <code>POST</code> on the <i>query base</i> URI of a query capability
-			to avoid clients having to construct URIs that are too long.</li>
+			<p class="conformance">Servers SHOULD support <code>POST</code> on the <i>query base</i> URI of a query capability
+			to avoid clients having to construct URIs that are too long.</p>
+		</li>
 	</ul>
+
 	
-	<p>For a successful operation:</p>
-	<ul>
-		<li>The response status code MUST be <code>200 OK</code> for a non-paged result, or for an OSLC paged result.</li>
-		<li>The response body MUST be RDF that includes a query result container whose subject is the
-			query base URI.</li>
-	</ul>
+	<p class="conformance">For a successful operation, the response status code MUST be <code>200 OK</code> for a non-paged result, 
+	or for an OSLC paged result.</p>
 	
-	The <code>GET</code> or <code>POST</code> request MAY use zero, one or more of the OSLC query parameters listed in the table below.
+	<p class="conformance">For a successful operation, the response body MUST be RDF that includes a query result container whose 
+	subject is the query base URI.</p>
+	
+	<p class="conformance">The <code>GET</code> or <code>POST</code> request MAY use zero, one or more of the OSLC query parameters 
+	listed in the table below.</p>
 	<br><br>
 	<div style="margin-left: 2em">
 		<table class="query">
@@ -435,18 +446,12 @@ code.noescape {
 			</tr>
 			<tr>
 				<td><code>oslc.where</code></td>
-				<td>Limits the query results to members that satisfy the specified query expression. If neither
-					<code>oslc.where</code> nor <code>oslc.searchTerms</code> is specified, then the query
-					results SHOULD be all the members of the resource type associated with the query capability.
-					See <a href="#oslc.where">oslc.where</a> for details.</td>
+				<td>Limits the query results to members that satisfy the specified query expression.</td>
 			</tr>
 			<tr>
 				<td><code>oslc.searchTerms</code></td>
 				<td>Score each member resource using a full-text search on its text-valued properties, and sort them
-					in descending order of score. If neither
-					<code>oslc.where</code> nor <code>oslc.searchTerms</code> is specified, then the query
-					results SHOULD be all the members of the resource type associated with the query capability.
-					See <a href="#oslc.searchTerms">oslc.searchTerms</a> for details.</td>
+					in descending order of score.</td>
 			</tr>
 			<tr>
 				<td><code>oslc.orderBy</code></td>
@@ -485,10 +490,9 @@ code.noescape {
 			</tr>
 		</table>
 	</div>	
-	<p>		
-	If a GET or POST on a query base URI neither specifies <code>oslc.where</code> nor <code>oslc.searchTerms</code>, the
-	server MUST return a query response describing all the resources that have one or more of the RDF types specified by
-	the <code>oslc:resourceType</code> of the <code>oslc:QueryCapability</code> that defines the <code>oslc:queryBase</code>.
+	<p class="conformance">If a GET or POST on a query base URI neither specifies <code>oslc.where</code> nor <code>oslc.searchTerms</code>, 
+	the server MUST return a query response describing all the resources that have one or more of the RDF types specified by
+	the <code>oslc:resourceType</code> of the <code>oslc:QueryCapability</code> that defines the <code>oslc:queryBase</code>.</p>
 
 </section>
 
@@ -497,17 +501,17 @@ code.noescape {
 <section>
 	<h2>Query Result Containers</h2>
 	
-	The response body for a successful <code>GET</code> or <code>POST</code> on a query base URI MUST include a query result container whose
-	subject is the query base URI.
+	<p class="conformance">The response body for a successful <code>GET</code> or <code>POST</code> on a query base URI MUST 
+	include a query result container whose subject is the query base URI.</p>
 	
-	<p>The container MUST be a <i>Linked Data Platform Container</i> (LDPC) referencing each member 
+	<p class="conformance">The container MUST be a <i>Linked Data Platform Container</i> (LDPC) referencing each member 
 	resource found by the query. The response SHOULD include a <code>Link</code> header that describes the type of LDPC returned.
 	This provides compatibility with OSLC Core 3.0 and its wider use of LDPCs. [[LDP]]</p>
 	
-	<p>If the query capability that declared the base URI does not declare a <code>oslc:resourceShape</code> then the container 
+	<p class="conformance">If the query capability that declared the base URI does not declare a <code>oslc:resourceShape</code> then the container 
 	MUST include an <code>rdfs:member</code> reference to each of the result members.<p>
 	
-	<p>If the query capability that declared the base URI declares a <code>oslc:resourceShape</code> and that resource shape
+	<p class="conformance">If the query capability that declared the base URI declares a <code>oslc:resourceShape</code> and that resource shape
 	defines a container property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code> then
 	the query result container MUST include the specified member property referencing each of query result member.</p>
 
@@ -564,18 +568,20 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 <section id="QueryResultPaging">
 	<h2>Query Result Paging</h2>
 	
-    A query capability MAY support 
-    <a href="./oslc-core.html#resourcePaging" target="_blank">OSLC Core Resource Paging</a>. 
-    <p>
-    A paged response MAY occur automatically if the server determines that the total query result set exceeds some implementation dependent
-    threshold, or if paging is supported and the request includes a <code>oslc.paging=true</code> query parameter.
-    <p>
-    A paged response to a query MUST include a <a href="./core-vocab.html#responseInfo" target="_blank">oslc:ResponseInfo</a> if there is a
-    next page.
-    <p>
-    If the query was performed using a <code>POST</code> rather than a <code>GET</code>, the <code>oslc:ResponseInfo</code> SHOULD contain
-    a <code>oslc:postBody</code> and the client should get the next query results page by performing a <code>POST</code> with the specified 
-    post body using a content type of <code>application/x-www-form-urlencoded</code>.
+    <p class="conformance">A query capability MAY support 
+    <a href="./oslc-core.html#resourcePaging" target="_blank">OSLC Core Resource Paging</a>.</p>
+    
+    <p class="conformance">A paged response MAY occur automatically if the server determines that the total query result 
+    set exceeds some implementation dependent threshold, or if paging is supported and the request includes a 
+    <code>oslc.paging=true</code> query parameter.</p>
+    
+    <p class="conformance">A paged response to a query MUST include a 
+    <a href="./core-vocab.html#responseInfo" target="_blank">oslc:ResponseInfo</a> if there is a next page.</p>
+    
+    <p class="conformance">If the query was performed using a <code>POST</code> rather than a <code>GET</code>, 
+    the <code>oslc:ResponseInfo</code> SHOULD contain a <code>oslc:postBody</code> and the client should get the next 
+    query results page by performing a <code>POST</code> with the specified  post body using a content type of 
+    <code>application/x-www-form-urlencoded</code>.</p>
 </section>    <!-- Query Result Paging -->
 
 
@@ -591,19 +597,20 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<p>The query parameters defined here are intended to satisfy simple query requirements, and be easy to both use and implement.
 		More complex query requirements should be satisfied using a full query language, e.g. SQL or SPARQL.</p>
 
-		<p>This specification formally defines the syntax of the <code>oslc.where</code>, <code>oslc.searchTerms</code>, and <code>oslc.orderBy</code> parameters using Extended Backus-Naur Form [[EBNF]]
-		and informally illustrates  their semantics with simple examples. See <a href="#oslc.where.syntax">oslc.where syntax</a>, <a href="#oslc.searchTerms.syntax">oslc.searchTerms syntax</a>, 
+		<p>This specification formally defines the syntax of the <code>oslc.where</code>, <code>oslc.searchTerms</code>, and 
+		<code>oslc.orderBy</code> parameters using Extended Backus-Naur Form [[EBNF]] and informally illustrates their semantics 
+		with simple examples. See <a href="#oslc.where.syntax">oslc.where syntax</a>, <a href="#oslc.searchTerms.syntax">oslc.searchTerms syntax</a>, 
 		and <a href="#oslc.orderBy.syntax">oslc.orderBy syntax</a> for the formal syntax.
 
-		<p>The query parameters MAY contain characters that MUST be URL encoded when transmitted in an HTTP request. The examples below show
-		both unencoded and encoded query parameters for clarity.</p>
+		<p class="conformance">The query parameters MAY contain characters that MUST be URL encoded when transmitted in an HTTP request.</p>
+		The examples below show both unencoded and encoded query parameters for clarity.
 
 		<p>All query parameter names are prefixed with the characters &quot;<code>oslc.</code>&quot; The following sections define
 		these query parameters.</p>
 
-		<p>An OSLC domain specification MAY use some or all of these query parameters, and SHOULD use these rather than defining new query parameters
-		that have the same or very similar meanings. Each of these query parameters SHOULD appear at most once in a query. The behavior is undefined
-		when a query parameter appears more than once.</p>
+		<p class="conformance">An OSLC domain specification MAY use some or all of these query parameters, and SHOULD use these rather than 
+		defining new query parameters that have the same or very similar meanings. Each of these query parameters SHOULD appear at most once in a query. 
+		The behavior is undefined when a query parameter appears more than once.</p>
 
 		<p>In the following sections, syntax is formally defined using a common extended form of BNF. Informal definitions and comments are delimited
 		by <code>/*</code> and <code>*/</code>.</p>
@@ -837,7 +844,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 			<div style="margin-left: 2em">
 				<code>wildcard</code><br>
 				As in the case of <code>oslc.properties</code>, the "*" <code>wildcard</code> matches any property.
-				Implementations MAY support the use of the wildcard in property names and nested properties.
+				<p class="conformance">Implementations MAY support the use of the wildcard in property names and nested properties.</p>
 				<br>
 				<br>
 				<code>boolean_op</code><br>
@@ -845,8 +852,6 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				boolean expression. The only boolean operation allowed is " and " which represents conjunction. The boolean operator " or " for 
 				disjunction is not allowed in the interests of keeping the syntax simple. The effect of " or " in the simple case of testing a 
 				property for equality with one of several values can be achieved through the use of the " in " operator.
-			
-			
 			
 				For example, the following query expression might find change requests with severity "high" or "medium":
 				<br><br>
@@ -866,8 +871,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		    GET http://example.org/queryBase?oslc.where=oslc_cm%3Aseverity%20in%20%5B%22high%22%2C%22medium%22%5D
 				</pre>
 				<code>space</code><br>
-				The <code>space</code> term represents a single space character. A space character MAY be used to delimit the <code>binary_op</code> term in
-				the <code>compound_term</code> term to improve readability.
+				The <code>space</code> term represents a single space character.
+				<p class="conformance">A space character MAY be used to delimit the <code>binary_op</code> term in
+				the <code>compound_term</code> term to improve readability.</p>
 				<br>
 				<br>
 				<code>comparison_op</code><br>
@@ -924,7 +930,8 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				For example, <code>"Bonjour"@fr</code> is a plain literal with a language tag for French.
 	
 				<p>A typed literal is formed by suffixing a quoted string (<code>string_esc</code>) with "^^" followed by
-				the prefixed name (<code>PrefixedName</code>) of a datatype URI. If the range of a property includes literal values from more than
+				the prefixed name (<code>PrefixedName</code>) of a datatype URI.</p>
+				<p class="conformance">If the range of a property includes literal values from more than
 				one datatype, then a typed literal MUST be used in order to avoid ambiguity. Otherwise a plain literal MAY be used and the service
 				SHOULD infer the datatype.</p>
 	
@@ -942,17 +949,17 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				<br>
 				<br>
 				<code>string_esc</code><br>
-				The <code>string_esc</code> term represents an arbitrary sequence of characters. The sequence of characters is enclosed in
-				double quote (") characters. Therefore, the double quote character itself MUST be escaped. More generally, all occurrences of
-				the double quote character in the string MUST be replaced by the sequence \" and all occurrences of the backslash character \
-				in the actual value MUST be replaced by the sequence \\ in the escaped value. This escaping process MUST be reversed to give the
-				actual value of the string.
+				<p class="conformance">The <code>string_esc</code> term represents an arbitrary sequence of characters. The sequence of 
+				characters is enclosed in double quote (") characters. Therefore, the double quote character itself MUST be escaped. 
+				More generally, all occurrences of the double quote character in the string MUST be replaced by the sequence \" and all 
+				occurrences of the backslash character \ in the actual value MUST be replaced by the sequence \\ in the escaped value. 
+				This escaping process MUST be reversed to give the actual value of the string.</p>
 				<br>
 				<br>
 				<code>scoped_term</code><br>
-				The <code>scoped_term</code> represents the ability to query on nested properties. Servers MAY choose not to
-				support such nested property queries, and SHOULD respond with <code>501 Not Implemented</code> if they are not
-				supported.
+				<p class="conformance">The <code>scoped_term</code> represents the ability to query on nested properties.
+				Servers MAY choose not to support such nested property queries, and SHOULD respond with <code>501 Not Implemented</code> 
+				if they are not supported.</p>
 			</div>
 		</section>    <!-- Query parameters/oslc.where/syntax -->
 	
@@ -962,7 +969,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 			<h4>oslc.where Semantics</h4>
 			The data types supported in OSLC resource shapes are described in <i>Literal Value Types</i> in [[OSLCShape]].
 			The table below shows the forms of <code>value</code> that might be used with a comparison operator, and
-			which comparison operators MUST or MAY be supported, and their semantics.
+			which comparison operators must or may be supported, and their semantics.
 			<p>
 			<table class="query">
 				<tr>
@@ -972,162 +979,173 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				</tr>
 				<tr>
 					<td><code>rdf:XMLLiteral</code></td>
-					<td>An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the 
-						literal in the same way as a plain string literal with the data type removed such as <code>"abc"</code>.
-						<p>
-						A plain string literal, such as <code>"abc"</code> MUST be supported. A server MAY treat the literal 
-						in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.
-						<p>
-						An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MAY treat
-						the literal in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.
-						<p>
-						Servers MAY validate the string for compliance to the XMLLiteral standard.</td>
-					<td>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.
-						<p>
-						Servers MUST implement, and SHOULD document, one of the following semantics:
+					<td>
+						<p class="conformance">An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the 
+						literal in the same way as a plain string literal with the data type removed such as <code>"abc"</code>.</p>
+						<p class="conformance">A plain string literal, such as <code>"abc"</code> MUST be supported. A server MAY treat the literal 
+						in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.</p>
+						<p class="conformance">An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MAY treat
+						the literal in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.</p>
+						<p class="conformance">Servers MAY validate the string for compliance to the XMLLiteral standard.</p>
+					</td>
+					<td>
+						<p class="conformance">The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
+						<p class="conformance">Servers MUST implement, and SHOULD document, one of the following semantics:</p>
 						<ul>
 							<li>case sensitive string compare</li>
 							<li>case insensitive string compare</li>
 							<li>case insensitive string pattern match where <code>%</code> means match zero or more characters, 
 								and <code>_</code> means match any single character.</li>
 						</ul>
-						A server MAY choose which of the above to apply based on whether the string contains a <code>%</code> or 
-						<code>_</code> character, and/or the property being compared. A server SHOULD document if this is the case.
-						<p>
-						Other operators MAY be supported and MAY have implementation-dependent semantics.
-						A server MAY report such usage as unsupported.</td>
+
+						<p class="conformance">A server MAY choose which of the above to apply based on whether the string contains a <code>%</code> or 
+						<code>_</code> character, and/or the property being compared. A server SHOULD document if this is the case.</p>
+						
+						<p class="conformance">Other operators MAY be supported and MAY have implementation-dependent semantics.
+						A server MAY report such usage as unsupported.</p>
+					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:boolean</code></td>
-					<td>The values <code>true</code> and <code>false</code> MUST be supported.
-						<p>
-						The values <code>"true"^^xsd:boolean</code> and <code>"false"^^xsd:boolean</code> MUST be supported
-						and MUST have the same meaning as <code>true</code> and <code>false</code> respectively.
-						<p>
-						The values <code>"true"</code> and <code>"false"</code> MAY be supported, and if so, MUST have the
-						same meaning as <code>true</code> and <code>false</code> respectively.
-						<p>
-						A language tagged literal, such as <code>"true"@en</code> MAY be supported and MAY have implementation
-						and/or locale dependent behavior.</td>
-					<td>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.
-						<p>
-						Other operators MAY be supported and MAY have implementation-dependent semantics.</td>
+					<td>
+						<p class="conformance">The values <code>true</code> and <code>false</code> MUST be supported.</p>
+						<p class="conformance">The values <code>"true"^^xsd:boolean</code> and <code>"false"^^xsd:boolean</code> 
+						MUST be supported and MUST have the same meaning as <code>true</code> and <code>false</code> respectively.</p>
+						<p class="conformance">The values <code>"true"</code> and <code>"false"</code> MAY be supported, and if so, MUST have the
+						same meaning as <code>true</code> and <code>false</code> respectively.</p>
+						<p class="conformance">A language tagged literal, such as <code>"true"@en</code> MAY be supported and MAY have implementation
+						and/or locale dependent behavior.</p>
+					</td>
+					<td>
+						<p class="conformance">The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
+						<p class="conformance">Other operators MAY be supported and MAY have implementation-dependent semantics.</p>
+					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:dateTime</code></td>
-					<td>Values that are conformant with an <code>xsd:dateTime</code>, as described in
+					<td>
+						<p class="conformance">Values that are conformant with an <code>xsd:dateTime</code>, as described in
 						<a href="https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#dt-dateTime">
 						https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#dt-dateTime</a>,
-						such as <code>"2018-01-30T12:25:00"^^xsd:dateTime</code>, MUST be supported.
-						<p>
-						Plain string literals whose string value conforms to an <code>xsd:dateTime</code>, such as 
+						such as <code>"2018-01-30T12:25:00"^^xsd:dateTime</code>, MUST be supported.</p>
+						<p class="conformance">Plain string literals whose string value conforms to an <code>xsd:dateTime</code>, such as 
 						<code>"2018-01-30T12:25:00"</code>, MAY be supported, and if so, MUST have the same meaning as 
-						an <code>xsd:dateTime</code> typed literal such as <code>"2018-01-30T12:25:00"^^xsd:dateTime”</code>.</td>
-					<td>The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
+						an <code>xsd:dateTime</code> typed literal such as <code>"2018-01-30T12:25:00"^^xsd:dateTime”</code>.</p>
+					</td>
+					<td>
+						<p class="conformance">The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
 						<code>&gt;=</code>, and <code>in</code> MUST be supported, and MUST have the semantics of a <code>xsd:dateTime</code>
-						comparison.</td>
+						comparison.</p>
+					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:decimal</code></td>
-					<td>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
-						supported if the server supports <code>xsd:decimal</code> property values.
-						<p>
-						An <code>xsd:decimal</code> typed literal, such as <code>"42"^^xsd:decimal</code> or 
-						<code>"42.0"^^xsd:decimal</code>, MUST be supported if the server supports <code>xsd:decimal</code> property values..
-						<p>
-						A plain string literal with a decimal value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
-						and if so, MUST have the same meaning as the <code>xsd:decimal</code> typed literal.</td>
-					<td>The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
+					<td>
+						<p class="conformance">Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
+						supported if the server supports <code>xsd:decimal</code> property values.</p>
+						<p class="conformance">An <code>xsd:decimal</code> typed literal, such as <code>"42"^^xsd:decimal</code> or 
+						<code>"42.0"^^xsd:decimal</code>, MUST be supported if the server supports <code>xsd:decimal</code> property values.</p>
+						<p class="conformance">A plain string literal with a decimal value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
+						and if so, MUST have the same meaning as the <code>xsd:decimal</code> typed literal.</p>
+					</td>
+					<td>
+						<p class="conformance">The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
 						<code>&gt;=</code>, and <code>in</code> MUST be supported if the server supports <code>xsd:decimal</code> property values, 
-						and if so, MUST have the semantics of a <code>xsd:decimal</code> comparison.</td>
+						and if so, MUST have the semantics of a <code>xsd:decimal</code> comparison.</p>
+					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:double</code></td>
-					<td>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
-						supported if the server supports <code>xsd:double</code> property values.
-						<p>
-						An <code>xsd:double</code> typed literal, such as <code>"42"^^xsd:double</code> or 
-						<code>"42.0"^^xsd:double</code>, MUST be supported if the server supports <code>xsd:double</code> property values.
-						<p>
-						A plain string literal with a double value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
-						and if so, MUST have the same meaning as the <code>xsd:double</code> typed literal.</td>
-					<td>The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
+					<td>
+						<p class="conformance">Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
+						supported if the server supports <code>xsd:double</code> property values.</p>
+						<p class="conformance">An <code>xsd:double</code> typed literal, such as <code>"42"^^xsd:double</code> or 
+						<code>"42.0"^^xsd:double</code>, MUST be supported if the server supports <code>xsd:double</code> property values.</p>
+						<p class="conformance">A plain string literal with a double value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
+						and if so, MUST have the same meaning as the <code>xsd:double</code> typed literal.</p>
+					</td>
+					<td>
+						<p class="conformance">The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
 						<code>&gt;=</code>, and <code>in</code> MUST be supported if the server supports <code>xsd:double</code> property values, 
-						and if so, MUST have the semantics of an  <code>xsd:double</code> comparison.</td>
+						and if so, MUST have the semantics of an  <code>xsd:double</code> comparison.</p>
+					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:float</code></td>
-					<td>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
-						supported if the server supports <code>xsd:float</code> property values.
-						<p>
-						An <code>xsd:float</code> typed literal, such as <code>"42"^^xsd:float</code> or 
-						<code>"42.0"^^xsd:float</code>, MUST be supported if the server supports <code>xsd:float</code> property values.
-						<p>
-						A plain string literal with a float value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
-						and if so, MUST have the same meaning as the <code>xsd:float</code> typed literal.</td>
-					<td>The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
+					<td>
+						<p class="conformance">Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
+						supported if the server supports <code>xsd:float</code> property values.</p>
+						<p class="conformance">An <code>xsd:float</code> typed literal, such as <code>"42"^^xsd:float</code> or 
+						<code>"42.0"^^xsd:float</code>, MUST be supported if the server supports <code>xsd:float</code> property values.</p>
+						<p class="conformance">A plain string literal with a float value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
+						and if so, MUST have the same meaning as the <code>xsd:float</code> typed literal.</p>
+					</td>
+					<td>
+						<p class="conformance">The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
 						<code>&gt;=</code>, and <code>in</code> MUST be supported if the server supports <code>xsd:float</code> property values, 
-						and if so, MUST have the semantics of an  <code>xsd:float</code> comparison.</td>
+						and if so, MUST have the semantics of an  <code>xsd:float</code> comparison.</p>
+					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:integer</code></td>
-					<td>Decimal literals without a decimal point, such as <code>42</code>, MUST be supported.
-						<p>
-						An <code>xsd:integer</code> typed literal, such as <code>"42"^^xsd:integer</code>, MUST be supported.
-						<p>
-						An <code>xsd:decimal</code> typed literal without a decimal point, such as <code>"42"^^xsd:decimal</code>, 
-						MAY be supported, and if so, MUST have the same meaning as an <code>xsd:integer</code> typed literal.
-						<p>
-						A plain string literal with a decimal value, such as <code>"42"</code>, or a language tag string with a decimal
-						value, such as <code>"42"@en</code>, MAY be supported, and if so, MUST have the same meaning as a decimal value.</td>
-					<td>The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
+					<td>
+						<p class="conformance">Decimal literals without a decimal point, such as <code>42</code>, MUST be supported.</p>
+						<p class="conformance">An <code>xsd:integer</code> typed literal, such as <code>"42"^^xsd:integer</code>, MUST be supported.</p>
+						<p class="conformance">An <code>xsd:decimal</code> typed literal without a decimal point, such as <code>"42"^^xsd:decimal</code>, 
+						MAY be supported, and if so, MUST have the same meaning as an <code>xsd:integer</code> typed literal.</p>
+						<p class="conformance">A plain string literal with a decimal value, such as <code>"42"</code>, or a language tag string with a decimal
+						value, such as <code>"42"@en</code>, MAY be supported, and if so, MUST have the same meaning as a decimal value.</p>
+					</td>
+					<td>
+						<p class="conformance">The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
 						<code>&gt;=</code>, and <code>in</code> MUST be supported and MUST have the semantics of an 
-						<code>xsd:integer</code> comparison.</td>
+						<code>xsd:integer</code> comparison.</p>
+					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:string</code></td>
-					<td>A plain string literal, such as <code>"abc"</code> MUST be supported.
-						<p>
-						An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MUST treat
-						the literal in the same way as an plain string literal string such as <code>"abc"</code>.
-						<p>
-						An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the literal
-						in the same way as a plain literal string such as <code>"abc"</code>.
-						<p>
-						A string with a language tag, such as <code>"abc"@en</code>, MAY be supported. The string MAY be treated 
+					<td>
+						<p class="conformance">A plain string literal, such as <code>"abc"</code> MUST be supported.</p>
+						<p class="conformance">An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MUST treat
+						the literal in the same way as an plain string literal string such as <code>"abc"</code>.</p>
+						<p class="conformance">An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the literal
+						in the same way as a plain literal string such as <code>"abc"</code>.</p>
+						<p class="conformance">A string with a language tag, such as <code>"abc"@en</code>, MAY be supported. The string MAY be treated 
 						as a plain string literal, or it MAY be treated as a language specific string that only matches a string
-						with an identical value and language tag.</td>
-					<td>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.
-						<p>
-						Servers MUST implement, and SHOULD document, one of the following semantics:
+						with an identical value and language tag.</p>
+					</td>
+					<td>
+						<p class="conformance">The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
+						<p class="conformance">Servers MUST implement, and SHOULD document, one of the following semantics:</p>
 						<ul>
 							<li>case sensitive string compare</li>
 							<li>case insensitive string compare</li>
 							<li>case insensitive string pattern match where <code>%</code> means match zero or more characters, 
 								and <code>_</code> means match any single character.</li>
 						</ul>
-						A server MAY choose which of the above to apply based on whether the string contains a <code>%</code> or 
-						<code>_</code> character, and/or the property being compared. A server SHOULD document if this is the case.
-						<p>
-						Other operators MAY be supported and MAY have implementation-dependent semantics.
-						A server MAY report such usage as unsupported.</td>
+						<p class="conformance">A server MAY choose which of the above to apply based on whether the string contains a <code>%</code> or 
+						<code>_</code> character, and/or the property being compared. A server SHOULD document if this is the case.</p>
+						<p class="conformance">Other operators MAY be supported and MAY have implementation-dependent semantics.
+						A server MAY report such usage as unsupported.</p>
+					</td>
 				</tr>
 				<tr>
 					<td><code>oslc:Resource</code></td>
-					<td>A uri_ref_esc such as <code>&lt;http://example.org&gt;</code>> MUST be supported.
-						<p>
-						A PrefixedName such as <code>oslc:Zero-or-many</code>, MAY be supported. If supported, the value
-						MUST be treated as equivalent to its corresponding uri_ref_esc.</td>
-					<td>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.
-						A server MUST implement this as a case-sensitive URI string comparison.
-						<p>
-						Other operators MAY be supported and MAY have implementation-dependent semantics, or a server MAY report 
-						such usage as unsupported.
+					<td>
+						<p class="conformance">A uri_ref_esc such as <code>&lt;http://example.org&gt;</code>> MUST be supported.</p>
+						<p class="conformance">A PrefixedName such as <code>oslc:Zero-or-many</code>, MAY be supported. If supported, the value
+						MUST be treated as equivalent to its corresponding uri_ref_esc.</p>
+					</td>
+					<td>
+						<p class="conformance">The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.
+						A server MUST implement this as a case-sensitive URI string comparison.</p>
+						<p class="conformance">Other operators MAY be supported and MAY have implementation-dependent semantics, or a server MAY report 
+						such usage as unsupported.</p>
 					</td>
 				</tr>
 			</table>
 			
-			<p>If <code>oslc.where</code> specifies a property that has an defined namespace prefix, but the property is not known, 
+			<p class="conformance">If <code>oslc.where</code> specifies a property that has an defined namespace prefix, but the property is not known, 
 			for example not defined in the resource shape for that type of resource, an implementation MAY do either of:</p>
 			<ol>
 				<li>Respond with a <code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.
@@ -1152,27 +1170,27 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		Each resource that is returned in the response is annotated with a special property, <code>oslc:score</code>, that gives its
 		match score.
 
-		<p>An OSLC domain specification that supports full-text search SHOULD specify which resource properties may be
-		supported in a full-text search.
+		<p class="conformance">An OSLC domain specification that supports full-text search SHOULD specify which resource properties may be
+		supported in a full-text search.</p>
 
-		<p>When <code>oslc.searchTerms</code> is used in the request, each matching resource (hit) in the response MAY contain an
+		<p class="conformance">When <code>oslc.searchTerms</code> is used in the request, each matching resource (hit) in the response MAY contain an
 		<code>oslc:score</code> property. Note that <code>oslc:score</code> is not purely a property of the resource since it also depends on the
 		search terms. It is therefore a pseudo-property whose validity is limited to the HTTP response, and for a paged response,
 		its subsequent pages.</p>
 
-		<p>The <code>oslc:score</code> property MUST be a non-negative number and SHOULD be in the range from 0-100.
+		<p class="conformance">The <code>oslc:score</code> property MUST be a non-negative number and SHOULD be in the range from 0-100.
 		Results MUST be ordered with the entry with the largest <code>oslc:score</code> occurring first.</p>
 
-		<p>The <code>oslc.orderBy</code> query parameter MAY be used with <code>oslc.searchTerms</code>.
+		<p class="conformance">The <code>oslc.orderBy</code> query parameter MAY be used with <code>oslc.searchTerms</code>.
 		When <code>oslc.orderBy</code> is used with <code>oslc.searchTerms</code> the result MUST be first sorted in descending order by
 		the <code>oslc:score</code> pseudo-property, and then by the other sort keys specified in <code>oslc.orderBy</code>.
 		This behavior is like prepending the list of sort keys specified in <code>oslc.orderBy</code> with the key <code>-oslc:score</code>.
 		However, the pseudo-property <code>oslc:score</code> MUST NOT appear explicitly in <code>oslc.orderBy</code>.</p>
 
-		<p>The <code>oslc.where query</code> parameter MAY be used with <code>oslc.searchTerms</code>.
+		<p class="conformance">The <code>oslc.where query</code> parameter MAY be used with <code>oslc.searchTerms</code>.
 		When <code>oslc.where</code> is used with <code>oslc.searchTerms</code> 
 		and is supported, then the set of resources searched for matches MUST be restricted to only those resources that satisfy
-		the conditions in <code>oslc.where</code>.
+		the conditions in <code>oslc.where</code>.</p>
 		
 		For example, the following query returns the high severity change requests
 		that deal with database performance:
@@ -1221,18 +1239,19 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		
 		<p>If a server supports the <code>oslc.orderBy</code> parameter and this is specified in the request:
 		<ul>
-			<li>A paged response SHOULD reflect the ordering of members specified by <code>oslc.orderBy</code>. The
+			<li><p class="conformance">A paged response SHOULD reflect the ordering of members specified by <code>oslc.orderBy</code>. The
 				first page SHOULD contain the members that are ordered first, and any subsequent pages SHOULD contain
-				members ordered after the members in the previous page.</li>
-			<li>The query result MAY include a <code>oslc:order</code> property whose positive integer value that reflects the ordering of the
-				the members specified by <code>oslc.orderBy</code>. Note that <code>oslc:order</code> is not purely a 
-				property of the resource since it also depends on the <code>oslc.orderBy</code> value. It is therefore
-				a pseudo-property whose validity is limited to the HTTP response to the query and, for a paged response,
-				its subsequent pages. For a paged response, the smallest <code>oslc:order</code> value in a page
-				MUST be greater than largest <code>oslc:order</code> value in any previous page.</li>
+				members ordered after the members in the previous page.</p></li>
+			<li><p class="conformance">The query result MAY include a <code>oslc:order</code> property whose positive integer value that 
+				reflects the ordering of the the members specified by <code>oslc.orderBy</code>.</p>
+				Note that <code>oslc:order</code> is not purely a property of the resource since it also depends on the 
+				<code>oslc.orderBy</code> value. It is therefore a pseudo-property whose validity is limited to the HTTP response to 
+				the query and, for a paged response, its subsequent pages. 
+				<p class="conformance">For a paged response, the smallest <code>oslc:order</code> value in a page
+				MUST be greater than largest <code>oslc:order</code> value in any previous page.</p></li>
 		</ul>
 		
-		<p>If <code>oslc.orderBy</code> is not specified, the ordering of the results is undefined and MAY be
+		<p class="conformance">If <code>oslc.orderBy</code> is not specified, the ordering of the results is undefined and MAY be
 		implementation-dependent.</p>
 
 		<p>You can specify a list of one or more immediate or nested properties of the resources in the member list, and a sort direction for each
@@ -1285,11 +1304,17 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<p>The <code>oslc.select</code> query parameter lets you specify which immediate and nested properties of the resources in the member list
 		to be included in the response. It is like the <code>SELECT</code> clause of a SQL statement.</p>
 		
-		<p>If <code>oslc.select</code> is not specified, the response MAY include some or none of the properties of members in the
-		query result container. Servers SHOULD avoid returning a large number of properties of members by default. If a server chooses
-		to include a multi-valued property by default, and the query response is not paged, it MUST include all the values of that property.</p>
+		<p class="conformance">If <code>oslc.select</code> is not specified, the response MAY include some or none of the properties of members in the
+		query result container.</p>
 		
-		<p>Servers SHOULD accept the value <code>rdf:nil</code>. If specified as the only property, servers SHOULD omit all properties
+		<p class="conformance">Servers SHOULD avoid returning a large number of properties of members by default.</p>
+		
+		<p class="conformance">If a server chooses to include a multi-valued property by default, and the query response is not paged, it MUST 
+		include all the values of that property.</p>
+		
+		<p class="conformance">Clients SHOULD specify <code>oslc.select</code> if they require particular properties to be returned in the query response.</p>
+		
+		<p class="conformance">Servers SHOULD accept the value <code>rdf:nil</code>. If specified as the only property, servers SHOULD omit all properties
 		of the member resources. If <code>oslc.select</code> specifies <code>rdf:nil</code> and other properties, servers MAY choose to
 		respond with <code>400 Bad Request</code>, or ignore the <code>rdf:nil</code>, or have other implementation dependent
 		behavior.</p>
@@ -1306,13 +1331,13 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<code>oslc.properties</code>?
 		</font>.
 		
-		<p>As in the case of <code>oslc.properties</code>, the wildcard is equivalent to the list of all properties of the member resources.
-		Implementations MAY support the use of the wildcard for immediate and/or nested properties of member resources.
-		Servers SHOULD document any restriction on the use of the wildcard.
+		<p>As in the case of <code>oslc.properties</code>, the wildcard is equivalent to the list of all properties of the member resources.</p>
+		<p class="conformance">Implementations MAY support the use of the wildcard for immediate and/or nested properties of member resources.
+		Servers SHOULD document any restriction on the use of the wildcard.</p>
 		
-		<p>A server MAY include additional member properties in the response to those specified in the 
+		<p class="conformance">A server MAY include additional member properties in the response to those specified in the 
 		<code>oslc.select</code> query parameter. Clients SHOULD NOT assume that only the specified
-		properties will be included.
+		properties will be included.</p>
 		
 		<p>For example, the following query finds the change requests created by any user named "Deb" and includes the
 		<code>dcterms:title</code> and <code>dcterms:creator</code> for each change request found by the query.
@@ -1453,7 +1478,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 		case for <code>oslc.properties</code> for OSLC Query. So should we remove this section?
 		</font>.
 		
-		<p>If <code>oslc.properties</code> is not specified, the response SHOULD include all the properties of the
+		<p class="conformance">If <code>oslc.properties</code> is not specified, the response SHOULD include all the properties of the
 		query result container.</p>
 
 		<p>The syntax of the <code>oslc.properties</code> query parameter is described in
@@ -1463,10 +1488,11 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 	<!-- Query parameters/oslc.paging -->
 	<section id="oslc.paging">
 		<h3>oslc.paging</h3>
-		Servers MAY support a <code>oslc.paging</code> query parameter. Implementations MAY choose to ignore the parameter.
-		Servers that support paging of query results SHOULD use a paged response when <code>oslc.paging=true</code>
-		is specified. Servers MAY also provide a paged response if the parameter is not specified and the query
-		result includes a large number of members or a large number of RDF statements.
+		<p class="conformance">Servers MAY support a <code>oslc.paging</code> query parameter. Implementations MAY choose to ignore the parameter.</p>
+		<p class="conformance">Servers that support paging of query results SHOULD use a paged response when <code>oslc.paging=true</code>
+		is specified.</p>
+		<p class="conformance">Servers MAY also provide a paged response if the parameter is not specified and the query
+		result includes a large number of members or a large number of RDF statements.</p>
 	   
 	    <pre class="example" title="Query for all change requests with paging">	
 		GET https://example.org/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems&amp;oslc.paging=true
@@ -1560,10 +1586,10 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
 	<!-- Query parameters/oslc.pageSize -->
 	<section id="oslc.pageSize">
 		<h3>oslc.pageSize</h3>
-		Servers MAY support a <code>oslc.pageSize</code> query parameter. Implementations MAY choose to ignore the parameter,
+		<p class="conformance">Servers MAY support a <code>oslc.pageSize</code> query parameter. Implementations MAY choose to ignore the parameter,
 		or MAY use it as a hint for how a response should be paged and use page boundaries that do not exactly match the
-		specified page size. The page size is expressed in terms of the number of RDF statements that are included in the
-		response body.
+		specified page size.</p>
+		The page size is expressed in terms of the number of RDF statements that are included in the response body.
 	</section>    <!-- Query parameters/oslc.pageSize -->
 </section>    <!-- Query parameters -->
 
@@ -1573,26 +1599,25 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
 <section id="ErrorHandling">
     <h2>Error Handling</h2>
 
-    If a <code>GET</code> or <code>POST</code> of a query base URI cannot be executed, the response MUST include a response 
-    body whose RDF contains at least one <code>oslc:Error</code> describing the cause of the error.
+    <p class="conformance">If a <code>GET</code> or <code>POST</code> of a query base URI cannot be executed, the response MUST include a response 
+    body whose RDF contains at least one <code>oslc:Error</code> describing the cause of the error.</p>
     
-    <p>If the error is due to use of <code>oslc.where</code>, <code>oslc.searchTerms</code>, <code>oslc.orderBy</code>, <code>oslc.select</code>,
+    <p class="conformance">If the error is due to use of <code>oslc.where</code>, <code>oslc.searchTerms</code>, <code>oslc.orderBy</code>, <code>oslc.select</code>,
     or <code>oslc.properties</code> and that query parameter is not supported, the response status SHOULD be <code>501 Not Implemented</code>.
     Implementations that do not support a specific query parameter need not parse or validate its value.</p>
 
-	<p>If the error is due to a supported but malformed query parameter value, such as one that does not match the supported syntax, then
+	<p class="conformance">If the error is due to a supported but malformed query parameter value, such as one that does not match the supported syntax, then
 	the response status code SHOULD be <code>400 Bad Request</code>.</p>
 	
-	<p>If the error is due to a supported <code>oslc.where</code>, <code>oslc.select</code>, <code>oslc.properties</code>, or <code>oslc.orderBy</code> 
-	parameter, and its value references a namespace that is not defined by default or with <code>oslc.prefix</code>, the response status code 
+	<p class="conformance">If the error is due to a supported <code>oslc.where</code>, <code>oslc.select</code>, <code>oslc.properties</code>, 
+	or <code>oslc.orderBy</code>  parameter, and its value references a namespace that is not defined by default or with <code>oslc.prefix</code>, the response status code 
 	SHOULD be <code>400 Bad Request</code>.</p>
 	
-	<p>If a query uses a supported query parameter, and the parameter value is syntactically valid, but the implementation does not support
+	<p class="conformance">If a query uses a supported query parameter, and the parameter value is syntactically valid, but the implementation does not support
 	a specific use of such a query parameter, the response status SHOULD be <code>501 Not Implemented</code>.
-	For example, this might apply if a specific use of the wildcard in <code>oslc.select</code> is not supported.
-	</p>
+	For example, this might apply if a specific use of the wildcard in <code>oslc.select</code> is not supported.</p>
 	
-	<p>If the query is valid, but the server failed to execute the request in some unexpected way, then the response
+	<p class="conformance">If the query is valid, but the server failed to execute the request in some unexpected way, then the response
 	status SHOULD be <code>500 Internal Server Error</code>.</p>
 </section>
 
@@ -1615,6 +1640,7 @@ Martin Sarabura, PTC<br>
 Brian Steele, IBM<br></p>
 </section>
 
+<section id="conformance"></section>
 
 <section class="appendix informative" id="history">
 	<h2>Change History</h2>
