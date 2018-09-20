@@ -466,14 +466,9 @@ code.noescape {
 					See <a href="#oslc.select">oslc.select</a> for details.</td>
 			</tr>
 			<tr>
-				<td><code>oslc.properties</code></td>
-				<td>Only return specified <i>selective properties</i> of the <i>query result container</i>. 
-				See <a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a> and <a href="#oslc.properties">oslc.properties</a> for details.</td>
-			</tr>
-			<tr>
 				<td><code>oslc.prefix</code></td>
-				<td>Specify a namespace prefix that may be used in <code>oslc.where</code>, <code>oslc.orderBy</code>,
-					<code>oslc.select</code>, and <code>oslc.properties</code>. See <code>oslc.prefix</code> in  
+				<td>Specify a namespace prefix that may be used in <code>oslc.where</code>, <code>oslc.orderBy</code>, and
+					<code>oslc.select</code>. See <code>oslc.prefix</code> in  
 					<a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a> for details.</td>
 			</tr>
 			<tr>
@@ -843,7 +838,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 
 			<div style="margin-left: 2em">
 				<code>wildcard</code><br>
-				As in the case of <code>oslc.properties</code>, the "*" <code>wildcard</code> matches any property.
+				The "*" <code>wildcard</code> matches any property.
 				<p class="conformance">Implementations MAY support the use of the wildcard in property names and nested properties.</p>
 				<br>
 				<br>
@@ -1321,15 +1316,6 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 
 		<p>The syntax of the <code>oslc.select</code> query parameter is the same as that of the <code>oslc.properties</code> query parameter.
 		See <a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a> for the syntax.
-		However, the property names that appear in the <code>oslc.select</code> query parameter are those that belong to the 
-		resources in the member list as opposed to those that belong to the starting subject resource which is that of
-		the <i>query result container</i> which uses the query base URI.
-		
-		<p><font color="red">David: We need to reference <code>oslc.properties</code> for the syntax, but there are no compelling use
-		case for <code>oslc.properties</code> for OSLC Query. So do we need further clarification, such as an example, or should
-		we just leave the reference to the syntax and not attempt to describe the difference between <code>oslc.select</code> and
-		<code>oslc.properties</code>?
-		</font>.
 		
 		<p>As in the case of <code>oslc.properties</code>, the wildcard is equivalent to the list of all properties of the member resources.</p>
 		<p class="conformance">Implementations MAY support the use of the wildcard for immediate and/or nested properties of member resources.
@@ -1340,7 +1326,8 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		properties will be included.</p>
 		
 		<p>For example, the following query finds the change requests created by any user named "Deb" and includes the
-		<code>dcterms:title</code> and <code>dcterms:creator</code> for each change request found by the query.
+		<code>dcterms:title</code> and <code>dcterms:creator</code> for each change request found by the query and the
+		<code>foaf:name</code>code> of the person that last modified the change request.
 		<br><br>
 		<div style="margin-left: 2em">
 			<table class="query">
@@ -1354,7 +1341,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				</tr>
 				<tr>
 					<td><code>oslc.select</code></td>
-					<td><code>dcterms:title,dcterms:creator</code></td>
+					<td><code>dcterms:title,dcterms:creator,oslc:modifiedBy{foaf:name}</code></td>
 				</tr>
 			</table>
 		</div>
@@ -1362,7 +1349,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<pre class="example" title="Query for all change requests created by any user named 'Deb'">
 GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
     ?oslc.where=dcterms%3Acreator%20%7Bfoaf%3Aname%3D%22Deb%22%7D
-    &amp;oslc.select=dcterms%3Atitle%2Cdcterms%3Acreator
+    &amp;oslc.select=dcterms%3Atitle%2Cdcterms%3Acreator%2Coslc%3AmodifiedBy%3Amodifier%7Bfoaf%3Aname%7D
 
 OSLC-Core-Version: 2.0
 Accept: text/turtle
@@ -1402,41 +1389,49 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/9>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/deb> ;
       dcterms:title "To many messages logged in the console"^^rdf:XMLLiteral .
 
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/22>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/bob> ;
       dcterms:title "Calculation error"^^rdf:XMLLiteral .
 
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/11>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Some accessibility issues"^^rdf:XMLLiteral .
 
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/20>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/bob> ;
       dcterms:title "Browser Exception"^^rdf:XMLLiteral .
 
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/1>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Not possible to change a user password"^^rdf:XMLLiteral .
 
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/27>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Improve link colors"^^rdf:XMLLiteral .
 
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/28>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Login not working anymore"^^rdf:XMLLiteral .
 
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/17>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Increase size of overall application window"^^rdf:XMLLiteral .
 
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/5>
@@ -1447,6 +1442,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/23>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Search is not finding this term"^^rdf:XMLLiteral .
 
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/12>
@@ -1457,33 +1453,23 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/7>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/deb> ;
       dcterms:title "Offer more services related to loans"^^rdf:XMLLiteral .
 
 &lt;https://example.org/ccm/resource/itemName/com.ibm.team.workitem.WorkItem/8>
       a       oslc_cm:ChangeRequest ;
       dcterms:creator &lt;https://example.org/jts/users/deb> ;
+      oslc:modifiedBy &lt;https://example.org/jts/users/bob> ;
       dcterms:title "Add context sensitive help support everywhere"^^rdf:XMLLiteral .
+      
+&lt;https://example.org/jts/users/deb>
+      foaf:name "Deb" .
+      
+&lt;https://example.org/jts/users/bob>
+      foaf:name "Bob" .   
 		</pre>		
 	</section>    <!-- Query parameters/oslc.select -->
 
-
-	<!-- Query parameters/oslc.properties -->
-	<section id="oslc.properties">
-		<h3>oslc.properties</h3>
-
-		<p>The <code>oslc.properties</code> query parameter lets you specify which immediate properties of the query result
-		container to include.</p>
-		
-		<p><font color="red">David: We need to reference <code>oslc.properties</code> for the syntax, but there are no compelling use
-		case for <code>oslc.properties</code> for OSLC Query. So should we remove this section?
-		</font>.
-		
-		<p class="conformance">If <code>oslc.properties</code> is not specified, the response SHOULD include all the properties of the
-		query result container.</p>
-
-		<p>The syntax of the <code>oslc.properties</code> query parameter is described in
-		<a href="oslc-core.html#selectiveProperties">Core 3.0 Selective Properties</a>.
-	</section>    <!-- Query parameters/oslc.properties -->
 	
 	<!-- Query parameters/oslc.paging -->
 	<section id="oslc.paging">
@@ -1602,16 +1588,16 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
     <p class="conformance">If a <code>GET</code> or <code>POST</code> of a query base URI cannot be executed, the response MUST include a response 
     body whose RDF contains at least one <code>oslc:Error</code> describing the cause of the error.</p>
     
-    <p class="conformance">If the error is due to use of <code>oslc.where</code>, <code>oslc.searchTerms</code>, <code>oslc.orderBy</code>, <code>oslc.select</code>,
-    or <code>oslc.properties</code> and that query parameter is not supported, the response status SHOULD be <code>501 Not Implemented</code>.
+    <p class="conformance">If the error is due to use of <code>oslc.where</code>, <code>oslc.searchTerms</code>, <code>oslc.orderBy</code>, or
+    <code>oslc.select</code> and that query parameter is not supported, the response status SHOULD be <code>501 Not Implemented</code>.
     Implementations that do not support a specific query parameter need not parse or validate its value.</p>
 
 	<p class="conformance">If the error is due to a supported but malformed query parameter value, such as one that does not match the supported syntax, then
 	the response status code SHOULD be <code>400 Bad Request</code>.</p>
 	
-	<p class="conformance">If the error is due to a supported <code>oslc.where</code>, <code>oslc.select</code>, <code>oslc.properties</code>, 
-	or <code>oslc.orderBy</code>  parameter, and its value references a namespace that is not defined by default or with <code>oslc.prefix</code>, the response status code 
-	SHOULD be <code>400 Bad Request</code>.</p>
+	<p class="conformance">If the error is due to a supported <code>oslc.where</code>, <code>oslc.select</code>, 
+	or <code>oslc.orderBy</code>  parameter, and its value references a namespace that is not defined by default or with <code>oslc.prefix</code>, 
+	the response status code SHOULD be <code>400 Bad Request</code>.</p>
 	
 	<p class="conformance">If a query uses a supported query parameter, and the parameter value is syntactically valid, but the implementation does not support
 	a specific use of such a query parameter, the response status SHOULD be <code>501 Not Implemented</code>.
@@ -1621,6 +1607,8 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
 	status SHOULD be <code>500 Internal Server Error</code>.</p>
 </section>
 
+
+<section id="conformance"></section>
 
 
 <section class='appendix informative'>
@@ -1640,7 +1628,6 @@ Martin Sarabura, PTC<br>
 Brian Steele, IBM<br></p>
 </section>
 
-<section id="conformance"></section>
 
 <section class="appendix informative" id="history">
 	<h2>Change History</h2>
