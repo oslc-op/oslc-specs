@@ -365,7 +365,7 @@ code.noescape {
 	<p class="conformance">A query capability SHOULD specify exactly one <code>oslc:resourceShape</code> and that shape SHOULD describe the query result
 	container.</p>
 	
-	<p class="conformance">The resource shape referenced by <code>oslc:resourceShape</code> MUST declare exactly one OSLC property with
+	<p class="conformance">The resource shape referenced by <code>oslc:resourceShape</code> MUST declare at least one OSLC property with
 	<code>oslc:isMemberProperty "true"^^xsd:boolean</code>, and that property SHOULD specify exactly one <code>oslc:valueShape</code>
 	referencing a resource shape that describes the referenced members of that container.</p>
 	
@@ -533,10 +533,10 @@ Link: &lt;http://www.w3.org/ns/ldp#DirectContainer>; rel="type",
 	
 	<p>If the query capability that declared the base URI declares a <code>oslc:resourceShape</code> and that resource shape
 	defines a container property with <code>oslc:isMemberProperty "true"^^xsd:boolean</code> that is <code>ldp:contains</code>,
-	the query result container may use any form of LDPC, such as ldp:BasicContainer. This provides the most compact representation
-	of query result members that is compatible with OSLC Query 2.0 and conformant with LDPC [[LDP]]. All of the examples
-	showing a query response following this section assume that the query capability resource shape defines that
-	<code>ldp:contains</code> is the membership property.</p>
+	the query result container may use any form of LDPC, such as <code>ldp:BasicContainer</code>. This provides the most 
+	compact representation of query result members that is compatible with OSLC Query 2.0 and conformant with LDPC [[LDP]]. 
+	All of the examples showing a query response following this section assume that the query capability resource shape 
+	defines that <code>ldp:contains</code> is the membership property.</p>
 	
 	<pre class="example" title="Query result container using ldp:contains as the membership property">
 HTTP/1.1 200 OK
@@ -569,14 +569,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
     <p class="conformance">A paged response MAY occur automatically if the server determines that the total query result 
     set exceeds some implementation dependent threshold, or if paging is supported and the request includes a 
     <code>oslc.paging=true</code> query parameter.</p>
-    
-    <p class="conformance">A paged response to a query MUST include a 
-    <a href="./core-vocab.html#responseInfo" target="_blank">oslc:ResponseInfo</a> if there is a next page.</p>
-    
-    <p class="conformance">If the query was performed using a <code>POST</code> rather than a <code>GET</code>, 
-    the <code>oslc:ResponseInfo</code> SHOULD contain a <code>oslc:postBody</code> and the client should get the next 
-    query results page by performing a <code>POST</code> with the specified  post body using a content type of 
-    <code>application/x-www-form-urlencoded</code>.</p>
+
 </section>    <!-- Query Result Paging -->
 
 
@@ -950,7 +943,6 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				occurrences of the backslash character \ in the actual value MUST be replaced by the sequence \\ in the escaped value. 
 				This escaping process MUST be reversed to give the actual value of the string.</p>
 				<br>
-				<br>
 				<code>scoped_term</code><br>
 				<p class="conformance">The <code>scoped_term</code> represents the ability to query on nested properties.
 				Servers MAY choose not to support such nested property queries, and SHOULD respond with <code>501 Not Implemented</code> 
@@ -974,18 +966,18 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				</tr>
 				<tr>
 					<td><code>rdf:XMLLiteral</code></td>
-					<td>
-						<p class="conformance">An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the 
+					<td class="conformance">
+						<p>An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the 
 						literal in the same way as a plain string literal with the data type removed such as <code>"abc"</code>.</p>
-						<p class="conformance">A plain string literal, such as <code>"abc"</code> MUST be supported. A server MAY treat the literal 
+						<p>A plain string literal, such as <code>"abc"</code> MUST be supported. A server MAY treat the literal 
 						in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.</p>
-						<p class="conformance">An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MAY treat
+						<p>An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MAY treat
 						the literal in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.</p>
-						<p class="conformance">Servers MAY validate the string for compliance to the XMLLiteral standard.</p>
+						<p>Servers MAY validate the string for compliance to the XMLLiteral standard.</p>
 					</td>
-					<td>
-						<p class="conformance">The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
-						<p class="conformance">Servers MUST implement, and SHOULD document, one of the following semantics:</p>
+					<td class="conformance">
+						<p>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
+						<p>Servers MUST implement, and SHOULD document, one of the following semantics:</p>
 						<ul>
 							<li>case sensitive string compare</li>
 							<li>case insensitive string compare</li>
@@ -993,155 +985,156 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 								and <code>_</code> means match any single character.</li>
 						</ul>
 
-						<p class="conformance">A server MAY choose which of the above to apply based on whether the string contains a <code>%</code> or 
+						<p>A server MAY choose which of the above to apply based on whether the string contains a <code>%</code> or 
 						<code>_</code> character, and/or the property being compared. A server SHOULD document if this is the case.</p>
 						
-						<p class="conformance">Other operators MAY be supported and MAY have implementation-dependent semantics.
+						<p>Other operators MAY be supported and MAY have implementation-dependent semantics.
 						A server MAY report such usage as unsupported.</p>
 					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:boolean</code></td>
-					<td>
-						<p class="conformance">The values <code>true</code> and <code>false</code> MUST be supported.</p>
-						<p class="conformance">The values <code>"true"^^xsd:boolean</code> and <code>"false"^^xsd:boolean</code> 
+					<td class="conformance">
+						<p>The values <code>true</code> and <code>false</code> MUST be supported.</p>
+						<p>The values <code>"true"^^xsd:boolean</code> and <code>"false"^^xsd:boolean</code> 
 						MUST be supported and MUST have the same meaning as <code>true</code> and <code>false</code> respectively.</p>
-						<p class="conformance">The values <code>"true"</code> and <code>"false"</code> MAY be supported, and if so, MUST have the
+						<p>The values <code>"true"</code> and <code>"false"</code> MAY be supported, and if so, MUST have the
 						same meaning as <code>true</code> and <code>false</code> respectively.</p>
-						<p class="conformance">A language tagged literal, such as <code>"true"@en</code> MAY be supported and MAY have implementation
+						<p>A language tagged literal, such as <code>"true"@en</code> MAY be supported and MAY have implementation
 						and/or locale dependent behavior.</p>
 					</td>
-					<td>
-						<p class="conformance">The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
-						<p class="conformance">Other operators MAY be supported and MAY have implementation-dependent semantics.</p>
+					<td class="conformance">
+						<p>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
+						<p>Other operators MAY be supported and MAY have implementation-dependent semantics.</p>
 					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:dateTime</code></td>
-					<td>
-						<p class="conformance">Values that are conformant with an <code>xsd:dateTime</code>, as described in
+					<td class="conformance">
+						<p>Values that are conformant with an <code>xsd:dateTime</code>, as described in
 						<a href="https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#dt-dateTime">
 						https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#dt-dateTime</a>,
 						such as <code>"2018-01-30T12:25:00"^^xsd:dateTime</code>, MUST be supported.</p>
-						<p class="conformance">Plain string literals whose string value conforms to an <code>xsd:dateTime</code>, such as 
+						<p>Plain string literals whose string value conforms to an <code>xsd:dateTime</code>, such as 
 						<code>"2018-01-30T12:25:00"</code>, MAY be supported, and if so, MUST have the same meaning as 
 						an <code>xsd:dateTime</code> typed literal such as <code>"2018-01-30T12:25:00"^^xsd:dateTime”</code>.</p>
 					</td>
-					<td>
-						<p class="conformance">The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
+					<td class="conformance">
+						<p>The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
 						<code>&gt;=</code>, and <code>in</code> MUST be supported, and MUST have the semantics of a <code>xsd:dateTime</code>
 						comparison.</p>
 					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:decimal</code></td>
-					<td>
-						<p class="conformance">Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
+					<td class="conformance">
+						<p>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
 						supported if the server supports <code>xsd:decimal</code> property values.</p>
-						<p class="conformance">An <code>xsd:decimal</code> typed literal, such as <code>"42"^^xsd:decimal</code> or 
+						<p>An <code>xsd:decimal</code> typed literal, such as <code>"42"^^xsd:decimal</code> or 
 						<code>"42.0"^^xsd:decimal</code>, MUST be supported if the server supports <code>xsd:decimal</code> property values.</p>
-						<p class="conformance">A plain string literal with a decimal value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
+						<p>A plain string literal with a decimal value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
 						and if so, MUST have the same meaning as the <code>xsd:decimal</code> typed literal.</p>
 					</td>
-					<td>
-						<p class="conformance">The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
+					<td class="conformance">
+						<p>The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
 						<code>&gt;=</code>, and <code>in</code> MUST be supported if the server supports <code>xsd:decimal</code> property values, 
 						and if so, MUST have the semantics of a <code>xsd:decimal</code> comparison.</p>
 					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:double</code></td>
-					<td>
-						<p class="conformance">Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
+					<td class="conformance">
+						<p>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
 						supported if the server supports <code>xsd:double</code> property values.</p>
-						<p class="conformance">An <code>xsd:double</code> typed literal, such as <code>"42"^^xsd:double</code> or 
+						<p>An <code>xsd:double</code> typed literal, such as <code>"42"^^xsd:double</code> or 
 						<code>"42.0"^^xsd:double</code>, MUST be supported if the server supports <code>xsd:double</code> property values.</p>
-						<p class="conformance">A plain string literal with a double value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
+						<p>A plain string literal with a double value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
 						and if so, MUST have the same meaning as the <code>xsd:double</code> typed literal.</p>
 					</td>
-					<td>
-						<p class="conformance">The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
+					<td class="conformance">
+						<p>The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
 						<code>&gt;=</code>, and <code>in</code> MUST be supported if the server supports <code>xsd:double</code> property values, 
 						and if so, MUST have the semantics of an  <code>xsd:double</code> comparison.</p>
 					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:float</code></td>
-					<td>
-						<p class="conformance">Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
+					<td class="conformance">
+						<p>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST be
 						supported if the server supports <code>xsd:float</code> property values.</p>
-						<p class="conformance">An <code>xsd:float</code> typed literal, such as <code>"42"^^xsd:float</code> or 
+						<p>An <code>xsd:float</code> typed literal, such as <code>"42"^^xsd:float</code> or 
 						<code>"42.0"^^xsd:float</code>, MUST be supported if the server supports <code>xsd:float</code> property values.</p>
-						<p class="conformance">A plain string literal with a float value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
+						<p>A plain string literal with a float value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be supported,
 						and if so, MUST have the same meaning as the <code>xsd:float</code> typed literal.</p>
 					</td>
-					<td>
-						<p class="conformance">The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
+					<td class="conformance">
+						<p>The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
 						<code>&gt;=</code>, and <code>in</code> MUST be supported if the server supports <code>xsd:float</code> property values, 
 						and if so, MUST have the semantics of an  <code>xsd:float</code> comparison.</p>
 					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:integer</code></td>
-					<td>
-						<p class="conformance">Decimal literals without a decimal point, such as <code>42</code>, MUST be supported.</p>
-						<p class="conformance">An <code>xsd:integer</code> typed literal, such as <code>"42"^^xsd:integer</code>, MUST be supported.</p>
-						<p class="conformance">An <code>xsd:decimal</code> typed literal without a decimal point, such as <code>"42"^^xsd:decimal</code>, 
+					<td class="conformance">
+						<p>Decimal literals without a decimal point, such as <code>42</code>, MUST be supported.</p>
+						<p>An <code>xsd:integer</code> typed literal, such as <code>"42"^^xsd:integer</code>, MUST be supported.</p>
+						<p>An <code>xsd:decimal</code> typed literal without a decimal point, such as <code>"42"^^xsd:decimal</code>, 
 						MAY be supported, and if so, MUST have the same meaning as an <code>xsd:integer</code> typed literal.</p>
-						<p class="conformance">A plain string literal with a decimal value, such as <code>"42"</code>, or a language tag string with a decimal
+						<p>A plain string literal with a decimal value, such as <code>"42"</code>, or a language tag string with a decimal
 						value, such as <code>"42"@en</code>, MAY be supported, and if so, MUST have the same meaning as a decimal value.</p>
 					</td>
-					<td>
-						<p class="conformance">The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
+					<td class="conformance">
+						<p>The operators <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, 
 						<code>&gt;=</code>, and <code>in</code> MUST be supported and MUST have the semantics of an 
 						<code>xsd:integer</code> comparison.</p>
 					</td>
 				</tr>
 				<tr>
 					<td><code>xsd:string</code></td>
-					<td>
-						<p class="conformance">A plain string literal, such as <code>"abc"</code> MUST be supported.</p>
-						<p class="conformance">An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MUST treat
+					<td class="conformance">
+						<p>A plain string literal, such as <code>"abc"</code> MUST be supported.</p>
+						<p>An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MUST treat
 						the literal in the same way as an plain string literal string such as <code>"abc"</code>.</p>
-						<p class="conformance">An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the literal
+						<p>An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the literal
 						in the same way as a plain literal string such as <code>"abc"</code>.</p>
-						<p class="conformance">A string with a language tag, such as <code>"abc"@en</code>, MAY be supported. The string MAY be treated 
+						<p>A string with a language tag, such as <code>"abc"@en</code>, MAY be supported. The string MAY be treated 
 						as a plain string literal, or it MAY be treated as a language specific string that only matches a string
 						with an identical value and language tag.</p>
 					</td>
-					<td>
-						<p class="conformance">The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
-						<p class="conformance">Servers MUST implement, and SHOULD document, one of the following semantics:</p>
+					<td class="conformance">
+						<p>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
+						<p>Servers MUST implement, and SHOULD document, one of the following semantics:</p>
 						<ul>
 							<li>case sensitive string compare</li>
 							<li>case insensitive string compare</li>
 							<li>case insensitive string pattern match where <code>%</code> means match zero or more characters, 
 								and <code>_</code> means match any single character.</li>
 						</ul>
-						<p class="conformance">A server MAY choose which of the above to apply based on whether the string contains a <code>%</code> or 
+						<p>A server MAY choose which of the above to apply based on whether the string contains a <code>%</code> or 
 						<code>_</code> character, and/or the property being compared. A server SHOULD document if this is the case.</p>
-						<p class="conformance">Other operators MAY be supported and MAY have implementation-dependent semantics.
+						<p>Other operators MAY be supported and MAY have implementation-dependent semantics.
 						A server MAY report such usage as unsupported.</p>
 					</td>
 				</tr>
 				<tr>
 					<td><code>oslc:Resource</code></td>
-					<td>
-						<p class="conformance">A uri_ref_esc such as <code>&lt;http://example.org&gt;</code>> MUST be supported.</p>
-						<p class="conformance">A PrefixedName such as <code>oslc:Zero-or-many</code>, MAY be supported. If supported, the value
+					<td class="conformance">
+						<p>A uri_ref_esc such as <code>&lt;http://example.org&gt;</code>> MUST be supported.</p>
+						<p>A PrefixedName such as <code>oslc:Zero-or-many</code>, MAY be supported. If supported, the value
 						MUST be treated as equivalent to its corresponding uri_ref_esc.</p>
 					</td>
-					<td>
-						<p class="conformance">The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.
+					<td class="conformance">
+						<p>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.
 						A server MUST implement this as a case-sensitive URI string comparison.</p>
-						<p class="conformance">Other operators MAY be supported and MAY have implementation-dependent semantics, or a server MAY report 
+						<p>Other operators MAY be supported and MAY have implementation-dependent semantics, or a server MAY report 
 						such usage as unsupported.</p>
 					</td>
 				</tr>
 			</table>
 			
-			<p class="conformance">If <code>oslc.where</code> specifies a property that has an defined namespace prefix, but the property is not known, 
-			for example not defined in the resource shape for that type of resource, an implementation MAY do either of:</p>
+			<p class="conformance">If <code>oslc.where</code> specifies a property that has a defined namespace prefix, 
+			but the property is not known, for example not defined in the resource shape for that type of resource, 
+			an implementation MAY do either of:</p>
 			<ol>
 				<li>Respond with a <code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.
 				This is appropriate for implementations that have finite and enumerable properties of resources that
@@ -1598,6 +1591,10 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
 	<p class="conformance">If the error is due to a supported <code>oslc.where</code>, <code>oslc.select</code>, 
 	or <code>oslc.orderBy</code>  parameter, and its value references a namespace that is not defined by default or with <code>oslc.prefix</code>, 
 	the response status code SHOULD be <code>400 Bad Request</code>.</p>
+	
+	<p class="conformance">If <code>oslc.where</code> specifies a property that has a defined namespace prefix,
+	and the property is defined in the resource shape for the query capability with <code>oslc:queryable</code>
+	of <code>"false"^^xsd:boolean</code>, the server MUST Respond with a <code>400 Bad Request</code>.</p>
 	
 	<p class="conformance">If a query uses a supported query parameter, and the parameter value is syntactically valid, but the implementation does not support
 	a specific use of such a query parameter, the response status SHOULD be <code>501 Not Implemented</code>.
