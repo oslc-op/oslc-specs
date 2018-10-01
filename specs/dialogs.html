@@ -21,6 +21,7 @@
 
     // the specification's short name, as in http://www.w3.org/TR/short-name/
     shortName:            "OSLC Delegated Dialogs 3.0",
+    conformanceLabelPrefix: "DD",
 
     // the document's citation label
     citationLabel: "OSLC-Dialogs-3.0",
@@ -741,18 +742,16 @@ Location: http://example.com/dialogs/createBug/form/2zFy45
 
 <!-- Conformance clauses have empty <h2></h2> tags for ReSpec to generate
      section numbers. -->
-<section id="implementation_conformance" class="conformance">
+<section id="implementation_conformance">
     <h2>Implementation Conformance</h2>
 
     <section id="discovery_conformance">
         <h2>Discovery</h2>
 
-        <section id="selection_dialog_link">
-            <h2></h2>
-
-            In responses to successful HTTP requests for an LDP container that has a
+        <div id="selection_dialog_link" class='conformance'>
+            <p>In responses to successful HTTP requests for an LDP container that has a
             selection dialog, server MUST include a <code>Link</code> header
-            [[!RFC5988]] where
+            [[!RFC5988]] where:</p>
 
             <ul>
                 <li>The context URI is the <a href="https://tools.ietf.org/html/rfc7230#page-45">effective request URI</a>,</li>
@@ -760,18 +759,16 @@ Location: http://example.com/dialogs/createBug/form/2zFy45
                     <code>http://open-services.net/ns/core#selectionDialog</code>, and</li>
                 <li>The target URI is the URI of the selection dialog descriptor.</li>
             </ul>
+        </div>
 
 <pre class="example">
 Link: &lt;http://example.com/dialogs/selectBug&gt;; rel="http://open-services.net/ns/core#selectionDialog"
 </pre>
-        </section>
 
-        <section id="creation_dialog_link">
-            <h2></h2>
-
-            In responses to successful HTTP requests for an LDP container that has a
+        <div id="creation_dialog_link"  class='conformance'>
+            <p>In responses to successful HTTP requests for an LDP container that has a
             creation dialog, server MUST include a <code>Link</code> header
-            [[!RFC5988]] where
+            [[!RFC5988]] where:</p>
 
             <ul>
                 <li>The context URI is the effective request URI,</li>
@@ -779,18 +776,16 @@ Link: &lt;http://example.com/dialogs/selectBug&gt;; rel="http://open-services.ne
                     <code>http://open-services.net/ns/core#creationDialog</code>, and</li>
                 <li>The target URI is the URI of the creation dialog descriptor.</li>
             </ul>
+        </div>
 
 <pre class="example">
 Link: &lt;http://example.com/dialogs/createBug&gt;; rel="http://open-services.net/ns/core#creationDialog"
 </pre>
-        </section>
 
-        <section id="prefer_dialog">
-            <h2></h2>
-
-            Clients MAY request that the dialog descriptors for an LDP
+        <div id="prefer_dialog"  class='conformance'>
+            <p>Clients MAY request that the dialog descriptors for an LDP
             container are returned inline using the <code>Prefer</code> request
-            header [[!RFC7240]] with:
+            header [[!RFC7240]] with:</p>
 
                 <ul>
                     <li>Preference <code>return</code>, value
@@ -798,136 +793,103 @@ Link: &lt;http://example.com/dialogs/createBug&gt;; rel="http://open-services.ne
                     <li>Parameter <code>include</code> [[!LDP]], value
                         <code>http://open-services.net/ns/core#PreferDialog</code>.</li>
                 </ul>
+        </div>
 
 <pre class="example" id="ex_prefer_compact" title="Example Prefer Header">
 Prefer: return=representation; include="http://open-services.net/ns/core#PreferDialog"
 </pre>
-        </section>
 
-        <section id="honor_prefer">
-            <h2></h2>
-
+        <p id="honor_prefer" class='conformance'>
             Servers MUST honor a client's request to inline dialog descriptors
             if the target resource has any dialog descriptors and the request
             is successful.
-        </section>
-        <section id="css_length_units">
-            <h2></h2>
-
+        </p>
+        <p id="css_length_units" class='conformance'>
             Servers MUST express the <code>oslc:hintWidth</code> and
             <code>oslc:hintHeight</code> properties of an
             <code>oslc:Dialog</code> in length units as specified in
             [[!CSS21]].
-        </section>
-        <section id="vary_header">
-            <h2></h2>
-
+        </p>
+        <p id="vary_header" class='conformance'>
             In responses to HTTP GET requests targeting resources
             that have dialogs, servers SHOULD either include
             a <code>Vary</code> response header with at least
             <code>Accept</code> and <code>Prefer</code> field
             values or a <code>Cache-Control</code> header value
             <code>no-store</code>.
-        </section>
-        <section id="serviceProperties">
-            <h2></h2>
-
+        </p>
+        <p id="serviceProperties" class='conformance'>
             Servers MAY also provide delegated dialog discovery using the <a href="./discovery.html#serviceProviderShape">ServiceProvider</a> and <a href="./discovery.html#serviceShape">Service</a> resource and the <code>oslc:creationDialog</code> and <code>oslc:selectionDialog</code> properties.
-        </section>
+        </p>
     </section>
 
     <section id="display_conformance">
         <h2>Display</h2>
 
-        <section id="embed_dialog">
-            <h2></h2>
-
+        <p id="embed_dialog" class='conformance'>
             When embedding a dialog inside another web page, the client
             MUST use an <code>iframe</code> element and set the its
             <code>src</code> attribute to the URI of the dialog.
-        </section>
+        </p>
     </section>
 
     <section id="messaging_conformance">
         <h2>Messaging</h2>
 
-        <section id="postmessage_window">
-            <h2></h2>
-
+        <p id="postmessage_window" class='conformance'>
             Servers MUST support the <code>Window.postMessage</code> method
             [[!webmessaging]] for dialog responses.
-        </section>
-        <section id="windowname_protocol">
-            <h2></h2>
-
+        </p>
+        <p id="windowname_protocol" class='conformance'>
             Servers MAY support the <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Post_Message_and_Window_Name_pro">Window Name Protocol</a> defined in [[!OSLCCore2]] for backward compatibility with OSLC 2.0 clients that use that protocol.
-        </section>
-        <section id="other_protocols">
-            <h2></h2>
-
+        </p>
+        <p id="other_protocols" class='conformance'>
             Servers MAY support other protocols for dialog responses not
             specified in this document, which clients request by appending a
             fragment identifier [[!RFC3986]] describing the protocol to the end
             of the dialog URI.
-        </section>
-        <section id="no_fragment_identifier">
-            <h2></h2>
-
+        </p>
+        <p id="no_fragment_identifier" class='conformance'>
             Servers MUST use <code>postMessage</code> for dialog responses if
             a client has not added a fragment identifier to the dialog URI, or the fragment identifier is <code>#oslc-core-postMessage-1.0</code>.
-        </section>
-        <section id="message_contents">
-            <h2></h2>
-
+        </p>
+        <p id="message_contents" class='conformance'>
             Messages describing dialog results MUST start with the characters
             <code>oslc-response:</code> followed by JSON as specified in
-            <a href="#results_json"></a>.
+            <a href="#results_json"></a>.</p>
 
 <pre class="example" id="ex_results_message">
 oslc-response:{"oslc:results":
   [{ "oslc:label": "bug 123: server crash", "rdf:resource": "http://example.com/bug123" }]}
 </pre>
-        </section>
-        <section id="results_other_props">
-            <h2></h2>
-
+        <p id="results_other_props" class='conformance'>
             Servers MAY include additional server-specific properties in the
             results JSON.
-        </section>
-        <section id="postmessage_canceled">
-            <h2></h2>
-
+        </p>
+        <p id="postmessage_canceled" class='conformance'>
             If the user cancels a dialog, the dialog MUST still send a message
-            with an empty <code>oslc:results</code> array.
+            with an empty <code>oslc:results</code> array.</p>
 
 <pre class="example" id="ex_results_message">
 oslc-response:{"oslc:results": []}
 </pre>
-        </section>
-        <section id="postmessage_window_opener">
-            <h2></h2>
-
+        <p id="postmessage_window_opener" class='conformance'>
             Calls to <code>postMessage</code> from within a dialog MUST be made
             on <code>window.opener</code> unless <code>null</code> or
             <code>undefined</code>.
-        </section>
-        <section id="postmessage_window_parent">
-            <h2></h2>
-
+        </p>
+        <p id="postmessage_window_parent" class='conformance'>
             If <code>window.opener</code> is <code>null</code> or
             <code>undefined</code>, calls to <code>postMessage</code>
-            MUST be made on <code>window.parent</code>.
+            MUST be made on <code>window.parent</code>.</p>
 
 <pre class="example highlight" id="ex_postMessage">
 (window.opener || window.parent).postMessage("oslc-response:" + response, "*");
 </pre>
-        </section>
-        <section id="message_origin">
-            <h2></h2>
-
+        <p id="message_origin" class='conformance'>
             Clients handling <code>message</code> events from dialogs MUST
             verify that the event <code>origin</code> is the same as the
-            dialog.
+            dialog.</p>
 
             <p>For example, if the dialog is from example.com,
 
@@ -940,82 +902,64 @@ function handleMessage(event) {
     // Otherwise, process message...
 }
 </pre></p>
-        </section>
-        <section id="resize">
-            <h2></h2>
 
+        <p id="resize" class='conformance'>
             Dialogs MAY support dynamic resizing as specified in
             [[!OSLCPreview30]].
-        </section>
-        <section id="ignore_unrecognized_messages">
-            <h2></h2>
-
+        </p>
+        <p id="ignore_unrecognized_messages" class='conformance'>
             Clients MUST anticipate other, unrelated uses of
             <code>postMessage</code> and ignore unrecognized messages not
             conforming to the protocol.
-        </section>
+        </p>
     </section>
 
     <section id="prefill_conformance">
         <h2>Prefill</h2>
-        <section id="support_prefill">
-            <h2></h2>
+        <p id="support_prefill" class='conformance'>
             Servers MAY support prefill for creation and/or selection dialogs. Client provided prefill information, either in a request entity body or query parameters is intended to inform servers of possible initial values for creation dialogs, or the preferred content of selection dialogs. Clients SHOULD NOT assume any specific content or URL format.
-        </section>
-        <section id="allow_prefill">
-            <h2></h2>
+        </p>
+        <p id="allow_prefill"  class='conformance'>
             Servers MAY allow clients to prefill dialogs by accepting
             HTTP POST requests where the Request-URI is the dialog
             descriptor and the entity body is an entity describing the
             initial values.
-        </section>
-        <section id="dialog_options">
-            <h2></h2>
-
+        </p>
+        <p id="dialog_options" class='conformance'>
             Servers that support prefill MUST include the value
             <code>POST</code> in the set of <code>Allow</code> header values
             returned in response to HTTP OPTIONS requests for the dialog
-            descriptor URI.
+            descriptor URI.</p>
 
 <pre class="example" id="ex_verify_origin">
 Allow: GET,POST,HEAD,OPTIONS
 </pre>
-        </section>
-        <section id="partial_shape">
-            <h2></h2>
 
+        <p id="partial_shape" class='conformance'>
             Servers MAY describe prefill constraints by adding an
             <code>oslc:resourceShape</code> property to the dialog descriptor
             whose value is a <a href="./resource-shape.html#resourceShape-shape">resource shape</a> URI.
-        </section>
-        <section id="partial_prefill">
-            <h2></h2>
-
+        </p>
+        <p id="partial_prefill" class='conformance'>
             Servers MUST NOT reject prefill requests on creation dialogs
             solely because they are missing required fields for the
             resource. Users can fill in the missing values in the
             dialog.
-        </section>
-        <section id="prefill_response">
-            <h2></h2>
-
+        </P>
+        <p id="prefill_response" class='conformance'>
             On successful prefill requests, servers MUST respond with status
             code 201 (Created) and a <code>Location</code> header whose value
             is the URI of the prefilled dialog.
-        </section>
-        <section id="prefill_temp_uris">
-            <h2></h2>
-
+        </p>
+        <p id="prefill_temp_uris" class='conformance'>
             After some elapsed time, servers MAY respond with a 404 (Not Found)
             or 410 (Gone) to an HTTP GET request for a prefilled dialog URI.
-        </section>
-        <section id="prefill_query_params">
-            <h2></h2>
-
+        </p>
+        <p id="prefill_query_params" class='conformance'>
             Servers MAY support prefill by adding initial values as query
             parameters to the delegated dialog URI. Clients SHOULD NOT assume
             any specific URL format, however.
-        </section>
+        </p>
     </section>
 </section>
 
@@ -1031,6 +975,7 @@ Allow: GET,POST,HEAD,OPTIONS
             data-include-format='html'></div>
 </section>
 
+<section id="conformance"></section>
 
 <section class="appendix" id="results_json">
     <h2>Dialog Results JSON</h2>

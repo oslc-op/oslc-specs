@@ -16,6 +16,7 @@
     // Only include h1 and h2 level in the TOC
     maxTocLevel: 2,
     shortName : "oslc-discovery",
+    conformanceLabelPrefix: "DIS",
 
     // the document's citation label
     citationLabel: "OSLC-Discovery-3.0",
@@ -302,13 +303,13 @@ dd {
 			<h2>General Discovery Methods</h2>
 			<p>The following clauses apply to all discovery capabilities including resource creation, resource preview, delegated dialogs for resource creation and selection, and resource constraints discovery. OSLC discovery capabilities may also apply to OSLC resources themselves, including LDPCs, and the discovery LDPC resources including ServiceProviderCatalog, ServiceProvider and Service resources. This allows servers to dynamically configure their capabilities, or provide users with a means of selecting the capabilities they need from those provided by a server.</p>
 
-			<section id="discOptions"><h2 class="normalText">
+			<p id="discOptions" class='conformance'>
 				Clients SHOULD use HTTP <code>OPTIONS</code> to fetch various headers and other configuration information that may be exposed in the response content body from other HTTP methods.
-			</h2></section>
+			</p>
 
-			<section id="discHeaders"><h2 class="normalText">
+			<p id="discHeaders" class='conformance'>
 				Servers SHOULD minimize the use of HTTP response headers on various HTTP operations as to avoid unnecessary additional response content for clients to consume. This is also to avoid the complexity on server implementations that would be needed to provide such additional content.
-			</h2></section>
+			</p>
     </section>
 
 		<section id="creation">
@@ -316,28 +317,28 @@ dd {
 
 			<p>Resource creation is done by sending an HTTP <code>POST</code> to a URI that supports resource creation, providing the resource content in the entity request body. Clients can discover resources that support resource creation either through the <code>http://open-services.net/ns/core#creationFactory</code> property of a Service in a ServiceProvider resource, or by using an <code>OPTIONS</code> request on an LDPC to determine if it accepts the <code>POST</code> method.</p>
 
-			<section id="serviceProvider"><h2 class="normalText">
+			<p id="serviceProvider" class='conformance'>
 				Servers MAY provide one or more creation factories to enable creation of new resources. Creation factories are LDPCs whose URI MAY be given in the <code>oslc:creationFactory</code> property of a Service resource.
-			</h2></section>
+			</p>
 
-			<section id="doesCreate"><h2 class="normalText">
+			<p id="doesCreate" class='conformance'>
 				The existence of an <code>Accept-Post</code> header on an HTTP response to a given Request-URI indicates i) that an HTTP POST will be accepted for authorized requests and ii) what types of content are supported in the entity body of the HTTP POST request. Restating of [[!LDP]] <a href="http://www.w3.org/TR/ldp/#header-accept-post"> conformance clause about <code>Accept-Post</code></a>.
-			</h2></section>
+			</p>
 
-			<section id="isLDPC"><h2 class="normalText">
+			<p id="isLDPC" class='conformance'>
 				The existence of a <code>Link: &lt;http://www.w3.org/ns/ldp#Container&gt;; rel="type"</code> header on
 				an HTTP response to a given Request-URI will indicate that the resource is a LDP Container. Restating
 				conformance clause for [[!LDP]]
 				<a href="http://www.w3.org/TR/ldp/#ldpc-linktypehdr"><code>Link</code> header and resource types</a>.
-			</h2></section>
+			</p>
 
-			<section id="createsTypes"><h2 class="normalText">
-				In a response to Request-URI on an LDPC, servers SHOULD include <code>Link</code> headers with the relation-types set to <code>rel="http://open-services.net/core#resourceType"</code> and the Target URIs set to the <code>rdf:type</code> of resources that can be created in the LDPC.  Note: An LDPC can contain multiple types of resources, and the supported member types may change over time. Since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.</h2>
-			</section>
+			<p id="createsTypes" class='conformance'>
+				In a response to Request-URI on an LDPC, servers SHOULD include <code>Link</code> headers with the relation-types set to <code>rel="http://open-services.net/core#resourceType"</code> and the Target URIs set to the <code>rdf:type</code> of resources that can be created in the LDPC.  Note: An LDPC can contain multiple types of resources, and the supported member types may change over time. Since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.
+			</p>
 
-			<section id="createTypesPred"><h2 class="normalText">
-				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:resourceType &lt;type-URI&gt;</code>. Clients SHOULD use the predicate <code>oslc:resourceType</code> when converting HTTP Link headers that have <code>http://open-services.net/ns/core#resourceType</code> as the Link-relation ("rel" value) into RDF triples.This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.</h2>
-			</section>
+			<p id="createTypesPred" class='conformance'>
+				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:resourceType &lt;type-URI&gt;</code>. Clients SHOULD use the predicate <code>oslc:resourceType</code> when converting HTTP Link headers that have <code>http://open-services.net/ns/core#resourceType</code> as the Link-relation ("rel" value) into RDF triples.This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.
+			</p>
 
 			<p>The following example is an OPTIONS request on the /bugs/ resource that demonstrates some of the discovery capabilities.</p>
 			<pre class='example'>
@@ -361,33 +362,31 @@ dd {
 		    <p>In addition to the ways one can discover if a given OSLC Server supports creation of resources and for which types, it is helpful to understand if there are server-enforced constraints on the resource representation. Clients can discover these constraints either through the <code>http://open-services.net/ns/core#resourceShape</code> property of a Creation Factory resource, or by using <code>Link: &lt;<em>constraint-URI</em>&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"</code>
 				header on an HTTP response to a given Request-URI.</p>
 
-			<section id="creationFactoryResourceShape"><h2 class="normalText">
+			<p id="creationFactoryResourceShape" class='conformance'>
 				Servers MAY describe constraints enforced on resource representations through the <code>http://open-services.net/ns/core#resourceShape</code> property of a Creation Factory resource.
-			</h2></section>
+			</p>
 
-      <section id="createsWithShapes"><h2 class="normalText">
+      <p id="createsWithShapes" class='conformance'>
         In a response to an HTTP <code>OPTIONS</code>, <code>HEAD</code> or <code>GET</code> method on a given Request-URI referencing an LDPC, servers SHOULD include a <code>Link</code> header with the relation-type set to <code>rel="http://open-services.net/core#constrainedBy"</code> and the Target URI set to the URI of a resource that defines constraints on the to-be created or updated resource representation in the LDPC. The resource referenced by Target URI is RECOMMENDED to be a machine-readable representation such as OSLC Resource Shape [[!OSLCCoreVocab]], but MAY be some variant or other constraint document. See [[!LDP]] <a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
-      </h2>
+      </p>
 
         <pre class='example'>
         Link: &lt;http://example.com/shapes/bug&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"
         </pre>
         <p>The link header in the example above would be returned on an OPTIONS or HEAD request to a resource of type <code>&lt;http://open-services.net/ns/cm#Bug&gt;</code> to provide the URI of the creation or update constraints.</p>
-      </section>
 
-			<section id="createError"><h2 class="normalText">
+			<p id="createError" class='conformance'>
 				In a response to an HTTP <code>POST</code> or <code>PUT</code> method on a given Request-URI referencing an LDPC, servers SHOULD include a <code>Link</code> header with the relation-type set to <code>rel="http://open-services.net/core#constrainedBy"</code> and the Target URI set to the URI of a resource that defines constraints that on the to-be created or updated resource representation in the LDPC that were not satisfied. The resource referenced by Target URI is RECOMMENDED to be a machine-readable representation such as OSLC Resource Shape [[!OSLCCoreVocab]], but MAY be some variant or other constraint document. See [[!LDP]] <a href="http://www.w3.org/TR/ldp/#ldpr-gen-pubclireqs">section about server published constraints</a>.
-			</h2>
+			</p>
 
 				<pre class='example'>
 				Link: &lt;http://example.com/shapes/bug&gt;; rel="http://www.w3.org/ns/ldp#constrainedBy"
 				</pre>
 				<p>The link header in the example above would be returned on a POST or PUT to a resource of type <code>&lt;http://open-services.net/ns/cm#Bug&gt;</code> that violated the referenced constraint.</p>
-			</section>
 
-			<section id="createWithShapesPred"><h2 class="normalText">
-				Servers MAY include a RDF triple in resource response body of the form:	<code>&lt;container-URI&gt; ldp:constrainedBy &lt;shape-URI&gt;</code>. Clients SHOULD use the predicate <code>ldp:constrainedBy</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that are constraints by the same resource.</h2>
-			</section>
+			<p id="createWithShapesPred" class='conformance'>
+				Servers MAY include a RDF triple in resource response body of the form:	<code>&lt;container-URI&gt; ldp:constrainedBy &lt;shape-URI&gt;</code>. Clients SHOULD use the predicate <code>ldp:constrainedBy</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that are constraints by the same resource.
+			</p>
 		</section>
 
 		<section id="uiPreview"><h2>Resource User Interface Preview Discovery</h2>
@@ -401,13 +400,13 @@ dd {
 		</section>
 
 		<section id="authDiscovery"><h2>Authentication Discovery</h2>
-			<section id="createWithShapesPred"><h2 class="normalText">
+			<p id="createWithShapesPred" class='conformance'>
 				Clients SHOULD determine what authentication schemes a server supports by parsing and processing the challenge sent by the target server in response to a request for a protected resource.
-			</h2></section>
+			</p>
 
-      <section id="mayProvideOAuthConfig"><h2 class="normalText">
+      <p id="mayProvideOAuthConfig" class='conformance'>
         Servers MAY provide OAuth configuration information in the OAuthConfiguration member of a ServiceProviderCatalog as described in <a href="#resourceConstraints"></a>.
-      </h2></section>
+      </p>
   </section>
 <!--
 			<div class="issue-open"><div class="issue-title">Issue title (open)</div>Some text about this issue</div>
@@ -416,7 +415,7 @@ dd {
  -->
 	</section>
 
-<section id="resourceConstraints" class="appendix">
+<section id="resourceConstraints">
 <h2>Resource Constraints</h2>
 
 <p>This document applies the following constraints to the [[!OSLCCoreVocab]] vocabulary terms.</p>
@@ -503,6 +502,8 @@ dd {
         data-include-format='html'></div>
 </section>
 </section>
+
+<section id="conformance"></section>
 
 <section class="appendix informative" id="history">
 <h2>Change History</h2>

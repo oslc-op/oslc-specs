@@ -22,6 +22,7 @@
     maxTocLevel: 2,
 
     shortName : "resource-shape",
+    conformanceLabelPrefix: "RS",
   	// the document's citation label
   	citationLabel: "OSLC-Shapes-3.0",
 
@@ -620,18 +621,18 @@ dd {
 
 		<section id="associating-and-applying-shapes">
 		<h2>Associating and Applying Shapes</h2>
-			<p>
+			<p class='conformance'>
 				In general, the relation between shapes and resources is many-to-many.
 				Given a resource R there <span class="rfc2119">MAY</span> be zero or
 				more shapes S associated with it. This specification defines three ways to associate shapes with a
 				resource, namely using <a href="#instanceShape">oslc:instanceShape</a>,
-				<a href="#resourceShape">oslc:resourceShape</a>, and <a href="#valueShape">oslc:valueShape</a>. Other specifications <span class="rfc2119">MAY</span> define additional mechanisms.
+				<a href="#resourceShape">oslc:resourceShape</a>, and <a href="#valueShape">oslc:valueShape</a>. Other specifications <span class="rfc2119">MAY</span> define additional mechanisms.</p>
 				<ol>
 				  <li>Resource <code>oslc:instanceShape</code> ResourceShape - directly associates a constraining shape with a resource.</li>
 				  <li>Service <code>oslc:resourceShape</code> ResourceShape - associates a constraining shape with the entity request or response resource of a service (e.g., a creation or query service).</li>
 				  <li>Property <code>oslc:valueShape</code> ResourceShape - associates a constraining shape with the resource that is the object value of a property of a resource.</li>
 				</ol>
-			</p>
+			
 			<p>
 				Not all shapes associated with a resource are necessarily applicable
 				to it. Let S be associated with R. S is said to <em>apply</em> to R
@@ -652,18 +653,18 @@ dd {
 			</dl>
 			<p>If no shapes are associated with a resource then there are no
 				implied constraints on that resource.</p>
-			<p>
+			<p class='conformance'>
 				If one or more shapes are associated with a resource then at least
 				one of those <span class="rfc2119">SHOULD</span> be applicable to
 				that resource. If no associated shape applies to a resource then
 				this <span class="rfc2119">SHOULD</span> normally be interpreted as
 				an error condition.
 			</p>
-			<p>
+			<p class='conformance'>
 				If exactly one shape applies to a resource then that resource <span class="rfc2119">SHOULD</span> satisfy all the constraints defined
 				by that shape.
 			</p>
-			<p>
+			<p class='conformance'>
 				If more than one shape applies to a resource then that resource <span class="rfc2119">SHOULD</span> satisfy all the constraints defined
 				by all the shapes (AND semantics). However, the specification for a
 				service description <span class="rfc2119">MAY</span> define
@@ -671,7 +672,7 @@ dd {
 				require that the resource satisfy the constraints defined by at
 				least one of the shapes (OR semantics).
 			</p>
-			<p>If a resource satisfies its applicable shapes, client and server implementations MUST behave as described in the defining OSLC specifications. If a resource does not satisfy its applicable shapes, implementations SHOULD attempt to complete the operation with the given data if possible. Otherwise implementations MAY reject the operation.</p>
+			<p class='conformance'>If a resource satisfies its applicable shapes, client and server implementations MUST behave as described in the defining OSLC specifications. If a resource does not satisfy its applicable shapes, implementations SHOULD attempt to complete the operation with the given data if possible. Otherwise implementations MAY reject the operation.</p>
 		</section>
 
 		<section id="runningExample" class="informative">
@@ -835,14 +836,14 @@ dd {
 				<dd>
 					The number of times the defined property may occur. This
 					corresponds to the <a href="#occurs">oslc:occurs</a> property. This
-					property may have one of the values <a
+					property MAY have one of the values <a
 						href="#Exactly-one">oslc:Exactly-one</a>, <a href="#One-or-many">oslc:One-or-many</a>,
 					<a href="#Zero-or-many">oslc:Zero-or-many</a>, and <a
 						href="#Zero-or-one">oslc:Zero-or-one</a>.
 				</dd>
 
 				<dt><i>Read-Only</i></dt>
-				<dd>
+				<dd class='conformance'>
 					<code>true</code> if the property is read-only. If omitted, or set to false, then the property is writable. Servers SHOULD declare a property read-only when changes to the value of that property will not be accepted after the resource has been created, e.g. on PUT/PATCH requests. Clients should note that the converse does not apply: Servers MAY reject a change to the value of a writable property.
 				</dd>
 
@@ -891,13 +892,13 @@ dd {
 
 		<h3 id="instanceShape">oslc:instanceShape Property</h3>
 		<div>
-			<p>The <code>oslc:instanceShape</code> property is used to link any described
+			<p class='conformance'>The <code>oslc:instanceShape</code> property is used to link any described
 				resource with a shape resource that describes its contents. A resource MAY be associated with zero or more shapes.</p>
 		</div>
 
 		<h3 id="resourceShape">oslc:resourceShape Property</h3>
 		<div>
-			<p>
+			<p class='conformance'>
 				The <code>oslc:resourceShape</code> property is used to link an application
 				service description with a shape resource that describes some aspect
 				of the service's API contract. A service description <span
@@ -925,7 +926,7 @@ dd {
 		<h3 id="dcterms:description">dcterms:description Property</h3>
 		<h3 id="dcterms:title">dcterms:title Property</h3>
 		<div>
-			<p>
+			<p class='conformance'>
 				<code>dcterms:title</code> is used to provide a summary of <a
 					href="#resourceShape">oslc:ResourceShape</a> and <a
 					href="#property-shape">oslc:Property</a> resources. Its value <span
@@ -939,7 +940,7 @@ dd {
 		</div>
 
 		<div>
-			<p>
+			<p class='conformance'>
 				<code>dcterms:description</code> is used to provide a description of <a
 					href="#property-shape">oslc:Property</a> resources. Its value <span
 					class="rfc2119">SHOULD</span> be a literal of type rdf:XMLLiteral
@@ -972,7 +973,7 @@ dd {
 
 		<h3 id="property">oslc:property Property</h3>
 		<div>
-			<p>
+			<p class='conformance'>
 				<code>oslc:property</code> is used to list the defined properties that are
 				expected to be contained in described resources associated with this
 				shape. The object of this property <span class="rfc2119">MUST</span>
@@ -1002,7 +1003,7 @@ dd {
   </div>
   		<h3 id="allowedValue">oslc:allowedValue Property</h3>
 		<div>
-			<p>
+			<p class='conformance'>
 				<code>oslc:allowedValue</code> is used to specify an allowed value of the defined
 				property. The object of this property <span class="rfc2119">SHOULD</span>
 				be compatible with the type specified by the <a href="#valueType">oslc:valueType</a>
@@ -1030,18 +1031,18 @@ dd {
 
 		<h3 id="defaultValue">oslc:defaultValue Property</h3>
 		<div>
-			<p>
+			<p class='conformance'>
 				<code>oslc:defaultValue</code> specifies the default value for the defined
 				property. The object of this property <span class="rfc2119">SHOULD</span>
 				be compatible with the type specified by the <a href="#valueType">oslc:valueType</a>
 				property if present.
 			</p>
-			<p>
+			<p class='conformance'>
 				A default value is normally used when creating resources. A service
 				<span class="rfc2119">SHOULD</span> use the default value to provide
 				a value for a property if none is provided in the creation request.
 			</p>
-			<p>
+			<p class='conformance'>
 				A default value <span class="rfc2119">MAY</span> be used by
 				clients of a described resource if the defined property is not
 				present in the representation of the described resource. This
@@ -1052,7 +1053,7 @@ dd {
 
 		<h3 id="hidden">oslc:hidden Property</h3>
 		<div>
-			<p>
+			<p class='conformance'>
 				If present and true, <code>oslc:hidden</code> is used to indicate that the
 				defined property is not normally presented to users. A client of
 				the described resource <span class="rfc2119">SHOULD NOT</span>
@@ -1099,7 +1100,7 @@ dd {
 		</div>
 
 		<h3 id="occurs">oslc:occurs Property</h3>
-		<div>
+		<div class='conformance'>
 			<p>
 				<code>oslc:occurs</code> is used to specify the number of times that the defined
 				property may occur. The value of this property <span class="rfc2119">MUST</span>
@@ -1139,7 +1140,7 @@ dd {
 
 		<h3 id="range">oslc:range Property</h3>
 		<div>
-			<p>
+			<p class='conformance'>
 				<code>oslc:range</code> <span class="rfc2119">MUST NOT</span> be used with
 				datatype properties. It <span class="rfc2119">MAY</span> be used
 				with object properties. For object properties, <code>oslc:range</code> is used to
@@ -1157,7 +1158,7 @@ dd {
 
 		<h3 id="readOnly">oslc:readOnly Property</h3>
 		<div>
-			<p>
+			<p class='conformance'>
 				If present and true, <code>oslc:readOnly</code> is used to specify that the value
 				of defined property is managed by the service, i.e. that it is
 				read-only. It cannot be directly modified by clients of the
@@ -1169,7 +1170,7 @@ dd {
 				HTTP Warning header or some other means to indicate that the attempt
 				to modify a read-only property has been ignored.
 			</p>
-			<p>
+			<p class='conformance'>
 				In this context, modification means a change in any object of the
 				triples associated with the defined property. For example, a GET
 				request followed by a PUT request would not modify the triples. A
@@ -1194,7 +1195,7 @@ dd {
 		</div>
 
 		<h3 id="representation">oslc:representation Property</h3>
-		<div>
+		<div class='conformance'>
 			<p>
 				For object properties, <code>oslc:representation</code> is used to specify how
 				the object resource is represented. The value of <code>oslc:representation</code>
@@ -1227,7 +1228,7 @@ dd {
 		<h3 id="valueType">oslc:valueType Property</h3>
 		<div>
 			<h4 id="literal-value-types">Literal Value Types</h4>
-			<div>
+			<div class='conformance'>
 				<p>
 					For datatype properties, <code>oslc:valueType</code> specifies the literal value
 					type. OSLC datatype properties are a subset of the base or primitive types defined by <a href="https://www.w3.org/TR/REC-rdf-syntax/">RDF</a> and <a href="https://www.w3.org/TR/xmlschema11-1/">XML Schema</a>. A datatype <span class="rfc2119">MUST</span> be one of the following
@@ -1257,7 +1258,7 @@ dd {
 			</div>
 
 			<h4 id="resource-value-types">Resource Value Types</h4>
-			<div>
+			<div class='conformance'>
 				<p>
 					For object properties, <code>oslc:valueType</code> specifies how the object
 					resource is identified. It <span class="rfc2119">MUST</span> be one
@@ -1298,6 +1299,7 @@ dd {
   </section>
 </section>
 
+<section id="conformance"></section>
 
 <section class='appendix informative'>
   <h2>Acknowledgements</h2>
