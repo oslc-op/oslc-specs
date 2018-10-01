@@ -308,8 +308,10 @@ dd {
 			</p>
 
 			<p id="discHeaders" class='conformance'>
-				Servers SHOULD minimize the use of HTTP response headers on various HTTP operations as to avoid unnecessary additional response content for clients to consume. This is also to avoid the complexity on server implementations that would be needed to provide such additional content.
+				Servers SHOULD minimize the use of HTTP response headers on various HTTP operations as to avoid unnecessary additional response content for clients to consume.
 			</p>
+
+			<p>This is also to avoid the complexity on server implementations that would be needed to provide such additional content.</p>
     </section>
 
 		<section id="creation">
@@ -333,11 +335,18 @@ dd {
 			</p>
 
 			<p id="createsTypes" class='conformance'>
-				In a response to Request-URI on an LDPC, servers SHOULD include <code>Link</code> headers with the relation-types set to <code>rel="http://open-services.net/core#resourceType"</code> and the Target URIs set to the <code>rdf:type</code> of resources that can be created in the LDPC.  Note: An LDPC can contain multiple types of resources, and the supported member types may change over time. Since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.
+				In a response to Request-URI on an LDPC, servers SHOULD include <code>Link</code> headers with the relation-types set to <code>rel="http://open-services.net/core#resourceType"</code> and the Target URIs set to the <code>rdf:type</code> of resources that can be created in the LDPC.
+			</p>
+
+			<p>Note: An LDPC can contain multiple types of resources, and the supported member types may change over time. Since there is always some time between when the test is done and when the creation request is sent, and that there may be additional server enforced constraints on the creation resource representation, there is no guarantee that a future creation request will succeed.
 			</p>
 
 			<p id="createTypesPred" class='conformance'>
-				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:resourceType &lt;type-URI&gt;</code>. Clients SHOULD use the predicate <code>oslc:resourceType</code> when converting HTTP Link headers that have <code>http://open-services.net/ns/core#resourceType</code> as the Link-relation ("rel" value) into RDF triples.This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.
+				Servers MAY include a RDF triple in resource response body of the form: <code>&lt;container-URI&gt; oslc:resourceType &lt;type-URI&gt;</code>. Clients SHOULD use the predicate <code>oslc:resourceType</code> when converting HTTP Link headers that have <code>http://open-services.net/ns/core#resourceType</code> as the Link-relation ("rel" value) into RDF triples.
+			</p>
+
+			<p>
+			This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that can be used to create the same resource types.
 			</p>
 
 			<p>The following example is an OPTIONS request on the /bugs/ resource that demonstrates some of the discovery capabilities.</p>
@@ -385,7 +394,10 @@ dd {
 				<p>The link header in the example above would be returned on a POST or PUT to a resource of type <code>&lt;http://open-services.net/ns/cm#Bug&gt;</code> that violated the referenced constraint.</p>
 
 			<p id="createWithShapesPred" class='conformance'>
-				Servers MAY include a RDF triple in resource response body of the form:	<code>&lt;container-URI&gt; ldp:constrainedBy &lt;shape-URI&gt;</code>. Clients SHOULD use the predicate <code>ldp:constrainedBy</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.	This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that are constraints by the same resource.
+				Servers MAY include a RDF triple in resource response body of the form:	<code>&lt;container-URI&gt; ldp:constrainedBy &lt;shape-URI&gt;</code>. Clients SHOULD use the predicate <code>ldp:constrainedBy</code> when converting HTTP response headers for the same Link-relation type, into an RDF triple.
+			</p>
+
+			<p>This is to assist with scenarios where client applications may want to use the RDF representation in a query to locate LDP Containers that are constraints by the same resource.
 			</p>
 		</section>
 
