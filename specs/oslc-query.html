@@ -2,7 +2,7 @@
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <meta charset='utf-8' />
 <head>
-<title>OSLC Query 3.0.</title>
+<title>OSLC Query Version 3.0</title>
 <link rel="stylesheet" type="text/css" href="../styles/oslc-styles.css" />
 <link rel="stylesheet" type="text/css" href="../styles/table-styles.css" />
 <link rel="stylesheet" type="text/css" href="../styles/definition-styles.css" />
@@ -15,21 +15,21 @@
     specStatus : "WD",
 
     // the specification's short name with version but no dots
-    shortName : "oslc-core",
+    shortName : "oslc-query",
 
     // if your specification has a subtitle that goes below the main
     // formal title, define it here
     // subtitle   :  "Committee Specification Draft 02",
 
     // the document's citation label
-    citationLabel: "OSLC-Core-3.0",
+    citationLabel: "OSLC-Query-3.0",
 
     // OSLC version number for the spec, and the revision level of the document within its stage
     oslcVersion: "3.0",
-    revision: "02",
+    revision: "01",
 
     // if you wish the publication date to be other than the last modification, set this
-    publishDate:  "2017-12-18",
+    publishDate:  "2019-10-12",
 
     // if the specification's copyright date is a range of years, specify the start date here:
     // copyrightStart: "2005"
@@ -40,16 +40,17 @@
     // previousMaturity:  "WD",
 
     // Only include h1 and h2 levels in the table of contents
-    maxTocLevel: 3,
+    maxTocLevel: 2,
     
     // Conformance labels for query spec
     conformanceLabelPrefix: "QUERY",
 
     // if there a publicly available Editor's Draft, this is the link
-    //edDraftURI : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-query.html",
-    thisVersion : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-query.html",
-    latestVersion : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part8-oslc-query.html",
-    prevED : "http://open-services.net/bin/view/Main/OSLCCoreSpecQuery",
+    edDraftURI : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-query.html",
+    thisVersion : "http://docs.oasis-open.org/oslc-core/oslc-query/v3.0/csprd01/oslc-query-v3.0-csprd01-oslc-query.html",
+    //prevVersion : "http://docs.oasis-open.org/oslc-core/oslc-query/v3.0/csprd01/oslc-query-v3.0-csprd01-oslc-query.html",
+    latestVersion : "http://docs.oasis-open.org/oslc-core/oslc-query/v3.0/oslc-query.html",
+
 
     // Chairs and editors, add as many as you like: you must have at least one editor.
     // Only "name" is required, but the other fields are recommended.
@@ -248,9 +249,9 @@ code.noescape {
 <body>
 <section id='abstract'>
   <p>
-    OSLC Query provides a mechanism for a client to query or search for resources of some RDF type. 
+    OSLC Query provides a mechanism for a client to query or search for RDF resources that match a given criteria. 
     The response to a successful query includes the RDF of a <i>query result container</i> that references 
-    the member resources found by the query, and optionally includes properties of each member resource.
+    the member resources found by the query, and optionally includes selected properties of each member resource.
   </p>
 </section>
 
@@ -261,11 +262,11 @@ code.noescape {
 
 <section id='intro' class='informative'>
   <h2>Introduction</h2>
-  	OSLC Query provides a mechanism for a client to query or search for resources of some RDF type by performing a <code>GET</code> 
-	or <code>POST</code> on a <i>query base</i> URI.
+  	OSLC Query provides a mechanism for a client to query or search for RDF resources by performing a <code>GET</code> 
+	or <code>POST</code> on a <code>oslc_core:queryBase</code> URI.
 	Clients may discover such query base URIs from a <code>oslc:queryCapability</code> declared in an OSLC service.
 	The response to a successful query is a response body that includes the RDF of a <i>query result container</i> that references the member
-	resources found by the query, and optionally contains properties of each member resource.
+	resources matching the query, and optionally contains selected properties of each member resource.
 
 	<p>Two separate capabilities may be provided:</p>
 	<ul>
@@ -273,14 +274,22 @@ code.noescape {
      		The query result container only references resources whose properties match the specified query expression.
      		This is analogous to queries specified by SQL or SPARQL.</li>
      	<li>A full-text search based on one more search terms [[FULLTEXT-SEARCH]]. The query result container only references resources
-     	 	that have any text-based properties contain one or more of the search terms.</li>
+     	 	that have any text-based properties that contain one or more of the search terms.</li>
 	</ul>
-	Servers may support a combined query and full-text search, but in practice, many implementations do not support such
-	combined usage to lower the burden of implementation. Clients may also specify which member properties should be included 
+	Servers may support a combined query and full-text search. Clients may also specify which member properties should be included 
 	in the query response.
+
+    <section id="iprPolicy">
+    <h2>IPR Policy</h2>
+        <p>
+          This Committee Specification Public Review Draft is being developed under the <a href="https://www.oasis-open.org/policies-guidelines/ipr#RF-on-Limited-Mode">RF on Limited Terms</a> Mode of the <a href="https://www.oasis-open.org/policies-guidelines/ipr">OASIS IPR Policy</a>, the mode chosen when the Technical Committee was established. For information on whether any patents have been disclosed that may be essential to implementing this specification,
+          and any offers of patent licensing terms, please refer to the Intellectual Property Rights section of the TC’s web page
+          (<a href='https://www.oasis-open.org/committees/oslc-domains/ipr.php'>https://www.oasis-open.org/committees/oslc-domains/ipr.php</a>).
+        </p>
+    </section>
   
 
-  <section id='terminology' class='informative'>
+  <section id='terms' class='informative'>
     <h3>Terminology</h3>
     <p>Terminology is based on OSLC Core Overview [[OSLCCore3]],
       W3C Linked Data Platform [[LDP]],
@@ -288,7 +297,7 @@ code.noescape {
       and Hyper-text Transfer Protocol [[HTTP11]].</p>
     <dl class="spaced">
       <dt><dfn>Query capability</dfn></dt>
-      <dd>Describes an HTTP endpoint that may be used to query for or search for artifacts of a type defined by the query capability.</dd>
+      <dd>Describes an HTTP endpoint that may be used to query for or search for artifacts that match the given criteria.</dd>
 
       <dt><dfn>Query base URI</dfn></dt>
       <dd>The URI associated with a query capability that a GET and/or POST on will perform a query or search for artifacts.</dd>
@@ -300,7 +309,7 @@ code.noescape {
       <dd>An RDF container in the response to a successful query or search that references the resources found.</dd>
       
       <dt><dfn>Search term</dfn></dt>
-      <dd>A text string or keyword that is to be searched for in any text property of artifacts of a type defined by a query capability.</dd>
+      <dd>A text string or keyword that is to be searched for in any text property of artifacts of a type specified by a query capability.</dd>
       
       <dt><dfn>Sort key</dfn></dt>
       <dd>A property to be used to sort the results of the query based on the value of the property for each member of the
@@ -308,8 +317,20 @@ code.noescape {
     </dl>
   </section>
 
-</section>
+  <section id='references'><h3>References</h3></section>
 
+  <section id="namespaces">
+    <h2>Namespaces</h2>
+
+    In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>, <code>rdfs</code>, <code>dcterms</code>,
+    <code>ldp</code> and <code>foaf</code> defined in the [[OSLCCore3]], this specification also uses the following namespace prefix definitions:
+    <ul>
+        <li>oslc_cm : <code>http://open-services.net/ns/cm#</code> [[OSLCCM]]</li>
+    </ul>
+ </section>
+
+  <section id='conventions'></section>
+</section>
 
 
 <section class='informative'>
@@ -318,11 +339,11 @@ code.noescape {
 		require some query capability that minimally supports selection of matching elements, filtering of desired properties and ordering. 
 		Ideally OSLC Core would rely on existing standard query services such as [[RDF-SPARQL-QUERY]]. 
 		However, the reality is that many OSLC servers are adapters built on existing data management capabilities that are not 
-		built on an RDF foundation and do not  provide SPARQL endpoints for query. 
-		In order to address the need for standard query capability to enable integration, [[OSLCCore2]] 
-		introduced a Query Capability and a Query Syntax that were intended to be simple enough that they could be implemented on a 
+		built on an RDF foundation and do not provide SPARQL endpoints for query. 
+		In order to address the need for standard query capability to enable integration, [[OSLCCore3]] 
+		defines a Query Capability and a Query Syntax that are intended to be simple enough that they can be implemented on a 
 		wide range of existing server architectures and persistence technologies. 
-		This specification builds on that by:
+		This specification improves on the [[OSLCCore2]] query capability by:
 		
 		<ul>
 			<li>Describing how its capabilities can be implemented partially and incrementally to make it
@@ -330,28 +351,9 @@ code.noescape {
 			<li>Defining more relaxed semantics for query comparisons and being more agnostic of persistence and query
 				technologies that make it easier for servers to implement and be compliant.</li>
 			<li>Providing more complete information and guidance for server implementations.</li>
-			<li>Better describing how clients may discover and use query capabilities, including examples of requests and responses.</li>
+			<li>Better describing how clients may discover and use query capabilities.</li>
+            <li>Including examples of query requests and responses.</li>
 		</ul>
-</section>
-
-
-
-
-<section id="versioning">
-	<h2 id="specificationversioningspec_versioning">Specification Versioning</h2>
-	<p>This specification follows the specification version guidelines given in [[OSLCCore3]].</p>
-</section>
-
-
-
-<section id="namespaces">
-	<h2>Namespaces</h2>
-
-	In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>, <code>rdfs</code>, <code>dcterms</code>,
-	<code>ldp</code> and <code>foaf</code> defined in the [[OSLCCore3]], this specification also uses the following namespace prefix definitions:
-	<ul>
-		<li>oslc_cm : <code>http://open-services.net/ns/cm#</code> [[OSLCCM]]</li>
-	</ul>
 </section>
 
 
@@ -362,8 +364,7 @@ code.noescape {
 	</p>
 	<p><img src="images/CoreDiscoveryUML.png"></p>
 	
-	<p class="conformance">A query capability SHOULD specify exactly one <code>oslc:resourceShape</code> and that shape SHOULD describe the query result
-	container.</p>
+	<p class="conformance">A query capability SHOULD specify exactly one <code>oslc:resourceShape</code> and that shape SHOULD describe the query result container.</p>
 	
 	<p class="conformance">The resource shape referenced by <code>oslc:resourceShape</code> MUST declare at least one OSLC property with
 	<code>oslc:isMemberProperty "true"^^xsd:boolean</code>, and that property SHOULD specify exactly one <code>oslc:valueShape</code>
@@ -569,7 +570,6 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
     <p class="conformance">A paged response MAY occur automatically if the server determines that the total query result 
     set exceeds some implementation dependent threshold, or if paging is supported and the request includes a 
     <code>oslc.paging=true</code> query parameter.</p>
-
 </section>    <!-- Query Result Paging -->
 
 
@@ -583,7 +583,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<h3>Introduction</h3>
 
 		<p>The query parameters defined here are intended to satisfy simple query requirements, and be easy to both use and implement.
-		More complex query requirements should be satisfied using a full query language, e.g. SQL or SPARQL.</p>
+		More complex query requirements should be satisfied using a full query language, e.g. SQL, SPARQL or whatever query language the server and/or its underlying data sources support.</p>
 
 		<p>This specification formally defines the syntax of the <code>oslc.where</code>, <code>oslc.searchTerms</code>, and 
 		<code>oslc.orderBy</code> parameters using Extended Backus-Naur Form [[EBNF]] and informally illustrates their semantics 
@@ -924,7 +924,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				SHOULD infer the datatype.</p>
 	
 				<p>The terms <code>boolean</code> and <code>decimal</code> are short forms for typed literals.
-				For example, <code>true</code> is a short form for <code>"true"^^xsd:boolean</code>code>,
+				For example, <code>true</code> is a short form for <code>"true"^^xsd:boolean</code>,
 				<code>42</code> is a short form for <code>"42"^^xsd:integer</code> and <code>3.14159</code> is a short form
 				for <code>"3.14159"^^xsd:decimal</code>.</p>
 	
@@ -1119,7 +1119,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				<tr>
 					<td><code>oslc:Resource</code></td>
 					<td class="conformance">
-						<p>A uri_ref_esc such as <code>&lt;http://example.org&gt;</code>> MUST be supported.</p>
+						<p>A uri_ref_esc such as <code>&lt;http://example.org&gt;</code> MUST be supported.</p>
 						<p>A PrefixedName such as <code>oslc:Zero-or-many</code>, MAY be supported. If supported, the value
 						MUST be treated as equivalent to its corresponding uri_ref_esc.</p>
 					</td>
@@ -1300,7 +1300,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<p class="conformance">If a server chooses to include a multi-valued property by default, and the query response is not paged, it MUST 
 		include all the values of that property.</p>
 		
-		<p class="conformance">Clients SHOULD specify <code>oslc.select</code> if they require particular properties to be returned in the query response.</p>
+		<p>Clients should specify <code>oslc.select</code> if they require particular properties to be returned in the query response.</p>
 		
 		<p class="conformance">Servers SHOULD accept the value <code>rdf:nil</code>. If specified as the only property, servers SHOULD omit all properties
 		of the member resources. If <code>oslc.select</code> specifies <code>rdf:nil</code> and other properties, servers MAY choose to
@@ -1314,8 +1314,8 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		<p class="conformance">Implementations MAY support the use of the wildcard for immediate and/or nested properties of member resources.
 		Servers SHOULD document any restriction on the use of the wildcard.</p>
 		
-		<p class="conformance">A server MAY include additional member properties in the response to those specified in the 
-		<code>oslc.select</code> query parameter. Clients SHOULD NOT assume that only the specified
+		<p><span class="conformance">A server MAY include additional member properties in the response to those specified in the 
+		<code>oslc.select</code> query parameter.</span> Clients should not assume that only the specified
 		properties will be included.</p>
 		
 		<p>For example, the following query finds the change requests created by any user named "Deb" and includes the
@@ -1604,8 +1604,72 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
 	status SHOULD be <code>500 Internal Server Error</code>.</p>
 </section>
 
+<section id="versioning">
+    <h2 id="specificationversioningspec_versioning">Version Compatibility</h2>
+    <p>This specification follows the specification version guidelines given in [[OSLCCore3]].</p>
+</section>
 
 <section id="conformance"></section>
+
+<section class="appendix informative" id="differences">
+    <h2>Relationship with OSLC Query 2.0</h2>
+    
+    <p>This appendix summarizes OSLC Query 3.0 changes from, and compatibility with OSLC Query 2.0, [[OSLCQuery2]].</p>
+    <div>
+        <table class="query">
+            <tr>
+                <th>Topic</th>
+                <th>Details</th>
+            </tr>
+            <tr>
+                <td>Query result container</td>
+                <td>Query result containers are compatible with OSLC 2.0 clients. OSLC 2.0 clients should ignore the additional LDPC triples and
+                    response headers. The default <code>rdfs:member</code> predicate when no resource shape is specified
+                    ensures that OSLC 2.0 clients can consume the query response from a Query 3.0 server.</td>
+            </tr>
+            <tr>
+                <td>Query comparison semantics</td>
+                <td>The OSLC Query 2.0 specification required strict adherence to SPARQL semantics for relational operators and
+                property comparisons. Most implementations based on a standard relational database could only satisfy that requirement
+                by maintaining RDF datasets and using SPARQL on them. Few existing implementations did this because it was overly
+                burdensome, resulting in most implementations being non-compliant. In practice, few clients could assume
+                complete compliance. While it is possible that an OSLC 2.0 client might get results from a OSLC Query 3.0
+                server that are are not compliant with Query 2.0, it is expected that in the majority of cases this will
+                be inconsequential.</td>
+            </tr>
+            <tr>
+                <td><code>oslc.where</code> syntax</td>
+                <td>The only change of <code>oslc.where</code> syntax between OSLC Query 3.0 and OSLC Query 2.0 is the addition
+                of <code>PrefixedName</code> in the <code>value</code> element. The ability to use a prefixed name
+                in a value is useful, especially for enumerated values, and its omission was an oversight in the
+                OSLC Query 2.0 specification.</td>
+            </tr>
+            <tr>
+                <td>wildcard in <code>oslc.select</code> syntax</td>
+                <td>The use of a wildcard in <code>oslc.select</code> has been made optional.</td>
+            </tr>
+            <tr>
+                <td><code>oslc.orderBy</code></td>
+                <td>The semantics of <code>oslc.orderBy</code> has been clarified. A new optional <code>oslc:order</code>
+                pseudo-property has been defined to allow clients to determining the ordering of result members within
+                a non-paged or paged response.</td>
+            </tr>
+            <tr>
+                <td>Error handling</td>
+                <td>The error handling in Query 2.0 was not explicitly described. Query 3.0 clarifies expected and
+                required error handling for consistency and to make it easier for clients to consume.</td>
+            </tr>
+            <tr>
+                <td>Discovery of selectable or queryable properties</td>
+                <td>OSLC Query 2.0 described that a client could discover the resource shape of the returned members
+                but did not define whether those properties were queryable or just selectable with <code>oslc.select</code>.
+                OSLC Core 3.0 introduced a new <code>oslc:queryable</code> property for an OSLC property in an OSLC
+                resource shape. This allows OSLC 3.0 clients to differentiate which properties are supported in a query
+                expression specified by <code>oslc.where</code> or are supported in a <code>oslc.select</code> value.</td>
+            </tr>
+        </table>
+    </div>
+</section>
 
 
 <section class='appendix informative'>
@@ -1658,66 +1722,6 @@ Brian Steele, IBM<br></p>
 	</table>
 </section>
 	
-<section class="appendix informative" id="differences">
-	<h2>Compatibility with, and summary of changes from, OSLC Query 2.0</h2>
-	
-	<div>
-		<table class="query">
-			<tr>
-				<th>Topic</th>
-				<th>Details</th>
-			</tr>
-			<tr>
-				<td>Query result container</td>
-				<td>Query result containers are compatible with OSLC 2.0 clients. OSLC 2.0 clients should ignore the additional LDPC triples and
-					response headers. The default <code>rdfs:member</code> predicate when no resource shape is specified
-					ensures that OSLC 2.0 clients can consume the query response from a Query 3.0 server.</td>
-			</tr>
-			<tr>
-				<td>Query comparison semantics</td>
-				<td>The OSLC Query 2.0 specification required strict adherence to SPARQL semantics for relational operators and
-				property comparisons. Most implementations based on a standard relational database could only satisfy that requirement
-				by maintaining RDF datasets and using SPARQL on them. Few existing implementations did this because it was overly
-				burdensome, resulting in most implementations being non-compliant. In practice, few clients could assume
-				complete compliance. While it is possible that an OSLC 2.0 client might get results from a OSLC Query 3.0
-				server that are are not compliant with Query 2.0, it is expected that in the majority of cases this will
-				be inconsequential.</td>
-			</tr>
-			<tr>
-				<td><code>oslc.where</code> syntax</td>
-				<td>The only change of <code>oslc.where</code> syntax between OSLC Query 3.0 and OSLC Query 2.0 is the addition
-				of <code>PrefixedName</code> in the <code>value</code> element. The ability to use a prefixed name
-				in a value is useful, especially for enumerated values, and its omission was an oversight in the
-				OSLC Query 2.0 specification.</td>
-			</tr>
-			<tr>
-				<td>wildcard in <code>oslc.select</code> syntax</td>
-				<td>The use of a wildcard in <code>oslc.select</code> has been made optional.</td>
-			</tr>
-			<tr>
-				<td><code>oslc.orderBy</code></td>
-				<td>The semantics of <code>oslc.orderBy</code> has been clarified. A new optional <code>oslc:order</code>
-				pseudo-property has been defined to allow clients to determining the ordering of result members within
-				a non-paged or paged response.</td>
-			</tr>
-			<tr>
-				<td>Error handling</td>
-				<td>The error handling in Query 2.0 was not explicitly described. Query 3.0 clarifies expected and
-				required error handling for consistency and to make it easier for clients to consume.</td>
-			</tr>
-			<tr>
-				<td>Discovery of selectable or queryable properties</td>
-				<td>OSLC Query 2.0 described that a client could discover the resource shape of the returned members
-				but did not define whether those properties were queryable or just selectable with <code>oslc.select</code>.
-				OSLC Core 3.0 introduced a new <code>oslc:queryable</code> property for an OSLC property in an OSLC
-				resource shape. This allows OSLC 3.0 clients to differentiate which properties are supported in a query
-				expression specified by <code>oslc.where</code> or are supported in a <code>oslc.select</code> value.</td>
-			</tr>
-		</table>
-	</div>
-	
-
-</section>
 
 </body>
 </html>
