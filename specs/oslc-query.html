@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <meta charset='utf-8' />
 <head>
@@ -567,9 +566,8 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
     <p class="conformance">A query capability MAY support 
     <a href="./oslc-core.html#resourcePaging" target="_blank">OSLC Core Resource Paging</a>.</p>
     
-    <p class="conformance">A paged response MAY occur automatically if the server determines that the total query result 
-    set exceeds some implementation dependent threshold, or if paging is supported and the request includes a 
-    <code>oslc.paging=true</code> query parameter.</p>
+    <p class="conformance">A paged response MAY occur if paging is supported and the request includes a 
+    <code>oslc.paging=true</code> query parameter, or automatically if the server determines that the total query result set exceeds some implementation dependent threshold.</p>
 </section>    <!-- Query Result Paging -->
 
 
@@ -1132,16 +1130,18 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 				</tr>
 			</table>
 			
-			<p class="conformance">If <code>oslc.where</code> specifies a property that has a defined namespace prefix, 
-			but the property is not known, for example not defined in the resource shape for that type of resource, 
-			an implementation MAY do either of:</p>
+			<div class="conformance">
+			<p>If <code>oslc.where</code> specifies a property that has a defined namespace prefix but the property is not known, an implementation MAY either:</p>
 			<ol>
 				<li>Respond with a <code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error Handling</a>.
-				This is appropriate for implementations that have finite and enumerable properties of resources that
-				cannot determine how to query for undefined properties.</li>
-				<li>Execute the query and return a normal query response. This is appropriate for implementations that
-				have open sets of properties, not all of which might be in a resource shape.</li> 
+				</li>
+				<li>Execute the query and return a normal query response.</li> 
 			</ol>
+			</div>
+			<p>An unknown property is one that is not defined in the resource shape for that type of resource. Responding with an error code is appropriate for implementations that have finite and enumerable properties of resources that cannot determine how to query for undefined properties. Responding with a normal query response is appropriate for implementations that
+			have open sets of properties, not all of which might be in a resource shape.
+			</p>
+		
 		
 		</section>    <!-- Query parameters/oslc.where/semantics -->
 	</section>     <!-- Query parameters/oslc.where -->
@@ -1175,7 +1175,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 		This behavior is like prepending the list of sort keys specified in <code>oslc.orderBy</code> with the key <code>-oslc:score</code>.
 		However, the pseudo-property <code>oslc:score</code> MUST NOT appear explicitly in <code>oslc.orderBy</code>.</p>
 
-		<p class="conformance">The <code>oslc.where query</code> parameter MAY be used with <code>oslc.searchTerms</code>.
+		<p class="conformance">The <code>oslc.where</code> query parameter MAY be used with <code>oslc.searchTerms</code>.
 		When <code>oslc.where</code> is used with <code>oslc.searchTerms</code> 
 		and is supported, then the set of resources searched for matches MUST be restricted to only those resources that satisfy
 		the conditions in <code>oslc.where</code>.</p>
@@ -1230,7 +1230,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 			<li><p class="conformance">A paged response SHOULD reflect the ordering of members specified by <code>oslc.orderBy</code>. The
 				first page SHOULD contain the members that are ordered first, and any subsequent pages SHOULD contain
 				members ordered after the members in the previous page.</p></li>
-			<li><p class="conformance">The query result MAY include a <code>oslc:order</code> property whose positive integer value that 
+			<li><p class="conformance">The query result MAY include a <code>oslc:order</code> property whose positive integer value
 				reflects the ordering of the the members specified by <code>oslc.orderBy</code>.</p>
 				Note that <code>oslc:order</code> is not purely a property of the resource since it also depends on the 
 				<code>oslc.orderBy</code> value. It is therefore a pseudo-property whose validity is limited to the HTTP response to 
