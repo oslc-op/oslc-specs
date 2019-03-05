@@ -125,7 +125,7 @@ public class GlobExpander extends SimpleFileVisitor<Path>
      * A value class representing a path split into the elements
      * before and including any shell wildcard characters.
      */
-    static final class PathParts
+    public static final class PathParts
     {
         private final Path prefix;
         private final Path glob;

@@ -74,7 +74,7 @@ public class ShapeCheck
         // Shapes that are introduced by use of oslc:valueShape need not have an oslc:describes property,
         // but this code has no way to check for that yet.
         errors += node.checkURI(OSLC.describes, Occurrence.OneOrMany,
-            (uri)->{shapeResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri)); return checkUnique(describes,uri);});
+            (uri)->{shapeResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri)); return checkUnique(describes,uri); });
 
         // Look for the optional properties
         errors += node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
@@ -149,7 +149,7 @@ public class ShapeCheck
         errors += node.checkURI(OSLC.occurs, Occurrence.ExactlyOne,
             (uri) -> (Occurrence.isValidURI(uri) ? null : ResultModel.BadOccurs));
         errors += node.checkURI(OSLC.propertyDefinition, Occurrence.ExactlyOne,
-            (uri) -> {propResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri)); return checkUnique(predicates,uri);});
+            (uri) -> {propResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri)); return checkUnique(predicates,uri); });
         errors += node.checkURI(RDF.type, Occurrence.ExactlyOne,
             (uri) -> (uri.equals(OSLC.Property.getURI()) ? null : ResultModel.WrongType));
 
@@ -161,9 +161,9 @@ public class ShapeCheck
         errors += node.checkURI(OSLC.valueShape, Occurrence.ZeroOrOne, null); // TODO - add this shape to a list of shapes that must be defined
         errors += node.checkURI(OSLC.range, Occurrence.ZeroOrMany, null);
         errors += node.checkNode(OSLC.allowedValue, Occurrence.ZeroOrMany, null,
-            (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null;});
+            (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null; });
         errors += node.checkNode(OSLC.defaultValue, Occurrence.ZeroOrOne, null,
-            (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null;});
+            (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null; });
 
         // Special check for value type
         errors += checkValueType(propDef,propResult);
@@ -260,7 +260,7 @@ public class ShapeCheck
             errCount += node.checkURI(OSLC.representation, Occurrence.ExactlyOne,
                 (uri) -> {
                     Resource res = ResourceFactory.createResource(uri);
-                    return res.equals(OSLC.Inline) ? null : ResultModel.MismatchingRepresentation;});
+                    return res.equals(OSLC.Inline) ? null : ResultModel.MismatchingRepresentation; });
         }
         else if (valueType.equals(OSLC.AnyResource) || valueType.equals(OSLC.Resource))
         {
@@ -314,7 +314,7 @@ public class ShapeCheck
                 errCount += node.checkURI(RDF.type, Occurrence.ZeroOrOne,
                     (uri) -> (uri.equals(OSLC.AllowedValues.getURI()) ? null : ResultModel.WrongType));
                 errCount += node.checkNode(OSLC.allowedValue, Occurrence.ZeroOrMany, null,
-                    (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null;});
+                    (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null; });
             }
         }
         return errCount;
