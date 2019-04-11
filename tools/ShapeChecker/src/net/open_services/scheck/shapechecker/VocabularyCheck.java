@@ -2,6 +2,7 @@ package net.open_services.scheck.shapechecker;
 
 import java.net.URI;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -181,6 +182,7 @@ public class VocabularyCheck
 
         // Check the optional properties of the term
         errors += node.checkLiteral(OSLC.inverseLabel, null, Occurrence.ZeroOrOne, null);
+        errors += node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         errors += node.checkLiteral(VS_TERM_STATUS, null, Occurrence.ZeroOrOne,
             (literal) -> (literal.matches("stable|archaic") ? null : ResultModel.BadTermStatus));
         errors += node.checkURI(RDFS.seeAlso, Occurrence.ZeroOrMany, null);
