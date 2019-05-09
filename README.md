@@ -39,6 +39,19 @@ development activities, to provide a simpler, more efficient set of
 specification lifecycle management capabilities for the TC members, and
 to improve the external user experience.
 
+## Getting started
+
+In order to preview the specifications, you need to run a local webserver (you shall never disable the security protections against running AJAX requests on local filesystem). With Python 3 installed:
+
+    cd docs/
+    python3 -m http.server 8000 --bind 127.0.0.1
+
+Now you can browse all specs via http://localhost:8000/. For an even better experience, install Browsersync (`npm i -g browsersync`) and run it the following way:
+
+    cd docs/
+    browser-sync start --server --directory
+
+Now you can browse all specs via http://localhost:8000/. Anytime you save a spec file, every browser tab where this file is opened will be reloaded automatically. 
 
 ## Contributions
 
@@ -64,12 +77,6 @@ visible and freely available for all to use, subject to applicable OASIS
 policies, as presented in the repository
 [LICENSE](https://github.com/oasis-tcs/oslc-core/blob/master/LICENSE.md)
 file.
-
-
-## Further Description of this Repository
-
-\[Any narrative content may be provided here by the TC, for example, if
-the Members wish to provide an extended statement of purpose.\]
 
 
 ## Contact
