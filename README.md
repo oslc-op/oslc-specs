@@ -46,7 +46,7 @@ In order to preview the specifications, you need to run a local webserver (you s
     cd docs/
     python3 -m http.server 8000 --bind 127.0.0.1
 
-Now you can browse all specs via http://localhost:8000/. For an even better experience, install Browsersync (`npm i -g browsersync`) and run it the following way:
+Now you can browse all specs via http://localhost:8000/. For an even better experience, install Browsersync (`npm i -g browser-sync`) and run it the following way:
 
     cd docs/
     browser-sync start --server --directory
