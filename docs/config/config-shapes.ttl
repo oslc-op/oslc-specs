@@ -57,7 +57,7 @@ The members of such an <code>oslc_config:Component</code> container MUST NOT be 
 sub-configurations are given in the <code>oslc_config:contributions</code> property.
 No meaning is assigned to a member of type <code>oslc_config:Component</code>;
 neither client nor server is obligated to perform any recursion through nested Components.
-Providers MAY treat this property as read-only."""^^rdf:XMLLiteral .
+Servers MAY treat this property as read-only."""^^rdf:XMLLiteral .
 
 <#configurations>
     a                        oslc:Property ;
@@ -70,7 +70,7 @@ Providers MAY treat this property as read-only."""^^rdf:XMLLiteral .
     oslc:range               ldp:Container ;
     dcterms:description      """The <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container</a>
 that contains all the configurations (both streams and baselines) of this component.
-This property is read-only; providers MAY also treat the referenced container as read-only.
+This property is read-only; servers MAY also treat the referenced container as read-only.
 If it is not read-only, the container MAY have <code>oslc:resourceShape</code> properties describing the shapes of streams and baselines that may be created."""^^rdf:XMLLiteral .
 
 <#bcontributor>
@@ -202,7 +202,7 @@ there can be multiple values for this property."""^^rdf:XMLLiteral .
     oslc:occurs              oslc:Zero-or-one ;
     oslc:valueType           xsd:string ;
     dcterms:description      """A shorter and human-readable identifier for the resource, such as a number.
-This property MAY be derived by the provider from the <code>dcterms:identifer</code>."""^^rdf:XMLLiteral .
+This property MAY be derived by the server from the <code>dcterms:identifer</code>."""^^rdf:XMLLiteral .
 
 <#shortTitle>
     a                        oslc:Property ;
@@ -212,7 +212,7 @@ This property MAY be derived by the provider from the <code>dcterms:identifer</c
     oslc:valueType           rdf:XMLLiteral ;
     dcterms:description      """A shorter title for the resource, represented as rich text in XHTML content.
 SHOULD include only content that is valid inside an XHTML <code>&lt;span&gt;</code> element.
-This property MAY be derived by the provider from the <code>dcterms:title</code>."""^^rdf:XMLLiteral .
+This property MAY be derived by the server from the <code>dcterms:title</code>."""^^rdf:XMLLiteral .
 
 <#bsubject>
     a                        oslc:Property ;
@@ -303,7 +303,7 @@ Clients can infer a resource type of <code>oslc_config:Configuration</code>,
 but there is no requirement for servers to materialize this triple in the RDF representation.
 Other types MAY be added, including types that are used in <code>oslc_config:accepts</code> and <code>oslc_config:acceptedBy</code> properties
 to define which <a href="config-resources.html#matching_contribs">matching configurations</a> may be added as contributions to this configuration,
-or to which this configuration may be added as a contribution. Providers MAY treat this property as read-only."""^^rdf:XMLLiteral .
+or to which this configuration may be added as a contribution. Servers MAY treat this property as read-only."""^^rdf:XMLLiteral .
 
 <#acceptedBy>
     a                        oslc:Property ;
@@ -396,8 +396,8 @@ The component is an invariant relating the different configurations of the same 
     oslc:valueShape          <#Contribution> ;
     oslc:range               oslc_config:Contribution ;
     dcterms:description      """A contribution to this baseline.
-The set of resource versions identified by this baseline includes the set determined by the
-<code>oslc_config:selections</code> resource, and each of the sets of resource versions identified by the contributed baselines.
+The set of resource versions identified by this baseline is the union of the set determined by the
+<code>oslc_config:selections</code> resources and each of the sets of resource versions identified by the contributed baselines.
 The target MUST be of type <code>oslc_config:Contribution</code>.
 Contribution resources MUST be returned inline with the baseline resource.
 In the set of Contribution resources for a single parent baseline,
@@ -414,8 +414,8 @@ there MUST be only one Contribution resource for a given contributed baseline.""
     oslc:valueShape          <#Contribution> ;
     oslc:range               oslc_config:Contribution ;
     dcterms:description      """A contribution to this configuration.
-The set of resource versions identified by this configuration includes the set determined by the
-<code>oslc_config:selections</code> resource, and each of the sets of resource versions identified by the contributed configurations.
+The set of resource versions identified by this configuration is the union of the set determined by the
+<code>oslc_config:selections</code> resources and each of the sets of resource versions identified by the contributed configurations.
 A user can request an update to a configuration to change the set of contributions;
 servers MUST deny such requests if any added contributions do not <a href="config-resources.html#matching_contribs">match</a> this configuration.
 The target MUST be of type <code>oslc_config:Contribution</code>.
@@ -432,31 +432,37 @@ there MUST be only one Contribution resource for a given contributed configurati
     oslc:representation      oslc:Reference ;
     oslc:valueType           oslc:Resource ;
     oslc:range               oslc_config:Baseline ;
-    dcterms:description      """A reference to the immediately preceeding baseline of the same stream.
+    dcterms:description      """A reference to the immediately preceding baseline of the same stream.
 Multiple instances of this property imply the stream was merged from one or more baselines before this baseline was taken.
-This property MAY be updated by the provider to refer to earlier baselines when intermediate baselines are deleted."""^^rdf:XMLLiteral .
+This property MAY be updated by the server to refer to earlier baselines when intermediate baselines are deleted."""^^rdf:XMLLiteral .
 
 <#bselections>
     a                        oslc:Property ;
     oslc:name                "selections" ;
     oslc:propertyDefinition  oslc_config:selections ;
-    oslc:occurs              oslc:Zero-or-one ;
+    oslc:occurs              oslc:Zero-or-many ;
     oslc:readOnly            true ;
     oslc:representation      oslc:Reference ;
     oslc:valueType           oslc:Resource ;
     oslc:range               oslc_config:Selections ;
-    dcterms:description      "A reference to the resource identifying the versions of the resources (configuration items) in the configuration."^^rdf:XMLLiteral .
+    dcterms:description      """A reference to a resource identifying versions of the resources (configuration items) in the configuration.
+The set of version resources identified is the union of the sets in all the selections resources.
+Since selections properties are not ordered, there is no defined meaning to a selection that appears in two or more different selections properties;
+servers MAY treat such multiple occurrences of selections as an error."""^^rdf:XMLLiteral .
 
 <#selections>
     a                        oslc:Property ;
     oslc:name                "selections" ;
     oslc:propertyDefinition  oslc_config:selections ;
-    oslc:occurs              oslc:Zero-or-one ;
+    oslc:occurs              oslc:Zero-or-many ;
     oslc:representation      oslc:Reference ;
     oslc:valueType           oslc:Resource ;
     oslc:range               oslc_config:Selections ;
-    dcterms:description      """A reference to the resource identifying the versions of the resources (configuration items) in the configuration.
-Providers MAY treat this property as read-only."""^^rdf:XMLLiteral .
+    dcterms:description      """A reference to a resource identifying versions of the resources (configuration items) in the configuration.
+The set of version resources identified is the union of the sets in all the selections resources.
+Since selections properties are not ordered, there is no defined meaning to a selection that appears in two or more different selections properties;
+servers MAY treat such multiple occurrences of selections as an error.
+Servers MAY treat this property as read-only."""^^rdf:XMLLiteral .
 
 <#streams>
     a                        oslc:Property ;
@@ -522,7 +528,7 @@ Clients can infer a resource type of <code>oslc_config:Configuration</code>,
 but there is no requirement for servers to materialize this triple in the RDF representation.
 Other types MAY be added, including types that are used in <code>oslc_config:accepts</code> and <code>oslc_config:acceptedBy</code> properties
 to define which <a href="config-resources.html#matching_contribs">matching configurations</a> may be added as contributions to this configuration,
-or to which this configuration may be added as a contribution. Providers MAY treat this property as read-only."""^^rdf:XMLLiteral .
+or to which this configuration may be added as a contribution. Servers MAY treat this property as read-only."""^^rdf:XMLLiteral .
 
 <#accepts>
     a                        oslc:Property ;
@@ -568,7 +574,7 @@ Multiple instances of this property imply the stream was initially formed from a
 The property is undefined for baselines; it MAY be absent, or it MAY have the same value as <code>oslc_config:baselineOfStream</code>.
 If this property is present on multiple change sets overriding the same base configuration, it implies a partial ordering of those change sets,
 identifying change sets derived from earlier change sets on the same base.
-Providers SHOULD treat this property as read-only after intial creation."""^^rdf:XMLLiteral .
+Servers SHOULD treat this property as read-only after intial creation."""^^rdf:XMLLiteral .
 
 <#spreviousBaseline>
     a                        oslc:Property ;
@@ -635,7 +641,7 @@ During such a reduction of multiple Contribution resources to a single Contribut
     dcterms:description      """An indication of the order of the contribution, relative to other contributions.
 Contributions are sorted lexicographically on the Unicode code points of this value to resolve component skew.
 To ensure predictable sorting regardless of implementation and locale, this string SHOULD be restricted to ASCII characters.
-Providers MUST support at least 64 characters in this string.
+Servers MUST support at least 64 characters in this string.
 This property is read-only for contributions to a baseline, and modifiable for contributions to a stream."""^^rdf:XMLLiteral .
 
 
@@ -675,7 +681,7 @@ but there is no requirement for servers to materialize this triple in the RDF re
 Selected resources MUST NOT be of type <code>oslc_config:Configuration</code>;
 sub-configurations are given in the <code>oslc_config:contributions</code> property.
 No meaning is assigned to a selected resource of type <code>oslc_config:Component</code>.
-This property is read-only for selections of a baseline, and modifiable for selections of a stream."""^^rdf:XMLLiteral .
+This property is read-only for selections of a baseline, but MAY be modifiable for selections of a stream."""^^rdf:XMLLiteral .
 
 
 
@@ -687,10 +693,14 @@ This property is read-only for selections of a baseline, and modifiable for sele
     oslc:describes           oslc_config:ChangeSet ;
     dcterms:title            "The shape of a ChangeSet." ;
     dcterms:description      """A ChangeSet is a mutable configuration (a type of stream) that replaces, or identifies a set of changes from, the configuration identified by the <code>oslc_config:overrides</code> property.
-That overridden configuration may be either a stream or a baseline, but a change set itself may not be a baseline. Servers MAY refuse to construct a baseline of a change set configuration.
+That overridden configuration may be either a stream or a baseline, but a change set itself may not be a baseline.
+Servers MAY refuse to construct a baseline of a change set configuration.
 This specification does not define the meaning of one change set overriding another change set; servers MAY treat this as an error.
-For purposes of version resolution, any contributions to the change set completely replace the contributions to the overridden configuration;
-selections in the change set may add to, replace, or remove from, the selections in the overridden configuration, as defined below."""^^rdf:XMLLiteral ;
+If this change set has any contributions, those contributions completely replace the contributions to the overridden configuration
+when using this change set configuration as a context for resolving versions, or any configuration that contains this change set as a contribution;
+if this change set has no contributions, any contributions to the overridden configuration are handled normally.
+Selections in the change set may add to, replace, or remove from, the selections in the overridden configuration,
+as defined in <a href="#h3_shape-cselections">ChangeSet Selections</a>."""^^rdf:XMLLiteral ;
     oslc:property
         <#cstype> ,
         <#acceptedBy> ,
@@ -728,7 +738,7 @@ Clients may infer a resource type of <code>oslc_config:Configuration</code>,
 but there is no requirement for servers to materialize this triple in the RDF representation.
 Other types may be added, including types that are used in <code>oslc_config:accepts</code> properties
 to define which <a href="config-resources.html#matching_contribs">matching configurations</a> to which this configuration may be added as a contribution.
-Providers MAY treat this property as read-only."""^^rdf:XMLLiteral .
+Servers MAY treat this property as read-only."""^^rdf:XMLLiteral .
 
 <#cselections>
     a                        oslc:Property ;
@@ -738,9 +748,9 @@ Providers MAY treat this property as read-only."""^^rdf:XMLLiteral .
     oslc:representation      oslc:Reference ;
     oslc:valueType           oslc:Resource ;
     oslc:range               oslc_config:ChangeSetSelections ;
-    dcterms:description      """A reference to the resource identifying the versions of the resources (configuration items) in the configuration;
+    dcterms:description      """A reference to a resource identifying versions of the resources (configuration items) in the configuration;
 these selections override, reduce, or extend the selections in the configuration identified by the <code>oslc_config:overrides</code> property.
-Providers MAY treat this property as read-only."""^^rdf:XMLLiteral .
+Servers MAY treat this property as read-only."""^^rdf:XMLLiteral .
 
 <#overrides>
     a                        oslc:Property ;
@@ -784,10 +794,14 @@ Change set selections resources may also have one of the explicit types <code>os
 Selected resources MUST NOT be of type <code>oslc_config:Configuration</code>;
 sub-configurations are given in the <code>oslc_config:contributions</code> property.
 No meaning is assigned to a selected resource of type <code>oslc_config:Component</code>.
-This property is read-only for selections of a baseline, and modifiable for selections of a stream.
-If the subject has the type <code>oslc_config:RemoveAll</code>, all selections in the overriden configuration are to be ignored; all selections are in other <code>oslc_selects</code> properties of the change set.
+This property MAY be modifiable for selections of a change set.
+If the subject has the type <code>oslc_config:RemoveAll</code>, all selections in the overriden configuration are to be ignored; all selections are in this and other <code>oslc_selects</code> properties of the change set.
+Any target version resources indicated in this selection resource are selected in this configuration.
 Otherwise, if the subject has the type <code>oslc_config:Removals</code>, the indicated target versions are explicitly removed from the set of versions selected by the configuration overridden by this configuration.
-Otherwise, if the subject has only the (possibly inferred) type <code>oslc_config:Selections</code>, the indicated target version resources are selected by this configuration
-Since selections properties are not ordered, there is no defined meaning to a selection that appears in two or more different selections properties of any types;
-servers MAY treat such multiple occurrences of selections as an error."""^^rdf:XMLLiteral .
+Otherwise, if the subject has only the (possibly inferred) type <code>oslc_config:Selections</code>, the indicated target version resources are selected by this configuration;
+a change set selection overrides (replaces) the version selected by a matching concept resource in the overridden configuration's selection,
+and adds additional selections for concept resources that are not mentioned in the overridden configuration's selection.
+Since selections properties are not ordered, there is no defined meaning to a selection that appears in two or more different selections properties of any types,
+or to a change set that include both a <code>oslc_config:RemoveAll</code> and a <code>oslc_config:Removals</code> selection;
+servers MAY treat occurrences of potentially conflicting selections as an error."""^^rdf:XMLLiteral .
 

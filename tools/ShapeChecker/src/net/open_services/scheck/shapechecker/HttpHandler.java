@@ -80,7 +80,8 @@ public class HttpHandler
             throw new ShapeCheckException(
                 ResultModel.InvalidUri,
                 ResourceFactory.createResource(uri),
-                null);
+                null,
+                e);
         }
 
         try
@@ -216,7 +217,7 @@ public class HttpHandler
             throw new ShapeCheckException(
                 ResultModel.InvalidRdf,
                 ResourceFactory.createResource(httpUri.toString()),
-                ResourceFactory.createTypedLiteral(new Integer(statusCode)));
+                ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
         }
         Header[] contentTypes = response.getHeaders("Content-Type");
         for (Header contentType : contentTypes)

@@ -1,0 +1,13 @@
+version: 2.0
+jobs:
+  build:
+    working_directory: ~/oslc-core
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    steps:
+      - checkout
+      - run:
+          name: ShapeChecker ant
+          command: cd tools/ShapeChecker && ant -lib lib/ -buildfile build.xml
+      - store_artifacts: # store the uberjar as an artifact
+          path: tools/ShapeChecker/lib/shapechecker.jar
