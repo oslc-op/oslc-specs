@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<!-- replace domain-name with your domain name, e.g., Change Management -->
+<!-- replace domain-short-name with your domains's short name, e.g., oslc-cm -->
+<meta charset='utf-8' />
+
+<head>
+  <title>OSLC Performance Monitoring Version 2.0 Part 1: Specification</title>
+  <link rel="stylesheet" type="text/css" href="../styles/oslc-styles.css" />
+  <link rel="stylesheet" type="text/css" href="../styles/table-styles.css" />
+  <link rel="stylesheet" type="text/css" href="../styles/definition-styles.css" />
+  <script src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+  <script class='remove'>
+    var respecConfig = {
+      // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN).
+      // If in doubt use WD.
+      // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
+      // CSPRD is the most likely document you'll deliver first, so we'll start there.
+      specStatus: "WD",
+      // the specification's short name with version but no dots
+      shortName: "oslc-perfmon-v2.0",
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+      // subtitle   :  "Committee Specification Draft 02",
+      // the document's citation label
+      citationLabel: "OSLC-PERFMON-v2.0",
+      // Revision level of the document within its stage
+      revision: "01",
+      thisVersion: "http://docs.oasis-open.org/oslc-domains/oslc-perfmon/v2.0/csprd01/part1-performance-monitoring-spec/oslc-perfmon-v2.0-csprd01-part1-performance-monitoring-spec.html",
+      latestVersion: "",
+      prevVersion: "",
+      // if you wish the publication date to be other than the last modification, set this
+      // publishDate:  "2009-08-06",
+      // if the specification's copyright date is a range of years, specify the start date here:
+      // copyrightStart: "2005"
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+      // Only include h1 and h2 levels in the table of contents
+      maxTocLevel: 2,
+      // if there a publicly available Editor's Draft, this is the link
+      edDraftURI: "https://github.com/oasis-tcs/oslc-domains/perfmon/performance-monitoring-spec.html",
+      // Chairs and editors, add as many as you like: you must have at least one editor.
+      // Only "name" is required, but the other fields are recommended.
+      editors: [{
+        name: "Fabio Ribeiro",
+        mailto: "fabio.ribeiro@koneksys.com",
+        company: "Koneksys",
+        companyURL: "https://www.koneksys.com"
+      },
+      ],
+      chairs: [{
+        name: "Jim Amsden",
+        mailto: "jamsden@us.ibm.com",
+        company: "IBM",
+        companyURL: "http://www.ibm.com/"
+      }, {
+        name: "Graham Bachelor",
+        mailto: "gray_bachelor@uk.ibm.com",
+        company: "IBM",
+        companyURL: "http://www.ibm.com"
+      }],
+      // name of the TC
+      wg: "OASIS OSLC Lifecycle Integration Domains TC",
+      wgShortName: "oslc-domains",
+      // URI of the public TC page
+      wgURI: "https://www.oasis-open.org/committees/oslc-domains/",
+      // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
+      wgPublicList: "oslc-domains-comment",
+      // Namespaces defined by this TC
+      namespaces: [
+        { href: "http://open-services.net/ns/perfmon#", prefix: "perfmon" }
+      ],
+      // For multi-part specifications, each part must list the other parts
+      // additionalArtifacts : [
+      //  { title: "OSLC XXX 1.0 Part 1: Overview (this document)", href: "oslc-xxx.html" },
+      //  { title: "OSLC XXX 1.0 Part 2: XXX2", href: "xxx-part2.html" },
+      //  { title: "OSLC XXX 1.0 Part 3: XXX3", href: "xxx-part3.html" },
+      // ],
+      // Related work
+      // relatedWork : [
+      //    { title: "Some title", href: "http://example.com/relatedDocument.html" },
+      //    ],
+      // supersedes : [
+      //    { title: "Some title", href: "http://example.com/supercededDocument.html" },
+      //    ],
+      // Other parts of multi-part spec
+      additionalArtifacts: [
+        { title: "OSLC Performance Monitorin Version 2.0 Part 1: Specification (this document)", href: "http://docs.oasis-open.org/oslc-domains/oslc-perfmon/v2.0/csprd01/part1-performance-monitoring/oslc-perfmon-v2.0-csprd01-part1-performance-monitoring-spec.html" },
+        { title: "OSLC Performance Monitorin Version 2.0 Part 2: Vocabulary", href: "http://docs.oasis-open.org/oslc-domains/oslc-perfmon/v2.0/csprd01/part2-performance-monitoring/oslc-perfmon-v2.0-csprd01-part2-performance-monitoring-vocab.html" },
+      ],
+      relatedWork: [
+        { title: "Open Services for Lifecycle Collaboration Performance Monitoring Version 2.0", href: "http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/" }
+      ],
+      localBiblio: {
+        "OSLCCore2": {
+          title: "OSLC Core Specification 2.0",
+          href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCore2ResourceRepresentations": {
+          title: "OSLC Core 2.0 - Resource Representations",
+          href: "http://open-services.net/bin/view/Main/OslcCoreSpecification#OSLC_Defined_Resource_Representa",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCore2RepresentationGuidance": {
+          title: "OSLC Core 2.0 - Representation Guidance",
+          href: "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCore2UIGuidance": {
+          title: "OSLC Core 2.0 - UI Preview Guidance",
+          href: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCore2LinksGuidance": {
+          title: "OSLC Core 2.0 - Links Guidance",
+          href: "http://open-services.net/bin/view/Main/OslcCoreSpecAppendixLinks",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },       
+        "DublinCore1": {
+          title: "Dublin Core Metadata Element Set, Version 1.1",
+          href: "http://dublincore.org/documents/2010/10/11/dces/",
+          publisher: "Dublin Core",
+        },
+        "FOAF": {
+          title: "Friend of a Friend (FOAF) v0.98",
+          href: "http://xmlns.com/foaf/spec/20100809.html",
+          authors: ["D. Brickley", "L. Miller"],
+          status: "Stable",
+        },
+        "HTTP1.1": {
+          title: "Hyper-text Transfer Protocol (HTTP/1.1)",
+          href: "https://tools.ietf.org/html/rfc2616",
+          authors: ["R. Fielding", "J. Gettis", "J. Morgul"],
+          status: "STD 1",
+        },
+        "OAuth1.0a": {
+          title: "The OAuth 1.0 Protocol",
+          href: "https://tools.ietf.org/html/rfc5849",
+          status: "Published",
+          publisher: "Internet Engineering Task Force",
+        },
+        "RDFXMLConcepts": {
+          title: "RDF/XML Concepts and Abstract Syntax",
+          href: "https://www.w3.org/TR/2004/REC-rdf-concepts-20040210/",
+          authors: ["G. Klyne", "J. Carroll"],
+          status: "W3C Recommendation",
+          publisher: "https://www.w3.org",
+        },
+        "RDFXMLSyntax": {
+          title: "RDF/XML Syntax Specification (Revised)",
+          href: "https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp-paging.html",
+          authors: ["D. Beckett"],
+          status: "W3C Recommendation",
+          publisher: "http://www.w3.org",
+        },
+        "URISyntax": {
+          title: "URI Generic Syntax",
+          href: "https://tools.ietf.org/html/rfc3986",
+          authors: ["T. Berners-Lee", "R. Fielding"],
+          status: "STD 1",
+        },
+        "XMLNamespaces": {
+          title: "Namespaces in XML 1.0 (Third Edition)",
+          href: "https://www.w3.org/TR/REC-xml-names/",
+          authors: ["T. Bray", "D. Hollander", "A. Layman"],
+          publisher: "https://www.w3.org",
+        },
+        "XSDDatatypes": {
+          title: "XML Schema Part 2: Datatypes Second Edition",
+          href: "http://openid.net/connect/",
+          authors: ["P. Biron", "A. Malhotra"],
+          status: "W3C Recommendation",
+          publisher: "https://www.w3.org",
+        },
+        "OSLCCoreVocab": {
+          title: "OSLC Core Vocabulary",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
+          authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+          status: "Working Draft",
+          publisher: "OASIS",
+        },
+        "OSLCCAsset": {
+          title: "OSLC Asset Management Specification 1.0",
+          href: "http://open-services.net/bin/view/Main/AssetMgSpecificationV1",
+          authors: ["G. Larsen", "G. Mendel", "K.Bauer"],
+          status: "OSLC Specification",
+          publisher: "open-services.net",
+        },
+        "ATOM": {
+          title: "RFC4287 - Atom Syndication Format",
+          href: "https://tools.ietf.org/html/rfc4287",
+          status: "STD 1",
+        },
+        "JSON": {
+          title: "Javascript Object Notation",
+          href: "http://json.org/",
+        },
+        "EMSREST": {
+          title: "EMS 1.0 REST API",
+          href: "http://open-services.net/wiki/estimation-and-measurement/EMS-1.0-REST-API-Data-Model/",
+          status: "Draft Specification",
+          publisher: "open-services.net",
+        },
+      }
+    };
+  </script>
+
+
+</head>
+
+<body>
+  <section id='abstract'>
+    <p>This specification defines the OSLC Performance Monitoring domain, a RESTful web services interface for the management
+      of domain specifica and supporting resources defined in the OSLC Core specification. To support these scenarios, this
+      specification defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET, POST, PUT and DELETE, HTTP
+      response codes, content type handling and resource formats.
+    </p>
+  </section>
+
+  <section id='toc'></section>
+  <hr />
+
+  <section id='sotd'></section>
+
+  <section id='intro' class='informative'>
+    <h2>Introduction</h2>
+    <p>(this section is informative)</p>
+
+    <p>This specification builds on the [[!OSLCCore2]] to define the resources and operations supported by an Open Services
+      for Lifecycle Collaboration (OSLC) Performance Monitoring provider. This version of the specification has version 2.0
+      to indicate that it is an [[!OSLCCore2]] compliant specification.</p>
+
+    <p>Performance Monitoring resources define records whose content is most useful in the testing and operational stages of
+      the software development, test, and deployment lifecycle. They represent individual resources as well as their relationships
+      to other resources and to other linked resources outside of the Performance Monitoring domain. The intent of this specification
+      is to define the set of HTTP-based RESTful interfaces in terms of HTTP methods: GET, POST, PUT and DELETE, HTTP response
+      codes, MIME type handling and resource formats. The capabilities of the interface definitions are driven by key integration
+      scenarios and therefore do not represent a complete set of operations on resources or resource types. The resource
+      formats and operations may not exactly match the native models supported by existing implementations, but are intended
+      to be compatible with them.</p>
+
+    <p>Performance Monitoring, as referenced in this specification, refers to the collection of data about Information Technology
+      (IT) systems such as servers, workstations, services, and transactions to assess their operational health and enable
+      proactive manual human intervention before emerging problems escalate into widespread degradation or outages. See the
+      <a href="http://open-services.net/wiki/performance-monitoring/Performance-Monitoring-Scenarios" title="Performance-Monitoring-Scenarios">Performance Monitoring Scenarios</a> page for several specific examples.</p>
+
+
+    <section id="iprPolicy">
+      <h2>IPR Policy</h2>
+      <p>
+        This Committee Specification Public Review Draft is being developed under the
+        <a href="https://www.oasis-open.org/policies-guidelines/ipr#RF-on-Limited-Mode">RF on Limited Terms</a> Mode of the
+        <a href="https://www.oasis-open.org/policies-guidelines/ipr">OASIS IPR Policy</a>, the mode chosen when the Technical Committee was established. For information on whether any
+        patents have been disclosed that may be essential to implementing this specification, and any offers of patent licensing
+        terms, please refer to the Intellectual Property Rights section of the TC’s web page (
+        <a href='https://www.oasis-open.org/committees/oslc-domains/ipr.php'>https://www.oasis-open.org/committees/oslc-domains/ipr.php</a>).
+      </p>
+    </section>
+
+    <section id='terminology' class='informative'>
+      <h2>Terminology</h2>
+      <p>
+        <strong>Service Provider</strong> - an implementation of the OSLC Performance Monitoring specification as a server. OSLC
+        Performance Monitoring clients consume these services.</p>
+
+      <p>
+        <strong>Performance Monitoring Record</strong> - Defines the unit of information made available by a Performance Monitoring
+        service provider. The information could be numeric metrics, status, or some other kind of property of interest to
+        monitoring consumers.</p>
+
+      <p>
+        <strong>Monitored resource</strong> - An entity such as a software server or computer system that is monitored by a software
+        agent to ensure its performance and availability. In this specification when we use the word &#8216;resource&#8217;
+        to mean a monitored resource rather than an OSLC resource, we try to qualify the word to make our intent clear.</p>
+    </section>
+
+    <section id='references'>
+      <h3>References</h3>
+    </section>
+    <section id="conventions"></section>
+
+  </section>
+
+  <section id="baseRequirements">
+    <h2>Base Requirements</h2>
+
+    <section id="versioning">
+      <h3>Specification Versioning</h3>
+
+      <p>This specification follows the specification version guidelines given in [[!OSLCCore2]].</p>
+
+    </section>
+
+    <section id="namespaces">
+      <h3>Namespaces</h3>
+
+      <section id='Defined'>
+        <h4>Defined</h4>
+
+        <p>OSLC Performance Monitoring defines the namespace shown in the table below. This namespace URI and prefix are used
+          to designate the resources and their properties defined in this specification.</p>
+
+        <p>Use of the suggested prefix is RECOMMENDED, because doing so aids debugging and other situations where humans read
+          the data.</p>
+
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th>
+                <strong>Suggested namespace prefix</strong>
+              </th>
+              <th>
+                <strong>Namespace URI</strong>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <code>pm</code>
+              </td>
+              <td>
+                <code>http://open-services.net/ns/perfmon#</code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id='Re-used-from-other-specifications'>
+        <h4>Re-used from other specifications</h4>
+
+        <p>In addition to the namespace URIs and namespace prefixes defined in the [[!OSLCCore2]], OSLC Performance Monitoring
+          also re-uses vocabulary terms from other namespaces. The namespace prefixes in the table below are used in this
+          specification, and match the recommendations made by the specification that defines each.</p>
+
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th>
+                <strong>Namespace prefix used</strong>
+              </th>
+              <th>
+                <strong>Namespace URI</strong>
+              </th>
+              <th>
+                <strong>Usage</strong>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <code>ems</code>
+              </td>
+              <td>
+                <code>http://open-services.net/ns/ems#</code>
+              </td>
+              <td>Vocabulary is required for Performance Monitoring providers to expose metrics. Defined in the
+                <a href="http://docs.oasis-open.org/oslc-domains/ems/v3.0/csprd01/part1-estimation-measurement/ems-v3.0-csprd01-part1-estimation-measurement.html">OSLC Estimation and Measurement</a> domain.</td>
+            </tr>
+            <tr>
+              <td>
+                <code>crtv</code>
+              </td>
+              <td>
+                <code>http://open-services.net/ns/crtv#</code>
+              </td>
+              <td>Vocabulary is expected to be commonly used by Performance Monitoring providers, but is not required. Defined
+                in the
+                <a href="http://docs.oasis-open.org/oslc-domains/recon/v3.0/csprd01/part1-reconciliation/recon-v3.0-csprd01-part1-reconciliation.html">OSLC Reconciliation</a> domain.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+    </section>
+
+    <section id="formats">
+      <h3>Resource Formats</h3>
+
+      <p>In addition to the requirements for
+        [[!OSLCCore2ResourceRepresentations]], this section outlines further refinements and restrictions.</p>
+
+      <p>See
+        <a href="#Service_Provider_HTTP_Method_Sup">HTTP Method support table</a> for further clarification on support for HTTP methods and media types for each OSLC
+        Performance Monitoring resource.</p>
+
+      <p>For HTTP GET requests on all OSLC Performance Monitoring and OSLC Core defined resource types,</p>
+
+      <ul>
+        <li>Performance Monitoring Providers MUST provide RDF/XML representations. If provided, the RDF/XML representation SHOULD
+          follow the guidelines outlined in the
+          [[!OSLCCore2RepresentationGuidance]] for RDF/XML.</li>
+        <li>Performance Monitoring Providers MAY provide XML and JSON representations. The XML and JSON representations SHOULD
+          follow the guidelines outlined in the
+          [[!OSLCCore2RepresentationGuidance]].</li>
+        <li>Performance Monitoring Consumers requesting RDF/XML SHOULD be prepared for any valid RDF/XML document. Performance
+          Monitoring Consumers requesting XML SHOULD be prepared for representations that follow the guidelines outlined
+          in the
+          [[!OSLCCore2RepresentationGuidance]].</li>
+        <li>Performance Monitoring Providers SHOULD support an [X]HTML representation and a user interface (UI) preview as defined
+          by
+          [[!OSLCCore2UIGuidance]]
+        </li>
+      </ul>
+
+      <p>For HTTP PUT/POST request formats for Performance Monitoring resources,</p>
+
+      <ul>
+        <li>Performance Monitoring Providers MUST accept RDF/XML representations and MAY accept XML representations. Performance
+          Monitoring Providers accepting RDF/XML SHOULD be prepared for any valid RDF/XML document. If XML is accepted, Performance
+          Monitoring Providers SHOULD be prepared for representations that follow the guidelines outlined in the
+          [[!OSLCCore2RepresentationGuidance]].</li>
+        <li>Performance Monitoring Providers MAY accept XML and JSON representations. Performance Monitoring Providers accepting
+          XML or JSON SHOULD be prepared for representations that follow the guidelines outlined in the
+          [[!OSLCCore2RepresentationGuidance]].</li>
+      </ul>
+
+      <p>For HTTP GET response formats for Query requests,</p>
+
+      <ul>
+        <li>Performance Monitoring Providers MUST provide RDF/XML and MAY provide JSON, XML, and Atom Syndication Format XML.</li>
+      </ul>
+
+      <p>When Performance Monitoring Consumers request:</p>
+
+      <ul>
+        <li>
+          <code>application/rdf+xml</code> Performance Monitoring Providers MUST respond with RDF/XML representation without restrictions.</li>
+        <li>
+          <code>application/xml</code> Performance Monitoring Providers SHOULD respond with OSLC-defined abbreviated XML representation as defined in
+          the
+          [[!OSLCCore2RepresentationGuidance]]
+        </li>
+        <li>
+          <code>application/atom+xml</code> Performance Monitoring Providers SHOULD respond with Atom Syndication Format XML representation as defined in
+          the
+          [[!OSLCCore2RepresentationGuidance]]
+        </li>
+        <li>If supported, the Atom Syndication Format XML representation SHOULD use RDF/XML representation without restrictions
+          for the atom:content entries representing the resource representations.
+        </li>
+      </ul>
+
+    </section>
+
+    <section id="authentication">
+      <h3>Authentication</h3>
+
+      <p>See
+        [[!OSLCCore2]] Authentication section. This specification puts no additional constraints on authentication.</p>
+    </section>
+
+    <section id="errors">
+      <h3>Error Responses</h3>
+
+      <p>See
+        [[!OSLCCore2]] Error Responses section. This specification puts no additional constraints on error responses.</p>
+    </section>
+
+    <section id="pagination">
+      <h3>Pagination</h3>
+
+      <p>Performance Monitoring Providers SHOULD support pagination of query results and MAY support pagination of a single
+        resource&#8217;s properties as defined by the OSLC Core Specification.</p>
+    </section>
+
+    <section id="labels" class='informative'>
+      <h3>Labels for Relationships</h3>
+
+      <p>Relationships to other resources are represented as properties whose values are the URI of the object or target resource.
+        When a relationship property is to be presented in a user interface, it may be helpful to provide an informative
+        and useful textual label for that relationship instance. (This in addition to the relationship property URI and the
+        object resource URI, which are also candidates for presentation to a user.)
+        [[!OSLCCore2LinksGuidance]] allows OSLC providers to support a
+        <code>dcterms:title</code> link property in resource representations, using the anchor approach (reification), but this specification discourages
+        its use (providers SHOULD NOT use it, and consumers SHOULD NOT depend on it). At the time this specification was
+        written, the W3C RDF working group was on a path to remove reification from the next version of RDF, and it was noted
+        that reification never was normatively defined even in the RDF/XML syntax W3C Recommendation, where it occurs informatively.</p>
+
+
+    </section>
+
+  </section>
+
+  <section id='termsAndConstraints'>
+    <h2>Vocabulary Terms and Constraints</h2>
+    <p>
+      <a href="http://docs.oasis-open.org/oslc-domains/oslc-perfmon/v2.0/csprd01/part2-performance-monitoring/oslc-perfmon-v2.0-csprd01-part2-performance-monitoring-vocab.html">OSLC Performance Monitoring Resources 2.0</a>
+      Defines the vocabulary terms and constraints for OSLC Performance Monitoring resources. These terms and constraints are specified according
+      to [[!OSLCCoreVocab]].</p>
+  </section>
+
+  <section id='Service_Provider_HTTP_Method_Sup'>
+    <h2>Service Provider HTTP Method Support</h2>
+
+    <p>Support for all HTTP methods in
+      <a href="#Conformance">the conformance table</a> is not required for all Performance Monitoring resources. The following table summarizes the
+      requirements for each resource definition, HTTP method, and media type combination. A value of
+      <code>N/A</code> means this specification does not impose any constraints on it.</p>
+
+    <table border="1" cellspacing="0" cellpadding="5">
+      <thead>
+        <tr>
+          <th>Resource</th>
+          <th>RDF/XML</th>
+          <th>XML</th>
+          <th>JSON</th>
+          <th>HTML</th>
+          <th>Other</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Performance Monitoring Record</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>GET</td>
+          <td>MUST</td>
+          <td>MAY</td>
+          <td>SHOULD</td>
+          <td>SHOULD</td>
+          <td>MAY</td>
+        </tr>
+        <tr>
+          <td>PUT</td>
+          <td>MAY</td>
+          <td>MAY</td>
+          <td>MAY</td>
+          <td>N/A</td>
+          <td>MAY</td>
+        </tr>
+        <tr>
+          <td>POST</td>
+          <td>MAY</td>
+          <td>MAY</td>
+          <td>MAY</td>
+          <td>N/A</td>
+          <td>MAY</td>
+        </tr>
+        <tr>
+          <td>DELETE</td>
+          <td>N/A</td>
+          <td>N/A</td>
+          <td>N/A</td>
+          <td>N/A</td>
+          <td>N/A</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Performance Monitoring service providers SHOULD support deletion of any resources for which they allow creation.</p>
+
+  </section>
+
+  <section id='Performance-Monitoring-Specification-Guidelines'>
+    <h2>Performance Monitoring Specification Guidelines</h2>
+
+    <p>(this section is informative)</p>
+
+    <section id='Linking-a-Performance-Monitoring-Record-to-the-Resource-it-Describes'>
+      <h3>Linking a Performance Monitoring Record to the Resource it Describes</h3>
+
+      <p>In addition to a Performance Monitoring Record having a predicate to refer to the monitored resource is is part of
+        using pm:isPartOf, a Performance Monitoring record may be a class type for a monitored resource, such that the pm:isPartOf
+        predicate value refers to itself as the object value.</p>
+
+    </section>
+
+    <section id='Extending-Metrics'>
+      <h3>Extending Metrics</h3>
+
+      <ul>
+        <li>Choose the correct metric categor(ies) for your metric.</li>
+        <li>Decide whether your class should be part of the &#8216;perfmon&#8217; namespace or a private namespace.</li>
+        <li>Create an RDFS class for your metric. </li>
+        <li>Create an instance of a PerformanceMonitoringRecord</li>
+        <li>Put a timestamp on it to indicate when it was collected</li>
+        <li>Put an ems:observes predicate in your PerformanceMonitoringRecord and have it refer to an ems:Measure instance</li>
+        <li>Use your metric in the ems:Measure instance</li>
+        <li>Use ems:unitOfMeasure to specify whether the metric is a rate, a ratio, a quantity, a time, etc.</li>
+        <li>Relate PerformanceMonitoringRecord to monitored resource using isPartOf property</li>
+      </ul>
+    </section>
+
+  </section>
+
+  <section id="conformance">
+    <h3>Conformance</h3>
+    <p>This specification is based on
+      [[!OSLCCore2]]. OSLC Performance Monitoring consumers and service providers MUST be compliant with both
+      the core specification and this Performance Monitoring specification, and SHOULD follow all the guidelines and recommendations
+      in both these specifications.</p>
+
+    <p>The following table summarizes the requirements from OSLC Core Specification as well as some (but not all) additional
+      requirements specific to Performance Monitoring. See the full content of the Performance Monitoring specification for
+      all requirements. Note that this specification further restricts some of the requirements for OSLC Core Specification
+      as noted in the Origin column of the compliance table. See further sections in this specification or the OSLC Core
+      Specification to get further details on each of these requirements.</p>
+
+    <p>Any consumer or service provider behaviors are allowed unless explicitly prohibited by this or dependent specifications;
+      conditional permissive requirements, especially those qualified with &ldquo;MAY&rdquo;, are implicitly covered by the
+      preceding clause. While technically redundant in light of that broad permission, OSLC specifications do still make
+      explicit MAY-qualified statements in cases where the editors believe doing so is likely to add clarity.</p>
+
+    <section id='Requirements-on-OSLC-Consumers'>
+      <h4>Requirements on OSLC Consumers</h4>
+
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th>
+              <strong>Number</strong>
+            </th>
+            <th>
+              <strong>Requirement</strong>
+            </th>
+            <th>
+              <strong>Level</strong>
+            </th>
+            <th>
+              <strong>Origin(s)</strong>
+            </th>
+            <th>
+              <strong>Meaning</strong>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Perfmon-1</td>
+            <td>Unknown properties and content</td>
+            <td>MUST</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Unknown_properties_and_content">Core</a>
+            </td>
+            <td>OSLC clients MUST preserve unknown content</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id='Requirements-on-OSLC-Service-Providers'>
+      <h4>Requirements on OSLC Service Providers</h4>
+
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th>
+              <strong>Number</strong>
+            </th>
+            <th>
+              <strong>Requirement</strong>
+            </th>
+            <th>
+              <strong>Level</strong>
+            </th>
+            <th>
+              <strong>Origin(s)</strong>
+            </th>
+            <th>
+              <strong>Meaning</strong>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Perfmon-2</td>
+            <td>Unknown properties and content</td>
+            <td>MAY</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Unknown_properties_and_content">Core</a>
+            </td>
+            <td>OSLC service providers MAY ignore unknown content</td>
+          </tr>
+          <tr>
+            <td>Perfmon-3</td>
+            <td>Unknown properties and content</td>
+            <td>MUST</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Unknown_properties_and_content">Core</a>
+            </td>
+            <td>OSLC service providers MUST return an error code if recognized content is invalid.</td>
+          </tr>
+          <tr>
+            <td>Perfmon-4</td>
+            <td>Resource Operations</td>
+            <td>MUST</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Operations">Core</a>
+            </td>
+            <td>OSLC service providers MUST support resource operations via standard HTTP operations</td>
+          </tr>
+          <tr>
+            <td>Perfmon-5</td>
+            <td>Resource Paging</td>
+            <td>MAY</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Core</a>
+            </td>
+            <td>OSLC services MAY provide paging for resources</td>
+          </tr>
+          <tr>
+            <td>Perfmon-6</td>
+            <td>Partial Resource Representations</td>
+            <td>MAY</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values">Core</a>
+            </td>
+            <td>OSLC service providers MAY support HTTP GET requests for retrieval of a subset of a resource&#8217;s properties
+              via the oslc.properties URL parameter</td>
+          </tr>
+          <tr>
+            <td>Perfmon-7</td>
+            <td>Partial Resource Representations</td>
+            <td>MAY</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values">Core</a>
+            </td>
+            <td>OSLC service providers MAY support HTTP PUT requests for updating a subset of a resource&#8217;s properties via
+              the oslc.properties URL parameter</td>
+          </tr>
+          <tr>
+            <td>Perfmon-8</td>
+            <td>Service Provider Resources</td>
+            <td>MAY</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources">Core</a>
+            </td>
+            <td>OSLC service providers MAY provide a Service Provider Catalog resource</td>
+          </tr>
+          <tr>
+            <td>Perfmon-9</td>
+            <td>Service Provider Resources</td>
+            <td>MUST</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources">Core</a>
+            </td>
+            <td>OSLC service providers MUST provide a Service Provider resource</td>
+          </tr>
+          <tr>
+            <td>Perfmon-10</td>
+            <td>Creation Factories</td>
+            <td>MAY</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Creation_Factories">Core</a>
+            </td>
+            <td>OSLC service providers MAY provide creation factories to enable resource creation via HTTP POST</td>
+          </tr>
+          <tr>
+            <td>Perfmon-11</td>
+            <td>Query Capabilities</td>
+            <td>SHOULD
+              <sup>1</sup>
+            </td>
+            <td>
+              <a href="#Query-Capabilities">Perf Mon</a>,
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities">Core</a>
+            </td>
+            <td>OSLC service providers SHOULD provide query capabilities to enable clients to query for resources</td>
+          </tr>
+          <tr>
+            <td>Perfmon-12</td>
+            <td>Query Syntax</td>
+            <td>MUST
+              <sup>2</sup>
+            </td>
+            <td>
+              <a href="#Query-Capabilities">Perf Mon</a>,
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Syntax">Core</a>
+            </td>
+            <td>If a service provider supports a OSLC query capability, its query capabilities MUST support the OSLC Core Query
+              Syntax
+            </td>
+          </tr>
+          <tr>
+            <td>Perfmon-13</td>
+            <td>Delegated UI Dialogs</td>
+            <td>SHOULD</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs">Core</a>
+            </td>
+            <td>OSLC service providers SHOULD allow clients to discover, via their service provider resources, any Delegated
+              UI Dialogs they offer.</td>
+          </tr>
+          <tr>
+            <td>Perfmon-14</td>
+            <td>Delegated UI Dialogs</td>
+            <td>SHOULD</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs">Core</a>
+            </td>
+            <td>OSLC service providers SHOULD offer delegated UI dialogs for resource creation</td>
+          </tr>
+          <tr>
+            <td>Perfmon-15</td>
+            <td>Delegated UI Dialogs</td>
+            <td>SHOULD</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs">Core</a>
+            </td>
+            <td>OSLC service providers SHOULD offer delegated UI dialogs for resource selection</td>
+          </tr>
+          <tr>
+            <td>Perfmon-16</td>
+            <td>UI Preview</td>
+            <td>SHOULD</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#User_Interface_Previews">Core</a>
+            </td>
+            <td>OSLC Services SHOULD offer UI previews for resources that may be referenced by other resources</td>
+          </tr>
+          <tr>
+            <td>Perfmon-17</td>
+            <td>HTTP Basic Authentication</td>
+            <td>MAY</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#HTTP_Basic_Authentication">Core</a>
+            </td>
+            <td>OSLC Services MAY support Basic Auth</td>
+          </tr>
+          <tr>
+            <td>Perfmon-18</td>
+            <td>HTTP Basic Authentication</td>
+            <td>SHOULD</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#HTTP_Basic_Authentication">Core</a>
+            </td>
+            <td>OSLC Services SHOULD support Basic Auth only over HTTPS</td>
+          </tr>
+          <tr>
+            <td>Perfmon-19</td>
+            <td>OAuth Authentication</td>
+            <td>MAY</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#OAuth_Authentication">Core</a>
+            </td>
+            <td>OSLC service providers MAY support OAuth</td>
+          </tr>
+          <tr>
+            <td>Perfmon-20</td>
+            <td>OAuth Authentication</td>
+            <td>SHOULD</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#OAuth_Authentication">Core</a>
+            </td>
+            <td>OSLC service providers that support OAuth SHOULD allow clients to discover the required OAuth URLs via their
+              service provider resource</td>
+          </tr>
+          <tr>
+            <td>Perfmon-21</td>
+            <td>Error Responses</td>
+            <td>MAY</td>
+            <td>
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Error_Responses">Core</a>
+            </td>
+            <td>OSLC service providers MAY provide error responses using Core-defined error formats</td>
+          </tr>
+          <tr>
+            <td>Perfmon-22</td>
+            <td>RDF/XML Representations</td>
+            <td>MUST
+              <sup>3</sup>
+            </td>
+            <td>
+              <a href="#Service_Provider_HTTP_Method_Sup">Perf Mon</a>,
+              <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_application_rdf_x">Core</a>
+            </td>
+            <td>OSLC service providers MUST offer an RDF/XML representation for HTTP GET responses</td>
+          </tr>
+          <tr>
+            <td>Perfmon-23</td>
+            <td>RDF/XML Representations</td>
+            <td>MUST
+              <sup>3</sup>
+            </td>
+            <td>
+              <a href="#Service_Provider_HTTP_Method_Sup">Perf Mon</a>,
+              <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_application_rdf_x">Core</a>
+            </td>
+            <td>OSLC service providers MUST accept RDF/XML representations on PUT requests.</td>
+          </tr>
+          <tr>
+            <td>Perfmon-24</td>
+            <td>RDF/XML Representations</td>
+            <td>MUST
+              <sup>3</sup>
+            </td>
+            <td>
+              <a href="#Service_Provider_HTTP_Method_Sup">Perf Mon</a>,
+              <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_application_rdf_x">Core</a>
+            </td>
+            <td>RDF/XML representations on POST requests whose semantic intent is to create a new resource instance.</td>
+          </tr>
+          <tr>
+            <td>Perfmon-25</td>
+            <td>XML Representations</td>
+            <td>MAY
+              <sup>3</sup>
+            </td>
+            <td>
+              <a href="#Service_Provider_HTTP_Method_Sup">Perf Mon</a>,
+              <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_application_xml">Core</a>
+            </td>
+            <td>OSLC service providers MAY provide a XML representation for HTTP GET, POST and PUT requests that conform to the
+              Core Guidelines for XML.</td>
+          </tr>
+          <tr>
+            <td>Perfmon-26</td>
+            <td>JSON Representations</td>
+            <td>MAY
+              <sup>3</sup>
+            </td>
+            <td>
+              <a href="#Service_Provider_HTTP_Method_Sup">Perf Mon</a>,
+              <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_JSON">Core</a>
+            </td>
+            <td>OSLC service providers MAY provide JSON representations for HTTP GET, POST and PUT requests that conform to the
+              Core Guidelines for JSON</td>
+          </tr>
+          <tr>
+            <td>Perfmon-27</td>
+            <td>HTML Representations</td>
+            <td>SHOULD
+              <sup>3</sup>
+            </td>
+            <td>
+              <a href="#Service_Provider_HTTP_Method_Sup">Perf Mon</a>,
+              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#OSLC_Defined_Resource_Representa">Core</a>
+            </td>
+            <td>OSLC service providers SHOULD provide HTML representations for HTTP GET requests</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ul>
+        <li>
+          <sup>1</sup>The OSLC Core Specification indicates service providers MAY provide Query Capabilities. This specification
+          strengthens the requirement.</li>
+        <li>
+          <sup>2</sup>The OSLC Core Specification indicates service providers MAY support the OSLC Query Syntax. This specification
+          makes OSLC Query Syntax support a MUST requirement for service providers providing query capabilities.</li>
+        <li>
+          <sup>3</sup>Support for all common HTTP methods is not required for all resources defined by this specification. See
+          the
+          <a href="#Service_Provider_HTTP_Method_Sup">HTTP Method support table</a> for details.</li>
+      </ul>
+
+
+    </section>
+  </section>
+
+  <section id="versionCompability" class="appendix">
+    <h2>Version Compatibility</h2>
+    <p></p>
+  </section>
+
+  <section id='Appendix-A.3A-Samples' class="appendix informative">
+    <h2>Samples</h2>
+
+    <p>(this section is informative)</p>
+
+    <p>See
+      <a href="http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-2.0-Appendix-A%3A-Samples" title="OSLC-Performance-Monitoring-2.0-Appendix-A:-Samples">OSLC Performance Monitoring 2.0 Appendix A: Samples</a>
+    </p>
+  </section>
+
+  <section id='Appendix-B.3A-Resource-Shapes' class="appendix informative">
+    <h2>Resource Shapes</h2>
+
+    <p>(this section is informative)</p>
+
+    <p>See
+      <a href="http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-2.0-Appendix-B%3A-Resource-Shapes"
+        title="OSLC-Performance-Monitoring-2.0-Appendix-B:-Resource-Shapes">OSLC Performance Monitoring 2.0 Appendix B: Resource Shapes</a>
+    </p>
+
+  </section>
+
+  <section id='Appendix-C.3A-Notices-and-References' class="appendix informative">
+    <h2>Notices and References</h2>
+
+    <section id='License-and-Intellectual-Property'>
+      <h3>License and Intellectual Property</h3>
+
+      <p>We make this specification available under the terms and conditions set forth in the site
+        <a href="http://open-services.net/terms/">Terms of Use</a>,
+        <a href="http://open-services.net/ip-policy/">IP Policy</a>, and
+        <a href="http://open-services.net/legal-agreements/performance-monitoring-wpa/">the Workgroup Participation Agreement for this Workgroup</a>.</p>
+
+    </section>
+
+    <section id='Reporting-Issues-on-the-Specification'>
+      <h3>Reporting Issues on the Specification</h3>
+
+      <p>The working group participants who author and maintain this working draft specification, monitor a distribution list
+        where issues or questions can be raised, see
+        <a href="http://open-services.net/mailman/listinfo/oslc-pm_open-services.net">Performance Monitoring Mailing List</a>
+      </p>
+
+      <p>Also the issues found with this specification and their resolution can be found at
+        <a href="http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-2.0-Issues" title="OSLC-Performance-Monitoring-2.0-Issues">OSLC Performance Monitoring 2.0 Issues</a>.</p>
+    </section>
+
+  </section>
+
+  <section class='appendix informative'>
+    <h2>Acknowledgments</h2>
+    <p>The following individuals have participated in the creation of this specification and are gratefully acknowledged:</p>
+
+    <p>
+      <b>Participants</b>:</p>
+    <p style="margin-left: 40px">
+      Fabio Ribeiro, Koneksys (Editor)
+      <br> Jim Amsden, IBM (Chair)
+      <br> Graham Bachelor, IBM (Chair)
+      <br>Janet Andersen
+      <br>Jim Conallen
+      <br>John Arwe
+      <br>Julie Bielski
+      <br>Michael Fiedler
+      <br>Steve Speicher
+      <br>Tuan Dang
+    </p>
+  </section>
+
+
+  <section class="appendix informative" id="history">
+    <h2>Change History</h2>
+    <table border=1 cellspacing=0 cellpadding=0>
+      <tr>
+        <td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+          <b>Revision</b>
+        </td>
+        <td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+          <b>Date</b>
+        </td>
+        <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+          <b>Editor</b>
+        </td>
+        <td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+          <b>Changes Made</b>
+        </td>
+      </tr>
+      <tr>
+        <td>01</td>
+        <td>07/06/2016</td>
+        <td>Jim Amsden</td>
+        <td>CSD was approved and published.</td>
+    </table>
+  </section>
+
+</body>
+
+</html>

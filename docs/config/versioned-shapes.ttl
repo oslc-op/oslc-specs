@@ -1,0 +1,279 @@
+@prefix acc:                <http://open-services.net/ns/core/acc#> .
+@prefix dcterms:            <http://purl.org/dc/terms/> .
+@prefix foaf:               <http://xmlns.com/foaf/0.1/> .
+@prefix oslc:               <http://open-services.net/ns/core#> .
+@prefix oslc_config:        <http://open-services.net/ns/config#> .
+@prefix prov:               <http://www.w3.org/ns/prov#> .
+@prefix rdf:                <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:               <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:                <http://www.w3.org/2001/XMLSchema#> .
+
+<#VersionResource>
+    a                       oslc:ResourceShape ;
+    oslc:describes          oslc_config:VersionResource ;
+    dcterms:title           """The shape of a versioned resource: all versioned resources MUST match this shape.
+Versioned resources SHOULD match other shapes appropriate for their types - that is, they MAY have additional
+properties and property constraints beyond those defined here.""" ;
+    oslc:property
+
+# Properties with the version resource URI as the subject
+
+        <#vtype> ,
+        <#isVersionOf> ,
+        <#accessContext> ,
+
+# Properties with the concept resource URI as the subject
+
+        <#committed> ,
+        <#committer> ,
+        <#component> ,
+        <#contributor> ,
+        <#created> ,
+        <#creator> ,
+        <#description> ,
+        <#identifier> ,
+        <#instanceShape> ,
+        <#modified> ,
+        <#modifiedBy> ,
+        <#serviceProvider> ,
+        <#shortId> ,
+        <#shortTitle> ,
+        <#subject> ,
+        <#title> ,
+        <#versionId> ,
+        <#wasDerivedFrom> ,
+        <#wasRevisionOf> .
+
+
+# Properties of a VersionResource shape with the version resource URI as the subject
+
+<#vtype>
+    a                        oslc:Property ;
+    oslc:name                "type" ;
+    oslc:occurs              oslc:One-or-many ;
+    oslc:propertyDefinition  rdf:type ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:range               rdfs:Class ;
+    dcterms:description      """A resource type URI. One of the type properties MUST have the version resource URI as the subject,
+and MUST have a resource type of <code>oslc_config:VersionResource</code>.
+Other types for the concept resource of which this is a version SHOULD use the concept resource URI as the subject."""^^rdf:XMLLiteral .
+
+<#isVersionOf>
+    a                        oslc:Property ;
+    oslc:name                "isVersionOf" ;
+    oslc:occurs              oslc:Exactly-one ;
+    oslc:propertyDefinition  dcterms:isVersionOf ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      "The concept resource of which this resource is a version. The subject of this property MUST be the version resource URI."^^rdf:XMLLiteral .
+
+<#accessContext>
+    a                        oslc:Property ;
+    oslc:name                "accessContext" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  acc:accessContext ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      "Indicates that this resource belongs to the specified Access Context. The subject of this property MUST be the version resource URI."^^rdf:XMLLiteral .
+
+# Properties of a VersionResource shape with the concept resource URI as the subject
+
+<#committed>
+    a                        oslc:Property ;
+    oslc:name                "committed" ;
+    oslc:propertyDefinition  oslc_config:committed ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:valueType           xsd:dateTime ;
+    oslc:readOnly            true ;
+    dcterms:description      "Date and time this version resource was checked in. Absent for mutable (checked out) versions."^^rdf:XMLLiteral .
+
+<#committer>
+    a                        oslc:Property ;
+    oslc:name                "committer" ;
+    oslc:propertyDefinition  oslc_config:committer ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               foaf:Person, foaf:Agent ;
+    oslc:readOnly            true ;
+    dcterms:description      """The entity that checked in this version."""^^rdf:XMLLiteral .
+
+<#component>
+    a                        oslc:Property ;
+    oslc:name                "component" ;
+    oslc:propertyDefinition  oslc_config:component ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:range               oslc_config:Component ;
+    dcterms:description      """The component to which this version belongs.
+Configuration Management servers SHOULD indicate the owning component for each version resource using either this property,
+or using the membership relationship from the component LDPC."""^^rdf:XMLLiteral .
+
+<#contributor>
+    a                        oslc:Property ;
+    oslc:name                "contributor" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  dcterms:contributor ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               foaf:Person, foaf:Agent ;
+    dcterms:description      """Contributor or contributors to resource."""^^rdf:XMLLiteral .
+
+<#created>
+    a                        oslc:Property ;
+    oslc:name                "created" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  dcterms:created ;
+    oslc:valueType           xsd:dateTime ;
+    oslc:readOnly            true ;
+    dcterms:description      """Timestamp of resource creation. Each resource SHOULD have one instance of this property."""^^rdf:XMLLiteral .
+
+<#creator>
+    a                        oslc:Property ;
+    oslc:name                "creator" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  dcterms:creator ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               foaf:Person, foaf:Agent ;
+    oslc:readOnly            true ;
+    dcterms:description      """Creator or creators of resource."""^^rdf:XMLLiteral .
+
+<#description>
+    a                        oslc:Property ;
+    oslc:name                "description" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  dcterms:description ;
+    oslc:valueType           rdf:XMLLiteral ;
+    dcterms:description      """Descriptive text about resource represented as rich text in XHTML content.
+SHOULD include only content that is valid and suitable inside an XHTML <code>&lt;div&gt;</code> element."""^^rdf:XMLLiteral .
+
+<#identifier>
+    a                        oslc:Property ;
+    oslc:name                "identifier" ;
+    oslc:occurs              oslc:Zero-or-one;
+    oslc:propertyDefinition  dcterms:identifier ;
+    oslc:valueType           xsd:string ;
+    oslc:readOnly            true ;
+    dcterms:description      "A unique identifier for this resource."^^rdf:XMLLiteral .
+
+<#instanceShape>
+    a                        oslc:Property ;
+    oslc:name                "instanceShape" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:instanceShape ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:Resource ;
+    oslc:range               oslc:ResourceShape ;
+    oslc:readOnly            true ;
+    dcterms:description      """The URI of a Resource Shape that describes the possible properties, occurrence, value types, allowed values and labels.
+This shape information is useful in displaying the subject resource as well as guiding clients in performing modifications.
+Instance shapes may be specific to the authenticated user associated with the request that retrieved the resource,
+the current state of the resource and other factors and thus SHOULD NOT be cached."""^^rdf:XMLLiteral .
+
+<#modified>
+    a                        oslc:Property ;
+    oslc:name                "modified" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  dcterms:modified ;
+    oslc:valueType           xsd:dateTime ;
+    oslc:readOnly            true ;
+    dcterms:description      """Timestamp of latest resource modification.
+Each resource SHOULD have one instance of this property."""^^rdf:XMLLiteral .
+
+<#modifiedBy>
+    a                        oslc:Property ;
+    oslc:name                "modifiedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc:modifiedBy ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               foaf:Person, foaf:Agent ;
+    oslc:readOnly            true ;
+    dcterms:description      """The entity that most recently modified the subject resource."""^^rdf:XMLLiteral .
+
+<#serviceProvider>
+    a                        oslc:Property ;
+    oslc:name                "serviceProvider" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc:serviceProvider ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:range               oslc:ServiceProvider ;
+    oslc:readOnly            true ;
+    dcterms:description      """A link to the resource's OSLC Service Provider.
+If the subject resource is available from an application that implements multiple domain specifications,
+there can be multiple values for this property."""^^rdf:XMLLiteral .
+
+<#shortId>
+    a                        oslc:Property ;
+    oslc:name                "shortId" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:shortId ;
+    oslc:valueType           xsd:string ;
+    dcterms:description      "A short and human-readable identifier for the resource, such as a number."^^rdf:XMLLiteral .
+
+<#shortTitle>
+    a                        oslc:Property ;
+    oslc:name                "shortTitle" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:shortTitle ;
+    oslc:valueType           rdf:XMLLiteral ;
+    dcterms:description      """A shorter form of <code>dcterms:title</code> for the resource represented as rich text in XHTML content.
+SHOULD include only content that is valid inside an XHTML <code>&lt;span&gt;</code> element."""^^rdf:XMLLiteral .
+
+<#subject>
+    a                        oslc:Property ;
+    oslc:name                "subject" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  dcterms:subject ;
+    oslc:valueType           xsd:string ;
+    dcterms:description      """Tag or keyword for a resource.
+Each occurrence of a <code>dcterms:subject</code> property denotes an additional tag for the resource.
+Tags on versioned resources SHOULD be modifiable even if the resource is otherwise immutable (checked in)."""^^rdf:XMLLiteral .
+
+<#title>
+    a                        oslc:Property ;
+    oslc:name                "title" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  dcterms:title ;
+    oslc:valueType           rdf:XMLLiteral ;
+    dcterms:description      """Title of the resource represented as rich text in XHTML content."""^^rdf:XMLLiteral .
+
+<#versionId>
+    a                        oslc:Property ;
+    oslc:name                "versionId" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_config:versionId ;
+    oslc:valueType           xsd:string ;
+    dcterms:description      """A short human-readable identifier for the version of a resource.
+All versioned resources SHOULD have this property;
+where the property is present, this identifier MUST be unique amongst all currently existing versions of the same concept resource.
+The subject of this property SHOULD be the concept resource URI."""^^rdf:XMLLiteral .
+
+<#wasDerivedFrom>
+    a                        oslc:Property ;
+    oslc:name                "wasDerivedFrom" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  prov:wasDerivedFrom ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """A resource from which this version was derived.
+This is likely to reference a different concept resource;
+use of <code>prov:wasRevisionOf</code> is recommended to indicate an earlier version of the same concept resource.
+The subject of each instance of this property MUST be the concept resource URI;
+the object can be a version resource URI, or a concept resource URI (possibly for a non-versioned resource)."""^^rdf:XMLLiteral .
+
+<#wasRevisionOf>
+    a                        oslc:Property ;
+    oslc:name                "wasRevisionOf" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  prov:wasRevisionOf ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """A resource from which this version was derived.
+This is likely to reference an earlier version of the same concept resource;
+use of <code>prov:wasDerivedFrom</code> is recommended to indicate an earlier version of a different concept resource.
+The subject of each instance of this property MUST be the concept resource URI; the object is likely to be a version resource URI."""^^rdf:XMLLiteral .

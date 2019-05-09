@@ -1,0 +1,449 @@
+@prefix dcterms:        <http://purl.org/dc/terms/> .
+@prefix foaf:           <http://xmlns.com/foaf/0.1/> .
+@prefix ldp:            <http://www.w3.org/ns/ldp#> .
+@prefix oslc:           <http://open-services.net/ns/core#> .
+@prefix rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:            <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix oslc_rm:       <http://open-services.net/ns/rm#> .
+@base <http://open-services.net/ns/core/shapes/3.0/requirements-management-shape.ttl> .
+
+
+# OSLC Requirements Mangement Domain Resource Shapes.
+
+<#Requirement>
+    a                       oslc:ResourceShape ;
+    oslc:describes          oslc_rm:Requirement ;
+	dcterms:title           "Statement of need." ;
+	dcterms:description     """A condition or capability needed by a stakeholder, or imposed by a solution component, 
+to address a need, solve a problem, achieve an objective,
+or to satisfy a contract, standard, specification, or other formally imposed documents."""^^rdf:XMLLiteral ;
+	oslc:property
+        <#type>,
+        <#identifier>,
+        <#title>,
+        <#shortTitle>,
+        <#description>,
+        <#subject>,
+        <#creator>,
+        <#contributor>,
+        <#created>,
+        <#modified>,
+        <#serviceProvider>,
+        <#instanceShape>,
+
+        <#elaboratedBy>,
+        <#elaborates>,
+        <#specifiedBy>,
+        <#specifies>,
+        <#affectedBy>,
+        <#trackedBy>,
+        <#implementedBy>,
+        <#validatedBy>,
+        <#satisfiedBy>,
+        <#satisfies>,
+        <#decomposedBy>,
+        <#decomposes>,
+        <#constrainedBy>,
+        <#constrains>.
+
+<#RequirementCollection>
+    a                       oslc:ResourceShape ;
+    dcterms:title           "A collection of Requirements." ;
+    dcterms:description     "A grouping or collection of related requirements for any purpose."^^rdf:XMLLiteral ;
+    oslc:describes          oslc_rm:RequirementCollection ;
+    oslc:property
+        <#type>,
+        <#identifier>,
+        <#title>,
+        <#shortTitle>,
+        <#description>,
+        <#subject>,
+        <#creator>,
+        <#contributor>,
+        <#created>,
+        <#modified>,
+        <#serviceProvider>,
+        <#instanceShape>,
+
+        <#uses>,
+        <#rc-elaboratedBy>,
+        <#elaborates>,
+        <#rc-specifiedBy>,
+        <#specifies>,
+        <#affectedBy>,
+        <#rc-trackedBy>,
+        <#rc-implementedBy>,
+        <#rc-validatedBy>,
+        <#rc-satisfiedBy>,
+        <#satisfies>,
+        <#rc-decomposedBy>,
+        <#decomposes>,
+        <#rc-constrainedBy>,
+        <#constrains>.
+
+<#contributor>  a                 oslc:Property ;
+        oslc:name                "contributor" ;
+        oslc:range               oslc:AnyResource ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:contributor ;
+        oslc:valueType           oslc:AnyResource ;
+        oslc:representation      oslc:Either ;
+        dcterms:description      "Contributor(s) to resource (reference: Dublin Core). It is likely that the target resource will be an <code>foaf:Person</code> but that is not necessarily the case."^^rdf:XMLLiteral .
+
+<#creator>  a                 oslc:Property ;
+        oslc:name                "creator" ;
+        oslc:range               oslc:AnyResource ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:creator ;
+        oslc:valueType           oslc:AnyResource ;
+        oslc:representation      oslc:Either ;
+        dcterms:description      "Creator(s) of resource (reference: Dublin Core). It is likely that the target resource will be an <code>foaf:Person</code> but that is not necessarily the case."^^rdf:XMLLiteral .
+
+<#created>  a                 oslc:Property ;
+        oslc:name                "created" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:created ;
+        oslc:valueType           xsd:dateTime ;
+        oslc:readOnly            true ;
+        dcterms:description      "Timestamp of resource creation (reference: Dublin Core). "^^rdf:XMLLiteral .
+
+# Dublin Core Properties
+<#description> a oslc:Property ;
+    oslc:name "description" ;
+    oslc:propertyDefinition dcterms:description ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description "Descriptive text (reference: Dublin Core) about resource represented as rich text in XHTML content. SHOULD include only content that is valid and suitable inside an XHTML &lt;div&gt element."^^rdf:XMLLiteral ;
+    oslc:valueType rdf:XMLLiteral .
+
+<#identifier> a oslc:Property ;
+    oslc:name "identifier" ;
+    oslc:propertyDefinition dcterms:identifier ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description "An identifier for a resource. This identifier may be unique with a scope that is defined by the RM provider. Assigned by the service provider when a resource is created. Not intended for end-user display."^^rdf:XMLLiteral ;
+    oslc:readOnly            true ;
+    oslc:valueType xsd:string .
+
+<#modified> a oslc:Property ;
+    oslc:name "modified" ;
+    oslc:propertyDefinition dcterms:modified   ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description "Timestamp last resource modification (reference: Dublin Core). "^^rdf:XMLLiteral ;
+    oslc:readOnly            true ;
+    oslc:valueType xsd:dateTime .
+
+<#subject> a oslc:Property ;
+    oslc:name "subject" ;
+    oslc:propertyDefinition dcterms:subject   ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description "Tag or keyword for a resource. Each occurrence of a dcterms:subject property denotes an additional tag for the resource."^^rdf:XMLLiteral ;
+    oslc:readOnly            false ;
+    oslc:valueType xsd:string .
+
+<#title> a oslc:Property ;
+    oslc:name "title" ;
+    oslc:propertyDefinition dcterms:title   ;
+    oslc:occurs oslc:exactly-one;
+    dcterms:description "Title (reference: Dublin Core) of the resource represented as rich text in XHTML content. SHOULD include only content that is valid inside an XHTML &lt;span&gt element. "^^rdf:XMLLiteral ;
+    oslc:valueType rdf:XMLLiteral .
+
+# RDF Properties
+<#type> a oslc:Property ;
+    oslc:name "type" ;
+    oslc:propertyDefinition rdf:type  ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description "The resource type URIs."^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+#OSLC Properties
+<#serviceProvider> a oslc:Property ;
+    oslc:name "serviceProvider" ;
+    oslc:propertyDefinition oslc:serviceProvider  ;
+    oslc:range oslc:ServiceProvider ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description "The scope of a resource is a URI for the resource's OSLC Service Provider"^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+<#instanceShape> a oslc:Property ;
+    oslc:name "instanceShape" ;
+    oslc:propertyDefinition oslc:instanceShape  ;
+    oslc:range oslc:ResourceShape ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description "Resource Shape that provides hints as to resource property value-types and allowed values"^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+<#shortTitle> a oslc:Property ;
+    oslc:name "shortTitle" ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description "Short name identifying a resource, often used as an abbreviated identifier for presentation to end-users. SHOULD include only content that is valid inside an XHTML &lt;span&gt element."^^rdf:XMLLiteral ;
+    oslc:propertyDefinition  oslc:shortTitle ;
+    oslc:valueType rdf:XMLLiteral .
+
+<#modifiedBy> a oslc:Property ;
+    oslc:name "modifiedBy" ;
+    oslc:range foaf:Person ;
+    oslc:propertyDefinition oslc:modifiedBy  ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """The URI of a resource describing the entity that most recently modified the 
+subject resource. The link target is usually a foaf:Person or foaf:Agent, but could be any type. 
+This is modeled after dcterms:creator, but Dublin Core currently has no equivalent property. """^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Either .
+
+# Requirement link type properties
+
+<#uses>  a oslc:Property ;
+    oslc:name                "uses" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:uses ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      "A collection uses a resource - the resource is in the requirement collection."^^rdf:XMLLiteral ;
+    dcterms:title            "" .
+
+<#elaboratedBy> a oslc:Property ;
+    oslc:name                "elaboratedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:elaboratedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is elaborated by the object. For example, a user requirement is elaborated by use case."^^rdf:XMLLiteral ;
+    dcterms:title            "" .
+
+<#rc-elaboratedBy> a oslc:Property ;
+    oslc:name                "elaboratedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:elaboratedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is elaborated by the object. For example, a collection of user requirements elaborates a business need, or a model elaborates a collection of system requirements."^^rdf:XMLLiteral ;
+    dcterms:title            "" .
+
+<#elaborates> a oslc:Property ;
+    oslc:name                "elaborates" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:elaborates ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The object is elaborated by the subject."^^rdf:XMLLiteral ;
+    dcterms:title            "" .
+
+<#specifiedBy> a oslc:Property ;
+    oslc:name                "specifiedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:specifiedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is specified by the object. For example, a requirement is elaborated by a model element."^^rdf:XMLLiteral ;
+    dcterms:title            "" .
+
+<#rc-specifiedBy> a oslc:Property ;
+    oslc:name                "specifiedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:specifiedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is specified by the object. For example, a model element might make a requirement collection more precise."^^rdf:XMLLiteral ;
+    dcterms:title            "" .
+
+<#specifies> a oslc:Property ;
+    oslc:name                "specifies" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:specifies ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The object is specified by the subject."^^rdf:XMLLiteral ;
+    dcterms:title            "specifies" .
+
+<#affectedBy> a oslc:Property ;
+    oslc:name                "affectedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:affectedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is affected by the object, such as a defect or issue."^^rdf:XMLLiteral ;
+    dcterms:title            "affectedBy" .
+
+<#trackedBy> a oslc:Property ;
+    oslc:name                "trackedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:trackedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "Resource, such as a change request, which tracks this requirement."^^rdf:XMLLiteral ;
+    dcterms:title            "trackedBy" .
+
+<#rc-trackedBy> a oslc:Property ;
+    oslc:name                "trackedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:trackedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "Resource, such as a change request, which manages this requirement collection."^^rdf:XMLLiteral ;
+    dcterms:title            "trackedBy" .
+
+<#implementedBy> a oslc:Property ;
+    oslc:name                "implementedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:implementedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "Resource, such as a change request, which implements this requirement."^^rdf:XMLLiteral ;
+    dcterms:title            "implementedBy" .
+
+<#rc-implementedBy> a oslc:Property ;
+    oslc:name                "implementedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:implementedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "Resource, such as a change request, which implements this requirement collection."^^rdf:XMLLiteral ;
+    dcterms:title            "implementedBy" .
+
+<#validatedBy> a oslc:Property ;
+    oslc:name                "validatedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:validatedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "Resource, such as a test case, which validates this requirement."^^rdf:XMLLiteral ;
+    dcterms:title            "validatedBy" .
+
+<#rc-validatedBy> a oslc:Property ;
+    oslc:name                "validatedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:validatedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "Resource, such as a test plan, which validates this requirement collection."^^rdf:XMLLiteral ;
+    dcterms:title            "validatedBy" .
+
+<#satisfiedBy> a oslc:Property ;
+    oslc:name                "satisfiedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:satisfiedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is satisfied by the object. For example, a user requirement is satisfied by a system requirement."^^rdf:XMLLiteral ;
+    dcterms:title            "satisfiedBy" .
+
+<#rc-satisfiedBy> a oslc:Property ;
+    oslc:name                "satisfiedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:satisfiedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is satisfied by the object. For example, a collection of user requirements is satisfied by a requirement collection of system requirements."^^rdf:XMLLiteral ;
+    dcterms:title            "satisfiedBy" .
+
+<#satisfies> a oslc:Property ;
+    oslc:name                "satisfies" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:satisfies ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The object is satisfied by the subject."^^rdf:XMLLiteral ;
+    dcterms:title            "satisfies" .
+
+<#decomposedBy> a oslc:Property ;
+    oslc:name                "decomposedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:decomposedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is decomposed by the object. For example, a system requirement is decomposed into a collection of system requirements."^^rdf:XMLLiteral ;
+    dcterms:title            "decomposedBy" .
+
+<#rc-decomposedBy> a oslc:Property ;
+    oslc:name                "decomposedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:decomposedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is decomposed by the object. For example, a collection of business requirements is decomposed by a collection of user requirements."^^rdf:XMLLiteral ;
+    dcterms:title            "decomposedBy" .
+
+<#decomposes> a oslc:Property ;
+    oslc:name                "decomposes" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:decomposes ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The object is decomposed by the subject."^^rdf:XMLLiteral ;
+    dcterms:title            "decomposes" .
+
+<#constrainedBy> a oslc:Property ;
+    oslc:name                "constrainedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:constrainedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is constrained by the object. For example, a functional requirement is constrained by a safety requirement."^^rdf:XMLLiteral ;
+    dcterms:title            "constrainedBy" .
+
+<#rc-constrainedBy> a oslc:Property ;
+    oslc:name                "constrainedBy" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:constrainedBy ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The subject is constrained by the object. For example, a requirement collection is constrained by a requirement collection."^^rdf:XMLLiteral ;
+    dcterms:title            "constrainedBy" .
+
+<#constrains> a oslc:Property ;
+    oslc:name                "constrains" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_rm:constrains ;
+    oslc:range               oslc:AnyResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:readOnly            false ;
+    dcterms:description      "The object is constrained by the subject."^^rdf:XMLLiteral ;
+    dcterms:title            "constrains" .

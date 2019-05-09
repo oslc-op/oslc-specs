@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>OSLC Performance Monitoring Version 2.0 Part 2: Vocabulary</title>
+  <link rel="stylesheet" type="text/css" href="../styles/oslc-styles.css" />
+  <link rel="stylesheet" type="text/css" href="../styles/table-styles.css" />
+  <link rel="stylesheet" type="text/css" href="../styles/definition-styles.css" />
+  <script src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+  <script class='remove'>
+    var respecConfig = {
+      // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN).
+      // If in doubt use WD.
+      // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
+      // CSPRD is the most likely document you'll deliver first, so we'll start there.
+      specStatus: "WD",
+      // the specification's short name with version but no dots
+      shortName: "oslc-perfmon-v2.0",
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+      // subtitle   :  "Committee Specification Draft 02",
+      // the document's citation label
+      citationLabel: "OSLC-PERFMON-v2.0",
+      // Revision level of the document within its stage
+      revision: "01",
+      thisVersion: "http://docs.oasis-open.org/oslc-domains/oslc-perfmon/v2.0/csprd01/part2-performance-monitoring-vocab/oslc-perfmon-v2.0-csprd01-part2-performance-monitoring-vocab.html",
+      latestVersion: "",
+      prevVersion: "",
+      // if you wish the publication date to be other than the last modification, set this
+      // publishDate:  "2009-08-06",
+      // if the specification's copyright date is a range of years, specify the start date here:
+      // copyrightStart: "2005"
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+      // Only include h1 and h2 levels in the table of contents
+      maxTocLevel: 2,
+      // if there a publicly available Editor's Draft, this is the link
+      edDraftURI: "https://github.com/oasis-tcs/oslc-domains/perfmon/performance-monitoring-vocab.html",
+      // Chairs and editors, add as many as you like: you must have at least one editor.
+      // Only "name" is required, but the other fields are recommended.
+      editors: [{
+        name: "Fabio Ribeiro",
+        mailto: "fabio.ribeiro@koneksys.com",
+        company: "Koneksys",
+        companyURL: "https://www.koneksys.com"
+      },
+      ],
+      chairs: [{
+        name: "Jim Amsden",
+        mailto: "jamsden@us.ibm.com",
+        company: "IBM",
+        companyURL: "http://www.ibm.com/"
+      }, {
+        name: "Graham Bachelor",
+        mailto: "gray_bachelor@uk.ibm.com",
+        company: "IBM",
+        companyURL: "http://www.ibm.com"
+      }],
+      // name of the TC
+      wg: "OASIS OSLC Lifecycle Integration Domains TC",
+      wgShortName: "oslc-domains",
+      // URI of the public TC page
+      wgURI: "https://www.oasis-open.org/committees/oslc-domains/",
+      // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
+      wgPublicList: "oslc-domains-comment",
+      // Namespaces defined by this TC
+      namespaces: [
+        { href: "http://open-services.net/ns/perfmon#", prefix: "perfmon" }
+      ],
+      // For multi-part specifications, each part must list the other parts
+      // additionalArtifacts : [
+      //  { title: "OSLC XXX 1.0 Part 1: Overview (this document)", href: "oslc-xxx.html" },
+      //  { title: "OSLC XXX 1.0 Part 2: XXX2", href: "xxx-part2.html" },
+      //  { title: "OSLC XXX 1.0 Part 3: XXX3", href: "xxx-part3.html" },
+      // ],
+      // Related work
+      // relatedWork : [
+      //    { title: "Some title", href: "http://example.com/relatedDocument.html" },
+      //    ],
+      // supersedes : [
+      //    { title: "Some title", href: "http://example.com/supercededDocument.html" },
+      //    ],
+      // Other parts of multi-part spec
+      additionalArtifacts: [
+        { title: "OSLC Performance Monitorin Version 2.0 Part 1: Specification", href: "http://docs.oasis-open.org/oslc-domains/oslc-perfmon/v2.0/csprd01/part1-performance-monitoring/oslc-perfmon-v2.0-csprd01-part1-performance-monitoring-spec.html" },
+        { title: "OSLC Performance Monitorin Version 2.0 Part 2: Vocabulary (this document)", href: "http://docs.oasis-open.org/oslc-domains/oslc-perfmon/v2.0/csprd01/part2-performance-monitoring/oslc-perfmon-v2.0-csprd01-part2-performance-monitoring-vocab.html" },
+      ],
+      relatedWork: [
+        { title: "Open Services for Lifecycle Collaboration Performance Monitoring Version 2.0", href: "http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/" }
+      ],
+      localBiblio: {
+        "OSLCCore2": {
+          title: "OSLC Core Specification 2.0",
+          href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCore2AppendixA": {
+          title: "OSLC Core Specification 2.0 - Appendix A",
+          href: "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCore2RDFXMLExamples": {
+          title: "OSLC Core Specification 2.0 - RDF/XML examples",
+          href: "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Specifying_the_shape_of_a_query",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCPerfmonSpecificationGuidelines": {
+          title: "OSLC Performance Monitoring 2.0 - Specification Guidelines",
+          href: "http://open-services.net/wiki/performance-monitoring/Performance-Monitoring-Specification-Guidelines",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCEMSKeySoftwareMetrics": {
+          title: "OSLC EMS 1.0 - Key Software Metrics",
+          href: "http://open-services.net/wiki/estimation-and-measurement/EMS-1.0-REST-API-Key-Software-Metrics/",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCore3": {
+          title: "OSLC Core 3.0",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+          authors: ["Jim Amsden", "S. Speicher"],
+          status: "Committee Specification",
+          publisher: "OASIS",
+        },
+        "DublinCore1": {
+          title: "Dublin Core Metadata Element Set, Version 1.1",
+          href: "http://dublincore.org/documents/2010/10/11/dces/",
+          publisher: "Dublin Core",
+        },
+        "FOAF": {
+          title: "Friend of a Friend (FOAF) v0.98",
+          href: "http://xmlns.com/foaf/spec/20100809.html",
+          authors: ["D. Brickley", "L. Miller"],
+          status: "Stable",
+        },
+        "HTTP1.1": {
+          title: "Hyper-text Transfer Protocol (HTTP/1.1)",
+          href: "https://tools.ietf.org/html/rfc2616",
+          authors: ["R. Fielding", "J. Gettis", "J. Morgul"],
+          status: "STD 1",
+        },
+        "OAuth1.0a": {
+          title: "The OAuth 1.0 Protocol",
+          href: "https://tools.ietf.org/html/rfc5849",
+          status: "Published",
+          publisher: "Internet Engineering Task Force",
+        },
+        "RDFXMLConcepts": {
+          title: "RDF/XML Concepts and Abstract Syntax",
+          href: "https://www.w3.org/TR/2004/REC-rdf-concepts-20040210/",
+          authors: ["G. Klyne", "J. Carroll"],
+          status: "W3C Recommendation",
+          publisher: "https://www.w3.org",
+        },
+        "RDFXMLSyntax": {
+          title: "RDF/XML Syntax Specification (Revised)",
+          href: "https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp-paging.html",
+          authors: ["D. Beckett"],
+          status: "W3C Recommendation",
+          publisher: "http://www.w3.org",
+        },
+        "URISyntax": {
+          title: "URI Generic Syntax",
+          href: "https://tools.ietf.org/html/rfc3986",
+          authors: ["T. Berners-Lee", "R. Fielding"],
+          status: "STD 1",
+        },
+        "XMLNamespaces": {
+          title: "Namespaces in XML 1.0 (Third Edition)",
+          href: "https://www.w3.org/TR/REC-xml-names/",
+          authors: ["T. Bray", "D. Hollander", "A. Layman"],
+          publisher: "https://www.w3.org",
+        },
+        "XSDDatatypes": {
+          title: "XML Schema Part 2: Datatypes Second Edition",
+          href: "http://openid.net/connect/",
+          authors: ["P. Biron", "A. Malhotra"],
+          status: "W3C Recommendation",
+          publisher: "https://www.w3.org",
+        },
+        "OSLCCoreVocab": {
+          title: "OSLC Core Vocabulary",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
+          authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+          status: "Working Draft",
+          publisher: "OASIS",
+        },
+        "OSLCCAsset": {
+          title: "OSLC Asset Management Specification 1.0",
+          href: "http://open-services.net/bin/view/Main/AssetMgSpecificationV1",
+          authors: ["G. Larsen", "G. Mendel", "K.Bauer"],
+          status: "OSLC Specification",
+          publisher: "open-services.net",
+        },
+        "ATOM": {
+          title: "RFC4287 - Atom Syndication Format",
+          href: "https://tools.ietf.org/html/rfc4287",
+          status: "STD 1",
+        },
+        "JSON": {
+          title: "Javascript Object Notation",
+          href: "http://json.org/",
+        },
+        "QUTD": {
+          title: "QUTD",
+          href: "http://www.qudt.org/",
+        },
+        "DBpedia": {
+          title: "DBpedia",
+          href: "https://wiki.dbpedia.org/",
+        },
+        "EMSREST": {
+          title: "EMS 1.0 REST API",
+          href: "http://open-services.net/wiki/estimation-and-measurement/EMS-1.0-REST-API-Data-Model/",
+          status: "Draft Specification",
+          publisher: "open-services.net",
+        },
+      }
+    };
+  </script>
+</head>
+
+<body>
+  <section id="abstract">
+    <p>This specification defines a vocabulary and resource shapes for the OSLC Performance Monitoring domain.</p>
+  </section>
+
+  <section id='toc'></section>
+  <hr />
+  <section id='sotd'></section>
+
+  <section id="introduction" class="informative">
+    <h2>Introduction</h2>
+
+    <p>This specification defines a vocabulary and resource shapes for the OSLC Performance Monitoring resources.</p>
+
+    <section id="terminology" class='informative'>
+      <h1>Terminology</h1>
+      <p>Terminology is based on OSLC Core Overview [[!OSLCCore3]], W3C Linked Data Platform [[!LDP]], W3C's Architecture of
+        the World Wide Web [[WEBARCH]], Hyper-text Transfer Protocol [[!HTTP11]]. Terminology for this specification is defined
+        in part 1 of the multi-part specification.</p>
+      <!--
+<dl>
+    <dt class='loc-heading'>Term-xxx</dt>
+    <dd>...</dd>
+</dl>
+-->
+    </section>
+
+    <section id='references'>
+      <h3>References</h3>
+    </section>
+
+    <section id="conventions">
+      <p>In addition to the namespace URIs and namespace prefixes
+        <code>oslc</code>,
+        <code>rdf</code>,
+        <code>dcterms</code> and
+        <code>foaf</code> defined in the
+        <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html">OSLC Core specification</a>, OSLC Performance Monitoring defines the namespace URI of
+        <code>http://open-services.net/ns/perfmon#</code> with a namespace prefix of
+        <code>oslc_perfmon</code>
+      </p>
+
+    </section>
+
+  </section>
+
+  <section id="perfmonVocab">
+    <h2>Performance Monitoring Vocabulary Terms</h2>
+    <p>This specification defines the
+      <em>root</em> superclasses, properties and values. Servers may define additional subclasses and provide additional properties
+      as needed.</p>
+
+    <div title='RDF Vocabulary for OSLC Performance Monitoring Domain' data-include='./performance-monitoring-vocab.ttl' data-oninclude='vocabToSpec'
+      data-include-sync='true' data-include-replace='true' data-include-format='html'></div>
+  </section>
+
+  <section id="resourceDefinitions">
+    <h2>Resource Definitions</h2>
+
+    <p>A list of properties is defined for each type of resource. Most of these properties are identified in
+      [[!OSLCCore2AppendixA]] Common Properties. Any exceptions are noted. Relationship properties refer to other resources.
+      These resources MAY be any resource; that is, they MAY or MAY NOT be in any OSLC domain, including Performance Monitoring.
+      Likewise, they MAY or MAY NOT be HTTP or RDF resources.</p>
+
+    <p>The diagram below shows an example of one way that a Performance Monitoring Record resource may relate to the resources
+      it describes. With this option, the Performance Monitoring record uses the isPartOf predicate to refer to the monitored
+      resource its describing.</p>
+
+    <p>Another option is described near the bottom of this specification in the section entitled
+      [[!OSLCPerfmonSpecificationGuidelines]] Specification Guidelines.</p>
+
+    <p>
+      <img src="http://open-services.net/wiki/performance-monitoring/f7678ba03fd47031edf9e21abc66f8cc" alt="pm_domain8.JPG" width="858"
+        height="368" />
+    </p>
+
+    <p>For all resource types defined in this specification, all required properties (those defined with an occurrence of exactly-one
+      or one-or-many) MUST exist for each resource and MUST be provided when requested. All other properties are optional,
+      and might not exist on some or any resources; those that do not exist will not be present in the returned representation
+      even if requested, while those that do exist MUST be provided if requested. Providers MAY define additional provider-specific
+      properties; providers SHOULD use their own namespaces for such properties, or use standard Dublin Core or RDF namespaces
+      and properties where appropriate.</p>
+
+    <p>If no specific set of properties is requested, all properties are returned - both those defined in this specification
+      as well as any provider-specific ones. See
+      [[!OSLCCore2]]Selective Property Values in the OSLC Core Specification.</p>
+
+    <section id='Performance_Monitoring_Record'>
+      <h3>Resource: Performance Monitoring Record</h3>
+
+      <div title='Shape for pm:PerformanceMonitoringRecord' data-include='./performance-monitoring-shapes.ttl#tbPerformanceMonitoringRecord' data-oninclude='shapeToSpec'
+        data-include-sync='true' data-include-replace='true' data-include-format='html'></div>
+    </section>
+
+  </section>
+
+  <section id='Resource.3A-ems.3AMeasure'>
+    <h3>Resource: ems:Measure</h3>
+
+    <p>The
+      <a href="http://docs.oasis-open.org/oslc-domains/ems/v3.0/csprd01/part1-estimation-measurement/ems-v3.0-csprd01-part1-estimation-measurement.html">OSLC Estimation and Measurement (EMS) domain defines
+      <a href="http://open-services.net/bin/view/Main/MetricsEmsMeasure">
+        <code>ems:Measure</code>
+      </a>. This specification re-uses it without modifications, aside from defining additional metric subclasses in the
+      Performance Monitoring vocabulary. Performance Monitoring Record instances will generally re-use units of measure from
+      EMS and other vocabularies such as
+      [[!QUTD]] and
+      [[!DBpedia]].</p>
+
+    <p>An example instance, that conveys
+      <code>"Real Memory Utilization"=50%</code> using Turtle syntax, might be:</p>
+
+    <pre><code>@prefix pm:     &lt;http://open-services.net/ns/perfmon#&gt; .
+        @prefix oslc:   &lt;http://open-services.net/ns/core#&gt; .
+        @prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+        @prefix ems:    &lt;http://open-services.net/ns/ems#&gt; .
+        @prefix dbp:    &lt;http://dbpedia.org/resource/&gt;.
+        
+        @base &lt;http://perfmon-provider.example.org/&gt; .
+        
+        &lt;rec001#realmemutil50&gt;
+                    a                    ems:Measure ; # rdf:type
+                    dcterms:title        "Real Memory Utilization" ;
+                    ems:metric           &lt;pm:RealMemoryUsed&gt; ;
+                    ems:unitOfMeasure    &lt;dbp:Percentage&gt; ;
+                    ems:numericValue     50 ;
+        .
+        </code></pre>
+
+    <p>Equivalent RDF/XML for the preceding example:</p>
+
+    <pre><code>  &lt;rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+                xmlns:owl="http://www.w3.org/2002/07/owl#"
+                xmlns:dcterms="http://purl.org/dc/terms/" 
+                xmlns:rddl="http://www.rddl.org/" 
+                xmlns:qudt="http://qudt.org/1.1/schema/qudt"
+                xmlns:pm="http://open-services.net/ns/perfmon#" 
+                xmlns:ems="http://open-services.net/ns/ems#"&gt;
+        
+          &lt;rdf:Description rdf:about="http://perfmon-provider.example.org/rec001#realmemutil50"&gt;
+            &lt;rdf:type rdf:resource="http://open-services.net/ns/ems#Measure" /&gt;
+            &lt;dcterms:title&gt;Real Memory Utilization&lt;/dcterms:title&gt;
+            &lt;ems:metric rdf:resource="pm:RealMemoryUsed" /&gt;
+            &lt;ems:unitOfMeasure rdf:resource="dbp:Percentage" /&gt;
+            &lt;ems:numericValue rdf:datatype="http://www.w3.org/2001/XMLSchema#double"&gt;
+            50&lt;/ems:numericValue&gt;
+          &lt;/rdf:Description&gt;
+        
+          &lt;/rdf:RDF&gt;
+        
+        </code></pre>
+
+  </section>
+
+  <section id='Metric-Categories'>
+    <h3>Metric Categories</h3>
+
+    <p>This specification introduces metric categories, which
+      <em>loosely</em> correspond to the major headings on the EMS working groups
+      [[!OSLCEMSKeySoftwareMetrics]] page: size, schedule, effort, and quality, derived. As the EMS work shows, categorization
+      itself is not unique to Performance Monitoring. As was done in EMS, the categories defined by this specification are
+      exposed to consumers via RDF Schema subclass annotations in the
+      <a href="http://open-services.net/ns/perfmon#">vocabulary document</a>; an example is shown later in this section.</p>
+
+    <p>Exposing each metric&#8217;s categorization in the vocabulary definition serves several purposes:</p>
+
+    <ol>
+      <li>Clients can query for a subset of all metrics exposed in the PerformanceMonitoringRecord without having to enumerate
+        the members of the subset explicitly.</li>
+      <li>Implementations and other specifications can define new metrics and categorize them, allowing clients unaware of the
+        new metrics&#8217; property names to introspect some information that might influence how they are presented in a
+        user interface.</li>
+    </ol>
+
+    <p>A summary of the inheritance tree for categories defined by this specification is shown below. This shows, for example,
+      that
+      <code>pm:ResourceUsageMetrics</code> is a subclass of
+      <code>pm:Metric</code>. Please consult the
+      <a href="http://open-services.net/ns/perfmon#">vocabulary document</a> for the authoritative set of relationships.</p>
+
+    <pre><code>* `pm:Metric`
+            * `pm:CpuMetrics`
+            * `pm:DiskMetrics`
+            * `pm:MemoryMetrics`
+                * `pm:BufferPoolMetrics`
+            * `pm:NetworkMetrics`
+            * `pm:RequestMetrics`
+                * `pm:FailureMetrics`
+                * `pm:ResponseTimeMetrics`
+            * `pm:ResourceAvailabilityMetrics`
+            * `pm:ResourceUsageMetrics`
+                * `pm:ResourceExhaustionMetrics`
+            * `pm:ThreadPoolMetrics`
+            * `pm:VirtualizationMetrics`
+        </code></pre>
+
+    <p>As with RDF types, categories are additive and potentially multi-valued. In other words, a given metric may be a member
+      of as many classes as are semantically sensible. The hierarchy summarized above is useful to reduce redundancy only.
+      For example, if a given metric is defined to be in the category
+      <code>pm:FailureMetrics</code>, then it is redundant (although technically permissible) to define it to be in the category
+      <code>pm:RequestMetrics</code> as well. Specific metrics like
+      <code>pm:RealMemoryUsed</code> are associated with metric categories via the vocabulary document for the namespace by annotating the
+      <code>rdfs:Class</code> with
+      <code>rdfs:subClassOf</code>; the following example shows how to categorize
+      <code>pm:RealMemoryUsed</code> as a resource usage metric and as a memory metric.</p>
+
+    <p>In RDF/XML syntax:</p>
+
+    <pre><code>&lt;rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"&gt;
+        
+          &lt;rdfs:Class rdf:about="http://open-services.net/ns/perfmon#RealMemoryUsed"&gt;
+                &lt;rdfs:isDefinedBy rdf:resource="http://open-services.net/ns/perfmon#" /&gt;
+                &lt;rdfs:subClassOf rdf:resource="http://open-services.net/ns/perfmon#ResourceUsageMetrics"/&gt;
+                &lt;rdfs:subClassOf rdf:resource="http://open-services.net/ns/perfmon#MemoryMetrics"/&gt;
+                &lt;rdfs:label&gt;RealMemoryUsed&lt;/rdfs:label&gt;
+                &lt;rdfs:comment&gt;Real memory used.&lt;/rdfs:comment&gt;
+          &lt;/rdfs:Class&gt;
+        
+        &lt;/rdf:RDF&gt;
+        </code></pre>
+
+    <p>In Turtle syntax:</p>
+
+    <pre><code>@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+        @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+        @prefix pm: &lt;http://open-services.net/ns/perfmon#&gt; .
+        
+        &lt;http://open-services.net/ns/perfmon#RealMemoryUsed&gt; a rdfs:Class ;
+            rdfs:isDefinedBy pm: ;
+            rdfs:subClassOf pm:ResourceUsageMetrics , pm:MemoryMetrics ;
+            rdfs:label "RealMemoryUsed" ;
+            rdfs:comment "Real memory used." .
+        
+        </code></pre>
+
+    <section id='Table-of-Performance-Metric-Category-URIs'>
+      <h4>Table of Performance Metric Category URIs</h4>
+
+      <p>This is the set of RDFS Classes that are all of the following:</p>
+
+      <ul>
+        <li>sub-classes of
+          <code>ems:Metric</code> (directly or indirectly)</li>
+        <li>serve to define categories of metrics </li>
+        <li>are actually sub-classed in the current vocabulary by more specific metrics, like
+          <code>pm:AvgJmsGetTime</code>. </li>
+      </ul>
+
+      <p>In other words, they are &#8220;leaf&#8221; RDFS Classes that group set of metrics. Leaf classes, like
+        <code>pm:AvgJmsGetTime</code>, are defined exactly like the categories in the table, and could be used as metric categories themselves by other
+        vocabularies or implementations that sub-class them.</p>
+
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th>URI</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#BufferPoolMetrics">http://open-services.net/ns/perfmon#BufferPoolMetrics</a>
+            </td>
+            <td>Metric category for buffer pool-related metrics.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#CpuMetrics">http://open-services.net/ns/perfmon#CpuMetrics</a>
+            </td>
+            <td>Metric category for CPU-related metrics.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#DiskMetrics">http://open-services.net/ns/perfmon#DiskMetrics</a>
+            </td>
+            <td>Metric category for disk-related metrics.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#FailureMetrics">http://open-services.net/ns/perfmon#FailureMetrics</a>
+            </td>
+            <td>Metric category for requests that fail.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#MemoryMetrics">http://open-services.net/ns/perfmon#MemoryMetrics</a>
+            </td>
+            <td>Metric category for memory-related metrics.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#Metric">http://open-services.net/ns/perfmon#Metric</a>
+            </td>
+            <td>Metric category for metrics defined in the Performance Monitoring vocabulary.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#NetworkMetrics">http://open-services.net/ns/perfmon#NetworkMetrics</a>
+            </td>
+            <td>Metric category for network-related metrics.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#RequestMetrics">http://open-services.net/ns/perfmon#RequestMetrics</a>
+            </td>
+            <td>Metric category for requests on a resource, originating from an end user or a system component.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#ResourceAvailabilityMetrics">http://open-services.net/ns/perfmon#ResourceAvailabilityMetrics</a>
+            </td>
+            <td>Metric category for metrics that show resource availability.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#ResourceExhaustionMetrics">http://open-services.net/ns/perfmon#ResourceExhaustionMetrics</a>
+            </td>
+            <td>Metric category for metrics that show resource consumption in excess of capacity.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#ResourceUsageMetrics">http://open-services.net/ns/perfmon#ResourceUsageMetrics</a>
+            </td>
+            <td>Metric category for metrics that show resource usage.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#ResponseTimeMetrics">http://open-services.net/ns/perfmon#ResponseTimeMetrics</a>
+            </td>
+            <td>Metric category for metrics that show time it takes for a response to be returned to a request.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#ThreadPoolMetrics">http://open-services.net/ns/perfmon#ThreadPoolMetrics</a>
+            </td>
+            <td>Metric category for thread pool-related metrics.</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#VirtualizationMetrics">http://open-services.net/ns/perfmon#VirtualizationMetrics</a>
+            </td>
+            <td>Metric category for virtualization-related resource metrics.</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+  </section>
+
+  </section>
+
+  <section id='Resource-Properties' class="informative">
+    <h2>Resource Properties</h2>
+
+    <p>In addition to resource definitions, this specification defines properties below that can occur in any RDF resource.
+      In the scenarios currently addressed, they are most commonly used with resources of types such as the following, but
+      this list is exemplary, not limiting:
+      <code>crtv:Process</code>,
+      <code>crtv:StorageVolume</code>,
+      <code>crtv:ComputerSystem</code>,
+      <code>crtv:SoftwareServer</code>,
+      <code>crtv:Database</code>,
+      <code>crtv:SoftwareModule</code>,
+      <code>crtv:ResourcePool</code>,
+      <code>foaf:Agent</code>. Not all properties will be semantically sensible with all resource types.</p>
+
+    <div title='Shape for pm:Properties' data-include='./performance-monitoring-shapes.ttl#tbProperties' data-oninclude='shapeToSpec'
+      data-include-sync='true' data-include-replace='true' data-include-format='html'></div>
+
+    <section id='Availability-Status-Property-Values' class="informative">
+      <h3>Availability Status Property Values</h3>
+
+      <p>OSLC Performance Monitoring service providers can identify the availabilityStatus using references to property values
+        in the OSLC Performance Monitoring vocabulary or to property values that are not in the Performance Monitoring vocabulary
+        (i.e. in the service provider&#8217;s own vocabulary). It is expected that the availabilityStatus values will be
+        URI references to property values, but inline resources defining the availabilityStatus property values are also
+        valid.
+      </p>
+
+      <p>The resource shape governs occurrence constraints within PM. They say 0:* pm:availabilityStatus.</p>
+
+      <p>Hence:</p>
+
+      <ul>
+        <li>
+          <p>if a provider has >= 1 pm:availabilityStatus predicate, then</p>
+
+          <ul>
+            <li>
+              <p>all objects must be non-conflicting</p>
+            </li>
+            <li>
+              <p>at least one of them must be from the PM vocabulary so that clients knowing ONLY the PM spec are &#8220;guaranteed&#8221;
+                to find at least one value useful.</p>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <p>The property values for pm:availabilityStatus are:</p>
+
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th>
+              <strong>URI</strong>
+            </th>
+            <th>
+              <strong>Description</strong>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#NotRunning">http://open-services.net/ns/perfmon#NotRunning</a>
+            </td>
+            <td>Not running in its host environment</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#Running">http://open-services.net/ns/perfmon#Running</a>
+            </td>
+            <td>Running in its host environment</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://open-services.net/ns/perfmon#Unknown">http://open-services.net/ns/perfmon#Unknown</a>
+            </td>
+            <td>Unknown</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
+    <section id='Performance-Monitoring-Service-Provider-Capabilities'>
+      <h3>Performance Monitoring Service Provider Capabilities</h3>
+    </section>
+
+    <section id='Service-Discovery-and-Description'>
+      <h3>Service Discovery and Description</h3>
+    </section>
+
+    <section id='Resource-Shapes'>
+      <h3>Resource Shapes</h3>
+
+      <p>Performance Monitoring service providers MAY support
+        [[!OSLCCore2AppendixA]] Resource Shapes as defined in
+        [[!OSLCCore2AppendixA]]
+      </p>
+    </section>
+
+    <section id='Service-Provider-Resource'>
+      <h3>Service Provider Resource</h3>
+
+      <p>Performance Monitoring service providers MUST provide a
+        [[!OSLCCore2]] Service Provider Resource that can be retrieved at a implementation dependent URI.</p>
+
+      <p>Performance Monitoring service providers MAY provide a
+        [[!OSLCCore2]] Service Provider Catalog Resource that can be retrieved at a implementation dependent URI.</p>
+
+      <p>Performance Monitoring service providers MUST provide a
+        <code>oslc:serviceProvider</code> property for their defined resources that will be the URI to a
+        [[!OSLCCore2]] Service Provider Resource.</p>
+
+      <p>Performance Monitoring service providers SHOULD expose resource types of type
+        <a href="#Performance_Monitoring_Record">pm:PerformanceMonitoringRecord</a>. Performance Monitoring service providers SHOULD include the type
+        <a href="#Performance_Monitoring_Record">pm:PerformanceMonitoringRecord</a> on all resources that contain performance monitoring information.</p>
+    </section>
+
+    <section id='Creation-Factories'>
+      <h3>Creation Factories</h3>
+
+      <p>If an OSLC Performance Monitoring service provider supports the creation of resources, there MUST be at least one
+        [[!OSLCCore2]]Creation Factory entry in its Services definition.</p>
+
+      <p>See the
+        <a href="http://docs.oasis-open.org/oslc-domains/oslc-perfmon/v2.0/csprd01/part1-performance-monitoring/oslc-perfmon-v2.0-csprd01-part1-performance-monitoring-spec.html#Service_Provider_HTTP_Method_Sup">HTTP Method support table</a> for further clarification on support for HTTP methods and media types for each OSLC
+        Performance Monitoring resource.</p>
+
+    </section>
+
+    <section id='Query-Capabilities'>
+      <h3>Query Capabilities</h3>
+
+      <p>There SHOULD be at least one
+        [[!OSLCCore2]] Query Capability entry in the Services definition.</p>
+
+      <p>The Query Capability MUST support the oslc.where parameter and SHOULD support the oslc.select parameter. If the oslc.where
+        parameter is supported, then the oslc.prefix parameter MUST be supported.</p>
+
+      <p>If shape information is NOT present with the Query Capability, service providers SHOULD use the default properties
+        defined in
+        [[!OSLCCore2RDFXMLExamples]] to contain the result.</p>
+    </section>
+
+    <section id='Delegated-UIs'>
+      <h3>Delegated UIs</h3>
+
+      <p>OSLC Performance Monitoring service providers support the selection and creation of Performance Monitoring resources
+        as defined by
+        [[!OSLCCore2]]Delegated UIs in OSLC Core.</p>
+
+      <p>Performance Monitoring providers support requirements for delegated UIs as follows:</p>
+
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th>
+              <strong>Performance Monitoring Resource</strong>
+            </th>
+            <th>
+              <strong>Selection</strong>
+            </th>
+            <th>
+              <strong>Creation</strong>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PerformanceMonitoringRecord</td>
+            <td>SHOULD</td>
+            <td>MAY</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
+  </section>
+
+  <section class="appendix informative" id="history">
+    <h2>Change History</h2>
+    <table border=1 cellspacing=0 cellpadding=0>
+      <tr>
+        <td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+          <b>Revision</b>
+        </td>
+        <td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+          <b>Date</b>
+        </td>
+        <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+          <b>Editor</b>
+        </td>
+        <td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+          <b>Changes Made</b>
+        </td>
+      </tr>
+      <tr>
+        <td>01</td>
+        <td>2018-05-22</td>
+        <td>Jad El-khoury</td>
+        <td>Initial Committee Specification Draft migrated from open-services.net</td>
+      </tr>
+    </table>
+  </section>
+</body>
+
+</html>

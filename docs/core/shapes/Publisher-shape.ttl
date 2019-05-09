@@ -1,0 +1,56 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix oslc: <http://open-services.net/ns/core#> .
+
+@base <http://open-services.net/ns/core/shapes/3.0/Publisher-shape.ttl> .
+
+
+<#Publisher> a oslc:ResourceShape ;
+    dcterms:title "Publisher" ;
+    dcterms:description "A Publisher identifies and describes the software product that provides the OSLC implementation." ;
+    oslc:describes oslc:Publisher ;
+    oslc:property
+        <#dcterms-publisher-title>,
+        <#oslc-publisher-label>,
+        <#dcterms-publisher-identifier>,
+        <#oslc-publisher-icon>
+.
+
+<#dcterms-publisher-title> a oslc:Property ;
+	oslc:name "title" ;
+	oslc:propertyDefinition dcterms:title ;
+	oslc:occurs oslc:Exactly-one;
+	dcterms:description "Title string that could be used for display."^^rdf:XMLLiteral ;
+	oslc:valueType rdf:XMLLiteral ;
+	oslc:readOnly true
+.
+
+<#oslc-publisher-label> a oslc:Property ;
+	oslc:name "label" ;
+	oslc:propertyDefinition oslc:label ;
+	oslc:occurs oslc:Zero-or-one;
+	dcterms:description "Very short label for use in menu items."^^rdf:XMLLiteral ;
+	oslc:valueType <http://www.w3.org/2001/XMLSchema#string> ;
+	oslc:readOnly true
+.
+
+<#dcterms-publisher-identifier> a oslc:Property ;
+	oslc:name "identifier" ;
+	oslc:propertyDefinition dcterms:identifier ;
+	oslc:occurs oslc:Exactly-one;
+	dcterms:description "A URN that uniquely identifies the implementation."^^rdf:XMLLiteral ;
+	oslc:valueType <http://www.w3.org/2001/XMLSchema#string>
+.
+
+<#oslc-publisher-icon> a oslc:Property ;
+	oslc:name "icon" ;
+	oslc:propertyDefinition oslc:icon ;
+	oslc:occurs oslc:Zero-or-one;
+	dcterms:description "URL to an icon file that represents the provider. This icon should be a favicon format and 16x16 pixels in size."^^rdf:XMLLiteral ;
+	oslc:valueType oslc:Resource ;
+	oslc:representation oslc:Reference ;
+	oslc:readOnly true
+.
+

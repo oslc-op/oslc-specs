@@ -1,0 +1,265 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
+
+@prefix oslc_asset: <http://open-services.net/ns/asset#> .
+
+@base <http://open-services.net/ns/core/shapes/2.0/asset-management-shapes.ttl> .
+
+<#abstract>  a                   oslc:Property ;
+        oslc:name                "abstract" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:abstract ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "Short description (reference: Dublin Core) or often a single line summary of the resource"^^rdf:XMLLiteral .
+
+<#artifactFactory>  a            oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "artifactFactory" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  oslc_asset:artifactFactory ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Resource URI used to post new artifacts to the asset."^^rdf:XMLLiteral .
+
+<#version>  a                    oslc:Property ;
+        oslc:name                "version" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_asset:version ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The version of the asset. Possible values may include ‘1.0’, ‘2.0’, etc."^^rdf:XMLLiteral .
+
+<#creator>  a                    oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "creator" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:creator ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Creator or creators of resource (reference: Dublin Core). It is likely that the target resource will be an  foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
+
+<#subject>  a                    oslc:Property ;
+        oslc:name                "subject" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:subject ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "Tag or keyword for a resource. Each occurrence of a dc:subject property denotes an additional tag for the resource."^^rdf:XMLLiteral .
+
+<#size>  a                       oslc:Property ;
+        oslc:name                "size" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_asset:size ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:integer ;
+        dcterms:description      "The size of the artifact media resource in bytes."^^rdf:XMLLiteral .
+
+<#serialNumber>  a               oslc:Property ;
+        oslc:name                "serialNumber" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_asset:serialNumber ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The serial number assigned by the asset manufacturer."^^rdf:XMLLiteral .
+
+<#guid>  a                       oslc:Property ;
+        oslc:name                "guid" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_asset:guid ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "An identifier for the asset. Assigned by the service provider when a resource is created. Different versions of the same asset will share the same identifier."^^rdf:XMLLiteral .
+
+<#identifier>  a                 oslc:Property ;
+        oslc:name                "identifier" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:identifier ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "A unique identifier for a resource. Assigned by the service provider when a resource is created. Not intended for end-user display."^^rdf:XMLLiteral .
+
+<#serviceProvider>  a            oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "serviceProvider" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc:serviceProvider ;
+        oslc:range               oslc:serviceProvider ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The scope of a resource is a URI for the resource’s OSLC Service Provider."^^rdf:XMLLiteral .
+
+<#model>  a                      oslc:Property ;
+        oslc:name                "model" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_asset:model ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The value of the asset model."^^rdf:XMLLiteral .
+
+<#instanceShape>  a              oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "instanceShape" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc:instanceShape ;
+        oslc:range               oslc:ResourceShape ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Resource Shape that provides hints as to resource property value-types and allowed values."^^rdf:XMLLiteral .
+
+<#tb-asset>  a               oslc:ResourceShape ;
+        oslc:describes       oslc_asset:Asset ;
+        oslc:property        <#created> , <#contributor> , <#relation> , <#abstract> , <#modified> , <#dc-type> , <#state> , <#instanceShape> , <#artifactFactory> , <#tag> , <#categorization> , <#description> , <#relationshipType> , <#artifact> , <#serialNumber> , <#type> , <#guid> , <#serviceProvider> , <#title> , <#manufacturer> , <#identifier> , <#creator> , <#version> , <#model> ;
+        dcterms:title        "Asset" .
+
+<#ar-type>  a                    oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "type" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  rdf:type ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The resource type URIs. One reference should have the value of http://open-services.net/ns/asset#Artifact."^^rdf:XMLLiteral .
+
+<#state>  a                      oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "state" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_asset:state ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Used to indicate the state of the asset based on values defined by the service provider. This specification does not define the resource for this property, however it should contain a dcterms:title property."^^rdf:XMLLiteral .
+
+<#artifact>  a                   oslc:Property ;
+        oslc:Representation      oslc:Inline ;
+        oslc:name                "artifact" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_asset:artifact ;
+        oslc:range               oslc_asset:artifact ;
+        oslc:valueType           oslc:LocalResource ;
+        dcterms:description      "An Artifact fragment contained in this Asset resource."^^rdf:XMLLiteral .
+
+<#label>  a                      oslc:Property ;
+        oslc:name                "label" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc:label ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "The label of the artifact. Subject (reference: Dublin Core) an abbreviated presentation for the end-users. SHOULD include only content that is valid inside an XHTML element."^^rdf:XMLLiteral .
+
+<#tag>  a                        oslc:Property ;
+        oslc:name                "tag" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_asset:tag ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "Specifies the asset tag value for an Asset. Asset tags are typically human readable labels. For hardware assets, these tags are durable, securely attached to equipment, and may also be readable by barcode and/or RFID."^^rdf:XMLLiteral .
+
+<#created>  a                    oslc:Property ;
+        oslc:name                "created" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:created ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:dateTime ;
+        dcterms:description      "Timestamp of resource creation (reference: Dublin Core)"^^rdf:XMLLiteral .
+
+<#manufacturer>  a               oslc:Property ;
+        oslc:name                "manufacturer" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_asset:manufacturer ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The name of the asset manufacturer."^^rdf:XMLLiteral .
+
+<#tb-artifact>  a            oslc:ResourceShape ;
+        oslc:describes       oslc_asset:artifact ;
+        oslc:property        <#format> , <#modified> , <#size> , <#created> , <#content> , <#ar-title> , <#label> , <#ar-type> ;
+        dcterms:title        "Artifact" .
+
+<#description>  a                oslc:Property ;
+        oslc:name                "description" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:description ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "Descriptive text (reference: Dublin Core) about resource represented as rich text in XHTML content. SHOULD include only content that is valid and suitable inside an XHTML element."^^rdf:XMLLiteral .
+
+<#type>  a                       oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "type" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  rdf:type ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The resource type URIs. One reference should have the value of http://open-services.net/ns/asset#Asset."^^rdf:XMLLiteral .
+
+<#content>  a                    oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "content" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  oslc_asset:content ;
+        oslc:range               oslc_asset:ArtifactMedia ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The media resource reference URI (the artifact bytes)."^^rdf:XMLLiteral .
+
+<#contributor>  a                oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "contributor" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:contributor ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "The person(s) who are responsible for this asset. (reference: Dublin Core). It is likely that the target resource will be a  foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
+
+<#categorization>  a             oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "categorization" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_asset:categorization ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "A categorization to classify an asset. The category schema values are defined by the service provider. This specification does not define the resource for this property, however it should contain a dcterms:title property."^^rdf:XMLLiteral .
+
+<#relation>  a                   oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "relation" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:relation ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "This relationship is loosely coupled and has no specific meaning. Details about this relationship may be included in a reified statement."^^rdf:XMLLiteral .
+
+<#format>  a                     oslc:Property ;
+        oslc:name                "format" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:format ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The mime type of the artifact media resource."^^rdf:XMLLiteral .
+
+<#relationshipType>  a           oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "relationshipType" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_asset:relationshipType ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "The type of this relationship from the perspective of the dcterms:relation resource based on values defined by the service provider. This specification does not define the resource for this property, however it should contain a dcterms:title property."^^rdf:XMLLiteral .
+
+<#title>  a                      oslc:Property ;
+        oslc:name                "title" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  dcterms:title ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "Short name identifying a resource, often used as an abbreviated identifier for presentation to end-users. SHOULD include only content that is valid inside an XHTML element."^^rdf:XMLLiteral .
+
+<#dc-type>  a                    oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "type" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:type ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The type of the asset based on values defined by the service provider. This specification does not define the resource for this property, however it should contain a dcterms:title property."^^rdf:XMLLiteral .
+
+<#ar-title>  a                   oslc:Property ;
+        oslc:name                "title" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  dcterms:title ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "The name of the artifact. Title (reference: Dublin Core) of the resource represented in text XHTML content. SHOULD include only content that is valid inside an XHTML element."^^rdf:XMLLiteral .
+
+<#modified>  a                   oslc:Property ;
+        oslc:name                "modified" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:modified ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:dateTime ;
+        dcterms:description      "Timestamp of latest resource modification (reference: Dublin Core)"^^rdf:XMLLiteral .
