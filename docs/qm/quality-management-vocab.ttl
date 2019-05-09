@@ -1,0 +1,172 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rddl:  <http://www.rddl.org/> .
+
+<http://open-services.net/ns/qm#TestPlan>
+        a                 rdfs:Class ;
+        rdfs:comment      "The QM Test Plan resource" ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "TestPlan" ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestPlan> .
+
+<http://open-services.net/ns/qm#TestScript>
+        a                 rdfs:Class ;
+        rdfs:comment      "The QM Test Script resource" ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "TestScript" ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestScript> .
+
+<http://open-services.net/ns/qm#TestCase>
+        a                 rdfs:Class ;
+        rdfs:comment      "The QM Test Case resource" ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "TestCase" ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestCase> .
+
+<http://open-services.net/ns/qm#TestExecutionRecord>
+        a                 rdfs:Class ;
+        rdfs:comment      "The QM Test Execution Record resource" ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "TestExecutionRecord" ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestExecutionRecord> .
+
+<http://open-services.net/ns/qm#TestResult>
+        a                 rdfs:Class ;
+        rdfs:comment      "The QM Test Result resource" ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "TestResult" ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestResult> .
+
+
+
+<http://open-services.net/ns/qm#affectedByChangeRequest>
+        a                 rdf:Property ;
+        rdfs:comment      "Change request that affects the Test Result. It is likely that the target resource will be an oslc_cm:ChangeRequest but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "affectedByChangeRequest" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestResult> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestResult> .
+
+<http://open-services.net/ns/qm#runsTestCase>
+        a                 rdf:Property ;
+        rdfs:comment      "Test Case run by the Test Execution Record. It is likely that the target resource will be an oslc_qm:TestCase but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "runsTestCase" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestExecutionRecord> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestExecutionRecord> .
+
+<http://open-services.net/ns/qm#reportsOnTestPlan>
+        a                 rdf:Property ;
+        rdfs:comment      "Test Plan that the Test Result reports on. It is likely that the target resource will be an oslc_qm:TestPlan but that is not necessarily the case." , "Test Plan that the Test Execution Record reports on. It is likely that the target resource will be an oslc_qm:TestPlan but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "reportsOnTestPlan" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestResult> , <http://open-services.net/ns/qm#TestExecutionRecord> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestResult> , <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestExecutionRecord> .
+
+<http://open-services.net/ns/qm#relatedChangeRequest>
+        a                 rdf:Property ;
+        rdfs:comment      "A related change request. It is likely that the target resource will be an oslc_cm:ChangeRequest but that is not necessarily the case. " ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "relatedChangeRequest" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestCase> , <http://open-services.net/ns/qm#TestScript> , <http://open-services.net/ns/qm#TestPlan> , <http://open-services.net/ns/qm#TestExecutionRecord> , <http://open-services.net/ns/qm#TestResult> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestScript> , <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestCase> , <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestResult> , <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestExecutionRecord> , <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestPlan> .
+
+<http://open-services.net/ns/qm#testsChangeRequest>
+        a                 rdf:Property ;
+        rdfs:comment      "Change Request tested by the Test Case. It is likely that the target resource will be an oslc_cm:ChangeRequest but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "testsChangeRequest" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestCase> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestCase> .
+
+<http://open-services.net/ns/qm#executesTestScript>
+        a                 rdf:Property ;
+        rdfs:comment      "Test Script executed to produce the Test Result. It is likely that the target resource will be an oslc_qm:TestScript but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "executesTestScript" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestResult> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestResult> .
+
+<http://open-services.net/ns/qm#usesTestCase>
+        a                 rdf:Property ;
+        rdfs:comment      "Test Case used by the Test Plan. It is likely that the target resource will be an oslc_qm:TestCase but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "usesTestCase" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestPlan> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestPlan> .
+
+<http://open-services.net/ns/qm/qm.rdf>
+        rddl:nature  rdfs: .
+
+<http://open-services.net/ns/qm#validatesRequirementCollection>
+        a                 rdf:Property ;
+        rdfs:comment      "Requirement Collection that is validated by the Test Plan. It is likely that the target resource will be an oslc_rm:RequirementCollection but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "validatesRequirementCollection" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestPlan> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestPlan> .
+
+<http://open-services.net/ns/qm#>
+        a                    owl:Ontology ;
+        rdfs:label           "Quality Management(QM)" ;
+        rdfs:seeAlso         <http://open-services.net/ns/qm/qm.rdf> , <http://open-services.net/bin/view/Main/QmSpecificationV2> , <http://open-services.net/bin/view/Main/QmHome> ;
+        dcterms:description  "\n      All vocabulary URIs defined in the OSLC Quality Management (QM) namespace.\n    "^^rdf:XMLLiteral ;
+        dcterms:title        "The OSLC Quality Management(QM) Vocabulary" .
+
+<http://open-services.net/ns/qm#blockedByChangeRequest>
+        a                 rdf:Property ;
+        rdfs:comment      "Change Request that prevents execution of the Test Execution Record. It is likely that the target resource will be an oslc_cm:ChangeRequest but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "blockedByChangeRequest" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestExecutionRecord> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestExecutionRecord> .
+
+<http://open-services.net/ns/qm#usesTestScript>
+        a                 rdf:Property ;
+        rdfs:comment      "Test Script used by the Test Case. It is likely that the target resource will be an oslc_qm:TestScript but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "usesTestScript" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestCase> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestCase> .
+
+<http://open-services.net/ns/qm#validatesRequirement>
+        a                 rdf:Property ;
+        rdfs:comment      "Requirement that is validated by the Test Case. It is likely that the target resource will be an oslc_rm:Requirement but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "validatesRequirement" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestScript> , <http://open-services.net/ns/qm#TestCase> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestScript> , <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestCase> .
+
+<http://open-services.net/ns/qm#runsOnTestEnvironment>
+        a                 rdf:Property ;
+        rdfs:comment      "Indicates the environment details of the test case for this execution record." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "runsOnTestEnvironment" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestExecutionRecord> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestExecutionRecord> .
+
+<http://open-services.net/ns/qm#producedByTestExecutionRecord>
+        a                 rdf:Property ;
+        rdfs:comment      "Test Execution Record that the Test Result was produced by. It is likely that the target resource will be an oslc_qm:TestExecutionRecord but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "producedByTestExecutionRecord" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestResult> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestResult> .
+
+<http://open-services.net/ns/qm#reportsOnTestCase>
+        a                 rdf:Property ;
+        rdfs:comment      "Test Case that the Test Result reports on. It is likely that the target resource will be an oslc_qm:TestCase but that is not necessarily the case." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "reportsOnTestCase" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestResult> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestResult> .
+
+<http://open-services.net/ns/qm#executionInstructions>
+        a                 rdf:Property ;
+        rdfs:comment      "Instructions for executing the test script. Note that the value of Occurs is undefined. The resource shape document provided by the QM service provider may be consulted for its value." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "executionInstructions" ;
+        rdfs:range        <http://open-services.net/ns/qm#TestScript> ;
+        rdfs:seeAlso      <http://open-services.net/bin/view/Main/QmSpecificationV2#Resource_TestScript> .

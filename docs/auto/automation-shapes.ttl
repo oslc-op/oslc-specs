@@ -1,0 +1,454 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
+
+@prefix oslc_auto: <http://open-services.net/ns/auto#> .
+@base <http://open-services.net/ns/core/shapes/2.1/automation-shapes.ttl> .
+
+<#tb-AutomationPlan>  
+        a                    oslc:ResourceShape ;
+        oslc:describes       oslc_auto:AutomationPlan ;
+        dcterms:title        "Statement of need." ;
+        dcterms:description  "A resource representing the unit of automation which is available for execution."^^rdf:XMLLiteral ;
+        oslc:property        
+                <#serviceProvider>,
+                <#usesExecutionEnvironment>,
+                <#parameterDefinition>,
+                <#creator>,
+                <#type>,
+                <#created>,
+                <#contributor>,
+                <#modified>,
+                <#title>,
+                <#futureAction>,
+                <#subject>,
+                <#identifier>,
+                <#description>,
+                <#instanceShape>.
+
+<#tb-AutomationRequest>
+        a                    oslc:ResourceShape ;
+        oslc:describes       oslc_auto:AutomationRequest ;
+        oslc:name            "AutomationRequest" ;
+        dcterms:title        "Statement of need." ;
+        dcterms:description  "A resource representing the intention to execute an Automation Plan. The Automation Request contains the information required to request that the provider execute an Automation Plan."^^rdf:XMLLiteral ;
+        oslc:property        
+                <#inputParameter>,
+                <#modified>,
+                <#type>,
+                <#created>,
+                <#state>,
+                <#creator>,
+                <#executesAutomationPlan>,
+                <#desiredState>,
+                <#description>,
+                <#instanceShape>,
+                <#identifier>,
+                <#contributor>,
+                <#serviceProvider>,
+                <#title>.
+
+<#tb-AutomationResult>
+        a                    oslc:ResourceShape ;
+        oslc:describes       oslc_auto:AutomationResult ;
+        oslc:name            "AutomationResult" ;
+        dcterms:title        "Statement of need." ;
+        dcterms:description  "A resource representing the intermediate and final execution state of an Automation Request, along with contributions to the result."^^rdf:XMLLiteral ;
+        oslc:property        
+                <#desiredState>,
+                <#instanceShape>,
+                <#ar-creator>,
+                <#contribution>,
+                <#state>,
+                <#identifier>,
+                <#created>,
+                <#title>,
+                <#modified>,
+                <#outputParameter>,
+                <#subject>,
+                <#ar-contributor>,
+                <#producedByAutomationRequest>,
+                <#serviceProvider>,
+                <#ar-inputParameter>,
+                <#verdict>,
+                <#reportsOnAutomationPlan>,
+                <#type>.
+
+<#tb-ParameterInstance>
+        a                    oslc:ResourceShape ;
+        oslc:describes       oslc_auto:ParameterInstance ;
+        oslc:name            "ParameterInstance" ;
+        dcterms:title        "Statement of need." ;
+        dcterms:description  "A resource representing an individual input or output parameter instance for an Automation Request or Result. Automation Requests and Results may have 0 or more parameter instances."^^rdf:XMLLiteral ;
+        oslc:property        
+                <#name>,
+                <#description>,
+                <#serviceProvider>,
+                <#instanceShape>,
+                <#type>,
+                <#value>.
+        
+<#tb-Dialog>  
+        a              oslc:ResourceShape ;
+        oslc:describes       oslc:dialog ;
+        oslc:name            "Dialog" ;
+        dcterms:title        "Statement of need." ;
+        dcterms:description  "Dialogs in general are defined by OSLC Core 2.0, and this specification defines two specific types of dialogs: the immediate-execution creation dialog, which can be used to allow a user to interactively create a new Automation request which is immediately available for execution, and the deferred-execution creation dialog, which creates a new Automation Request that is not immediately available for execution, but which requires further work on the part of the consumer."^^rdf:XMLLiteral ;
+        oslc:property        
+                <#hintWidth>,
+                <#dialog>,
+                <#resourceType>,
+                <#binding>,
+                <#label>,
+                <#dl-title>,
+                <#hintHeight>,
+                <#usage>.     
+
+<#hintWidth>  
+        a                  oslc:Property ;
+        oslc:name                "hintWidth" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc:hintWidth ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "Values MUST be expressed as described in OSLC Core 2.0."^^rdf:XMLLiteral .
+
+<#resourceType>  
+        a               oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "resourceType" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc:resourceType ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The expected resource type URI(s) for the resources that will be returned when using this dialog. These would be the URIs found in the result resource’s rdf:type property. In a deferred execution creation dialog, clients will expect at least one of these types to be oslc_auto:AutomationRequest."^^rdf:XMLLiteral .
+
+<#binding>  
+        a                    oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "binding" ;
+        oslc:occurs              oslc:One-or-many ;
+        oslc:propertyDefinition  oslc:binding ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "A resource providing instructions that a client can follow to immediately execute the action, when the client is ready to do so. In this context (a deferred execution creation dialog), each binding is likely to be an immediate-execution binding, used during the execution phase of the deferred execution dialog interaction pattern first defined in OSLC Automation 2.1. It is likely that the target resource will be one of the following, but that is not necessarily the case: http:Request , oslc:CreationFactory , oslc:Dialog. This property is only used by the deferred-execution creation dialog. This is new for 2.1: END"^^rdf:XMLLiteral .
+
+<#modified>  
+        a                   oslc:Property ;
+        oslc:name                "modified" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:modified ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:dateTime ;
+        dcterms:description      "Timestamp of latest resource modification (reference: Dublin Core)"^^rdf:XMLLiteral .
+
+<#outputParameter>  
+        a            oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "outputParameter" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_auto:outputParameter ;
+        oslc:range               oslc_auto:ParameterInstance ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Automation Result output parameters are parameters associated with the automation execution which produced this Result. This includes the final value of all parameters used to initiate the execution and any additional parameters which may have been created during automation execution by the service provider or external agents. The value of a given oslc_auto:outputParameter MAY change as the execution proceeds. Point-in-time accuracy of the values of output parameters is not covered by this specification. Once the Automation Result is in a final state ( oslc_auto:complete or oslc_auto:canceled), the oslc_auto:outputParameter values MUST NOT change."^^rdf:XMLLiteral .
+
+<#reportsOnAutomationPlan>
+        a                        oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "reportsOnAutomationPlan" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  oslc_auto:reportsOnAutomationPlan ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Automation Plan which the Automation Result reports on. It is likely that the target resource will be an  oslc_auto:AutomationPlan but that is not necessarily the case."^^rdf:XMLLiteral .
+
+<#ar-contributor>  
+        a             oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "contributor" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:contributor ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Contributor or contributors to resource (reference: Dublin Core). It is likely that the target resource will be an  foaf:Person but that is not necessarily the case. When the service provider or its agents is the contributor to the resource, a  foaf:Agent could be used."^^rdf:XMLLiteral .
+
+<#futureAction>  
+        a               oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "futureAction" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc:futureAction ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "A resource representing actions that will become available on Automation Results that result from execution of this Plan. The resource is likely to be of type oslc:Action, but it can be of any type. Automation defines oslc_auto:TeardownAction as one kind of future action."^^rdf:XMLLiteral .
+
+<#instanceShape>  
+        a              oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "instanceShape" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc:instanceShape ;
+        oslc:range               oslc:ResourceShape ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Resource Shape that provides hints as to resource property value-types and allowed values."^^rdf:XMLLiteral .
+
+<#ar-inputParameter>  
+        a          oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "inputParameter" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_auto:inputParameter ;
+        oslc:range               oslc_auto:ParameterInstance ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "A copy of the parameters provided during creation of the Automation Request which produced this Automation Result (see oslc_auto:producedByAutomationRequest). The oslc_auto:inputParameter resources on an Automation Result should be considered a point-in-time copy of the parameter at the time the Automation Request was created."^^rdf:XMLLiteral .
+
+<#label>  
+        a                      oslc:Property ;
+        oslc:name                "label" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc:label ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "Very short label for use in menu items."^^rdf:XMLLiteral .
+
+<#inputParameter>  
+        a             oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "inputParameter" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_auto:inputParameter ;
+        oslc:range               oslc_auto:ParameterInstance ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Parameters provided when Automation Requests are created. These include parameters provided by the creator of the Automation Request (whether by delegated UI or HTTP POST) and MAY include additional parameters added by the service provider during Automation Request creation. See the definition of the oslc_auto:parameterDefinition attribute of the Automation Plan for additional guidance on determining which parameters are required. Creators of Automation Requests MAY provide parameters beyond those defined in the Automation Plan without guarantee the service provider will recognize or honor them. It is expected that this attribute is write-able on Automation Request creation and read-only thereafter."^^rdf:XMLLiteral .
+
+<#description>  
+        a                oslc:Property ;
+        oslc:name                "description" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:description ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "Descriptive text (reference: Dublin Core) about resource represented as rich text in XHTML content. SHOULD include only content that is valid and suitable inside an XHTML <div> element."^^rdf:XMLLiteral .
+
+<#hintHeight>  
+        a                 oslc:Property ;
+        oslc:name                "hintHeight" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc:hintHeight ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "Values MUST be expressed as described in OSLC Core 2.0."^^rdf:XMLLiteral .
+
+<#usesExecutionEnvironment>
+        a                        oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "usesExecutionEnvironment" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_auto:usesExecutionEnvironment ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "A resource representing the environment(s) which this Automation Plan can be executed in. The execution environment resource could represent a grouping of environmental details such as operating system, database, browser, compiler, etc. See also the execution environments section."^^rdf:XMLLiteral .
+
+<#subject>  
+        a                    oslc:Property ;
+        oslc:name                "subject" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:subject ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "Tag or keyword for a resource. Each occurrence of a dc:subject property denotes an additional tag for the resource."^^rdf:XMLLiteral .
+
+<#producedByAutomationRequest>
+        a                        oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "producedByAutomationRequest" ;
+        oslc:occurs              oslc:Zero-to-one ;
+        oslc:propertyDefinition  oslc_auto:producedByAutomationRequest ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Automation Request which produced the Automation Result. It is likely that the target resource will be an  oslc_auto:AutomationRequest but that is not necessarily the case."^^rdf:XMLLiteral .
+
+<#parameterDefinition>
+        a                        oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "parameterDefinition" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_auto:parameterDefinition ;
+        oslc:range               oslc:property ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "The definition of a parameter for this Automation Plan. parameterDefinitions are either a local (inline) or referenced resource and use the attributes (the range) of the  oslc:Property resource with one exception. When used in the context of an oslc_auto:parameterDefinition, the cardinality of oslc:propertyDefinition becomes zero-or-one instead of exactly-one. Automation consumers creating Automation Requests MUST use the oslc:occurs attribute of the parameterDefinition, if present, to determine if a given parameter is required when creating the Automation Request. If the oslc:occurs attribute indicates the parameter is required (exactly-one or one-or-more), the service provider must guarantee the named parameter will be present in the Automation Result either as an oslc_auto:inputParmeter when unmodified during execution, or as an oslc_auto:outputParameter when modified during execution."^^rdf:XMLLiteral .
+
+<#created>  
+        a                    oslc:Property ;
+        oslc:name                "created" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:created ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:dateTime ;
+        dcterms:description      "Timestamp of resource creation (reference: Dublin Core)"^^rdf:XMLLiteral .
+
+<#creator>  
+        a                    oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "creator" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:creator ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Creator or creators of resource (reference: Dublin Core). It is likely that the target resource will be an  foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
+
+<#contribution>  
+        a               oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "contribution" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_auto:contribution ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "A result contribution associated with this automation result. It is recommended that the contribution be an inline resource which can be retrieved with the automation result. The recommended attributes beyond the contribution itself are dcterms:title, dcterms:description and dcterms:type to provide a description of the contribution which would be appropriate for display in a simple UI for an automation result."^^rdf:XMLLiteral .
+
+<#dl-title>  
+        a                   oslc:Property ;
+        oslc:name                "title" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  dcterms:title ;
+        oslc:readOnly            true ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "Title string that could be used for display."^^rdf:XMLLiteral .
+
+<#verdict>  
+        a                    oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "verdict" ;
+        oslc:occurs              oslc:One-or-many ;
+        oslc:propertyDefinition  oslc_auto:verdict ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Used to indicate the verdict of the automation result based on values defined by the service provider. Most often a read-only property. It is expected that this will be a resource reference to a definition of a valid automation result verdict on the service provider."^^rdf:XMLLiteral .
+
+<#desiredState>  
+        a               oslc:Property ;
+        oslc:name                "desiredState" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_auto:desiredState ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Used to indicate the desired state of the Automation Request based on values defined by the service provider. It is expected that this will be a resource reference to a definition of a valid automation request state on the service provider."^^rdf:XMLLiteral .
+
+<#ar-creator>  
+        a                 oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "creator" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:creator ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Creator or creators of the resource (reference: Dublin Core). It is likely that the target resource will be a foaf:Person, but that is not necessarily the case. The resource should represent the entity on whose behalf the automation is being created. When the provider itself or its agent is the initiator of the automation (perhaps in the case of a scheduled automation), an additional foaf:Agent resource could be used."^^rdf:XMLLiteral .
+
+<#name>  
+        a                       oslc:Property ;
+        oslc:name                "name" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  oslc:name ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The name of the parameter instance."^^rdf:XMLLiteral .
+
+<#contributor>  
+        a                oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "contributor" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:contributor ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Contributor or contributors to resource (reference: Dublin Core). It is likely that the target resource will be an  foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
+
+<#usage>  
+        a                      oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "usage" ;
+        oslc:occurs              oslc:One-or-many ;
+        oslc:propertyDefinition  oslc:usage ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "An identifier URI for the domain specified usage of this dialog. For example, for a deferred execution creation dialog this will be oslc_auto:DeferredExecution."^^rdf:XMLLiteral .
+
+<#identifier>  
+        a                 oslc:Property ;
+        oslc:name                "identifier" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  dcterms:identifier ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "A unique identifier for a resource. Assigned by the service provider when a resource is created. Not intended for end-user display."^^rdf:XMLLiteral .
+
+<#type>  
+        a                       oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "type" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  rdf:type ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The resource type URIs."^^rdf:XMLLiteral .
+
+<#serviceProvider>  
+        a            oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "serviceProvider" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc:serviceProvider ;
+        oslc:range               oslc:serviceProvider ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The scope of a resource is a link to the resource’s OSLC Service Provider."^^rdf:XMLLiteral .
+
+<#dialog>  
+        a                     oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "dialog" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  oslc:dialog ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The URI of the dialog."^^rdf:XMLLiteral .
+
+<#title>  
+        a                      oslc:Property ;
+        oslc:name                "title" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  dcterms:title ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "Title (reference: Dublin Core) of the resource represented as rich text in XHTML content."^^rdf:XMLLiteral .
+
+<#value>  
+        a                      oslc:Property ;
+        oslc:name                "value" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  rdf:value ;
+        dcterms:description      "The value of the parameter. The value may be an RDF literal or a resource. If the value is an RDF literal, then it SHOULD be an RDF typed literal."^^rdf:XMLLiteral .
+
+<#state>  
+        a                      oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "state" ;
+        oslc:occurs              oslc:One-or-many ;
+        oslc:propertyDefinition  oslc_auto:state ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:AnyResource ;
+        dcterms:description      "Used to indicate the state of the automation request based on values defined by the service provider. Most often a read-only property. It is expected that this will be a resource reference to a definition of a valid automation request state on the service provider."^^rdf:XMLLiteral .
+
+<#executesAutomationPlan>
+        a                        oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "executesAutomationPlan" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  oslc_auto:executesAutomationPlan ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Automation Plan run by the Automation Request. It is likely that the target resource will be an  oslc_auto:AutomationPlan but that is not necessarily the case."^^rdf:XMLLiteral .

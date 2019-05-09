@@ -1,0 +1,438 @@
+@prefix qudt:  <http://qudt.org/1.1/schema/qudt> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ems:   <http://open-services.net/ns/ems#> .
+@prefix pm:    <http://open-services.net/ns/perfmon#> .
+@prefix rddl:  <http://www.rddl.org/> .
+
+pm:VirtualMemoryUsed  a   rdfs:Class ;
+        rdfs:comment      "Virtual memory used." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "VirtualMemoryUsed" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:VirtualizationMetrics , pm:MemoryMetrics , pm:ResourceUsageMetrics .
+
+pm:CpuMetrics  a          rdfs:Class ;
+        rdfs:comment      "Metric category for CPU-related metrics." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "CpuMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:Metric .
+
+pm:TimeJCAThreadPoolExhausted
+        a                 rdfs:Class ;
+        rdfs:comment      "Time during which a Java Connection Architecture thread pool was fully utilized (no threads were free)" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "TimeJCAThreadPoolExhausted" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ThreadPoolMetrics , pm:ResourceExhaustionMetrics .
+
+pm:process  a             rdf:Property ;
+        rdfs:comment      "A process running, for example, in a computer system. Typically refers to a resource with type crtv:ComputerSystem, but it may refer to other resource types." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "process" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource-Properties> .
+
+pm:NotRunning  rdfs:comment  "Not running in its host environment" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "NotRunning" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Availability-Status-Property-Values> .
+
+pm:ResourceUsageMetrics
+        a                 rdfs:Class ;
+        rdfs:comment      "Metric category for metrics that show resource usage." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "ResourceUsageMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:Metric .
+
+pm:NetworkMetrics  a      rdfs:Class ;
+        rdfs:comment      "Metric category for network-related metrics." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "NetworkMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:Metric .
+
+pm:ResponseTime  a        rdfs:Class ;
+        rdfs:comment      "Time required for some system to respond to a request" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "ResponseTime" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResponseTimeMetrics , pm:RequestMetrics .
+
+pm:monitoringAgent  a     rdf:Property ;
+        rdfs:comment      "Software that monitors a resource’s availability, performance, capacity, or utilization. Typically refers to a resource with type foaf:Agent, but it may refer to other resource types." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "monitoringAgent" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource-Properties> .
+
+pm:BufferPoolMetrics  a   rdfs:Class ;
+        rdfs:comment      "Metric category for buffer pool-related metrics." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "BufferPoolMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:MemoryMetrics .
+
+pm:TimeThreadPoolExhausted
+        a                 rdfs:Class ;
+        rdfs:comment      "Time during which a thread pool was fully utilized (no threads were free)" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "TimeThreadPoolExhausted" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ThreadPoolMetrics , pm:ResourceExhaustionMetrics .
+
+pm:TableSpaceFree  a      rdfs:Class ;
+        rdfs:comment      "Table space free." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "TableSpaceFree" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceAvailabilityMetrics .
+
+pm:NetworkIOErrors  a     rdfs:Class ;
+        rdfs:comment      "Network packets sent or received that did not complete successfully." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "NetworkIOErrors" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:FailureMetrics , pm:NetworkMetrics .
+
+pm:BufferPoolHits  a      rdfs:Class ;
+        rdfs:comment      "Buffer pool hits, e.g. hit ratio or count" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "BufferPoolHits" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:BufferPoolMetrics , pm:ResourceUsageMetrics .
+
+pm:TimeDatabaseThreadPoolExhausted
+        a                 rdfs:Class ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "TimeDatabaseThreadPoolExhausted" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#> , <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ThreadPoolMetrics , pm:ResourceExhaustionMetrics .
+
+pm:RequestFailures  a     rdfs:Class ;
+        rdfs:comment      "Request failures" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "RequestFailures" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:FailureMetrics .
+
+pm:DiskSpaceOverCommitAmount
+        a                 rdfs:Class ;
+        rdfs:comment      "Amount of disk space committed beyond the disk's capacity." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "DiskSpaceOverCommitAmount" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:DiskMetrics , pm:ResourceExhaustionMetrics .
+
+pm:LockListUsed  a        rdfs:Class ;
+        rdfs:comment      "Lock usage" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "LockListUsed" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceUsageMetrics .
+
+pm:LoginRequestFailures
+        a                 rdfs:Class ;
+        rdfs:comment      "Failed login requests" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "LoginRequestFailures" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:FailureMetrics .
+
+pm:mobilityEnabled  a     rdf:Property ;
+        rdfs:comment      "An indication about whether the resource can move about dynamically." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "mobilityEnabled" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource-Properties> .
+
+pm:LocalInboundConnections
+        a                 rdfs:Class ;
+        rdfs:comment      "Local inbound connections" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "LocalInboundConnections" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceUsageMetrics .
+
+pm:CpuUsed  a             rdfs:Class ;
+        rdfs:comment      "CPU used." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "CpuUsed" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:CpuMetrics , pm:ResourceUsageMetrics .
+
+pm:PerMinute  a                    <http://qudt.org/schema/qudt#TimeUnit> , rdfs:Class ;
+        rdfs:comment               "Units for a quantity where a value of one represents 60 seconds of time." ;
+        rdfs:isDefinedBy           pm: ;
+        rdfs:label                 "PerMinute" ;
+        rdfs:seeAlso               <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        qudt:conversionMultiplier  "60"^^<http://www.w3.org/2001/XMLSchema#double> .
+
+pm:DiskMetrics  a         rdfs:Class ;
+        rdfs:comment      "Metric category for disk-related metrics." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "DiskMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:Metric .
+
+pm:MemoryMetrics  a       rdfs:Class ;
+        rdfs:comment      "Metric category for memory-related metrics." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "MemoryMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:Metric .
+
+pm:QueueDepth  a          rdfs:Class ;
+        rdfs:comment      "Size/lenght/depth of a queue" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "QueueDepth" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:RequestMetrics .
+
+pm:FailureMetrics  a      rdfs:Class ;
+        rdfs:comment      "Metric category for requests that fail." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "FailureMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:RequestMetrics .
+
+pm:disk  a                rdf:Property ;
+        rdfs:comment      "A disk attached, for example, to a computer system. Typically refers to a resource with type crtv:ComputerSystem, but it may refer to other resource types." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "disk" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource-Properties> .
+
+pm:LogUsed  a             rdfs:Class ;
+        rdfs:comment      "Amount of log used, either absolute or relative to some maximum" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "LogUsed" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceUsageMetrics .
+
+pm:ThreadPoolMetrics  a   rdfs:Class ;
+        rdfs:comment      "Metric category for thread pool-related metrics." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "ThreadPoolMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:Metric .
+
+pm:CpuSpeed  a            rdfs:Class ;
+        rdfs:comment      "Speed of the CPU" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "CpuSpeed" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:CpuMetrics , pm:ResourceAvailabilityMetrics .
+
+pm:DiskSpaceUsed  a       rdfs:Class ;
+        rdfs:comment      "Disk space used." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "DiskSpaceUsed" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:DiskMetrics , pm:ResourceUsageMetrics .
+
+pm:SqlStatmentFailures
+        a                 rdfs:Class ;
+        rdfs:comment      "SQL statements that failed" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "SqlStatmentFailures" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:FailureMetrics .
+
+pm:AvgRequestFailures
+        a                 rdfs:Class ;
+        rdfs:comment      "Average request failures" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "AvgRequestFailures" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:FailureMetrics .
+
+pm:AvgJmsGetTime  a       rdfs:Class ;
+        rdfs:comment      "Average time required for a system to respond to a Java Messaging Service GET request" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "AvgJmsGetTime" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResponseTimeMetrics , pm:RequestMetrics .
+
+pm:Running  rdfs:comment  "Running in its host environment" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "Running" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Availability-Status-Property-Values> .
+
+pm:GarbageCollectionRequests
+        a                 rdfs:Class ;
+        rdfs:comment      "Garbage collection requests" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "GarbageCollectionRequests" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:RequestMetrics .
+
+pm:RequestMetrics  a      rdfs:Class ;
+        rdfs:comment      "Metric category for requests on a resource, originating from an end user or a system component." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "RequestMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:Metric .
+
+pm:     a                    owl:Ontology ;
+        rdfs:label           "Performance Monitoring" ;
+        rdfs:seeAlso         <http://open-services.net/wiki/performance-monitoring/File:perfmon.rdf> , <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/> ;
+        dcterms:description  "All vocabulary\n    URIs defined in the OSLC Performance Monitoring namespace."^^rdf:XMLLiteral ;
+        dcterms:source       <http://open-services.net/wiki/performance-monitoring/File:perfmon.rdf> ;
+        dcterms:title        "The OSLC Performance Monitoring Vocabulary" .
+
+pm:Metric  a              rdfs:Class ;
+        rdfs:comment      "Metric category for metrics defined in the Performance Monitoring vocabulary." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "Metric" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   ems:Metric .
+
+pm:VmCpuReady  a          rdfs:Class ;
+        rdfs:comment      "Amount of CPU ready from a virtual machine's point of view" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "VmCpuReady" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceAvailabilityMetrics , pm:CpuMetrics , pm:VirtualizationMetrics .
+
+pm:ResourceExhaustionMetrics
+        a                 rdfs:Class ;
+        rdfs:comment      "Metric category for metrics that show resource consumption in excess of capacity." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "ResourceExhaustionMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:ResourceUsageMetrics .
+
+pm:RemoteInboundConnections
+        a                 rdfs:Class ;
+        rdfs:comment      "Remote inbound connections" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "RemoteInboundConnections" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceUsageMetrics .
+
+pm:QueueFull  a           rdfs:Class ;
+        rdfs:comment      "A queue filled to its maximum capacity" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "QueueFull" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceExhaustionMetrics .
+
+pm:MessageCount  a        rdfs:Class ;
+        rdfs:comment      "" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "MessageCount" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceUsageMetrics .
+
+pm:Unknown  rdfs:comment  "Unknown status" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "Unknown" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Availability-Status-Property-Values> .
+
+pm:TableSpaceUsed  a      rdfs:Class ;
+        rdfs:comment      "Table space used." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "TableSpaceUsed" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceUsageMetrics .
+
+pm:ResponseTimeMetrics
+        a                 rdfs:Class ;
+        rdfs:comment      "Metric category for metrics that show time it takes for a response to be returned to a request." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "ResponseTimeMetrics" ;
+        rdfs:seeAlso      <http://dbpedia.org/resource/Response_time_%28technology%29> , <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:RequestMetrics .
+
+<http://open-services.net/wiki/performance-monitoring/File:perfmon.rdf>
+        rddl:nature  rdfs: .
+
+pm:VirtualizationMetrics
+        a                 rdfs:Class ;
+        rdfs:comment      "Metric category for virtualization-related resource metrics." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "VirtualizationMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:Metric .
+
+pm:HighDepthQueueCount
+        a                 rdfs:Class ;
+        rdfs:comment      "" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "HighDepthQueueCount" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceExhaustionMetrics .
+
+pm:PerformanceMonitoringRecord
+        a                 rdfs:Class ;
+        rdfs:comment      "A resource representing performance monitoring information" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "PerformanceMonitoringRecord" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Performance_Monitoring_Record> .
+
+pm:ResourceAvailabilityMetrics
+        a                 rdfs:Class ;
+        rdfs:comment      "Metric category for metrics that show resource availability." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "ResourceAvailabilityMetrics" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Metric-Categories> ;
+        rdfs:subClassOf   pm:Metric .
+
+pm:HeapMemoryUsed  a      rdfs:Class ;
+        rdfs:comment      "Heap memory used." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "HeapMemoryUsed" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:MemoryMetrics , pm:ResourceUsageMetrics .
+
+pm:HostedDatabases  a     rdfs:Class ;
+        rdfs:comment      "Databases hosted, either absolute or relative to some maximum" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "HostedDatabases" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceUsageMetrics .
+
+pm:AvgLoginRequestFailures
+        a                 rdfs:Class ;
+        rdfs:comment      "Average login request failures" ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "AvgLoginRequestFailures" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:FailureMetrics .
+
+pm:RealMemoryUsed  a      rdfs:Class ;
+        rdfs:comment      "Real memory used." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "RealMemoryUsed" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:MemoryMetrics , pm:ResourceUsageMetrics .
+
+pm:tableReorganizationNeeded
+        a                 rdf:Property ;
+        rdfs:comment      "Indicates whether a database’s tables need to be reorganized." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "tableReorganizationNeeded" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource-Properties> .
+
+pm:MemoryAvailableAfterGarbageCollection
+        a                 rdfs:Class ;
+        rdfs:comment      "Memory available following completion of a garbage collection request." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "MemoryAvailableAfterGarbageCollection" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:MemoryMetrics , pm:ResourceAvailabilityMetrics .
+
+pm:SortOverflows  a       rdfs:Class ;
+        rdfs:comment      "A sort's performance was impacted because the data to be sorted is large enough for it to overflow from (relatively) fast to (relatively) slow storage." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "SortOverflows" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource.3A-ems.3AMeasure> ;
+        rdfs:subClassOf   pm:ResourceExhaustionMetrics .
+
+pm:availabilityStatus
+        a                 rdf:Property ;
+        rdfs:comment      "An indication of availability." ;
+        rdfs:isDefinedBy  pm: ;
+        rdfs:label        "availabilityStatus" ;
+        rdfs:seeAlso      <http://open-services.net/wiki/performance-monitoring/OSLC-Performance-Monitoring-Specification-Version-2.0/#Resource-Properties> .

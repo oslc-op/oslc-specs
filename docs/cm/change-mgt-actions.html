@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'/>
+<script src='http://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script class='remove'>
+  var respecConfig = {
+      // specification status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
+      specStatus:           "WD",
+      edDraftURI:           "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-ccm/trunk/specs/change-mgt-actions.html",
+
+      // the specification's short name, as in http://www.w3.org/TR/short-name/
+      shortName:            "OSLC Change Management Actions 3.0",
+
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+      // subtitle   :  "an excellent document",
+
+      // if you wish the publication date to be other than the last modification, set this
+      // publishDate:  "2009-08-06",
+
+      // if the specification's copyright date is a range of years, specify
+      // the start date here:
+      // copyrightStart: "2005"
+
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+
+      // if this is a LCWD, uncomment and set the end of its review period
+      // lcEnd: "2009-08-05",
+
+      // editors, add as many as you like
+      // only "name" is required
+      editors:  [
+          {
+              name:       "Samuel Padgett"
+          ,   url:        "http://open-services.net/bin/view/Main/SamPadgett"
+          ,   mailto:     "spadgett@us.ibm.com"
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          },
+          {
+              name:       "Steve Speicher"
+          ,   url:        "http://stevespeicher.me/"
+          ,   mailto:     "sspeiche@us.ibm.com"
+          ,   company:    "IBM"
+          ,   companyURL: "http://ibm.com/"
+          }
+      ],
+
+      // name of the WG
+      wg:           "OASIS OSLC Lifecycle Integration Change and Configuration Management (OSLC CCM) TC",
+
+      // URI of the public WG page
+      wgURI:        "https://www.oasis-open.org/committees/oslc-ccm/",
+
+      // name (without the @w3c.org) of the public mailing to which comments are due
+      wgPublicList: "oslc-ccm",
+
+      // URI of the patent status for this WG, for Rec-track documents
+      // !!!! IMPORTANT !!!!
+      // This is important for Rec-track documents, do not copy a patent URI from a random
+      // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+      // Team Contact.
+      wgPatentURI:  "",
+      // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
+      localBiblio:  {
+          "OSLCCore3": {
+              title:    "OSLC Core Overview v3.0",
+              href:     "http://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/specs/oslc-core-overview-v3.html",
+              authors:  [    "Steve Speicher"],
+              publisher:  "OASIS",
+          }
+      }
+  };
+</script>
+<title>Open Services for Lifecycle Collaboration Change Management Actions Specification 3.0</title>
+<link rel="stylesheet" type="text/css" href="../../styles/table-styles.css">
+<link rel="stylesheet" type="text/css" href="../../styles/definition-styles.css">
+</head>
+
+<body>
+<section id="abstract">
+<p>This specification defines a profile of OSLC Core Actions for Chanage
+    Management servers.</p>
+</section>
+
+
+<section id='sotd'>
+<p><strong>EARLY EDITOR'S DRAFT, SUBJECT TO CHANGE</strong></p>
+
+<p>This document describes the OSLC-CM workgroup design for actions. The
+    workgroup is evaluating instead using the OSLC Core actions proposal, <a
+            href="http://open-services.net/wiki/core/Exposing-arbitrary-actions-on-RDF-resources/">Exposing
+        arbitrary actions on RDF resources</a>.</p>
+</section>
+
+<section id="toc"></section>
+
+<section id="introduction" class="informative">
+<h2>Introduction</h2>
+<p>...</p>
+</section>
+
+<section id="terms">
+<h1>Terminology</h1>
+<p>Terminology is based on OSLC Core Overview [[OSLCCore3]], W3C Linked Data
+    Platform [[LDP]], W3C's Architecture of the World Wide Web [[WEBARCH]],
+    Hyper-text Transfer Protocol [[HTTP11]].</p>
+<dl>
+    <dt class='loc-heading'>Term-xxx</dt>
+    <dd>...</dd>
+</dl>
+</section>
+
+<section id="conformance">
+</section>
+
+<section class='informative'>
+<h2>Motivation</h2>
+<p><em><strong>TODO</strong>: Discuss Chanage Management of Requirements and other scenarios for actions.</em></p>
+</section>
+
+<section id="actions">
+<h3>Capability</h3>
+
+<p>Actions are read-only properties of type Resource in a Change Request
+    resource. The URI of such a reference property ("Action URI") points to the
+    <a href="#Resource_Action">Action resource</a> that handles the state
+    transition. A resource can be updated by a HTTP POST to the Action URI. The
+    request body of the HTTP POST <strong>MUST</strong> contain the resource
+    URI that the transition will be applied. The request body
+    <strong>MAY</strong> contain additional property values to be updated along
+    with the state transition via the action. A HTTP GET on the Action URI
+    <strong>SHOULD</strong> return information about that action.</p>
+
+<p>The Change Request resource representation <strong>SHOULD</strong> only
+    include the actions that are applicable to the current state of the
+    resource. If an action is performed and the precondition for a state
+    transition is not met, the request <strong>MUST</strong> respond with a 409
+    Conflict status code.</p>
+
+<p>An attempt to update an action property explicitly in a PUT or PATCH request
+    <strong>SHOULD</strong> be answered with a 409 Conflict HTTP status code.
+    Their presence in a resource representation used for an update via PUT
+    <strong>MUST NOT</strong> prevent the resource from being updated.</p>
+
+<h4 id="example">Example</h4>
+
+<p>A change request resource representation with actions and predicates:</p>
+
+<pre class="example">@prefix oslc: &lt;http://open-services.net/ns/core#&gt;.
+@prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+&lt;http://example.com/bugs/2314&gt;
+   a oslc_cm:ChangeRequest;
+   oslc_cm:state &lt;http://open-services.net/ns/cm#Open-state&gt;;
+   dcterms:identifier "2314";
+   dcterms:title "Provide import";
+   oslc_cm:action &lt;http://example.com/bugs/action/resolve&gt;,
+                  &lt;http://example.com/bugs/action/start&gt;.
+
+&lt;http://example.com/bugs/action/resolve&gt;
+   a oslc_cm:Action;
+   dcterms:description "Indicates work is complete on the change request.";
+   dcterms:identifier "23";
+   dcterms:title "Resolve";
+   oslc:resourceShape &lt;http://example.com/bugs/action/resolve/shape&gt;;
+   oslc_cm:targetState &lt;http://open-services.net/ns/cm#Resolved-state&gt;.
+
+&lt;http://example.com/bugs/action/start&gt;
+   a oslc_cm:Action;
+   dcterms:description "Indicates work is beginning on the change request.";
+   dcterms:identifier "24";
+   dcterms:title "Start Working";
+   oslc:resourceShape &lt;http://example.com/bugs/action/start/shape&gt;;
+   oslc_cm:targetState &lt;http://open-services.net/ns/cm#In-progress-state&gt;.
+</pre>
+
+<p>To change the CR's state to 'In Progress', you would transition the CR by POST'ing to the <code>oslc_cm:action</code> URL for the right target state:</p>
+
+<pre class="example">POST /bugs/action/start HTTP/1.1
+@prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
+&lt;http://example.com/bugs/2314&gt;
+   a oslc_cm:ChangeRequest.
+</pre>
+
+<p>After the request, the CR resource representation will look like</p>
+
+<pre class="example">@prefix xmlns: &lt;http://www.w3.org/2000/xmlns/&gt;.
+@prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+&lt;http://example.com/bugs/2314&gt;
+  a oslc_cm:ChangeRequest;
+  oslc_cm:state &lt;http://open-services.net/ns/cm#In-progress-state&gt;;
+  dcterms:identifier "2314";
+  dcterms:title "Provide import";
+  oslc_cm:action &lt;http://example.com/bugs/action/resolve&gt;.
+</pre>
+
+<p>A GET on an action URI might look like this.</p>
+
+<pre class="example">GET /bugs/action/resolve HTTP/1.1
+@prefix oslc: &lt;http://open-services.net/ns/core#&gt;.
+@prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+
+&lt;http://example.com/bugs/action/resolve&gt;
+   a oslc_cm:Action;
+   dcterms:description "Indicates work is complete on the change request.";
+   dcterms:identifier "23";
+   dcterms:title "Resolve";
+   oslc:resourceShape &lt;http://example.com/bugs/action/resolve/shape&gt;;
+   oslc_cm:targetState &lt;http://open-services.net/ns/cm#Resolved-state&gt;.
+</pre>
+</section>
+
+<section id="resourceDefinitions">
+<h2>Resource: Action</h2>
+
+<p>The Action resource specifies information about an action, such as a title and a description. It also can include a resource shape that can be used to give consumers hints about required field values for this action.</p>
+
+<ul>
+<li><strong>Name:</strong> <code>Action</code></li>
+<li><strong>Type URI</strong> <code>http://open-services.net/ns/cm#Action</code></li>
+</ul>
+
+<table class="ruled">
+<thead>
+<tr>
+  <th><strong>Prefixed Name</strong></th>
+  <th><strong>Occurs</strong></th>
+  <th><strong>Read-only</strong></th>
+  <th><strong>Value-type</strong></th>
+  <th><strong>Represen-tation</strong></th>
+  <th><strong>Range</strong></th>
+  <th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>OSLC Core</strong>: Common Properties</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>dcterms:title</td>
+  <td>exactly-one</td>
+  <td>true</td>
+  <td>XMLLiteral</td>
+  <td>N/A</td>
+  <td>N/A</td>
+  <td>Title (reference: Dublin Core) of the action</td>
+</tr>
+<tr>
+  <td>dcterms:description</td>
+  <td>zero-or-one</td>
+  <td>true</td>
+  <td>XMLLiteral</td>
+  <td>N/A</td>
+  <td>N/A</td>
+  <td>Description (reference: Dublin Core) of the action</td>
+</tr>
+<tr>
+  <td>dcterms:identifier</td>
+  <td>zero-or-one</td>
+  <td>true</td>
+  <td>String</td>
+  <td>N/A</td>
+  <td>N/A</td>
+  <td>A unique identifier for an action (reference: Dublin Core). Not intended for end-user display.</td>
+</tr>
+<tr>
+  <td>rdf:type</td>
+  <td>zero-or-many</td>
+  <td>true</td>
+  <td>Resource</td>
+  <td>Reference</td>
+  <td>N/A</td>
+  <td>The resource type URIs. One of at least has the value of <a href="http://open-services.net/ns/cm#Action">http://open-services.net/ns/cm#Action</a></td>
+</tr>
+<tr>
+  <td>oslc:serviceProvider</td>
+  <td>zero-or-many</td>
+  <td>true</td>
+  <td>Resource</td>
+  <td>Reference</td>
+  <td><a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources">oslc:ServiceProvider</a></td>
+  <td>The scope of a resource is a URI for the resource’s OSLC Service Provider.</td>
+</tr>
+<tr>
+  <td>oslc:resourceShape</td>
+  <td>zero-or-many</td>
+  <td>true</td>
+  <td>Resource</td>
+  <td>Reference</td>
+  <td><a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA#oslc_ResourceShape_Resource">oslc:ResourceShape</a></td>
+  <td>Resource Shape that provides hints as to resource property value-types and allowed values.</td>
+</tr>
+<tr>
+  <td><strong>OSLC CM:</strong> Start of additional properties</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td>oslc_cm:targetState</td>
+  <td>zero-or-many</td>
+  <td>true</td>
+  <td>Resource</td>
+  <td>Reference</td>
+  <td>N/A</td>
+  <td>URI indicating the target state for this action.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section class='appendix informative'>
+<h2>Acknowledgements</h2>
+<p>...</p>
+</section>
+
+</body>
+</html>

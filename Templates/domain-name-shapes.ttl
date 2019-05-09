@@ -1,0 +1,76 @@
+@prefix dcterms:        <http://purl.org/dc/terms/> .
+@prefix foaf:           <http://xmlns.com/foaf/0.1/> .
+@prefix ldp:            <http://www.w3.org/ns/ldp#> .
+@prefix oslc:           <http://open-services.net/ns/core#> .
+@prefix rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:            <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix oslc_xxx:       <http://open-services.net/ns/xxx#> .
+
+
+# This example shows multiple shapes sharing some common properties.
+# For the base URIs to be used for shapes, see https://issues.oasis-open.org/browse/OSLCCORE-25
+# Note the use of relative hash URIs for the shape and properties within this base.
+
+<#ExampleShape1>
+    a                       oslc:ResourceShape ;
+	dcterms:title           "Shape for resources of first example class" ;
+	dcterms:description     "A little more detail about this shape. <em>Embedded HTML</em> is ok."^^rdf:XMLLiteral ;
+	oslc:describes          oslc_xxx:ExampleClass1 ;
+	oslc:property
+        <#creator> ,
+        <#title> ,
+	    <#color> .
+
+<#ExampleShape2>
+    a                       oslc:ResourceShape ;
+	dcterms:title           "Shape for resources of second example class" ;
+	oslc:describes          oslc_xxx:ExampleClass2 ;
+	oslc:property
+        <#creator> ,
+        <#title> ,
+	    <#identifier> .
+
+# A simple string property
+<#identifier>
+    a                        oslc:Property ;
+    oslc:name                "identifier" ;
+    oslc:propertyDefinition  dcterms:identifier ;
+    oslc:occurs              oslc:Exactly-one ;
+    oslc:valueType           xsd:string ;
+    oslc:readOnly            true ;
+    dcterms:description      "A unique identifier for this resource."^^rdf:XMLLiteral .
+
+# A rich text field
+<#title>
+    a                        oslc:Property ;
+    oslc:name                "title" ;
+    oslc:propertyDefinition  dcterms:title ;
+    oslc:occurs              oslc:Zero-or-one ;
+    dcterms:description      """A title for this property. <em>Embedded HTML</em> is ok."""^^rdf:XMLLiteral ;
+    oslc:valueType           rdf:XMLLiteral .
+
+# A link to another resource
+<#creator>
+    a                        oslc:Property ;
+    oslc:name                "creator" ;
+    oslc:propertyDefinition  dcterms:creator ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               foaf:Person, foaf:Agent ;
+    dcterms:description      """Creator or creators of resource.
+The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>, but could be any type."""^^rdf:XMLLiteral .
+
+# A property with enumerated values
+<#color>
+    a                        oslc:Property ;
+	oslc:name                "color" ;
+	oslc:propertyDefinition  oslc_xxx:color ;
+	oslc:occurs              oslc:Zero-or-many;
+	dcterms:description      "Color of the subject" ;
+	oslc:range               oslc_xxx:Color ;
+    oslc:valueType           oslc:Resource ;
+    oslc:representation      oslc:Reference ;
+	oslc:allowedValue        oslc_xxx:red, oslc_xxx:green, oslc_xxx:blue, oslc_xxx:otherColor.

@@ -1,0 +1,167 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ems:   <http://open-services.net/ns/ems#> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
+
+@prefix pm:    <http://open-services.net/ns/perfmon#> .
+@base <http://open-services.net/ns/core/shapes/2.0/performance-monitoring-shapes.ttl> .
+
+<#tableReorganizationNeeded>
+        a                        oslc:Property ;
+        oslc:Representation      oslc:Inline ;
+        oslc:name                "tableReorganizationNeeded" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  pm:tableReorganizationNeeded ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:boolean ;
+        dcterms:description      "Indicates whether a database’s tables need to be reorganized."^^rdf:XMLLiteral .
+
+<#observes>  a                   oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "observes" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  ems:observes ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Something observed and measured about a resource (EMS). The ems:observes object will typically be of type ems:Measure, but it MAY be of any type (Core), (Core Links). When the resource is of type ems:Measure, that resource SHOULD contain an ems:Metric predicate whose object is of class pm:Metric (either directly or indirectly)."^^rdf:XMLLiteral .
+
+<#identifier>  a                 oslc:Property ;
+        oslc:name                "identifier" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:identifier ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "An unambiguous reference to the resource within a given context (Dublin Core). A unique identifier for a resource. Typically read-only and assigned by the service provider when a resource is created. Not typically intended for end-user display (OSLC Core - Common)."^^rdf:XMLLiteral .
+
+<#serviceProvider>  a            oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "serviceProvider" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc:serviceProvider ;
+        oslc:range               oslc:serviceProvider ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "A link to the resource’s OSLC Service Provider (OSLC Core - Common)."^^rdf:XMLLiteral .
+
+<#instanceShape>  a              oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "instanceShape" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc:instanceShape ;
+        oslc:range               oslc:ResourceShape ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "A link to the resource’s OSLC Resource Shape that describes the possible properties, occurrence, value types, allowed values and labels. This shape information is useful in displaying the subject resource as well as guiding clients in performing modifications (OSLC Core - Common)."^^rdf:XMLLiteral .
+
+<#mobilityEnabled>  a            oslc:Property ;
+        oslc:Representation      oslc:Inline ;
+        oslc:name                "mobilityEnabled" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  pm:mobilityEnabled ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:boolean ;
+        dcterms:description      "An indication about whether the resource, for example a virtual computer system, can move about dynamically."^^rdf:XMLLiteral .
+
+<#availabilityStatus>
+        a                        oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "availabilityStatus" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  pm:availabilityStatus ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "An indication of availability. If any value is present, then at least one of them MUST be from the list of URIs defined below. Additional values MAY be present from other namespaces, e.g. to provide more detailed product-specific status. All values present SHOULD be semantically compatible."^^rdf:XMLLiteral .
+
+<#monitoringAgent>  a            oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "monitoringAgent" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  pm:monitoringAgent ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Software that monitors a resource’s availability, performance, capacity, or utilization. Typically refers to a resource with type foaf:Agent, but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#tbProperties>  a     oslc:ResourceShape ;
+        oslc:describes  pm:Properties ;
+        oslc:property   <#availabilityStatus> , <#tableReorganizationNeeded> , <#mobilityEnabled> , <#monitoringAgent> , <#disk> , <#process> ;
+        dcterms:title   "Properties" .
+
+<#created>  a                    oslc:Property ;
+        oslc:name                "created" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:created ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:dateTime ;
+        dcterms:description      "Timestamp of resource creation (Dublin Core)"^^rdf:XMLLiteral .
+
+<#isPartOf>  a                   oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "isPartOf" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  dcterms:isPartOf ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "A related resource in which the described resource is physically or logically included (Dublin Core). The related resource typically has one or more of the following types, although it MAY be of any type(s): crtv:Process, crtv:StorageVolume, crtv:ComputerSystem, crtv:SoftwareServer, crtv:Database, crtv:SoftwareModule, crtv:ResourcePool, foaf:Agent."^^rdf:XMLLiteral .
+
+<#description>  a                oslc:Property ;
+        oslc:name                "description" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:description ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "An account of the resource (Dublin Core). The value SHOULD be represented as rich text in XHTML syntax, and SHOULD include only content that is valid and suitable inside an XHTML <div> element (OSLC Core - Common)."^^rdf:XMLLiteral .
+
+<#type>  a                       oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "type" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  rdf:type ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The resource type URIs (RDF)."^^rdf:XMLLiteral .
+
+<#title>  a                      oslc:Property ;
+        oslc:name                "title" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:title ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "A name given to the resource (reference: Dublin Core). The title of the resource represented as rich text in XHTML content. Its value SHOULD include only content that is valid inside an XHTML <span> element (OSLC Core - Common)."^^rdf:XMLLiteral .
+
+<#date>  a                       oslc:Property ;
+        oslc:name                "date" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:date ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:dateTime ;
+        dcterms:description      "The time at which the record was collected (Dublin Core). Performance Monitoring service providers MUST provide an explicit time zone facet value (Performance Monitoring). This requirement is necessary to avoid differences in interpretation between servers and clients in different time zones; it is functionally equivalent to using the dateTimeStamp datatype from XML Schema 1.1, but avoids any side effects on SPARQL queries."^^rdf:XMLLiteral .
+
+<#disk>  a                       oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "disk" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  pm:disk ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "A disk attached, for example, to a computer system. Typically refers to a resource with type crtv:StorageVolume, but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#process>  a                    oslc:Property ;
+        oslc:Representation      oslc:Either ;
+        oslc:name                "process" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  pm:process ;
+        oslc:readOnly            true ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "A process running, for example, in a computer system. Typically refers to a resource with type crtv:Process, but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#tbPerformanceMonitoringRecord>
+        a               oslc:ResourceShape ;
+        oslc:describes  pm:PerformanceMonitoringRecord ;
+        oslc:property   <#instanceShape> , <#modified> , <#type> , <#created> , <#title> , <#identifier> , <#observes> , <#serviceProvider> , <#description> , <#date> , <#isPartOf> ;
+        dcterms:title   "Performance Monitoring Record" .
+
+<#modified>  a                   oslc:Property ;
+        oslc:name                "modified" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:modified ;
+        oslc:readOnly            true ;
+        oslc:valueType           xsd:dateTime ;
+        dcterms:description      "Date on which the resource was changed (Dublin Core). Timestamp of latest resource modification (OSLC Core - Common)."^^rdf:XMLLiteral .
