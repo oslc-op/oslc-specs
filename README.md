@@ -1,4 +1,4 @@
-# README
+# OSLC Open Project specifications
 
 [![CircleCI](https://circleci.com/gh/oasis-tcs/oslc-core.svg?style=svg)](https://circleci.com/gh/oasis-tcs/oslc-core)
 [![Discourse status](https://img.shields.io/discourse/https/meta.discourse.org/status.svg)](https://forum.open-services.net/)
