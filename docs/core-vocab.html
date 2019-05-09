@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OSLC Core Version 3.0. Part 7: Vocabulary</title>
+<meta charset='utf-8' />
+<link rel="stylesheet" type="text/css" href="../styles/oslc-styles.css" />
+<link rel="stylesheet" type="text/css" href="../styles/table-styles.css" />
+<link rel="stylesheet" type="text/css" href="../styles/definition-styles.css" />
+<script    src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script  class='remove' >
+    var respecConfig = {
+    // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN). If in doubt use WD.
+    // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
+    specStatus : "CSPRD",
+    // if there a publicly available Editor's Draft, this is the link
+    //edDraftURI: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/core-vocab.html",
+    thisVersion: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part7-core-vocabulary/oslc-core-v3.0-csprd03-part7-core-vocabulary.html",
+    prevVersion: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/cs01/part7-core-vocabulary/oslc-core-v3.0-cs01-part7-core-vocabulary.html",
+    latestVersion: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
+
+    // Only include h1 and h2 level
+    maxTocLevel: 2,
+
+        // the specification's short name, as in http://oasis-open.org/
+        shortName : "oslc-core",
+
+      // the document's citation label
+      citationLabel: "OSLC-CoreVocab-3.0",
+
+      // OSLC version number for the spec, and the revision level of the document within its stage
+      revision: "03",
+
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+        subtitle   :  "Core Vocabulary",
+
+        // if you wish the publication date to be other than the last modification, set this
+        publishDate:  "2018-05-31",
+
+        // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+        // and its maturity status
+        // previousPublishDate:  "1977-03-15",
+        // previousMaturity:  "WD",
+
+
+        // if this is a LCWD, uncomment and set the end of its review period
+        // lcEnd: "2009-08-05",
+
+        // chairs, 1 or many
+    chairs : [ {
+      name : "Jim Amsden",
+      mailto : "jamsden@us.ibm.com",
+      company: "IBM",
+      companyURL: "http://www.ibm.com/"
+    }, {
+      name : "Martin Sarabura",
+      mailto: "msarabura@ptc.com",
+      company: "PTC",
+      companyURL: "http://www.ptc.com"
+    } ],
+    editors : [ {
+      name : "Jim Amsden",
+      mailto : "jamsden@us.ibm.com",
+      company: "IBM",
+      companyURL: "http://www.ibm.com/"
+    } ],
+
+    wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+    wgShortName : "oslc-core",
+    wgURI : "https://www.oasis-open.org/committees/oslc-core/",
+    wgPublicList : "oslc-core-comments",
+
+    namespaces : [ {
+            href : "http://open-services.net/ns/core#",
+            prefix : "oslc"
+    } ],
+
+    additionalArtifacts : [
+      { title: "OSLC Core Version 3.0. Part 1: Overview", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part1-overview/oslc-core-v3.0-csprd03-part1-overview.html" },
+      { title: "OSLC Core Version 3.0. Part 2: Discovery", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part2-discovery/oslc-core-v3.0-csprd03-part2-discovery.html" },
+      { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html" },
+      { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part4-delegated-dialogs/oslc-core-v3.0-csprd03-part4-delegated-dialogs.html" },
+      { title: "OSLC Core Version 3.0. Part 5: Attachments", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part5-attachments/oslc-core-v3.0-csprd03-part5-attachments.html" },
+      { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part6-resource-shape/oslc-core-v3.0-csprd03-part6-resource-shape.html" },
+      { title: "OSLC Core Version 3.0. Part 7: Vocabulary (this document)", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part7-core-vocabulary/oslc-core-v3.0-csprd03-part7-core-vocabulary.html" }
+    ],
+
+    relatedWork : [
+         {title: "OSLC Core Version 3.0: Link Guidance", href: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/link-guidance.html"}
+    ],
+
+        localBiblio : {
+            "OSLCCore2" : {
+                title:    "OSLC Core 2.0",
+                href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+                authors:  ["S. Speicher", "D. Johnson"],
+                status:   "Finalized",
+                publisher:  "http://open-services.net",
+            },
+            "OSLCCore3" : {
+                title : "OSLC Core 3.0",
+                href : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+                authors : [ "Steve Speicher" ],
+                publisher : "OASIS",
+            },
+            "ResourceShapes" : {
+                title : "OSLC Resource Shape 3.0",
+                href : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part6-resource-shape.html",
+                authors : [ "Arthur Ryman", "Jim Amsden" ],
+                publisher : "OASIS",
+            },
+            "SysML" : {
+                title : "System Modeling Language",
+                href : "http://www.omg.org/spec/SysML/",
+                publisher : "OMG",
+            },
+            "LinkGuidance": {
+                title : "OSLC Link Guidance 3.0",
+                href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/link-guidance.html",
+                authors : [ "Steve Speicher", "Jim Amsden" ],
+                publisher : "OASIS",
+            },
+          "SHACL" : {
+              title:    "Shapes Constraint Language (SHACL)",
+              href:     "https://w3c.github.io/data-shapes/shacl/",
+              authors:  ["Holger Knublauch", "Arthur Ryman"],
+              status:   "Draft",
+              publisher:  "http://www.w3.org/",
+          }
+        }
+    };
+</script>
+<style type="text/css">
+table, thead, tr, td {
+    padding: 5px;
+    border-spacing: 0px;
+    border-collapse: collapse;
+}
+
+td {
+    min-width: 100px;
+}
+
+.normalText {
+    color: black;
+    font-family: inherit;
+    font-size: 100%;
+    font-weight: normal;
+}
+
+code {
+    font-weight:bold;
+}
+
+.rfc2119 {
+    font-weight:bold;
+}
+
+dd {
+    padding-top: 5px;
+    padding-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+    <section id='abstract'>Core Vocabulary defines the OSLC Core RDF vocabulary terms and resources, that have broad applicability across various domains.</section>
+
+  <section id='toc'></section>
+  <hr />
+  <section id='sotd'></section>
+
+    <section id='intro' class='informative'>
+        <h2>Introduction</h2>
+        <p>Various resources and properties may be so commonly used or apply so broadly that it makes sense to define them in one place so they can be easily reused.  Some common examples are short names or labels, error messages, discussion threads, traceability/impacts relationship behavior or annotating other vocabulary terms.</p>
+
+    <section id="terms">
+        <h1>Terminology</h1>
+        <p>Terminology uses and extends the terminology and capabilities of OSLC Core Overview [[!OSLCCore3]], W3C Linked Data Platform [[!LDP]], W3C's
+            Architecture of the World Wide Web [[WEBARCH]],  Hyper-text
+            Transfer Protocol [[!HTTP11]].</p>
+        <dl>
+            <dt class='loc-heading'><dfn>Archived Resource</dfn></dt>
+            <dd>A resource in which an explicit action has been performed to mark the resource as no longer active and may be removed from typical user interactions.  As a consequence, an archived resource should be considered immutable.</dd>
+        </dl>
+    </section>
+
+  <section id='references'><h3>References</h3></section>
+    <section id='conventions'></section>
+
+    </section>
+
+    <section id="motivation" class='informative'>
+        <h2>Motivation</h2>
+        <p>Most OSLC vocabularies and resource shape constraints on usages of those vocabularies are given in the various OSLC domain specifications. The motivation for these domain specifications is to define agreed upon, formalized vocabulary terms for key elements in the domain. Domain vocabularies are not intended to restrict what vocabularies servers actually use for those domains, or what domains they support. Rather vocabularies establish a common core of domain terms that reduce accidental variability and foster greater interchange and interoperability between tools that support and users that make use of domains. Servers are free to extend the domains and integrate across domains as required to realize their provided capabilities.</p>
+
+        <p>OSLC Core takes a similar approach for common terms that are used across most domains. The intent is to provide a foundation for building domains that again reduces unnecessary variability, and eliminates the need for the various domain specifications to redundantly define similar terms. The follow paragraphs describe the kinds of common terms defined by OSLC core in order to achieve the stated intent.</p>
+
+        <p><a title="">Archived Resource</a>s are typically found in large systems in which an immutable copy of the state of a resource at a given time is captured. The purpose may vary in that it could be simply a way to facilitate access to a backup or snapshot of a resource at a particular point in time.  Another use may be to indicate that a resource has been deleted, but is saved by the system for historical or legal reasons. Having a consistent way to indicate that a resource, or a set of them, has been archived helps when defining certain views of the resources or queries.
+        Archived Resources may be identified by having a property <code>oslc:archived</code>, with value <code>true</code>.</p>
+
+        <p>Many different kinds of applications have a way to provide comments or notes related to a given resource.  These take the form of a discussion, with a sequence of comments.  OSLC Core provide a common way for applications to easily add to a comment to a discussion thread or navigate a discussion thread.</p>
+
+        <p>Error responses from HTTP request often take the form of HTML pages intended for a human to read, even though these requests are often initiated from applications that don't have a human actively monitoring it.  OSLC Core defines a consistent way to request error responses of a certain format, and a prescribed interaction model that
+        helps clients better handle errors automatically.</p>
+
+        <p>Consider a user interface for a query builder that allows users to build queries about test cases. It is natural for the query builder to present the user with a list of the properties that apply to test cases that could be used in the query. Suppose the user wants to build a query that returns all the requirements that are validated by a test case. The query builder should describe the available properties from the point of view of the test case. This implies that the query builder should describe the inverse relation asserted by any triple that has the test case as an object. In this example, the query builder should describe assertions of the form {requirement <code>oslc_rm:validatedBy</code> test case} as {test case <code>validates</code> requirement}.</p>
+
+        <p>Some RDF properties express relations or links between subject and object artifacts. If a change in state of subject and/or object of a triple may result in the assertion becoming invalid, the link may be seen to represent a dependency. OSLC Core provides property <code>oslc:impactType</code> as a means of defining the dependency represented by an RDF property.
+        </p>
+    </section>
+
+    <section id='resourceShapes'>
+        <h2>Resource Shape</h2>
+        <p>The shape of an RDF resource is a description of the set of triples it is expected to contain and the integrity constraints those triples are required to satisfy. Applications of shapes include validating RDF data, documenting RDF APIs, and providing meta-data to tools, such as form and query builders, that handle RDF data. OSLC Core uses shapes to:
+        <ul>
+            <li>Define specific vocabulary constraints including allowed values, max size, cardinality, representation in RDF specifications and if the property is read only.</li>
+            <ls>Specify the properties required for resource creation.</ls>
+            <li>Specify what servers all allow for prefilling delegated dialogs.</li>
+            <li>Describe the results of query operations.</li>
+        </ul></p>
+        <p>Constraints on OSLC Core and Domain resources SHOULD be described using [[!ResourceShapes]] which is included as part of the OSLC Core multi-part specifications. Servers MAY use other constraint languages such as [[SHACL]] to define resource constraints.</p>
+    </section>
+
+    <section id="enumerations" class="informative">
+        <h2>Defining Enumerations</h2>
+        <p>Some property values are are characterized by a limited set of enumerated values. The type for these property values is called an enumeration in many modeling and programming languages, while the values are called enumeration literals. RDF does not define a specific way of defining enumerated types and enumeration literals. As a result, different vocabularies may take different, but equally valid approaches. In order to foster interoperability and integration, OSLC Core provides a recommended approach for defining enumerated types and enumeration literals. This approach is used in defining the OSLC Core vocabulary terms.</p>
+
+        <p>Enumerations in an OSLC vocabulary should be defined as an RDF class. Enumeration literals are the URIs of individuals of that class. For example, consider an enumeration called "Color" that has enumeration literals <code>{red, yellow, green, blue}</code> (using Java notation). Color would be defined as an RDF class and the enumeration literals would be individuals of that class. A <code>color</code> property is defined and then used to assert that the color of myCar is blue.</p>
+        <pre class="example">
+# Color enumeration
+Color
+    a rdfs:Class ;
+    rdfs:label "Color" ;
+    rdfs:comment "The class of possible color values." .
+
+# Color enumeration literals
+red
+    a Color ;
+    rdfs:label "red" .
+
+yellow
+    a Color ;
+    rdfs:label "yellow" .
+
+green
+    a Color ;
+    rdfs:label "green" .
+
+blue
+    a Color ;
+    rdfs:label "blue" .
+
+# A Color property
+color
+    a rdf:Property ;
+    rdfs:label "color" ;
+    rdfs:comment "Used to specify the color of a resource".
+
+# Asserting the color of a resource
+myCar color blue.
+        </pre>
+        <p>Enumerations can be open or closed. Open enumerations allow additional enumeration literals to be added as needed. Closed enumerations have a fixed set of enumeration literals that is not intended to be extended. Resource shapes can be used to constrain enumerations to a specific set of values. Notice in the example above that the color property did not specify its rdfs:range. This keeps the enumeration completely open to any set of individuals. OSLC prefers to use resource shapes to constrain resources for particular usages, leaving them open for extension for other, possibly unanticipated usages.</p>
+
+        <p>A shape can be used to constrain the Color enumeration for a specific purpose. For example, the color of lights in a traffic light should be constrained to exactly red, yellow and green.</p>
+        <pre class="example">
+# Create a constraint on Color for traffic lights
+TrafficLightConstraint
+    a oslc:ResourceShape ;
+    oslc:describes fhwa:TrafficLight ;
+    determs:title "Establish constraints for traffic light colors" ;
+    oslc:property colorConstraint .
+
+colorConstraint
+    a oslc:Property ;
+    oslc:name "color" ;
+    dcterms:description "The colors for a traffic light as specified by FHWA."
+    oslc:propertyDefinition color ;
+    oslc:occurs oslc:Exactly-one ;
+    oslc:range Color ;
+    oslc:allowValue red, yellow, green ;
+    oslc:readOnly "false" ;
+    oslc:representation oslc:Reference ;
+    oslc:valueType oslc:Resource .
+        </pre>
+    <p>TrafficLightConstraint defines a constraint associated with the vocabulary term <code>fhwa:TrafficLight</code>. The constraint has one property, colorConstraint whose <code>oslc:propertyDefinition</code> is the color RDF property. The <code>oslc:range</code> for the colorConstraint is set to Color, meaning the value of the applicable property is constrained to be of <code>rdf:type</code> Color. The <code>oslc:allowedValue</code> property further constrains the values to be red, yelow, or green. If the <code>oslc:allowedValue</code> were not specified, then the TrafficLightConstraint would allow the enumeration to be open.</p>
+
+    <p>A completely different shape constraint could be used for colors that represent the status of a risk mitigation in a software development project.</p>
+    </section>
+
+     <section id="commonprops">
+        <h2>Common Properties</h2>
+        <p>Unlike the rest of the Core specification, these properties change and grow as new common properties
+            are added by the Core TC. The properties that we list here are available for use in OSLC domain specifications
+            when defining OSLC resources, but this does not mean that they are required to be in OSLC resources.
+            OSLC domain specifications decide which properties are allowed and required for resources needed to realize their use cases. The OSLC common properties include properties defined in other standard vocabularies including:
+            <ul>
+                <li><a href="http://xmlns.com/foaf/spec/">Friend of a Friend (FOAF)</a></li>
+                <li><a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core (dcterms)</a></li>
+                <li><a href="https://www.w3.org/TR/2004/REC-rdf-schema-20040210/">RDF Schema (rdfs)</a></li>
+            </ul>
+            </p>
+
+        <section id="anyProperties" class="shapes">
+            <h2>Properties on Any Resource</h2>
+         <div title='Common Properties'
+            data-include='./shapes/CommonProperties-shape.ttl#CommonProperties'
+            data-oninclude='shapeToSpec'
+            data-include-sync='true'
+            data-include-replace='true'
+            data-include-format='html'>
+         </div>
+         </section>
+
+        <section id="personProperties" class="shapes">
+            <h2>Person Properties</h2>
+         <div title='Person Properties'
+            data-include='./shapes/CommonProperties-shape.ttl#Person'
+            data-oninclude='shapeToSpec'
+            data-include-sync='true'
+            data-include-replace='true'
+            data-include-format='html'>
+         </div>
+         </section>
+
+        <section id="comPropImplConform">
+            <h2>Implementation Conformance</h2>
+
+            <section id="nsRule"><h2 class="normalText">
+            Changes to the OSLC Core Vocabulary MUST be approved by the OASIS OSLC Core TC. The OSLC Core Vocabulary is assigned the namespace URI of the <code>http://open-services.net/ns/core#</code>.
+            </h2></section>
+
+            <section id="nsRuleExtend"><h2 class="normalText">
+            Domain TCs and other extensions MUST contribute their vocabulary terms in a namespace which is assigned to them as an authority.
+            </h2></section>
+
+            <section id="vocabReuse"><h2 class="normalText">
+            OSLC Core, domain and other extensions SHOULD reuse existing vocabulary terms from stable vocabularies such as [[!DC-TERMS]], RDF [[!rdf11-concepts]], RDF Schema [[!rdf-schema]],
+            [[!FOAF]], [[skos-reference]] and OSLC.  New vocabulary terms should only be created when there is no clear existing choice available. See the [[!LDP]] <a href="http://www.w3.org/TR/ldp/#ldprs-gen-reusevocabsuchas">similar clause on reuse</a>.
+            </h2></section>
+
+            <p>See <a href="#rdfvocab" class="sectionRef"></a> for details on common property terms.</p>
+        </section>
+    </section>
+
+    <section id="discussion">
+        <h2>Discussion</h2>
+
+        <section id="shapeDiscussion">
+            <h2>Shape: Discussion</h2>
+            <p>It is common to collect a series of comments on a lifecycle resource, often referred to as a discussion. For example: tasks, bug reports, requirements, assets and so on, are often collected across various types of resources such as project. A project might reflect the planning of work to deliver a product that realizes the requirements as validated through test cases and bug reports. Discussions allow users to collaborate with each other for more efficient and effective delivery. This Discussion resource definition provides a minimal shape describing the needed properties.</p>
+
+            <div title='RDF Shape for Discussion'
+                data-include='shapes/Discussion-shape.ttl'
+                data-oninclude='shapeToSpec'
+                data-include-sync='true'
+                data-include-replace='true'
+                data-include-format='html'></div>
+        </section>
+
+        <section id="shapeComment">
+            <h2>Shape: Comment</h2>
+            <p>Used in conjunction with <a href="#shapeDiscussion" title="Shape: Discussion">Shape: Discussion</a> to provide a minimal resource definition for a collection
+            of comments.</p>
+
+            <div title='RDF Shape for Comment'
+                data-include='shapes/Comment-shape.ttl'
+                data-oninclude='shapeToSpec'
+                data-include-sync='true'
+                data-include-replace='true'
+                data-include-format='html'></div>
+        </section>
+
+        <p>See <a href="#rdfvocab" class="sectionRef"></a> for details on discussion property terms.</p>
+
+    </section>
+
+    <section id="errorresponses">
+        <h2>Errors</h2>
+
+        <section id="errImplConform">
+            <h2>Implementation Conformance</h2>
+            <section id="errUseful"><h2 class="normalText">When an OSLC Server incurs an error, it is RECOMMENDED that useful information  be provided to clients in the body of the HTTP response.</h2>
+            </section>
+
+            <section id="errMsg"><h2 class="normalText">OSLC Servers SHOULD use the <a href="#shapeError">Error resource</a> defined below as the basis for forming error responses.</h2>
+            </section>
+
+            <section id="errFormat"><h2 class="normalText">OSLC Servers SHOULD return an <a href="#shapeError">Error resource</a> using the same representation format requested by the client via the HTTP <code>Accept</code> request header. [[!HTTP11]]</h2>
+            </section>
+
+            <section id="errFormatStatusCode"><h2 class="normalText">OSLC Clients SHOULD treat the <code>oslc:statusCode</code> as a String that starts with digits, but may contain non-digit text.</h2>
+            </section>
+        </section>
+
+        <section id="shapeError">
+            <h2>Shape: Error</h2>
+            <p>Used when servers may need a consistent shape to communicate error messages.</p>
+
+            <div title='RDF Shape for Error'
+                data-include='shapes/Error-shape.ttl'
+                data-oninclude='shapeToSpec'
+                data-include-sync='true'
+                data-include-replace='true'
+                data-include-format='html'></div>
+
+        </section>
+
+        <section id="shapeExtendedError">
+            <h2>Shape: ExtendedError</h2>
+            <p>Additional details about an error the server had when processing the request.</p>
+
+            <div title='RDF Shape for ExtendedError'
+                data-include='shapes/ExtendedError-shape.ttl'
+                data-oninclude='shapeToSpec'
+                data-include-sync='true'
+                data-include-replace='true'
+                data-include-format='html'></div>
+        <p>See <a href="#rdfvocab" class="sectionRef"></a> for details on error property terms.</p>
+
+        </section>
+
+        <section id="responseInfo">
+            <h2>Shape: ResponseInfo</h2>
+            <p>Resource representations returned via [[!OSLCCore2]] Resource Paging MUST include a resource of type oslc:ResponseInfo, as defined in this section. A response info resource representation describes information about a paged HTTP response body in which it appears.</p>
+
+                <div title='RDF Shape for ResponseInfo'
+                    data-include='shapes/ResponseInfo-shape.ttl'
+                    data-oninclude='shapeToSpec'
+                    data-include-sync='true'
+                    data-include-replace='true'
+                    data-include-format='html'></div>
+
+        </section>
+    </section>
+
+    <section>
+        <h2>Terms for describing vocabularies</h2>
+
+        <section id="invLabels">
+            <h2>Inverse Labels</h2>
+
+            <p>The <a href="http://www.w3.org/TR/rdf-schema/">W3C RDF Schema vocabulary</a> defines the vocabulary annotation property <code>rdfs:label</code>. This property is intended to provide a human-readable description for a resource’s name. It is often used to provide a label for RDF properties.
+            [[LinkGuidance]] discourages the creation of inverse predicates. However, there is still a need for a property, like rdfs:label, to specify an inverse label for a predicate.</p>
+
+            <p>For example, consider the OSLC Requirements Management (RM) property oslc_rm:validatedBy. When used as the predicate of a triple, this property is used to assert that the subject resource, e.g. a Requirement, is validated by the object resource, e.g. a TestCase. The rdfs:label for this property is “validatedBy”.</p>
+
+            <p>Now consider the user interface of a query builder that allows users to build queries about TestCases. It is natural for the query builder to present the user with a list of the properties that apply to TestCases. Suppose the user wants to build a query that returns all the Requirements that are validated by a TestCase. The query builder should describe the available properties from the point of view of the TestCase. This implies that the query builder should describe the inverse relation asserted by any triple that has the TestCase as an object. In our example, the query builder should describe oslc_rm:validatedBy as “validates”.</p>
+
+            <p>The oslc:inverseLabel property provides a human-readable label for the inverse of the subject property.</p>
+
+            <p>For example, the following triple (in Turtle notation) would be added to the OSLC RM vocabulary:</p>
+
+            <pre class="example">
+            oslc_rm:validatedBy oslc:inverseLabel "validates".
+            </pre>
+
+            <p>It should be noted that the use of inverse labels is independent of the existence of explicit RDF inverse properties. However, if an inverse property is defined by some vocabulary, then a consistent label should be used in order to avoid confusion. In general, it is good practice to avoid the creation of inverse properties since it creates redundant information and complicates SPARQL queries. Instead, a single property should be wherever possible and it should be given an inverse label in order to describe the property from the perspective of the object.</p>
+
+            <p>For example, the <a href="http://open-services.net/bin/view/Main/QmVocabulary">OSLC Quality Management (QM) vocabulary</a> defines two properties that are approximately inverse to oslc_rm:validatedBy. These are oslc_qm:validatesRequirement and oslc_qm:validatesRequirementCollection. In this case the choice of inverse label “validates” for oslc_rm:validatedBy is consistent with the actual labels of the inverse properties, namely “validatesRequirement” and “validatesRequirementCollection”.</p>
+        </section>
+
+        <section id='traceabilityAndImpact'>
+            <h2>Traceability and Impact type</h2>
+
+            <p>Some RDF properties express dependency relations between artifacts, and it is often very valuable to trace the impact of a change in an artifact to those artifacts that depend on it directly or indirectly. The concept of dependency is very general. For example, the concept of trace relations is described in SysML: “A generic trace requirement relationship provides a general-purpose relationship between a requirement and any other model element. The semantics of trace include no real constraints and therefore are quite weak.”</p>
+
+            <p>As a general guideline, if any assertion involving a given predicate may become invalid if the state of either its subject or object resources change, then we may legitimately regard that predicate as expressing a dependency relation, in which case it may be useful to explicitly describe the nature of the dependency.</p>
+
+            <p>An assertion describes a link between subject and object resources whose name is the property or predicate of the assertion. A dependency relationship may be in the same direction as the link, the opposite direction, both directions, or the link may not represent any dependency whose impact might need to be assessed.</p>
+
+            <p>For example, in assertions such as {requirement validatedBy testcase}, it may be important to assess the impact of a change in the requirement or a change in the testcase. Typically test cases are updated to reflect changes in requirements in order perform the correct validation. So in this case, property validatedBy would introduce impact that follows the link, from the subject requirement to the object testcase. However, if a team is doing test-driven development, they may treat test cases as formal, executable specifications of requirements and the requirement is simply an informal description of the test case. In this case, the team might consider the impact to be opposite of the link, from the testcase to the requirement.</p>
+
+            <p>The property <code>oslc:impactType</code> asserts that the subject property is a dependency relation and gives
+            the direction of impact. The resources <code>oslc:FollowsLink</code> and <code>oslc:OppositeLink</code> identify
+            whether the impact follows the direction of the assertion (subject to object), or the opposite direction (object to subject). <code>oslc:SymmetricImpact</code> describes a symmetric dependency
+            relation in which the property represents a dependency from both subject to object and object to subject. <code>oslc:NoImpact</code> indicates the predicate does not represent any dependency between the subject and object resources. </p>
+
+            <p>For example, the following triple (in Turtle notation) would be added a vocabulary to indicate test cases are dependent on requirements:</p>
+
+            <code><pre class='example'>ex:validatedBy oslc:impactType oslc:FollowsLink .</pre></code>
+
+            <p>The same dependency could also be described from the perspective of the test case. In this case, the dependency is opposite of the validatesRequirement predicate:</p>
+
+            <code><pre class='example'>ex:validatesRequirement oslc:impactType oslc:OppositeImpact .
+ex:validatesRequirementCollection oslc:impactType oslc:OppositeImpact.</pre></code>
+        </section>
+    </section>
+
+    <section>
+        <h2>Discovery</h2>
+        <p>Vocabulary terms are discovered via published vocabulary documents at the OSLC Core namespace and shapes
+        at advertised URLs.</p>
+    </section>
+
+    <section id="rdfvocab">
+        <h2>Terms</h2>
+
+            <div title='RDF Vocabulary for OSLC Core Common'
+                data-include='vocab/core-vocab.ttl'
+                data-oninclude='vocabToSpec'
+                data-include-sync='true'
+                data-include-replace='true'
+                data-include-format='html'></div>
+
+    </section>
+
+<section class="appendix informative" id="history">
+<h2>Change History</h2>
+<table border=1 cellspacing=0 cellpadding=0>
+ <tr>
+  <td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><b>Revision</b></td>
+  <td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Date</b></td>
+  <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Editor</b></td>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Changes Made</b></td>
+ </tr>
+ <tr>
+  <td>01</td>
+  <td>04 April 2017</td>
+  <td>Jim Amsden</td>
+  <td>CS was approved and published.</td>
+ </tr>
+ <tr>
+  <td>03</td>
+  <td>31 May 2018</td>
+  <td>Jim Amsden</td>
+  <td>Added oslc:error common property to associate oslc:Error resources with any resource.<br>
+Added missing ResponseInfo resource.<br>
+Changed prefix acc to oslc_acc for consistency.<br>
+Added oslc:queryable property for OSLC Query Capability.<br>
+Added oslc:postBody property to ResponseInfo for POST method paging.<br>
+Added dcterms:references as a common property.<br>
+Added the created, references, identifier properties to oslc:Error.
+</td>
+ </tr>
+</table>
+
+</section>
+
+</body>
+</html>

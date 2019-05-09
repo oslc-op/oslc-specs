@@ -1,0 +1,49 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix oslc: <http://open-services.net/ns/core#> .
+
+@base <http://open-services.net/ns/core/shapes/3.0/OAuthConfiguration-shape.ttl> .
+
+
+<#OAuthConfiguration> a oslc:ResourceShape ;
+    dcterms:title "OAuth Configuration" ;
+    dcterms:description "Service Providers that support OAuth Authentication SHOULD provide a way for clients to automatically discover the three OAuth URIs necessary to act as an OAuth Consumer."^^rdf:XMLLiteral ;
+    oslc:describes oslc:OAuthConfiguration ;
+    oslc:property
+        <#oslc-oauthRequestTokenURI>,
+        <#oslc-authorizationURI>,
+        <#oslc-oauthAccessTokenURI>
+.
+
+<#oslc-oauthRequestTokenURI> a oslc:Property ;
+	oslc:name "oauthRequestTokenURI" ;
+	oslc:propertyDefinition oslc:oauthRequestTokenURI ;
+	oslc:occurs oslc:Exactly-one;
+	dcterms:description "URI for obtaining OAuth request token."^^rdf:XMLLiteral ;
+	oslc:valueType oslc:Resource ;
+	oslc:representation oslc:Reference ;
+	oslc:readOnly true
+.
+
+<#oslc-authorizationURI> a oslc:Property ;
+	oslc:name "authorizationURI" ;
+	oslc:propertyDefinition oslc:authorizationURI ;
+	oslc:occurs oslc:Exactly-one ;
+	dcterms:description "URI for obtaining OAuth authorization."^^rdf:XMLLiteral ;
+	oslc:valueType oslc:Resource ;
+	oslc:representation oslc:Reference ;
+	oslc:readOnly true
+.
+
+<#oslc-oauthAccessTokenURI> a oslc:Property ;
+	oslc:name "oauthAccessTokenURI" ;
+	oslc:propertyDefinition oslc:oauthAccessTokenURI ;
+	oslc:occurs oslc:Exactly-one ;
+	dcterms:description "URI for obtaining OAuth access token."^^rdf:XMLLiteral ;
+	oslc:valueType oslc:Resource ;
+	oslc:representation oslc:Reference ;
+	oslc:readOnly true
+.
+

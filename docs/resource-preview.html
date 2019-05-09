@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'/>
+<title>OSLC Core Version 3.0. Part 3: Resource Preview</title>
+<link rel="stylesheet" type="text/css" href="../styles/oslc-styles.css" />
+<link rel="stylesheet" type="text/css" href="../styles/table-styles.css" />
+<link rel="stylesheet" type="text/css" href="../styles/definition-styles.css" />
+<script	src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
+<script class='remove'>
+  var respecConfig = {
+    // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN). If in doubt use WD.
+    // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
+    specStatus: "CSPRD",
+    shortName: "resource-preview",
+    conformanceLabelPrefix: "RP",
+
+    // the document's citation label
+    citationLabel: "OSLC-ResourcePreview-3.0",
+
+    // OSLC version number for the spec, and the revision level of the document within its stage
+    revision: "03",
+
+    // previousURI: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+    //edDraftURI: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-preview.html",
+    thisVersion: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html",
+    prevVersion: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/cs01/part3-resource-preview/oslc-core-v3.0-cs01-part3-resource-preview.html",
+   latestVersion: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part3-resource-preview.html",
+
+    // if your specification has a subtitle that goes below the main
+    // formal title, define it here
+    // subtitle   :  "Committee Specification Draft 01",
+
+    // if you wish the publication date to be other than the last modification, set this
+    publishDate:  "2018-05-31",
+
+    // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+    // and its maturity status
+    // previousPublishDate:  "1977-03-15",
+    // previousMaturity:  "WD",
+
+    // if this is a LCWD, uncomment and set the end of its review period
+    // lcEnd: "2009-08-05",
+
+    // includePermalinks: true,
+
+    chairs : [ {
+      name : "Jim Amsden",
+      mailto : "jamsden@us.ibm.com",
+      company: "IBM",
+      companyURL: "http://www.ibm.com/"
+    }, {
+      name : "Martin Sarabura",
+      mailto: "msarabura@ptc.com",
+      company: "PTC",
+      companyURL: "http://www.ptc.com"
+    } ],
+    editors : [ {
+      name : "Jim Amsden",
+      mailto : "jamsden@us.ibm.com",
+      company: "IBM",
+      companyURL: "http://www.ibm.com/"
+    } ],
+
+    maxTocLevel: 2,
+
+    // name of the WG
+    wg: "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+    wgShortName : "oslc-core",
+    // URI of the public WG page
+    wgURI: "https://www.oasis-open.org/committees/oslc-core/",
+    wgPublicList : "oslc-core-comments",
+
+	  // Namespaces defined by this TC
+	  namespaces : [
+      { href: "http://open-services.net/ns/core#", prefix: "oslc-core"}
+    ],
+
+    // name (without the @w3c.org) of the public mailing to which comments are due
+    wgPublicList: "oslc-core-comment",
+
+    // Other parts of multi-part spec
+    additionalArtifacts : [
+      { title: "OSLC Core Version 3.0. Part 1: Overview", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part1-overview/oslc-core-v3.0-csprd03-part1-overview.html" },
+      { title: "OSLC Core Version 3.0. Part 2: Discovery", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part2-discovery/oslc-core-v3.0-csprd03-part2-discovery.html" },
+      { title: "OSLC Core Version 3.0. Part 3: Resource Preview (this document)", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html" },
+      { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part4-delegated-dialogs/oslc-core-v3.0-csprd03-part4-delegated-dialogs.html" },
+      { title: "OSLC Core Version 3.0. Part 5: Attachments", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part5-attachments/oslc-core-v3.0-csprd03-part5-attachments.html" },
+      { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part6-resource-shape/oslc-core-v3.0-csprd03-part6-resource-shape.html" },
+      { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part7-core-vocabulary/oslc-core-v3.0-csprd03-part7-core-vocabulary.html" }
+    ],
+
+    relatedWork : [
+        {title: "OSLC Core Version 3.0: Link Guidance", href: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/link-guidance.html"}
+    ],
+
+
+    localBiblio:  {
+        "OSLCCore3" : {
+                title : "OSLC Core 3.0",
+                href : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+                authors : [ "Steve Speicher" ],
+                publisher : "OASIS",
+        },
+        "OSLCUIPreview20": {
+            title:    "OSLC Core 2.0 - UI Preview",
+            href:     "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+            authors:  [ "S. Bosworth" ],
+            status:   "Finalized",
+            publisher:  "http://open-services.net"
+        },
+        "OSLCCoreVocab" : {
+                title : "OSLC Core Vocabulary",
+                href : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
+                authors : [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
+                status:   "Working Draft",
+                publisher : "OASIS",
+        },
+        "JSONSchema": {
+            title:    "JSON Schema",
+            href:     "http://tools.ietf.org/html/draft-zyp-json-schema-04",
+            authors:  [ "F. Galiegue", "K. Zyp" ],
+            status:   "Informational",
+            publisher:  "https://www.ietf.org"
+        }
+    },
+  };
+</script>
+<style type="text/css">
+table, thead, tr, td {
+    padding: 5px;
+    border-width: 1px;
+    border-spacing: 0px;
+    border-style: solid;
+    border-collapse: collapse;
+}
+
+td {
+    min-width: 100px;
+}
+
+.normalFont {
+    color: black;
+    font-family: inherit;
+    font-size: 100%;
+    font-weight: normal;
+}
+
+code {
+    font-weight:bold;
+}
+
+.rfc2119 {
+    font-weight:bold;
+}
+
+dd {
+    padding-top: 5px;
+    padding-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+<section id="abstract">Resource Preview defines a technique to get a minimal HTML representation of a
+    resource identified by a URL. Applications often use this capability to render or display links with more appropriate icons and labels, or display a preview when a user mouses over a link.</section>
+
+  <section id='toc'></section>
+  <hr />
+  <section id='sotd'></section>
+
+<section class="informative" id="introduction">
+
+<h2>Introduction</h2>
+
+<p>This specification describes how a client application can display links and
+    embed rich previews for resources from other applications. Links may have a
+    label and an icon, and previews are HTML markup provided by a server and displayed directly inside the client application.</p>
+
+<figure id="ex_preview">
+  <img src="images/preview-example.png" />
+  <figcaption>Preview for a Link</figcaption>
+</figure>
+
+<p>Previews often appear as a pop-up when a user mouses over a link as in
+    <a href="#ex_preview"></a>. However, a client may wish to display a preview differently depending on the kind of application, the size of the screen, and
+    the capabilities of the device. For example, a desktop application on a PC might handle previews differently than a mobile application running on a small
+    touchscreen.</p>
+
+<p>Servers can provide both small and large previews. A client might show a
+    small preview first, then if the user gestures, show additional details
+    from the large preview. Servers suggest sizes for previews, and previews
+    can ask to be resized after they are displayed.</p>
+
+<p>A client only needs to know the URI of a resource to display a link and a
+    preview. It doesn't need to know anything else about the resource. Clients
+    don't need to copy, synchronize, or cache any data.</p>
+
+<section id="terminology">
+<h2>Terminology</h2>
+
+<p>Terminology uses and extends the terminology and capabilities of OSLC Core Overview [[!OSLCCore3]], W3C Linked Data Platform [[!LDP]], W3C's Architecture of the World Wide Web [[WEBARCH]], and Hyper-text Transfer Protocol [[!HTTP11]].</p>
+
+<p>The following terms are used in discussions of previews:</p>
+
+<dl class="glossary">
+    <dt class="loc-heading">Compact resource</dt>
+    <dd>A resource describing how to display a link and preview for another,
+        associated resource.</dd>
+    <dt class="loc-heading">Preview</dt>
+    <dd>An HTML representation of a resource that can be embedded in another
+        user interface.</dd>
+</dl>
+</section>
+
+<section id='references'><h3>References</h3></section>
+<section id="conventions">
+
+<p>The namespace for OSLC Core is
+    <code>http://open-services.net/ns/core#</code>.</p>
+
+<p>Commonly used namespace prefixes:</p>
+<pre style="word-wrap: break-word; white-space: pre-wrap;">
+    @prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
+    @prefix oslc:    &lt;http://open-services.net/ns/core#&gt;.
+    @prefix rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+    @prefix xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt;.
+</pre>
+</section>
+
+
+</section>
+
+<section class='informative' id="motivation">
+<h2>Motivation</h2>
+
+<p>Applications often display links to related resources from other
+    applications. For example, a quality management application might show a
+    link to a related defect when displaying a test result. In some cases, the
+    quality management application only has a URI pointing to the defect. The application needs a way to display the link with an appropriate label and icon so testers find out the status of the defect without leaving the quality management application.</p>
+
+<p>Compact resources and resource preview provide these capabilities. Clients can
+    discover the link label and a resource icon given only the resource URI.
+    The client can then use the link label and icon as a means of displaying the link in a meaningful way. Previews allow users to see see information about related resources quickly without leaving the application they're in, even when the resources are from another server.</p>
+</section>
+
+<section class='informative' id="working_with_previews">
+<h2>Working with Previews</h2>
+
+<p>To enable previews of a resource, servers supply an associated Compact
+    resource describing the preview. The Compact resource can contain a link
+    label, icon, and small and/or large previews of the resource. Compact resources
+    always have a JSON representation [[!RFC4627]], but they can also have other
+    representations such as <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview#XML_Representation_Format">XML</a>, Turtle [[!turtle]] or JSON-LD [[!JSON-LD]]. Here is a simple example of a Compact resource:</p>
+
+<pre class="example" id="ex_compact" title="A Compact Resource">
+{
+    "title": "Screenshot of the problem",
+    "icon": "http://example.com/icons/attachment.jpg",
+    "smallPreview": {
+        "document": "http://example.com/bugs/324/screenshot?preview=small"
+    }
+}
+</pre>
+</div>
+
+<p>To display a link with a label or a preview of a resource, clients request
+    its Compact resource. The URI of the Compact resource is found through an
+    HTTP <code>Link</code> header [[!RFC5988]] in HTTP responses to the resource
+    URI.  Alternatively, a client can use a <code>Prefer</code> request header
+    in requests for the resource to ask for its Compact resource.  The server
+    can then inline the Compact resource directly in the response, saving an
+    HTTP request.</p>
+
+<p>The Compact resource may contain small and/or large previews. Each preview can
+    have size hints and a link to an HTML representation designed to be
+    embedded in other user interfaces. To display the preview, the client
+    creates an HTML <code>iframe</code> element in its user interface and sets
+    the <code>iframe</code> element's <code>src</code> to the preview document
+    URI. This sandboxes the preview from other content in the client
+    application and allows the preview to use its own stylesheets and
+    scripts.</p>
+
+<section class="informative" id="get_compact">
+<h2>Getting the Compact Resource</h2>
+
+<p>Clients can discover Compact resources in three ways:</p>
+
+<ol>
+    <li><a href="#xAcceptHeader">Discovering Compact Resources Using the HTTP Accept Header</a></li>
+    <li><a href="#linkHeader">Discovering Compact Resources Using the HTTP Link Header</a></li>
+    <li><a href="#prefer">Discovering Compact Resources Using the HTTP Prefer Header</a></li>
+</ol>
+
+  <p>The HTTP <code>Accept</code> header allows clients to access previews using the <code>application/x-oslc-compact+xml</code> MIME type extension to request the Compact resource representation for a URI instead of the content of the resource itself. This usage is considered deprecated and is included only to maintain compatibility with [[!OSLCUIPreview20]].</p>
+
+<p>The HTTP <code>Link</code> header allows servers to offer previews for any
+    resource, even binary resources with no RDF or JSON representations. To
+    discover previews using the <code>Link</code> header, a client typically
+    performs an HTTP HEAD or OPTIONS request on the resource URI. The response contains a
+    <code>Link</code> header with the URI of the Compact resource.  The
+    client then performs a GET request on the Compact URI to retrieve the
+    Compact resource.</p>
+
+<p>Clients might instead use the HTTP <code>Prefer</code> header to get the
+    Compact resource in a single HTTP request. If the client is confident
+    that the resource has a preview, it makes an HTTP GET request on the
+    resource URI using the <code>return=representation</code> preference
+    [[!RFC7240]] and an <code>include</code> parameter [[!LDP]] asking for the
+    Compact resource to be included in the response. The provider responds with
+    a minimal representation of the resource and the Compact resource in the
+    HTTP response body.</p>
+
+<section class="informative" id="linkHeader">
+<h2>Discovering Compact Resources Using the HTTP Accept Header</h2>
+  <p>[[!OSLCUIPreview20]] utilizes a MIME type extension, <code>application/x-oslc-compact+xml</code> to allow servers to use content negotiation with the HTTP <code>Accept</code> header to access the Compact representation of a resource instead of the content of the resource itself.
+
+<pre class="example" id="ex_get_compact_accept" title="Requesting the Compact Resource">
+GET /bugs/324/screenshot HTTP/1.1
+Host: example.com
+Accept: application/x-oslc-compact+xml
+</pre>
+
+  <p>This returns a Compact resource with <code>Content-Type: application/x-oslc-compact+xml</code> as defined in <a href="#xmlFormat"></a>.</p>
+</section>
+
+<section class="informative" id="linkHeader">
+<h2>Discovering Compact Resources Using the HTTP Link Header</h2>
+
+<p>In responses to HTTP requests for resources that have a preview, servers
+    include a <code>Link</code> header [[!RFC5988]] where the link relation is
+    <code>http://open-services.net/ns/core#Compact</code> and the target URI is
+    the URI of the Compact resource.</p>
+
+<pre class="example" id="ex_head_request" title="Requesting the Resource Headers">
+HEAD /bugs/324/screenshot HTTP/1.1
+Host: example.com
+</pre>
+
+<pre class="example" id="ex_compact_link_header" title="Response with a Compact Link">
+HTTP/1.1 200 OK
+Content-Length: 45789
+Content-Type: image/png
+ETag: "678609cdee68e0fb8aea5f252b84a511"
+Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/core#Compact"
+</pre>
+
+<p>Clients can request the Compact resource using the target URI of the
+    <code>Link</code> header.</p>
+
+<pre class="example" id="ex_get_compact" title="Requesting the Compact Resource">
+GET /bugs/324/screenshot?compact HTTP/1.1
+Host: example.com
+Accept: application/json
+</pre>
+
+<pre class="example" id="ex_compact_response" title="JSON Compact Response">
+HTTP/1.1 200 OK
+Content-Length: 192
+Content-Type: application/json; charset=UTF-8
+ETag: "3bf6fbc90e11b3c2cc30acb534b452ea"
+Vary: Accept,Accept-Language
+
+{
+    "title": "Screenshot of the problem",
+    "shortTitle": "screenshot.png",
+    "smallPreview": {
+        "document": "http://example.com/bugs/324/screenshot?preview=small"
+    }
+}
+</pre>
+
+<p>Servers can also return a <code>Link</code> header in response to successful
+    requests that create resources. This allows the client to get the Compact
+    resource URI for new resources without making additional requests. Note
+    that servers set the <code>Link</code> context using an <code>anchor</code>
+    parameter if the request URI is not the same as the newly-created resource
+    URI.</p>
+
+<pre class="example" id="ex_post_resource" title="Creating a Resource">
+POST /bugs HTTP/1.1
+Host: example.com
+Content-Length: 153
+Content-Type: text/turtle
+
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;&gt;      a              &lt;http://example.com/ns#Bug&gt; ;
+        dcterms:title  "Something went wrong" .
+</pre>
+
+<pre class="example" id="ex_created_response" title="Creation Response with a Compact Link">
+HTTP/1.1 201 Created
+Content-Length: 0
+Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/core#Compact"; anchor="http://example.com/bugs/478"
+Location: http://example.com/bugs/478
+</pre>
+</section>
+
+<section class="informative" id="prefer">
+<h2>Discovering Compact Resources Using the HTTP Prefer Header</h2>
+
+<p>Clients can request a Compact resource by making an HTTP GET request to the
+    target resource's URI using the <code>return=representation</code>
+    preference of the HTTP Prefer request header [[!RFC7240]] and
+    <code>include</code> parameter [[!LDP]] value
+    <code>http://open-services.net/ns/core#PreferCompact</code>.  Servers
+    supporting resource preview must support this method of discovery for
+    resources with RDF or JSON representations.</p>
+
+<pre class="example" id="ex_prefer_request"
+        title="Requesting the Compact Resource Using the Prefer Header">
+GET /bugs/324 HTTP/1.1
+Host: example.com
+Accept: application/json
+Prefer: return=representation; include="http://open-services.net/ns/core#PreferCompact"
+</pre>
+
+<p>If the provider supports a preview for this resource and the request is
+    successful, the response includes the Compact resource in its body.</p>
+
+<p>The response content type is negotiated using the HTTP <code>Accept</code>
+    request header. If the negotiated content type is
+    <code>application/json</code>, the response body is a JSON object. The
+    top-level JSON object has a <code>compact</code> property whose value is
+    the JSON object describing the Compact resource in
+    <a href="#jsonFormat"></a>. The JSON may include other properties.</p>
+
+<pre class="example" id="ex_preference_applied"
+        title="Preference-Applied Response">
+HTTP/1.1 200 OK
+Content-Length: 315
+Content-Type: application/json; charset=UTF-8
+ETag: "f9d76afe5fbed1655c5768906db8958a"
+Preference-Applied: return=representation
+Vary: Accept,Accept-Language,Prefer
+
+{
+    "compact": {
+        "title": "324: Need a fix &lt;em&gt;NOW&lt;/em&gt;",
+        "icon": "http://example.com/icons/defect.jpg",
+        "largePreview": {
+            "document": "http://example.com/bugs/324?preview=large",
+            "hintHeight": "250px",
+            "hintWidth": "400px"
+        }
+    }
+}
+</pre>
+
+<p>Services may include a JSON-LD context in an <code>application/json</code>
+    response.  Clients who prefer RDF should request <code>text/turtle</code>
+    or <code>application/ld+json</code> using the HTTP <code>Accept</code>
+    request header, rather than <code>application/json</code>.</p>
+
+<pre class="example" id="ex_preference_applied_jsonld"
+        title="JSON Response with a JSON-LD Context">
+HTTP/1.1 200 OK
+Content-Length: 788
+Content-Type: application/json; charset=UTF-8
+ETag: "d53d19be87fa9c61043c70bd91413dab"
+Preference-Applied: return=representation
+Vary: Accept,Accept-Language,Prefer
+
+{
+    "@id": "http://example.com/bugs/324",
+    "@type": "http://example.com/ns#Bug",
+    "@context": "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/cs01/contexts/preview.jsonld",
+    "compact": {
+        "@id": "http://example.com/bugs/324?compact",
+        "@type": "http://open-services.net/ns/core#Compact",
+        "title": "324: Need a fix &lt;em&gt;NOW&lt;/em&gt;",
+        "shortTitle": "324",
+        "icon": "http://example.com/icons/defect.jpg",
+        "iconTitle": "Defect",
+        "iconAltLabel": "Defect",
+        "largePreview": {
+            "document": "http://example.com/bugs/324?preview=large",
+            "hintHeight": "250px",
+            "hintWidth": "400px"
+        },
+        "smallPreview": {
+            "document": "http://example.com/bugs/324?preview=small"
+        }
+    }
+}
+</pre>
+</section>
+
+</section> <!-- END Getting the Compact Resource -->
+
+<section class="informative" id="displaying">
+<h2>Displaying Previews</h2>
+
+<p>When displaying a preview inside another HTML-based presentation, clients
+    create an <code>iframe</code> element, setting its <code>src</code> attribute
+    to the preview's document URI. Previews can contain HTML, stylesheets, and
+    scripts and might not render properly outside of an <code>iframe</code>.
+    Using the <code>iframe</code> element also sandboxes the preview, avoiding
+    cross-site scripting vulnerabilities.</p>
+
+<figure id="preview_iframe">
+  <img src="images/preview-iframe.png" />
+  <figcaption>Preview iframe</figcaption>
+</figure>
+
+<p>Typically, the server does not include the icon or title in the preview
+    itself. The client can display these as needed. In
+    <a href="#preview_iframe"></a>, the preview document is the content inside
+    the yellow, dashed lines.</p>
+
+<p>Resources can have both a small and large preview, and clients can choose
+    which to display. Some clients display the small preview initially and let
+    users expand to the large preview using a button or "Show more" link.</p>
+
+<p>The Compact resource can include <code>oslc:hintHeight</code> and
+    <code>oslc:hintWidth</code> properties for each preview. Values for
+    <code>oslc:hintWidth</code> and <code>oslc:hintHeight</code> are
+    expressed in <strong><em>length units</em></strong> specified in
+    [[!CSS21]].</p>
+
+<p>Servers can also request dynamic resizing for small and large previews. The
+    communication of dynamic size information happens within a web browser.
+    JavaScript code running in the preview <code>iframe</code> sends a message
+    that is received and acted upon by JavaScript code running in the
+    <code>iframe</code>'s parenting window. This cross-frame communication is
+    done using HTML 5 <code>postMessage</code>. Dynamic resizing will not work
+    inside browsers that do not support <code>postMessage</code>.</p>
+
+<p>A resize message begins with <code>oslc-resize:</code> followed by a JSON
+    object describing the dimensions using properties
+    <code>oslc:hintHeight</code> and <code>oslc:hintWidth</code>.</p>
+
+<table>
+<thead>
+<tr>
+        <th>JSON Property Name</th>
+        <th>Type</th>
+        <th>Occurs</th>
+        <th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+        <td><code>oslc:hintHeight</code></td>
+        <td>String</td>
+        <td>Zero-or-one</td>
+        <td>Preferred height of the preview. Values are expressed using length
+            units as specified in [[!CSS21]].</td>
+</tr>
+<tr>
+        <td><code>oslc:hintWidth</code></td>
+        <td>String</td>
+        <td>Zero-or-one</td>
+        <td>Preferred width of the preview. Values are expressed using length
+            units as specified in [[!CSS21]].</td>
+</tr>
+</tbody>
+</table>
+
+<p>For example, the following message requests that the preview be resized to
+    height of 277 pixels and a width of 400 pixels.</p>
+
+<pre class="example" id="ex_resize_message" title="Dyanmic Resize Message">
+    oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
+</pre>
+
+<p>The following JavaScript example sends a resize request to the parent
+    window.</p>
+
+<pre class="example highlight" id="ex_post_message"
+        title="JavaScript postMessage Example">
+var size = {
+    'oslc:hintHeight': '277px',
+    'oslc:hintWidth': '400px'
+};
+
+if (window.postMessage &amp;&amp; window.parent)  {
+    window.parent.postMessage('oslc-resize:' + JSON.stringify(size), "*");
+}
+</pre>
+
+<p>Clients can ignore a server's size hints and use other values. For
+    instance, a client might choose another size if the preview is too large
+    for the window.</p>
+</section>
+
+</section>
+
+<section id="previewGuidance" class="informative">
+<h2>Preview Guidance</h2>
+<p>The following guidance is suggested for Client display of a resource link
+    and rich previews. For purposes of this discussion, assume source resource
+    A has a URI property that refers to target resource B:</p>
+
+<section id="navigating" class="informative">
+<h2>Navigation to the target resource</h2>
+
+<p>At any time, the user should be able to gesture that they
+    would like to navigate the link to the target resource, regardless of how
+    the link to the target resource happens to be rendered. </p>
+</section>
+
+<section id="displayingLinks" class="informative">
+<h2>Default way to display the link to the target resource</h2>
+
+<p>The typical way for forming and displaying the hyperlink
+    should be based on information that is stored locally in
+    source resource A (or that is generally known to the Client). Generally,
+    link text can be derived from property values of resource A, and
+    potentially from a string or literal property value in the reference to the
+    target resource B, if such a property exists. Because these property values
+    are part of the representation of the source resource A, they are available
+    without consulting the target resource, and will be available even if the
+    target resource B cannot be fetched.  When available, Clients
+    should display this string (as opposed to the URI) when
+    presenting resource A to indicate a potential navigation to resource B.
+    This is the basic presentation of a link to target resource B.</p>
+
+<p>The default display of the link from A to B is visible to any user
+    authorized to access resource A. The use of Compact representation
+    information described below is only viable for users who are also
+    authorized to access resource B.</p>
+</section>
+
+<section id="usingTitle" class="informative">
+<h2>Using the Compact representation title, short title, and icon</h2>
+
+  <p>A Compact representation of the resource may contain a more accurate and slightly richer label for a target resource (<code>dcterms:title</code> element), a short-form title for the resource (<code>oslc:shortTitle</code>), and a corresponding image (<code>oslc:icon</code>), possibly chosen from a set with different sizes (<code>oslc:iconSrcSet</code>), all of which may be based on the current state of the target resource. If this becomes known to the Client, the client should assume that this information is better and use it in forming the hyperlink that is displayed to the user. When available, <code>oslc:shortTitle</code> may be used instead of <code>dcterms:title</code> in presentations where visual space is severely limited.</p>
+
+<p>Clients should not fetch Compact representations when
+    there is perfectly usable default display information available. When
+    designing a Client application, consideration should be given to the
+    potential benefits of obtaining an improved title and icon for the target
+    resource against the costs of preemptively fetching the Compact
+    representation in terms of added load on servers and networks (which might
+    only be apparent to users on slow networks or heavily loaded servers).</p>
+
+<p>Clients should be wary of material obtained from
+    non-trusted sources; in particular, the Client should check that
+    the dcterms:title and oslc:shortTitle property values do not contain HTML
+    markup beyond the specified set of simple elements.</p>
+</section>
+
+<section id="previewSizing" class="informative">
+<h2>Preview sizing</h2>
+<p>When the resource does not supply preferred sizing for a preview, the
+    Client should default to a reasonably generous value.
+    The default value a Client uses may be different for
+    different window and screen sizes.</p>
+</section>
+
+<section id="smallPreview" class="informative">
+<h2>Displaying a small preview</h2>
+
+<p>If a user mouses or hovers over a displayed link, the Client
+    should determine whether the target resource has a small
+    preview (<code>oslc:smallPreview</code>). If it does, the Client
+    should present the small preview document in a hovering
+    widget.  Since preview documents may contain arbitrary content, including
+    HTML and scripts, Client must use iframes if embedding
+    the preview document inside another HTML-based presentation.</p>
+
+<p>The Client should not attempt to prefetch a Compact
+    representation just to have the preview URIs in hand so that the hover can
+    come up faster. There is a low chance that the user will make a gesture
+    that would call for the display of a small preview. It would generally be a
+    poor trade-off to increase overall system load just to decrease UI latency
+    for low probability eventualities. Clients may wish to utilize lazy loading techniques to only access preview dialogs that users actually view, and can cache those dialogs for subsequent uses if needed to improve performance.</p>
+</section>
+
+<section id="largePreview" class="informative">
+<h2>Displaying a large preview</h2>
+
+<p>If the user then gestures that they want to see a bit more of the resource,
+    the Client should determine whether the target resource has a large
+    preview (<code>oslc:largePreview</code>). If it does, the Client
+    should present the large preview document in a stationary
+    widget that permits further user interaction. Again, since preview
+    documents may contain arbitrary content, including HTML and scripts,
+    Clients must use iframes if embedding the preview
+    document inside another HTML-based presentation.</p>
+</section>
+
+</section>
+
+<section id="implementation_conformance">
+    <h2>Implementation Conformance</h2>
+
+    <section id="general_conformance">
+        <h2>General</h2>
+        <p id="compact_some_resources" class='conformance'>
+            Servers MAY choose to provide Compact
+            resources for some resources and not others.
+        </p>
+        <p id="http_options" class='conformance'>
+            Resources with previews MUST support
+            the HTTP OPTIONS method.
+        </p>
+        <p id="vary_header" class='conformance'>
+            In responses to HTTP GET requests targeting
+            resources that have a Compact resource, servers SHOULD either
+            include a <code>Vary</code> response header with at least
+            <code>Accept</code> and <code>Prefer</code> field values or a
+            <code>Cache-Control</code> header value <code>no-store</code>.
+        </p>
+        <p id="accept_lang" class='conformance'>
+            Servers MAY consult the
+            <code>Accept-Language</code> header on requests for a Compact
+            resource (and on requests for preview documents) to return a
+            resource for the requested natural language.
+        </p>
+        <p id="unsuccesful_previews" class='conformance'>
+            Clients SHOULD gracefully handle
+            unsuccessful attempts to use previews. Previews may not be
+            supported for all resources or may not work due to security or
+            service availability issues.
+        </p>
+    </section>
+    <section id="accept_headers"><h2>Accept Header</h2>
+      <p id="return_accept_header" class='conformance'>
+        In response to OPTIONS, HEAD or GET on resource, servers MAY include an <code>Accept: application/x-oslc-compact+xml</code> header to indicate the resource provides a compact representation.
+      </p>
+
+      <p id="support_accept_header" class='conformance'>
+        Servers MAY support the <code>application/x-oslc-compact+xml</code> MIME type extension to allow clients to use content negotiation to access the Compact resource. However, this usage should be considered deprecated and is only provided for OSLC 2.0 compatibility.
+      </p>
+
+      <p id="x-compact-format" class='conformance'>
+        Servers that do support the <code>application/x-oslc-compact+xml</code> MIME type extension MUST return the Compact resource using <code>Content-Type: application/x-oslc-compact+xml</code> as specified in [[!OSLCUIPreview20]].
+      </p>
+    </section>
+
+    <section id="link_headers">
+        <h2>Link Headers</h2>
+        <div id="compact_link_header" class='conformance'>
+            <p>In responses to successful HTTP
+                requests for a target resource that has a Compact
+                resource, servers MUST include a <code>Link</code>
+                header [[!RFC5988]] where:</p>
+
+                <ul>
+                    <li>The context URI is the effective request URI,</li>
+                    <li>The link relation is
+                        <code>http://open-services.net/ns/core#Compact</code>, and</li>
+                    <li>The target URI is the URI of the Compact resource.</li>
+                </ul>
+        </div>
+
+<pre class="example" id="ex_compact_link_header" title="Example Link Header">
+Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/core#Compact"
+</pre>
+
+        <div id="link_header_creation" class='conformance'>
+            <p>If a newly-created resource has a Compact
+                resource, servers MAY return a <code>Link</code> header in
+                response to the creation request where:</p>
+
+                <ul>
+                    <li>The context URI is the URI of the newly-created
+                        resource,</li>
+                    <li>The link relation is
+                        <code>http://open-services.net/ns/core#Compact</code>,
+                        and</li>
+                    <li>The target URI is the URI of the associated Compact
+                        resource.</li>
+                </ul>
+        </div>
+
+<pre class="example" id="ex_link_header_creation" title="Example Link Header with Anchor">
+Link: &lt;http://example.com/bugs/478?compact&gt;; rel="http://open-services.net/ns/core#Compact"; anchor="http://example.com/bugs/478"
+</pre>
+    </section>
+
+    <section id="prefer_headers">
+        <h2>Prefer Headers</h2>
+        <div id="prefer_compact" class='conformance'>
+            <p>Clients MAY request that the Compact
+                resource is returned inline with the target resource using
+                the <code>Prefer</code> request header [[!RFC7240]] and</p>
+                <ul>
+                    <li>Preference <code>return</code>, value
+                        <code>representation</code></li>
+                    <li>Parameter <code>include</code> [[!LDP]], value
+                        <code>http://open-services.net/ns/core#PreferCompact</code>.</li>
+                </ul>
+        </div>
+
+<pre class="example" id="ex_prefer_compact" title="Example Prefer Header">
+Prefer: return=representation; include="http://open-services.net/ns/core#PreferCompact"
+</pre>
+        <p id="honor_prefer" class='conformance'>
+            Servers MUST honor a client's request to
+            in-line the Compact resource in JSON and RDF representations
+            if the target resource has a Compact resource and the request
+            is successful.
+        </p>
+        <p id="prefer_same_status" class='conformance'>
+            If the target resource does not exist or is
+            not accessible to the requesting client, servers MUST return
+            the same status code that it would have returned had the client
+            not included the <code>Prefer</code> header in the
+            request.
+        </p>
+        <p id="prefer_compact_json" class='conformance'>
+            When servers in-line the Compact resource
+            with the target resource in an <code>application/json</code>
+            [[!RFC4627]] response, the response entity MUST be a JSON
+            object with a <code>compact</code> property where the value is
+            the Compact resource JSON as described in <a href="#jsonFormat"></a>.</h2>
+        </p>
+        <p id="minimal_representation" class='conformance'>
+            Servers MAY choose to return only a subset
+            of the target resource properties when a client requests that
+            the Compact resource is returned in-line.
+        </p>
+        <p id="no_pref_applied" class='conformance'>
+            Clients SHOULD inspect the response body for
+            the Compact resource even if the server omits the
+            <code>Preference-Applied</code> header [[!RFC7240]].
+        </p>
+    </section>
+    <section id="compact_resources">
+        <h2>Compact Resources</h2>
+        <p id="compact_required_media_types" class='conformance'>
+            Servers MUST support the
+            <code>application/json</code> [[!RFC4627]] and
+            <code>text/turtle</code> [[!turtle]] media types for the Compact
+            resource.
+        </p>
+        <p id="other_compact_representations" class='conformance'>
+            Servers SHOULD support the
+            <code>application/ld+json</code> media type [[!JSON-LD]] for the
+            Compact resource.
+        </p>
+        <p id="json_compact_representation" class='conformance'>
+            The <code>application/json</code> Compact
+            resource representation MUST be in the JSON format described in
+            <a href="#jsonFormat"></a>.
+        </p>
+        <p id="compact_jsonld" class='conformance'>
+            Servers MAY respond with JSON-LD in <a href="http://www.w3.org/TR/json-ld/#compacted-document-form">compacted document form</a> when clients request the
+            <code>application/json</code> representation of the Compact
+            resource as long as the response meets the requirements for the
+            JSON representation.
+        </p>
+        <p id="compact_conform_to_shape" class='conformance'>
+            RDF representations of the  Compact resource
+            MUST conform to the shape specified in
+            <a href="#compactShape"></a>.
+        </p>
+        <p id="compact_conform_to_xml" class='conformance'>
+            Content-Type <code>application/x-oslc-compact+xml</code> representations of the Compact resource
+            MUST conform to the shape specified in
+            <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview#XML_Representation_Format">XML Representation Format</a>.
+        </p>
+        <p id="compact_other_props" class='conformance'>
+            The Compact resource MAY have additional
+            server-specific properties.
+        </p>
+    </section>
+    <section id="previews">
+        <h2>Previews</h2>
+        <p id="preview_iframes" class='conformance'>
+            When displaying a preview inside another
+            HTML presentation, clients MUST use an <code>iframe</code>
+            element, setting its <code>src</code> attribute to the
+            preview's document URI.
+        </p>
+        <p id="css_length_units" class='conformance'>
+            Servers MUST express the
+            <code>oslc:hintWidth</code> and <code>oslc:hintHeight</code>
+            properties of an <code>oslc:Preview</code> in length units as
+            specified in [[!CSS21]].
+        </p>
+        <p id="dynamic_resizing" class='conformance'>
+            Servers MAY use dynamic resizing for small
+            and large previews in addition to <code>oslc:Preview</code>
+            <code>oslc:hintHeight</code> and <code>oslc:hintWidth</code>
+            properties.
+        </p>
+        <p id="resize_post_message" class='conformance'>
+            Servers that support dynamic sizing MUST
+            send resize messages to the parent window using the
+            <code>Window.postMessage</code> method [[!webmessaging]] where
+            the source of the event is the preview's window.
+        </p>
+        <div id="post_message_content" class='conformance'>
+            <p>A resize message MUST consist of the
+                characters <code>oslc-resize:</code> followed by a JSON object
+                with at least one of the following properties:</p>
+
+                <ul>
+                    <li><code>oslc:hintHeight</code> or</li>
+                    <li><code>oslc:hintWidth</code>.</li>
+                </ul>
+        </div>
+
+<pre class="example" id="ex_resize_message" title="Example Resize Message">
+oslc-resize:{"oslc:hintHeight": "277px", "oslc:hintWidth": "400px"}
+</pre>
+
+        <p id="post_message_content20" class='conformance'>
+            A resize message MAY also also consist of the
+            characters <code>oslc-preview-height:</code> followed by the desired height in pixels.</p>
+
+<pre class="example" id="ex_resize_message20" title="Example Resize Height Message">
+oslc-preview-height:277
+</pre>
+                <p>This <code>postMessage</code> format should be considered deprecated and is only provided for OSLC 2.0 compatibility.</p>
+        <p id="resize_message_length_units" class='conformance'>
+            The <code>oslc:hintHeight</code> and
+            <code>oslc:hintWidth</code> property values in the resize
+            message JSON MUST be length units as specified in
+            [[!CSS21]].
+        </p>
+        <p id="resize_post_message" class='conformance'>
+            Servers MAY send more than one dynamic
+            resize request.
+        </p>
+        <p id="ignore_size_hints" class='conformance'>
+            Clients MAY choose to ignore the size hints
+            in <code>oslc:Preview</code> resources or in dynamic resize
+            messages.
+        </p>
+    </section>
+</section>
+
+<section id="resources">
+<h2>Resource Constraints</h2>
+
+<p>This document applies the following constraints to the [[!OSLCCoreVocab]] vocabulary terms.</p>
+
+<p class='conformance'>An OSLC server providing the Resource Preview capability MUST implement the vocabulary defined in this section.</p>
+
+<section id="compactShape">
+<h2 id="resourceCompact">Resource: Compact</h2>
+
+<div title='Shape for oslc_cm:Compact'
+        data-include='shapes/Compact-shape.ttl'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+</section>
+
+<section id="previewShape">
+<h2 id="resourcePreview">Resource: Preview</h2>
+
+<div title='Shape for oslc_cm:Preview'
+        data-include='shapes/Preview-shape.ttl'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+</section>
+</section>
+
+<section id="conformance"></section>
+
+<section id="jsonFormat" class="appendix">
+<h2>JSON Representation Format</h2>
+
+<p>A Compact resource JSON representation might look like the following for the
+    target resource <code>http://example.com/bugs/324</code>:</p>
+
+<pre class="example" id="ex_compact_json" title="Compact Resource JSON">
+{
+    "title": "324: Need a fix &lt;em&gt;NOW&lt;/em&gt;",
+    "shortTitle": "324",
+    "icon": "http://example.com/icons/defect.jpg",
+    "iconSrcSet": "http://example.com/icons/smallIcon.png 16w, http://example.com/icons/largeIcon.png 64w",
+    "iconTitle": "Defect",
+    "iconAltLabel": "Defect",
+    "largePreview": {
+        "document": "http://example.com/bugs/324?preview=large",
+        "hintHeight": "250px",
+        "hintWidth": "400px"
+    },
+    "smallPreview": {
+        "document": "http://example.com/bugs/324?preview=small"
+    }
+}
+</pre>
+
+<!--
+<section id="json_constraints">
+    <h2>JSON Representation Constraints</h2>
+
+    <section id="compact_json_object">
+        <h2 class="normalFont">The Compact JSON representation MUST be a JSON
+            object.</h2>
+    </section>
+    <section id="compact_json_title">
+        <h2 class="normalFont">The Compact resource MAY have a
+            <code>title</code> property. The value MUST be a string.</h2>
+    </section>
+    <section id="compact_json_shortTitle">
+        <h2 class="normalFont">The Compact resource MAY have a
+            <code>shortTitle</code> property. The value MUST be a string.</h2>
+    </section>
+    <section id="compact_json_markup">
+        <h2 class="normalFont">The values of the <code>title</code> and
+            <code>shortTitle</code> MAY contain markup valid in an HTML
+            <code>span</code> element. To afford clients the greatest
+            flexibility to style the text to match the context in which it is
+            being displayed, the titles SHOULD be plain text with HTML markup
+            used only to emphasize words or phrases or to convey additional
+            information about the target resource.</h2>
+    </section>
+    <section id="compact_json_icon">
+        <h2 class="normalFont">The Compact resource MAY have an
+            <code>icon</code> property. The value MUST be a string that is the
+            absolute URL of an image.</h2>
+    </section>
+    <section id="compact_json_icon_title">
+        <h2 class="normalFont">The Compact resource MAY have an
+            <code>iconTitle</code> property. The value MUST be a string.</h2>
+    </section>
+</section>
+-->
+
+<p>The JSON representation has the following constraints:</p>
+
+<ul>
+    <li>The value of the <code>title</code> or <code>shortTitle</code>
+        properties MUST, if present, only contain markup
+        valid in an HTML <code>span</code> element. To afford clients the
+        greatest flexibility to style the text to match the context in which
+        it is being displayed, the titles SHOULD be plain
+        text with HTML markup used only to emphasize words or phrases or to
+        convey additional information about the target resource.</li>
+    <li><code>icon</code>, if present, MUST be the URI of an
+        image. The image SHOULD be square. A client
+        MAY scale the image as needed.</li>
+    <li><code>iconSrcSet</code>, if present, MUST provide a comma-separated list of image URIs along with image size as specified for the HTML img srcset attribute.</li>
+    <li><code>iconAltLabel</code> and <code>iconTitle</code>, if present,
+        MUST only have string content with no markup.</li>
+    <li><code>smallPreview</code> and <code>largePreview</code>, if present,
+        MAY have any number of properties, including none.
+        <ul>
+            <li>The value of <code>smallPreview</code> and <code>largePreview</code>, if
+                present, MUST be the JSON representation of an
+                <code>oslc:Preview.</code>
+
+                <ul>
+                    <li>A <code>Preview</code> MUST include a document
+                        property. It MAY have any number of other
+                        properties.</li>
+                    <li><code>document</code> MUST be the URI of a document
+                        containing a preview of the resource.</li>
+                    <li><code>hintWidth</code> and <code>hintHeight</code>, if
+                        present, MUST be expressed using
+                        length units as specified in [[!CSS21]].</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<section id="jsonld_context" class="informative">
+<h2>JSON-LD Context</h2>
+
+<p>The following JSON-LD Context may be used with JSON Compact representations.</p>
+
+<pre class="example" id="ex_jsonld_context"
+        data-include="contexts/preview.jsonld"
+        data-include-format="text"
+        title="JSON-LD Context for a Compact Resource">
+</pre>
+</section>
+
+<section id="json_schema" class="informative">
+<h2>JSON Schema</h2>
+
+<p>The following JSON Schema [[!JSONSchema]] describes the Compact JSON representation.</p>
+
+<pre class="example" id="ex_jsonld_context"
+        data-include="schema/Compact-schema.json"
+        data-include-format="text"
+        title="JSON Schema for a Compact Resource">
+</pre>
+</section>
+</section>
+
+<section id="xmlFormat" class="appendix">
+<h2>XML Representation Format</h2>
+
+<p>A Compact resource XML representation woould look like the following for the
+    target resource <code>http://example.com/bugs/12345</code>:</p>
+
+<pre class="example" id="ex_compact_xml" title="Compact Resource XML">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;rdf:RDF
+   xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
+   xmlns:dcterms=&quot;http://purl.org/dc/terms/&quot;
+   xmlns:oslc=&quot;http://open-services.net/ns/core#&quot;&gt;
+
+ &lt;oslc:Compact
+   rdf:about=&quot;http://example.com/bugs/12345&quot;&gt;
+
+   &lt;dcterms:title&gt; 12345: Need a &amp;quot;fix&amp;quot; &amp;lt;em&amp;gt;NOW&amp;lt;/em&amp;gt; &lt;/dcterms:title&gt;
+   &lt;oslc:shortTitle&gt; 12345 &lt;/oslc:shortTitle&gt;
+   &lt;oslc:icon rdf:resource=&quot;http://example.com/icons/defect.jpg&quot; /&gt;
+   &lt;oslc:iconAltLabel&gt;Defect&lt;/oslc:iconAltLabel&gt;
+   &lt;oslc:iconTitle&gt;Defect&lt;/oslc:iconTitle&gt;
+
+   &lt;oslc:smallPreview&gt;
+      &lt;oslc:Preview&gt;
+         &lt;oslc:document rdf:resource=&quot;http://example.com/bugs/12345?hover=small&quot; /&gt;
+      &lt;/oslc:Preview&gt;
+   &lt;/oslc:smallPreview&gt;
+
+
+   &lt;oslc:largePreview&gt;
+      &lt;oslc:Preview&gt;
+         &lt;oslc:document rdf:resource=&quot;http://example.com/bugs/12345?hover=large&quot; /&gt;
+         &lt;oslc:hintWidth&gt; 60em &lt;/oslc:hintWidth&gt;
+         &lt;oslc:hintHeight&gt; 20em &lt;/oslc:hintHeight&gt;
+      &lt;/oslc:Preview&gt;
+   &lt;/oslc:largePreview&gt;
+
+ &lt;/oslc:Compact&gt;
+
+&lt;/rdf:RDF&gt;
+</pre>
+<p>The XML representation has the following syntactic and semantic constraints:</p>
+<ul>
+<li> The root element <strong>MUST</strong> be <code>rdf:RDF</code> and <strong>SHOULD</strong> identify the namespaces for RDF ( <code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code>), Dublin Core ( <code>http://purl.org/dc/terms/</code>), and OSLC ( <code>http://open-services.net/ns/core#</code>), as well as namespaces for any additional Provider supplied properties.
+</li> <li> The <code>oslc:Compact</code> element <strong>MUST</strong> be a child of the root element and <strong>MUST</strong> specify an <code>rdf:about</code> attribute whose value is the URI of the target resource.  <ul>
+<li> The <code>oslc:Compact</code> element <strong>MAY</strong> have any number of child elements, including none. Each child element specifies one property of the target resource. The order of child elements is not significant.
+</li> <li> Each of the <code>dcterms:title</code>, <code>oslc:shortTitle</code>, <code>oslc:icon</code>, <code>oslc:smallPreview</code>, and <code>oslc:largePreview</code> child elements <strong>MAY</strong> occur at most once.
+</li> <li> The content of a <code>dcterms:title</code> or <code>oslc:shortTitle</code> element <strong>MUST</strong> be limited to any XHTML &lt;span&gt; element. To afford clients the greatest flexibility to style the text to match the context in which it is being displayed, the titles <strong>SHOULD</strong> be plain text with XHTML markup used only to emphasize words or phrases or to convey additional information about the target resource.
+</li> <li> An <code>oslc:icon</code> element <strong>MUST</strong> have an <code>rdf:resource</code> attribute whose value is a URI of an image. The image <strong>SHOULD</strong> be 16x16 pixels in size.
+</li> <li> The <code>oslc:iconAltLabel</code> and <code>oslc:iconTitle</code> elements <strong>MUST</strong> only have string content.
+</li> <li> The <code>oslc:smallPreview</code> and <code>oslc:largePreview</code> elements <strong>MAY</strong> have any number of child elements, including none.  <ul>
+<li> The <code>oslc:Preview</code> element <strong>MUST</strong> be a child of an <code>oslc:smallPreview</code> or <code>oslc:largePreview</code> element and <strong>MAY</strong> occur at most once.  <ul>
+<li> An <code>oslc:Preview</code> element <strong>MAY</strong> have any number of child elements, including none. Each child element specifies one property of the Preview. The order of child elements is not significant.
+</li> <li> Each of the <code>oslc:document</code>, <code>oslc:hintWidth</code>, <code>oslc:hintHeight</code>, and <code>oslc:initialHeight</code> child elements <strong>MAY</strong> occur at most once.
+</li> <li> The <code>oslc:document</code> element <strong>MUST</strong> have an <code>rdf:resource</code> attribute whose value is a URI of a document containing a preview of the resource.
+</li> <li> The content of an <code>oslc:hintWidth</code>, <code>oslc:hintHeight</code>, or <code>oslc:initialHeight</code> element <strong>MUST</strong> be a valid relative length value.
+</li></ul>
+</li></ul>
+</li></ul>
+</li> <li> All elements <strong>MAY</strong> have additional atttributes not specified here. All elements, other than <code>dcterms:title</code> and <code>oslc:shortTitle</code>, <strong>MAY</strong> include additional child elements not specified here. Consumers <strong>MUST</strong> quietly ignore unknown elements and attributes encountered in a Compact representation.
+</li>
+</ul>
+
+
+</section>
+
+<section class="appendix informative" id="history">
+<h2>Change History</h2>
+<table border=1 cellspacing=0 cellpadding=0>
+ <tr>
+  <td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><b>Revision</b></td>
+  <td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Date</b></td>
+  <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Editor</b></td>
+  <td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Changes Made</b></td>
+ </tr>
+ <tr>
+  <td>01</td>
+  <td>04 April 2017</td>
+  <td>Jim Amsden</td>
+  <td>CS was approved and published.</td>
+ </tr>
+  <td>03</td>
+  <td>31 May 2018</td>
+  <td>Jim Amsden</td>
+  <td>Added XML compact resource representation from OSLC Core 2.0.</td>
+ </tr>
+</table>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@base <http://open-services.net/ns/core/shapes/3.0/Error-shape.ttl> .
+
+<#Error>
+      a               oslc:ResourceShape ;
+        oslc:describes  oslc:Error ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "statusCode" ;
+                          oslc:occurs              oslc:Exactly-one ;
+                          oslc:propertyDefinition  oslc:statusCode ;
+                          dcterms:description "The HTTP status code reported with the error."^^rdf:XMLLiteral ;
+                          oslc:readOnly            true ;
+                          oslc:valueType           xsd:string
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "message" ;
+                          oslc:occurs              oslc:Exactly-one ;
+                          oslc:propertyDefinition  oslc:message ;
+                          dcterms:description "An informative message describing the error that occurred."^^rdf:XMLLiteral ;
+                          oslc:readOnly            true ;
+                          oslc:valueType           xsd:string
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "extendedError" ;
+                          oslc:occurs              oslc:Zero-or-one ;
+                          oslc:propertyDefinition  oslc:extendedError ;
+                          dcterms:description "Extended error information."^^rdf:XMLLiteral ;
+                          oslc:range               oslc:ExtendedError ;
+                          oslc:readOnly            true ;
+                          oslc:valueType           oslc:AnyResource ;
+                          oslc:representation      oslc:Either
+                        ] ;
+        oslc:property <#created> ;
+        oslc:property <#references> ;
+        oslc:property <#identifier> ;
+        dcterms:title   "OSLC Core Error Shape" .
+
+<#created>  a                 oslc:Property ;
+        oslc:name                "created" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:created ;
+        oslc:valueType           xsd:dateTime ;
+        dcterms:description      """Optional indication of when the error was detected."""^^rdf:XMLLiteral .
+
+<#references> a oslc:Property ;
+    oslc:name "references" ;
+    oslc:propertyDefinition dcterms:references   ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """A reference to any resources that are the subject of this error."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:AnyResource ;
+    oslc:representation oslc:Either .
+
+<#identifier> a oslc:Property ;
+    oslc:name "identifier" ;
+    oslc:propertyDefinition dcterms:identifier ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """A unique human-readable string identifier for this resource, such as an error number or code."""^^rdf:XMLLiteral ;
+    oslc:valueType xsd:string .
+
