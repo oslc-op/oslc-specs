@@ -234,6 +234,11 @@ public class VocabularyCheck
                 termType = tnode.asResource();
             }
         }
+        else
+        {
+            resultModel.createIssue(termResult, ResultModel.Missing, RDF.type);
+            errCount++;
+        }
         if (it.hasNext())
         {
             resultModel.createIssue(termResult, ResultModel.MoreThanOne, RDF.type);
