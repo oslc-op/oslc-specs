@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-build/install/ShapeChecker/bin/ShapeChecker -x http://open-services.net/ns/core \
--x http://open-services.net/ns/core\#.\* \
+build/install/ShapeChecker/bin/ShapeChecker \
+-x http://open-services.net/ns/core ${comment# See https://github.com/oslc-op/oslc-specs/issues/40} \
+-x http://open-services.net/ns/core\#.\* ${comment# See https://github.com/oslc-op/oslc-specs/issues/40} \
 -v ../../specs/core/vocab/core-vocab.ttl \
 -s ../../specs/core/shapes/AttachmentDescriptor-shape.ttl \
 -s ../../specs/core/shapes/Comment-shape.ttl \
