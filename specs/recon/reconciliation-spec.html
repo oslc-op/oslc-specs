@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>OSLC Reconciliation Specification Version 2.0: Specification</title>
+  <link rel="stylesheet" type="text/css" href="../../styles/oslc-styles.css" />
+  <link rel="stylesheet" type="text/css" href="../../styles/table-styles.css" />
+  <link rel="stylesheet" type="text/css" href="../../styles/definition-styles.css" />
+  <script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async
+    class='remove'></script>
+  <script type="text/javascript" class='remove'>
+    var respecConfig = {
+      // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN). If in doubt use WD.
+      // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
+      specStatus: "WD",
+      thisVersion: "http://docs.oasis-open.org/oslc-domains/recon/v2.0/cs01/part1-reconciliation/recon-v2.0-cs01-part1-reconciliation.html",
+      latestVersion: "http://docs.oasis-open.org/oslc-domains/recon/v2.0/recon-v2.0-part1-reconciliation.html",
+      prevVersion: "",
+
+      // the specification's short name, as in http://www.w3.org/TR/short-name/
+      shortName: "oslc-recon",
+
+      // the document's citation label
+      citationLabel: "OSLC-RECON-2.0-Part1",
+
+      // The revision level of the document within its stage
+      revision: "01",
+
+      // if your specification has a subtitle that goes below the main
+      // formal title, define it here
+      // subtitle   :  "an excellent document",
+
+      // if you wish the publication date to be other than the last modification, set this
+      // publishDate:  "2018-06-08",
+
+      // if the specification's copyright date is a range of years, specify
+      // the start date here:
+      // copyrightStart: "2005"
+
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      // previousPublishDate:  "1977-03-15",
+      // previousMaturity:  "WD",
+
+      // if there a publicly available Editor's Draft, this is the link
+      // edDraftURI:           "http://berjon.com/",
+
+      // if this is a LCWD, uncomment and set the end of its review period
+      // lcEnd: "2009-08-05",
+      chairs: [{
+        name: "Jim Amsden",
+        mailto: "jamsden@us.ibm.com",
+        company: "IBM",
+        companyURL: "http://www.ibm.com/"
+      }, {
+        name: "Graham Bachelor",
+        mailto: "gray_bachelor@uk.ibm.com",
+        company: "IBM",
+        companyURL: "http://www.ibm.com"
+      }],
+
+      // editors, add as many as you like
+      // only "name" is required
+      editors: [
+        {
+          name: "Fabio Ribeiro",
+          mailto: "fabio.ribeiro@koneksys.com",
+          company: "Koneksys",
+          companyURL: "https://www.koneksys.com"
+        }
+      ],
+
+      // name of the WG
+      wg: "OASIS OSLC Lifecycle Integration Domains TC",
+      wgShortName: "oslc-domains",
+
+      // URI of the public WG page
+      wgURI: "https://www.oasis-open.org/committees/oslc-domains/",
+
+      // name (without the @w3c.org) of the public mailing to which comments are due
+      wgPublicList: "oslc-domains-comment",
+
+      // URI of the patent status for this WG, for Rec-track documents
+      // !!!! IMPORTANT !!!!
+      // This is important for Rec-track documents, do not copy a patent URI from a random
+      // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+      // Team Contact.
+      wgPatentURI: "",
+      // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
+
+      namespaces: [{
+        href: "http://open-services.net/ns/recon#",
+        prefix: "oslc_recon"
+      }],
+
+      // Other parts of multi-part spec
+      additionalArtifacts: [
+        { title: "OSLC Reconciliation Specification Version 2.0. Part 1: Specification (this document)", href: "http://docs.oasis-open.org/oslc-domains/recon/v2.0/cs01/part1-reconciliation/recon-v2.0-cs01-part1-reconciliation.html" },
+        { title: "OSLC Reconciliation Specification Version 2.0. Part 2: Vocabulary", href: "http://docs.oasis-open.org/oslc-domains/recon/v2.0/cs01/part2-reconciliation-vocab/recon-v2.0-cs01-part2-reconciliation-vocab.html" },
+      ],
+
+      relatedWork: [
+        { title: "Open Services for Lifecycle Collaboration Reconciliation Specification Version 2.0", href: "ttps://archive.open-services.net/wiki/reconciliation/OSLC-Reconciliation-Specification-Version-2.0/" }
+      ],
+
+      localBiblio: {
+        "OSLCCore2": {
+          title: "OSLC Core 2.0",
+          href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCore3": {
+          title: "OSLC Core 3.0",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+          authors: ["Jim Amsden", "S. Speicher"],
+          status: "Committee Specification",
+          publisher: "OASIS",
+        },
+        "OSLCResourcePreview": {
+          title: "OSLC Core 3.0 Resource Preview",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part3-resource-preview.html",
+          authors: ["Jim Amsden", "S. Speicher"],
+          status: "Draft",
+          publisher: "OASIS",
+        },
+        "OSLCShapes": {
+          title: "OSLC Resource Shape 3.0",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part6-resource-shape.html",
+          authors: ["Arthur Ryman", "Jim Amsden"],
+          publisher: "OASIS",
+        },
+        "OSLCCM20": {
+          title: "Open Services for Lifecycle Collaboration Change Management Specification Version 2.0",
+          href: "http://open-services.net/bin/view/Main/CmSpecificationV2",
+          authors: ["S. Speicher"],
+          status: "Finalized",
+          publisher: "http://open-services.net"
+        },
+        "OSLCActions": {
+          title: "Open Services for Lifecycle Collaboration Actions Specification Version 2.0",
+          href: "http://open-services.net/wiki/core/Actions-2.0/",
+          authors: ["Martin Pain", "Steve Speicher"],
+          status: "Finalization",
+          publisher: "http://open-services.net"
+        },
+        "OSLCRM": {
+          title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
+          href: "http://open-services.net/bin/view/Main/RmSpecificationV2",
+          authors: ["Ian Green"],
+          status: "Final",
+          publisher: "http://open-services.net",
+        },
+        "OSLCQM": {
+          title: "Open Services for Lifecycle Collaboration Quality Management Specification Version 2.0",
+          href: "http://open-services.net/bin/view/Main/QmSpecificationV2",
+          authors: ["Paul McMahan"],
+          status: "Final",
+          publisher: "http://open-services.net",
+        },
+        "OpenIDConnect": {
+          title: "OpenID Connect",
+          href: "http://openid.net/connect/",
+          publisher: "openid.net",
+        },
+        "LDPPatch": {
+          title: "Linked Data Patch Format",
+          href: "http://www.w3.org/TR/ldpatch/",
+          status: "Working Group Note",
+          publisher: "http://www.w3.org/",
+        },
+        "OSLCCoreVocab": {
+          title: "OSLC Core Vocabulary",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
+          authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+          status: "Working Draft",
+          publisher: "OASIS",
+        }
+      }
+    };
+  </script>
+
+</head>
+
+<body>
+  <section id="abstract">
+    <p>This specification defines the OSLC Change Management domain, a RESTful web
+      services interface for the management of product change requests, activities,
+      tasks and relationships between those and related resources such as requirements, test cases, or architectural
+      resources. To support these scenarios, this specification
+      defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET,
+      POST, PUT and DELETE, HTTP response codes, content type handling and resource
+      formats.</p>
+  </section>
+
+  <section id='toc'></section>
+  <hr />
+  <section id='sotd'></section>
+
+
+  <section id="introduction" class="informative">
+    <h2>Introduction</h2>
+
+    <p>This specification defines the OSLC Change management domain as a RESTful web
+      services interface for the management of product change requests, activities,
+      tasks and relationships between those and related resources such as project,
+      category, release and plan. To support these scenarios, this specification
+      defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET,
+      POST, PUT and DELETE, HTTP response codes, content type handling and resource
+      formats.</p>
+
+    <p>The intent of this specification is to define the capabilities needed to
+      support integration scenarios defined by the Change Management Technical Committee
+      and not to provide a comprehensive interface to Change Management. The resource
+      formats and operations may not match exactly the native models supported by
+      change management servers but are intended to be compatible with
+      them. The approach to supporting these scenarios is to delegate operations, as
+      driven by server contributed user interfaces, as much as possible and
+      not require a server to expose its complete data model and
+      application logic.</p>
+
+    <section id="iprPolicy">
+      <h2>IPR Policy</h2>
+      <p>
+        This Committee Specification Public Review Draft is being developed under the <a
+          href="https://www.oasis-open.org/policies-guidelines/ipr#RF-on-Limited-Mode">RF on Limited Terms</a> Mode of
+        the <a href="https://www.oasis-open.org/policies-guidelines/ipr">OASIS IPR Policy</a>, the mode chosen when the
+        Technical Committee was established. For information on whether any patents have been disclosed that may be
+        essential to implementing this specification,
+        and any offers of patent licensing terms, please refer to the Intellectual Property Rights section of the TC’s
+        web page
+        (<a
+          href='https://www.oasis-open.org/committees/oslc-domains/ipr.php'>https://www.oasis-open.org/committees/oslc-domains/ipr.php</a>).
+      </p>
+    </section>
+    <section id="terminology">
+
+      <h2>Terminology</h2>
+      <p>Terminology uses and extends the terminology and capabilities of [[!OSLCCore3]].</p>
+
+      <dl class="glossary">
+        <dt>Change Request Resource</dt>
+        <dd>A request for change to an
+          application or product. Typically a product request for enhancement, a report for a resolution of a product
+          defect or simply a bug report.</dd>
+
+        <dt>Client</dt>
+        <dd>An implementation of the OSLC Change Management specifications as a client. OSLC CM Clients consume services
+          provided by servers.</dd>
+
+        <dt>Server</dt>
+        <dd>An implementation of the OSLC Change Management specifications as a server. OSLC CM clients consume services
+          provided by Servers. The use of the terms Client and Server are intended to distinguish typical consumers and
+          providers of OSLC resources in a distributed environment based on REST. A particular application component
+          could be a client for some OSLC domain services and a server for the same or another domain.</dd>
+      </dl>
+    </section>
+    <section id='references'>
+      <h3>References</h3>
+    </section>
+    <section id="conventions"></section>
+  </section>
+
+
+  <section id="baseRequirements">
+    <h2>Base Requirements</h2>
+
+    <p>The following sub-sections define the mandatory and optional requirements for an OSLC Requirements Management
+      (OSLC RM) server.</p>
+
+    <section id="versioning">
+      <h2 id="specificationversioningspec_versioning">Specification Versioning</h2>
+
+      <p>This specification follows the specification version guidelines given in [OSLCCore3].</p>
+    </section>
+
+    <section id="namespaces">
+      <h2>Namespaces</h2>
+
+      <p>In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>,
+        <code>dcterms</code> and <code>foaf</code> defined in the [OSLCCore3], OSLC CM defines the namespace URI of
+        <code>http://open-services.net/ns/cm#</code> with a namespace prefix of <code>oslc_cm</code>.</p>
+
+      <p>This specification also uses these namespace prefix definitions:</p>
+
+      <ul>
+        <li>oslc_rm : <code>http://open-services.net/ns/rm#</code> [[OSLCRM]]</li>
+        <li>oslc_qm : <code>http://open-services.net/ns/qm#</code> [[OSLCQM]]</li>
+      </ul>
+    </section>
+
+    <section id="formats">
+      <h2>Resource Formats</h2>
+
+      <p>In addition to the requirements for resource representations in [[!OSLCCore3]], this section outlines further
+        refinements and restrictions.</p>
+
+      <p>For HTTP GET requests on all OSLC CM and OSLC Core defined resource types,</p>
+
+      <ul>
+        <li>CM servers MUST provide Turtle and JSON-LD, and SHOULD provide RDF/XML and XML representations. The XML and
+          JSON representations SHOULD follow the guidelines outlined in the <a
+            href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations
+            Guidance</a> to maintain compatibility with [[!OSLCCore2]].</li>
+        <li>CM clients requesting RDF/XML SHOULD be prepared for any valid RDF/XML document. CM clients requesting XML
+          SHOULD be prepared for representations that follow the guidelines outlined in the <a
+            href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations
+            Guidance</a>.</li>
+        <li>CM servers SHOULD support an [X]HTML representation and a user interface (UI) preview as defined by <a
+            href="http://open-services.net/bin/view/Main/OslcCoreUiPreview">UI Preview Guidance</a></li>
+      </ul>
+
+      <p>For HTTP PUT/POST request formats for resource type of ChangeRequest:</p>
+
+      <ul>
+        <li>CM servers MUST accept Turtle and JSON-LD representations and SHOULD accept RDF/XML and XML representations.
+          CM servers accepting RDF/XML SHOULD be prepared for any valid RDF/XML document. For XML CM servers SHOULD be
+          prepared for representations that follow the guidelines outlined in the <a
+            href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations
+            Guidance</a>.</li>
+      </ul>
+
+      <p>For HTTP GET response formats for Query requests,</p>
+
+      <p>CM servers MUST provide Turtle and JSON-LD, SHOULD provide RDF/XML, XML, and MAY provide Atom Syndication
+        Format XML representations.</p>
+
+      <p>When CM clients request:</p>
+
+      <ul>
+        <li><code>text/turtle</code> CM servers MUST respond with Turtle representation.</li>
+        <li><code>application/ld+json</code> CM servers MUST respond with JSON-LD representation.</li>
+        <li><code>application/rdf+xml</code> CM servers SHOULD respond with RDF/XML representation without restrictions.
+        </li>
+        <li><code>application/xml</code> CM servers SHOULD respond with OSLC-defined abbreviated XML representation as
+          defined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core
+            Representations Guidance</a></li>
+        <li><code>application/atom+xml</code> CM servers SHOULD respond with Atom Syndication Format XML representation
+          as defined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC
+            Core Representations Guidance</a></li>
+        <li>The Atom Syndication Format XML representation SHOULD use RDF/XML representation without restrictions for
+          the atom:content entries representing the resource representations.</li>
+      </ul>
+
+      <p>See Query Capabilities for additional information when Resource Shapes affect representation.</p>
+
+      <section id="contentNegotiation">
+        <h2>Content Negotiation</h2>
+
+        <p>[[!OSLCCore3]] specifies RDF representations (and specifically Turtle and JSON-LD) as a convention that all
+          OSLC server implementations minimally provide and accept. OSLC CM server implementations are strongly
+          encouraged to adopt this convention. Future versions of this specification are expected to require RDF
+          representations for all operations and relax requirements for specialized XML representations.</p>
+
+        <p><strong>XML Representation</strong> - identified by the <code>application/xml</code> content type. Format
+          representation rules are outlined in Core <a
+            href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Resource Formats
+            section</a></p>
+
+        <p><strong>RDF/XML Representation</strong> - identified by the <code>application/rdf+xml</code> content type. No
+          additional guidance is given.</p>
+
+        <p><strong>JSON-LD Representation</strong> - identified by the <code>application/ld+json</code> content type.
+          Format representation rules are specified in <a href="http://www.w3.org/TR/json-ld/">JSON-LD 1.0</a>.</p>
+
+        <p><strong>Atom Syndication Format XML Representation</strong> - identified by the
+          <code>application/atom+xml</code> content type. Format representation rules are outlined in Core <a
+            href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Resource Formats
+            section</a>.</p>
+      </section>
+    </section>
+
+    <section id="authentication">
+      <h2>Authentication</h2>
+
+      <p>[[!OSLCCore3]] specifies the recommended OSLC authentication mechanisms. In addition to the OSLC Core
+        authentication requirements, OSLC CM servers SHOULD support [[!OpenIDConnect]].</p>
+    </section>
+
+    <section id="errors">
+      <h2>Error Responses</h2>
+
+      <p>[[!OSLCCoreVocab]] specifies the OSLC Core error responses. OSLC CM puts no additional constraints on error
+        responses.</p>
+    </section>
+
+    <section id="pagination">
+      <h2>Pagination</h2>
+
+      <p>OSLC CM servers SHOULD support pagination of query results and MAY support pagination of a single resource's
+        properties as defined by [[!OSLCCore3]].</p>
+    </section>
+
+    <section id="requestProps">
+      <h3>Requesting and Updating Properties</h3>
+
+      <section id="requestSubset">
+        <h4>Requesting a Subset of Properties</h4>
+
+        <p>A client MAY request a subset of a resource's properties as well as properties from a referenced resource. In
+          order to support this behavior a server MUST support the <code>oslc.properties</code> and
+          <code>oslc.prefix</code> URL parameter on a HTTP GET request on individual resource request or a collection of
+          resources by query. If the <code>oslc.properties</code> parameter is omitted on the request, then all resource
+          properties MUST be provided in the response.</p>
+      </section>
+
+      <section id="updateSubset">
+        <h4>Updating a Subset of Properties</h4>
+
+        <p>A client MAY request that a subset of a resource's properties be updated by using the [[LDPPatch]]
+          <code>PATCH</code> method.</p>
+
+        <p>For compatibility with [[!OSLCCore2]], CM servers MAY also support partial update by identifying those
+          properties to be modified using the <code>oslc.properties</code> URL parameter on a HTTP PUT request.</p>
+
+        <p>If the parameter <code>oslc.properties</code> contains a valid resource property on the request that is not
+          provided in the content, the server MUST set the resource's property to a null or empty value. If the
+          parameter <code>oslc.properties</code> contains an invalid resource property, then a <code>409 Conflict</code>
+          MUST be returned.</p>
+      </section>
+
+      <section id="updatingMultiValueProps">
+        <h4>Updating Multi-Valued Properties</h4>
+
+        <p>For multi-valued properties that contain a large number of values, it may be difficult and inefficient to add
+          or remove property values. OSLC CM servers MAY provide support for a partial update of the multi-valued
+          properties as defined by draft specification [[LDPPatch]]. CM servers MAY also support partial updates through
+          HTTP PUT where only the updated properties are included in the entity request body.</p>
+      </section>
+    </section>
+
+    <section id="statePredicates">
+      <h3>Status, State and State Predicates</h3>
+      <p>Probably the most important property of a Change Request is the status property. "Status" specifies the
+        location of a Change Request in a workflow. The <code>oslc_cm:status</code> property is a typically read-only
+        string that servers can set to describe the status of a ChangeRequest. In queries the oslc_cm:status property
+        can be used to filter change request (e.g. all change requests that are "fixed") and may be used to perform
+        state transitions (not part of this specification) on a change request, e.g. closing a change request as
+        "fixed".</p>
+
+      <p>The problem is that different CM servers may use different properties (or even a set of properties) and
+        different values to represent the change request's state. Even providing access to meta data does not help
+        because knowing all possible state values does not reveal the semantics of a state.</p>
+
+      <p>[[OSLCCM20]] introduced State Predicates to define single-value often read-only Boolean properties on a Change
+        Request resource that allow servers to translate their specific status string values into a standard boolean
+        state predicate value. An attempt to update read-only predicates SHOULD be answered with a 409 Conflict HTTP
+        status code. Their presence in a resource representation used for an update via PUT MUST NOT prevent the
+        resource from being updated. Predicates MUST be queryable. The Change Request resource definition sections
+        defines the complete set of predicates.</p>
+
+      <p>OSLC CM 3.0 provides a similar means of defining a set of standard states that is also extensible. The
+        <code>oslc_cm:state</code> property can have a value of type <code>oslc_cm:State</code> which represents an
+        enumeration of individuals representing a standard set of ChangeRequest states. Servers MAY define additional
+        individuals to extend the states of different ChangeRequest types and lifecycles.</p>
+    </section>
+
+    <section id="labels" class='informative'>
+      <h3>Labels for Relationships</h3>
+
+      <p>Change Management relationships to other resources are represented by RDF properties. Instances of a
+        relationship - often called links - are RDF triples with a subject URI, a predicate that is the property, and a
+        value (or object) that is the URI of target resource. When a link is to be presented in a user interface, it may
+        be helpful to display an informative and useful textual label instead of or in addition to the URI of the
+        predicate and or object. There are three items that clients could display:
+        <ul>
+          <li><b>The property</b>: OSLC recommends using the rdfs:label property of the rdf:Property from the vocabulary
+            to display the property.</li>
+          <li><b>The value, or object of the triple</b>: OSLC recommends using OSLC resource preview
+            [[!OSLCResourcePreview]] to obtain an appropriate icon and label, and possibly a small and/or large dialog
+            for displaying the object.</li>
+          <li><b>The link</b>: The link is a combination of the subject, predicate and object of the triple (RDF
+            statement or assertion). In the case where the link requires a unique label that is not available from the
+            target resource, only then OSLC servers may support a dcterms:title on a reified statement to provide a
+            label for a link that describes the assertion itself.</li>
+        </ul>
+      </p>
+
+      <p>Turtle example using a reified statement:</p>
+
+      <pre class="example">
+@prefix ns0: &lt;http://open-services.net/ns/cm#&gt; .
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;http://example.com/bugs/4321&gt;
+  a &lt;http://open-services.net/ns/cm#ChangeRequest&gt; ;
+  ns0:relatedChangeRequest &lt;http://anotherexample.com/defects/123&gt; .
+
+&lt;http://njh.me/#link1&gt;
+  a rdf:Statement ;
+  rdf:subject &lt;http://example.com/bugs/4321&gt; ;
+  rdf:predicate ns0:relatedChangeRequest ;
+  rdf:object &lt;http://anotherexample.com/defects/123&gt; ;
+  dcterms:title &quot;Defect 123: Problems during install&quot; .
+</pre>
+
+      <p>JSON-LD example using reified statement:</p>
+
+      <pre class="example">
+{
+  "@context": {
+    "dcterms": "http://purl.org/dc/terms/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "oslc": "http://open-services.net/ns/core#",
+    "oslc_cm": "http://open-services.net/ns/cm#"
+  },
+  "@id": "http://example.com/bugs/4321",
+  "@type": "oslc_cm:ChangeRequest",
+  "oslc_cm:relatedChangeRequest": {
+    "@id": "http://anotherexample.com/defects/123",
+    "dcterms:title": "Defect 123: Problems during install"
+  }
+}
+</pre>
+    </section>
+  </section>
+
+  <section id='termsAndConstraints'>
+    <h2>Vocabulary Terms and Constraints</h2>
+    <p><a href="http://docs.oasis-open.org/oslc-domains/cm/v3.0/cm-v3.0-part2-change-mgt-vocab.html">OSLC Change
+        Management Version 3.0. Part 2: Vocabulary</a>
+      Defines the vocabulary terms and constraints for OSLC Change Management resources.
+      These terms and constraints are specified according to [[!OSLCCoreVocab]].</p>
+  </section>
+
+  <section id="capabilities">
+    <h2>CM Server Capabilities</h2>
+
+    <section id="resources">
+      <h3>Server Resources</h3>
+
+      <p>OSLC CM servers MUST support OSLC Discovery capabilities defined by [[!OSLCCore3]].</p>
+
+      <p>OSLC CM servers MAY provide a ServiceProvider Resource that can be retrieved at a implementation dependent URI.
+      </p>
+
+      <p>OSLC CM servers MAY provide a ServiceProviderCatalog Resource that can be retrieved at a implementation
+        dependent URI.</p>
+
+      <p>OSLC CM servers MAY provide a <code>oslc:serviceProvider</code> property for their defined resources that will
+        be the URI to a ServiceProvider Resource.</p>
+
+      <p>OSLC CM servers MUST supply a value of <code>http://open-services.net/ns/cm#</code> for the property
+        <code>oslc:domain</code> on either <code>oslc:Service</code> or <code>oslc:ServiceProviderCatalog</code>
+        resources.</p>
+    </section>
+
+    <p>OSLC CM servers MAY allow ChangeRequest state change through [[OSLCActions]].</p>
+
+    <section id="creationfactories">
+      <h3>Creation Factories</h3>
+
+      <p>OSLC CM servers MUST support <a
+          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Creation_Factories">Creation Factories</a>
+        and list them in the Service Provider Resource as defined by OSLC Core. OSLC CM servers SHOULD support Resource
+        Shapes for Creation Factories as defined in [[!OSLCShapes]]</p>
+    </section>
+
+    <section id="querycapabilities">
+      <h3 id="querycapabilities">Query Capabilities</h3>
+
+      <p>OSLC CM servers SHOULD support the <a
+          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities">Query Capabilities</a>
+        as defined by [[!OSLCCore3]]. OSLC CM servers SHOULD support Resource Shapes for Query Capability as defined in
+        [[!OSLCShapes]]</p>
+
+      <p>The Query Capability, if supported, MUST support these parameters:</p>
+
+      <ul>
+        <li><code>oslc.where</code></li>
+        <li><code>oslc.select</code></li>
+        <li><code>oslc.properties</code></li>
+        <li><code>oslc.prefix</code></li>
+      </ul>
+
+      <p>If shape information is NOT present with the Query Capability, servers SHOULD use these default properties to
+        contain the result:
+        <ul>
+          <li>For RDF/XML and XML, use <code>rdf:Description</code> and <code>rdfs:member</code> as defined in <a
+              href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Specifying_the_shape_of_a_query">OSLC
+              Core RDF/XML Examples</a>.</li>
+          <li>For JSON, the query results are contained within <code>oslc:results</code> array. See <a
+              href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_JSON">OSLC
+              Core Representation Guidance for JSON</a></li>
+        </ul>
+      </p>
+    </section>
+
+    <section id="delegatedUIs">
+      <h3>Delegated UIs</h3>
+
+      <p>OSLC CM servers MUST support the selection and creation of resources by delegated web-based user interface
+        dialogs <a
+          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs">Delegated
+          UIs</a> as defined by [[!OSLCCore3]].</p>
+
+      <p>OSLC CM servers MAY support the pre-filling of creation dialogs based on the definition at <a
+          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs">Delegated
+          UIs</a>.</p>
+    </section>
+
+    <section id="usageidentifiers">
+      <h3>Usage Identifiers</h3>
+
+      <p>An OSLC CM server can identify or distinguish the usage of various services with additional property values for
+        the <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources">OSLC
+          Core</a> defined <code>oslc:usage</code> property on <code>oslc:Dialog</code>, <code>CreationFactory</code>
+        and <code>QueryCapability</code>. The <code>oslc:usage</code> property value of
+        <code>http://open-services.net/ns/core#default</code> will be used to designate the default or primary service
+        to be used by clients when multiple entries are found.</p>
+
+      <p>The additional Change Management property values for <code>oslc:usage</code> are:</p>
+
+      <ul>
+        <li><code>http://open-services.net/ns/cm#defect</code> - primarily used by QM tools to report defects in
+          testing.</li>
+        <li><code>http://open-services.net/ns/cm#planItem</code> - used by QM and PPM tools for associating change
+          requests into plans (project, release, sprint, etc).</li>
+        <li><code>http://open-services.net/ns/cm#task</code> - used by QM and PPM tools for associating change requests
+          into executable and track-able items.</li>
+        <li><code>http://open-services.net/ns/cm#requirementsChangeRequest</code> - used by RM tools for associating a
+          change request for usage in tracking changes to a Requirements resource</li>
+      </ul>
+    </section>
+  </section>
+
+
+  <section id="conformance">
+    <h2>Conformance</h2>
+
+    <p>This specification is based on [[!OSLCCore3]]. OSLC CM servers
+      MUST be compliant with both the core specification, MUST follow all the mandatory requirements in the normative
+      sections of this specification, and SHOULD follow all the guidelines and recommendations in both
+      these specifications.</p>
+
+    <p>An OSLC CM server MUST implement the domain vocabulary defined in <a
+        href="http://docs.oasis-open.org/oslc-domains/cm/v3.0/cm-v3.0-part2-change-mgt-vocab.html">OSLC Change
+        Management Version 3.0. Part 2: Vocabulary</a>
+
+      <p>The following table summarizes the requirements from OSLC Core Specification
+        as well as some additional requirements specific to the CM domain. Note that
+        this specification further restricts some of the requirements for OSLC Core
+        Specification. See the previous sections in this specification or the
+        OSLC Core Specification to get further details on each of these
+        requirements.</p>
+
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>Requirement</th>
+            <th>Level</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CM-1</td>
+            <td>Unknown properties and content</td>
+            <td>MAY / MUST</td>
+            <td>OSLC servers MAY ignore unknown content and OSLC clients MUST preserve unknown content</td>
+          </tr>
+          <tr>
+            <td>CM-2</td>
+            <td>Resource Operations</td>
+            <td>MUST</td>
+            <td>OSLC service MUST support resource operations via standard HTTP operations</td>
+          </tr>
+          <tr>
+            <td>CM-3</td>
+            <td>Resource Paging</td>
+            <td>MAY</td>
+            <td>OSLC servers MAY provide paging for resources but only when specifically requested by client</td>
+          </tr>
+          <tr>
+            <td>CM-4</td>
+            <td>Partial Resource Representations</td>
+            <td>MAY / MUST</td>
+            <td>OSLC servers MUST support request for a subset of a resource’s properties via the oslc.properties URL
+              parameter retrieval via HTTP GET</td>
+          </tr>
+          <tr>
+            <td>CM-5</td>
+            <td>Partial Update</td>
+            <td>MAY</td>
+            <td>OSLC servers MAY support partial update of resources using [[LDPPatch]], or via HTTP PUT.</td>
+          </tr>
+          <tr>
+            <td>CM-6</td>
+            <td>Discovery</td>
+            <td>MUST / MAY / SHOULD</td>
+            <td>OSLC servers SHOULD provide a ServiceProvider resource for Core v2 compatibility,
+              MAY provide a ServiceProviderCatalog, and MAY provide other forms of discovery described in Core 3.0
+              Discovery.</td>
+          </tr>
+          <tr>
+            <td>CM-7</td>
+            <td>Creation Factories</td>
+            <td>MUST</td>
+            <td>OSLC servers MUST provide LDPC creation factories to enable resource creation of Change Management
+              resources via HTTP POST</td>
+          </tr>
+          <tr>
+            <td>CM-8</td>
+            <td>Query Capabilities</td>
+            <td>SHOULD</td>
+            <td>OSLC servers SHOULD provide query capabilities to enable clients to query for resources</td>
+          </tr>
+          <tr>
+            <td>CM-9</td>
+            <td>Query Syntax</td>
+            <td>SHOULD / MAY</td>
+            <td>OSLC query capabilities SHOULD support the OSLC Core Query Syntax and MAY use other query syntax</td>
+          </tr>
+          <tr>
+            <td>CM-10</td>
+            <td>Delegated UI Dialogs</td>
+            <td>MUST / SHOULD</td>
+            <td>OSLC Services MUST offer delegated UI dialogs (creation and selections) specified via OSLC Core 3.0
+              Delegated Dialogs and SHOULD include discovery through a ServiceProvider resource for OSLC v2
+              compatibility</td>
+          </tr>
+          <tr>
+            <td>CM-11</td>
+            <td>UI Preview</td>
+            <td>SHOULD</td>
+            <td>OSLC Services SHOULD offer UI previews for resources that may be referenced by other resources specified
+              via OSLC Core 3.0 Preview and SHOULD include discovery through a server resource for OSLC v2 compatibility
+            </td>
+          </tr>
+          <tr>
+            <td>CM-12</td>
+            <td>Authentication</td>
+            <td>MAY</td>
+            <td>OSLC Services SHOULD follow the recommendations for Authentication specified in [[!OSLCCore3]]</td>
+          </tr>
+          <tr>
+            <td>CM-13</td>
+            <td>Error Responses</td>
+            <td>SHOULD</td>
+            <td>OSLC Services SHOULD provide error responses using OSLC Core 3.0 defined error formats</td>
+          </tr>
+          <tr>
+            <td>CM-14</td>
+            <td>Turtle Representations</td>
+            <td>MUST</td>
+            <td>OSLC servers MUST provide a Turtle representation for HTTP GET requests and SHOULD support Turtle
+              representations on POST and PUT requests.</td>
+          </tr>
+          <tr>
+            <td>CM-15</td>
+            <td>RDF/XML Representations</td>
+            <td>SHOULD</td>
+            <td>OSLC servers SHOULD provide an RDF/XML representation for HTTP GET requests and SHOULD support RDF/XML
+              representations on POST and PUT requests for compatibility with Change Management 2.0.</td>
+          </tr>
+          <tr>
+            <td>CM-16</td>
+            <td>XML Representations</td>
+            <td>SHOULD</td>
+            <td>OSLC servers SHOULD provide a XML representation for HTTP GET, POST and PUT requests that conform to the
+              Core 2.0 Guidelines for XML.</td>
+          </tr>
+          <tr>
+            <td>CM-17</td>
+            <td>JSON Representations</td>
+            <td>MUST</td>
+            <td>OSLC servers MUST provide JSON-LD representations for HTTP GET, POST and PUT requests that conform to
+              the Core Guidelines for JSON-LD</td>
+          </tr>
+          <tr>
+            <td>CM-18</td>
+            <td>HTML Representations</td>
+            <td>SHOULD</td>
+            <td>OSLC servers SHOULD provide HTML representations for HTTP GET requests</td>
+          </tr>
+        </tbody>
+      </table>
+  </section>
+
+
+  <section id="versionCompability" class="appendix">
+    <h2>Version Compatibility with 2.0 Specifications</h2>
+
+    <section id="deprecatedTerms">
+      <h3 id="deprecatedterms">Deprecated terms</h3>
+
+      <p>A number of terms introduced in early development of the OSLC Change Management domain were deprecated in the
+        finalized [[OSLCCM20]] specification. These terms are summarized here in order to indicate they remain
+        deprecated.</p>
+
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th><strong>Prefixed Name</strong></th>
+            <th><strong>Occurs</strong></th>
+            <th><strong>Read-only</strong></th>
+            <th><strong>Value-type</strong></th>
+            <th><strong>Represen-tation</strong></th>
+            <th><strong>Range</strong></th>
+            <th><strong>Description</strong></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><em>deprecated</em> dcterms:type</td>
+            <td>zero-or-more</td>
+            <td>unspecified</td>
+            <td>String</td>
+            <td>n/a</td>
+            <td>n/a</td>
+            <td>A short string representation for the type, example <code>Defect</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Relationship properties:</strong> This grouping of properties are used to identify relationships
+              between resources managed by other OSLC servers</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><em>deprecated</em> oslc_cm:testedByTestCase</td>
+            <td>zero-or-many</td>
+            <td>False</td>
+            <td>Resource</td>
+            <td>Reference</td>
+            <td><code style="white-space: pre;">any</code></td>
+            <td>Test case by which this change request is tested. It is likely that the target resource will be an
+              <code>oslc_qm:TestCase</code>, but that is not necessarily the case.</td>
+          </tr>
+          <tr>
+            <td><em>deprecated</em> oslc_cm:affectsTestResult</td>
+            <td>zero-or-many</td>
+            <td>False</td>
+            <td>Resource</td>
+            <td>Reference</td>
+            <td><code style="white-space: pre;">any</code></td>
+            <td>Associated QM resource that is affected by this Change Request. It is likely that the target resource
+              will be an <code>oslc_qm:TestResult</code>, but that is not necessarily the case.</td>
+          </tr>
+          <tr>
+            <td><em>deprecated</em> oslc_cm:blocksTestExecutionRecord</td>
+            <td>zero-or-many</td>
+            <td>False</td>
+            <td>Resource</td>
+            <td>Reference</td>
+            <td><code style="white-space: pre;">any</code></td>
+            <td>Associated QM resource that is blocked by this Change Request. It is likely that the target resource
+              will be an oslc_cm:TestExecutionRecord, but that is not necessarily the case.</td>
+          </tr>
+          <tr>
+            <td><em>deprecated</em> oslc_cm:relatedTestExecutionRecord</td>
+            <td>zero-or-many</td>
+            <td>False</td>
+            <td>Resource</td>
+            <td>Reference</td>
+            <td><code style="white-space: pre;">any</code></td>
+            <td>Related to a QM test execution resource. It is likely that the target resource will be an
+              <code>oslc_qm:TestExecutionRecord</code>, but that is not necessarily the case.</td>
+          </tr>
+          <tr>
+            <td><em>deprecated</em> oslc_cm:relatedTestCase</td>
+            <td>zero-or-many</td>
+            <td>False</td>
+            <td>Resource</td>
+            <td>Reference</td>
+            <td><code style="white-space: pre;">any</code></td>
+            <td>Related QM test case resource. It is likely that the target resource will be an
+              <code>oslc_qm:TestCase</code>, but that is not necessarily the case.</td>
+          </tr>
+          <tr>
+            <td><em>deprecated</em> oslc_cm:relatedTestPlan</td>
+            <td>zero-or-many</td>
+            <td>False</td>
+            <td>Resource</td>
+            <td>Reference</td>
+            <td><code style="white-space: pre;">any</code></td>
+            <td>Related QM test plan resource. It is likely that the target resource will be an
+              <code>oslc_qm:TestPlan</code>, but that is not necessarily the case.</td>
+          </tr>
+          <tr>
+            <td><em>deprecated</em> oslc_cm:relatedTestScript</td>
+            <td>zero-or-many</td>
+            <td>False</td>
+            <td>Resource</td>
+            <td>Reference</td>
+            <td><code style="white-space: pre;">any</code></td>
+            <td>Related QM test script resource. It is likely that the target resource will be an
+              <code>oslc_qm:TestScript</code>, but that is not necessarily the case.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="changesFrom2">
+      <h2>Changes from 2.0</h2>
+      <p>The following lists the significant vocabulary changes that were introduced in this specification. The changes
+        are all upward compatible additions and therefore do not introduce incompatibilities with version 2.0.
+        <ul>
+          <li>Added <em>oslc_cm:priority</em> and <em>oslc_cm:severity</em></li>
+          <li>Added new change management types</li>
+        </ul>
+    </section>
+  </section>
+
+
+  <section class='appendix informative'>
+    <h2>Acknowledgements</h2>
+    <p>The following individuals have participated in the creation of this specification and are gratefully
+      acknowledged:</p>
+
+    <p><b>Participants</b>:</p>
+    <p style="margin-left: 40px">
+      James Amsden, IBM (Editor)<br>
+      Geoff Clemm, IBM<br>
+      Nick Crossley, IBM (Chair)<br>
+      Ian Green, IBM<br>
+      Peter Hack, IBM<br>
+      David Honey, IBM<br>
+      Sam Padget, IBM<br>
+      Martin Pain, IBM<br>
+      Martin Sarabura, PTC<br>
+      Brian Steele, IBM<br></p>
+  </section>
+
+
+  <section class="appendix informative" id="history">
+    <h2>Change History</h2>
+    <table border=1 cellspacing=0 cellpadding=0>
+      <tr>
+        <td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'><b>Revision</b></td>
+        <td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Date</b></td>
+        <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Editor</b></td>
+        <td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Changes Made</b></td>
+      </tr>
+      <tr>
+        <td>01</td>
+        <td>08/06/2018</td>
+        <td>Jim Amsden</td>
+        <td>Committee Specification 01 Published</td>
+      </tr>
+    </table>
+  </section>
+</body>
+
+</html>
