@@ -131,6 +131,10 @@ public class Main
             Models.write(resultModel.getModel(), System.out);
         }
         resultModel.print(System.out);
+
+        if(errors > 0) {
+            System.exit(1);
+        }
     }
 
 

@@ -1,13 +1,14 @@
 version: 2.0
 jobs:
   build:
-    working_directory: ~/oslc-core
+    working_directory: ~/oslc-specs
     docker:
       - image: circleci/openjdk:8-jdk-browsers
     steps:
       - checkout
       - run:
-          name: ShapeChecker ant
-          command: cd tools/ShapeChecker && ant -lib lib/ -buildfile build.xml
-      - store_artifacts: # store the uberjar as an artifact
-          path: tools/ShapeChecker/lib/shapechecker.jar
+          name: ShapeChecker Gradle build
+          command: cd tools/ShapeChecker && ./gradlew --console=plain installDist
+      - run:
+          name: Check OSLC Core spec shapes & vocabs
+          command: cd tools/ShapeChecker && ./check.sh

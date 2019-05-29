@@ -19,6 +19,9 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RIOT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -452,7 +455,9 @@ public class ResultModel
     public void print(PrintStream output)
     {
         printStream = output;
-        resultVocabModel = ModelFactory.createDefaultModel().read("resources/SCVocabulary.ttl", "TURTLE");
+        resultVocabModel = ModelFactory.createDefaultModel()
+                .read(ResultModel.class.getClassLoader().getResourceAsStream("SCVocabulary.ttl"), "http://open-services.net/ns/scheck#",
+                        "TURTLE");
 
         // Results from summary node
         output.printf("Results from ShapeChecker run on %s%n",
