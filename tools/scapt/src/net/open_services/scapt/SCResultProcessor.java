@@ -160,7 +160,6 @@ public class SCResultProcessor extends AbstractProcessor
         try
         {
             Properties props = new Properties();
-//            try (FileReader reader = new FileReader("/Volumes/atlantis/Nick/Documents/EclipseWorkspace/scapt/src/net/open_services/scapt/velocity.properties"))
             try (InputStream reader = getClass().getClassLoader().getResourceAsStream("net/open_services/scapt/velocity.properties"))
             {
                 props.load(reader);
@@ -190,7 +189,7 @@ public class SCResultProcessor extends AbstractProcessor
 
             FileObject vocabFile =
                     processingEnv.getFiler()
-                        .createResource(StandardLocation.SOURCE_OUTPUT, "", "../resources/SCVocabulary.ttl");
+                        .createResource(StandardLocation.SOURCE_OUTPUT, "", "../src/main/resources/SCVocabulary.ttl");
 
             processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
                 "creating vocabulary file " + vocabFile.toUri() + " using  template " + vt.getName());
