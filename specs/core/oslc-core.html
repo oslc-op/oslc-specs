@@ -3,15 +3,26 @@
 <head>
 <meta charset='utf-8' />
 <title>OSLC Core Version 3.0. Part 1: Overview</title>
-<link rel="stylesheet" type="text/css" href="../styles/oslc-styles.css" />
-<link rel="stylesheet" type="text/css" href="../styles/table-styles.css" />
-<link rel="stylesheet" type="text/css" href="../styles/definition-styles.css" />
+<link rel="stylesheet" type="text/css" href="../../styles/oslc-styles.css" />
+<link rel="stylesheet" type="text/css" href="../../styles/table-styles.css" />
+<link rel="stylesheet" type="text/css" href="../../styles/definition-styles.css" />
 <script
-  src='https://ndjc.github.io/respec/builds/oasis/respec-oasis-common.js'
+  src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js'
   async class='remove'></script>
 <script class='remove'>
   var respecConfig = {
-    specStatus : "CSPRD",
+    // specification status:
+    //        WD      Working Draft
+    //        PSD     Project Specification Draft
+    //        PSPRD   Project Specification Public Review Draft
+    //        PS      Project Specification
+    //        COS     Candidate OASIS Standard
+    //        OS      OASIS Standard
+    //        Errata  Approved Errata
+    //        PND     Project Note Draft
+    //        PNPRD   Project Note Public Review Draft
+    //        PN      Project Note
+    specStatus : "PSPRD",
     shortName : "oslc-core",
     conformanceLabelPrefix: "CORE",
 
@@ -46,9 +57,6 @@
     // previousPublishDate:  "1977-03-15",
     // previousMaturity:  "WD",
 
-    // if this is a LCWD, uncomment and set the end of its review period
-    // lcEnd: "2009-08-05",
-
     // chairs and editors, add as many as you like
     // only "name" is required
     chairs : [ {
@@ -69,7 +77,7 @@
       companyURL: "http://www.ibm.com/"
     } ],
 
-    wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
+    wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) Open Project",
     wgShortName : "oslc-core",
     wgURI : "https://www.oasis-open.org/committees/oslc-core/",
       // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
@@ -92,7 +100,7 @@
     ],
 
     relatedWork : [
-      {title: "OSLC Core Version 3.0: Link Guidance", 
+      {title: "OSLC Core Version 3.0: Link Guidance",
        href: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/link-guidance.html",
        status: "Work in progress. Current draft"}
     ],
@@ -431,31 +439,31 @@ simpler, built on layered capabilities and easier to adopt.</p>
 
   <section id='resourceShapes'>
     <h2>Resource Constraints</h2>
-	<p>The shape of an RDF resource is a description of the set of triples it is expected to contain and the integrity constraints those triples are required to satisfy. Applications of shapes include validating RDF data, documenting RDF APIs, and providing metadata to tools that handle RDF data such as form and query builders.</p>
+    <p>The shape of an RDF resource is a description of the set of triples it is expected to contain and the integrity constraints those triples are required to satisfy. Applications of shapes include validating RDF data, documenting RDF APIs, and providing metadata to tools that handle RDF data such as form and query builders.</p>
     <p>
     Shapes are different than vocabularies in that shapes may change with new revisions of resource definitions, whereas vocabularies should evolve in place in a compatible manner.</p>
     <p class='conformance'>Constraints on OSLC Core and Domain resources SHOULD be described using [[!OSLCShapes]] which is included as part of the OSLC Core multi-part specifications. Servers MAY use other constraint languages such as [[SHACL]] to define resource constraints.
     </p>
-	<div class='conformance'>
+    <div class='conformance'>
     <p>OSLC Domain specifications SHOULD use the following URI pattern when publishing each individual resource shape:
-	</p>
-	<section id='URIPattern'>
+    </p>
+    <section id='URIPattern'>
     <pre>
         http://open-services.net/ns/[vocab short name]/shapes/[version]/[shape-name]
     </pre>
-	</div>
+    </div>
     <p>For example, for Change Management 3.0, a shape describing the base Change Request resource type might have the shape URI:</p>
       <pre>
         http://open-services.net/ns/cm/shapes/3.0/changerequest
       </pre>
     <p>Not all shapes would necessarily be updated at the same time. </p>
-	<div class='conformance'>
-	<p>
+    <div class='conformance'>
+    <p>
       To allow different versions of individual shapes to be reused in different versions of a domain specification while still allowing a client to browse the set of possible shapes, domains SHOULD provide an LDPC for all the shapes for a spec version, at a URI defined by the following pattern:</p>
     <pre>
       http://open-services.net/ns/[vocab short name]/shapes/[SPEC-version]
     </pre>
-	</div>
+    </div>
     <p>For example, for Change Management 3.0, there should be a container at: <code>http://open-services.net/ns/cm/shapes/3.0</code> with members such as:</p>
     <pre>
         http://open-services.net/ns/cm/shapes/3.0/changerequest
@@ -571,7 +579,7 @@ uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are
 </pre>
 
       <p>OSLC Core specifies a number of predefined PrefixDefinitions for convenience. OSLC Domain specifications may specify additional pre-defined PrefixDefinitions for their purposes.</p>
-	  <p>An OSLC Server SHOULD support the following PrefixDefinitions:</p>
+    <p>An OSLC Server SHOULD support the following PrefixDefinitions:</p>
       <ul>
         <li>dcterms: &lt;http://purl.org/dc/terms/&gt;</li>
         <li>foaf: &lt;http://xmlns.com/foaf/0.1/&gt;</li>
@@ -613,29 +621,29 @@ uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are
 
       <p>Resource Paging specifies a capability for servers to make the state of large resources or long lists of resources available as a list of smaller subset resources (pages) whose representation is easier to produce by the server and consume by clients. Resource paging is particularly useful in handling results from the query capability or the contents of an LDP container.</p>
 
-	<section id="checkingResponseSize">
+    <section id="checkingResponseSize">
       <h2>Checking Response Size</h2>
 
-	  <p class="conformance">Clients that do not wish to load large resources MAY use the HTTP HEAD method to determine the size of a resource.</p>
-	  <p class="conformance">When responding to an HTTP HEAD request, according to [[!HTTP11]] the server SHOULD include an HTTP Content-Length header that indicates the size of the resource as the "decimal number of octets."</p>
+    <p class="conformance">Clients that do not wish to load large resources MAY use the HTTP HEAD method to determine the size of a resource.</p>
+    <p class="conformance">When responding to an HTTP HEAD request, according to [[!HTTP11]] the server SHOULD include an HTTP Content-Length header that indicates the size of the resource as the "decimal number of octets."</p>
 
-	</section>
+    </section>
 
-	<section id="UnstablePaging">
+    <section id="UnstablePaging">
     <h3>Unstable Paging</h3>
 
       <p>Because HTTP is a stateless protocol and OSLC Services manage resources that can change frequently, OSLC clients should assume that the resources returned on a given page may change over time.</p>
-	</section>
+    </section>
 
-	<section id="StablePaging">
+    <section id="StablePaging">
     <h3>Stable Paging</h3>
 
       <p>Some OSLC Servers might wish to guarantee stable paging, meaning that the sequence of pages returned from the server represent a snapshot in time and will not change as the client pages through them. OSLC specifications that require stable paging should state this requirement and specify to which resources it applies.</p>
 
       <p>Note that because stable paging implementations are based on server-side state, it is possible that the state will expire. <span class='conformance'>Implementations MAY use the HTTP response code 410 (Expired) to indicate to clients that the link they requested has expired.</span></p>
-	</section>
+    </section>
 
-	<section id="responseInformation">
+    <section id="responseInformation">
     <h3>Response Information</h3>
 
       <p>A response info resource representation describes information about a paged HTTP response body in which it appears.</p>
@@ -650,7 +658,7 @@ uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are
 GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageno=2
 
 &lt;rdf:RDF
-   xmlns:oslc_blog=&quot;http://open-services.net/ns/bogus/blogs#&quot; 
+   xmlns:oslc_blog=&quot;http://open-services.net/ns/bogus/blogs#&quot;
    xmlns:rdf=&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;
    xmlns:foaf=&quot;http://http://xmlns.com/foaf/0.1/&quot;
    xmlns:dcterms=&quot;http://purl.org/dc/terms/&quot;&gt;
@@ -664,46 +672,46 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageno=2
       &lt;oslc:nextPage rdf:resource=&quot;http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageno=3&quot; /&gt;
    &lt;/oslc:ResponseInfo&gt;
 
-&lt;/rdf:RDF&gt;      
+&lt;/rdf:RDF&gt;
       </pre>
 
       <p>Refer to the OSLC vocabulary specification for further information on the ResponseInfo resource.</p>
-	</section>
+    </section>
 
-	<section id="usingResourcePaging">
+    <section id="usingResourcePaging">
     <h3>Using Resource Paging</h3>
       <p class='conformance'>
         OSLC Services SHOULD support [[!LDPPaging]] to enable clients to retrieve large LDP resources (LDPRs) a page at a time.
       </p>
 
-	  <p class='conformance'>To request a paged version of a resource, a client MUST add at least one "key=value" pair to the query component of the resource URI: Either oslc.paging=true, or oslc.pageSize, or both.</p>
-	  <p class='conformance'> When responding to a request that includes oslc.paging=true in the URI, a server MAY return a representation that contains a subset of the resource's property values.</p>
-	  <p>By adding oslc.pageSize to the query component of the resource URI, the client requests that the server respond with a specific number of property values. For example, oslc.pageSize=20 indicates to the server that the client would like 20 values per page.</p>
-	  <p class='conformance'> When responding to a request that includes oslc.pageSize in the URI, a server SHOULD return a representation that contains the requested number of property values.</p>
+    <p class='conformance'>To request a paged version of a resource, a client MUST add at least one "key=value" pair to the query component of the resource URI: Either oslc.paging=true, or oslc.pageSize, or both.</p>
+    <p class='conformance'> When responding to a request that includes oslc.paging=true in the URI, a server MAY return a representation that contains a subset of the resource's property values.</p>
+    <p>By adding oslc.pageSize to the query component of the resource URI, the client requests that the server respond with a specific number of property values. For example, oslc.pageSize=20 indicates to the server that the client would like 20 values per page.</p>
+    <p class='conformance'> When responding to a request that includes oslc.pageSize in the URI, a server SHOULD return a representation that contains the requested number of property values.</p>
 
       <p class='conformance'>When Resource Paging is used, the values of a multi-valued property MAY be split across resource pages.</p>
-	  <p class='conformance'>When Resource Paging is used, each property value MUST be represented in its entirety and not split across multiple partial resource pages.</p>
+    <p class='conformance'>When Resource Paging is used, each property value MUST be represented in its entirety and not split across multiple partial resource pages.</p>
 
       <p class='conformance'>When a page is returned and it is NOT the last page in the sequence, then it SHOULD include an oslc:ResponseInfo (see above), which contains a resource-valued property oslc:nextPage that links to a resource that represents the next page of property-values.</p>
-	  <p class='conformance'>
-	  When paging is unstable, by the time a client follows an oslc:nextPage link there may no longer be a next page, in this case the server MAY respond with an HTTP 404 Page Not Found status code.</p>
+    <p class='conformance'>
+    When paging is unstable, by the time a client follows an oslc:nextPage link there may no longer be a next page, in this case the server MAY respond with an HTTP 404 Page Not Found status code.</p>
 
-	</section>
+    </section>
 
-	<section id='providerResponseSizeLimit'>
+    <section id='providerResponseSizeLimit'>
     <h3>Provider Response Size Limitations</h3>
 
       <p class='conformance'>When a client requests a resource that an OSLC Service considers to be too large to return in one response and the client has not indicated that it desires paging (via oslc.paging or oslc.pageSize), the OSLC Service MAY redirect the client to a representation that contains partial information about the resource.</p>
 
-	  <p class='conformance'>When the OSLC Service opts to redirect the client to a partial representation, it MUST return an HTTP Status 302 redirect to a URL that includes either oslc.paging, or oslc.pageSize, or both.</p>
+    <p class='conformance'>When the OSLC Service opts to redirect the client to a partial representation, it MUST return an HTTP Status 302 redirect to a URL that includes either oslc.paging, or oslc.pageSize, or both.</p>
 
-	  <p>If the URL includes oslc.pageSize then the value should be a value that is acceptable to the service. The client may choose to follow the redirect and receive a representation that contains partial information about the resource.</p>
+    <p>If the URL includes oslc.pageSize then the value should be a value that is acceptable to the service. The client may choose to follow the redirect and receive a representation that contains partial information about the resource.</p>
 
       <p>On receiving a resource representation, OSLC Clients should check for the presence of an oslc:nextPage value to determine if the representation contains partial information about the resource. If the value is present, then paging is in effect and the representation contains partial information about the resource.</p>
 
     </section>
-	</section>
-	
+    </section>
+
     <section id="attachments">
       <h2>Attachments</h2>
       <p>Attachments describes a minimal way to manage attachments related to web resources using LDP-Containers and Non-RDF Source [[!LDP]].</p>
