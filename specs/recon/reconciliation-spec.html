@@ -202,24 +202,27 @@
 
   <section id="introduction" class="informative">
     <h2>Introduction</h2>
+    <p>(this section is informative)</p>
 
-    <p>This specification defines the OSLC Change management domain as a RESTful web
-      services interface for the management of product change requests, activities,
-      tasks and relationships between those and related resources such as project,
-      category, release and plan. To support these scenarios, this specification
-      defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET,
-      POST, PUT and DELETE, HTTP response codes, content type handling and resource
-      formats.</p>
+    <p>Reconciliation, as referenced in this specification, refers to the case where there exists a need to understand
+      if multiple providers are referring to the same resource, particularly when there is not already a common
+      identifier that all providers populate. For example, an IT environment discovery tool reports that it finds a
+      computer using an IP address of 192.168.0.1 ; and a monitoring tools reports that CPU usage on the machine with
+      hostname example1.domain.com. A system administrator would previously have to rely on experience or have to lookup
+      manually that both tools are referring to the same physical resource. In HTTP terms, we want to determine that a
+      set of URIs refer to the same “non-information resource” entity. See the <a
+        href="https://archive.open-services.net/wiki/reconciliation/Reconciliation-Scenarios/index.html"
+        title="Reconciliation-Scenarios">Reconciliation Scenarios</a> page
+      for several specific examples.</p>
 
-    <p>The intent of this specification is to define the capabilities needed to
-      support integration scenarios defined by the Change Management Technical Committee
-      and not to provide a comprehensive interface to Change Management. The resource
-      formats and operations may not match exactly the native models supported by
-      change management servers but are intended to be compatible with
-      them. The approach to supporting these scenarios is to delegate operations, as
-      driven by server contributed user interfaces, as much as possible and
-      not require a server to expose its complete data model and
-      application logic.</p>
+    <p>This specification builds on the [[!OSLCCore2]] to define the resources and operations supported by Open Services
+      for Lifecycle Collaboration
+      (OSLC) providers who have a need to reconcile resource instance information with other providers.</p>
+
+    <p>The goal of this effort is to define resources, methods and constraints such that disparate tools can recognize
+      that their data describes the same entity or concept (non-information resource). Reconcilable resources describe
+      individual entities, including their relationships to other resources inside and/or outside of the Reconciliation
+      domain.</p>
 
     <section id="iprPolicy">
       <h2>IPR Policy</h2>
@@ -238,24 +241,20 @@
     <section id="terminology">
 
       <h2>Terminology</h2>
-      <p>Terminology uses and extends the terminology and capabilities of [[!OSLCCore3]].</p>
+      <p>
+        <strong>Reconciliation Service Provider</strong> - an OSLC Service Provider that exposes reconcilable and/or
+        reconciled resources.</p>
+      <p>
+        <strong>Reconcilable resource</strong> - a resource that conforms to this specification, especially the
+        “additional requirements” section for each resource definition. It can be matched to another resource based on
+        the values of a set of properties as defined in this specification.</p>
+      <p>
+        <strong>Asset Consumer</strong> - A collection of reconcilable resources that the Reconciliation Service
+        Provider has determined to be representations of the same entity.</p>
+      <p>
+        <strong>NOT</strong> - When used in the <a href="#Resource_definitions">Resource Definitions</a> section of
+        this specification, indicates that the absence of a property is required.</p>
 
-      <dl class="glossary">
-        <dt>Change Request Resource</dt>
-        <dd>A request for change to an
-          application or product. Typically a product request for enhancement, a report for a resolution of a product
-          defect or simply a bug report.</dd>
-
-        <dt>Client</dt>
-        <dd>An implementation of the OSLC Change Management specifications as a client. OSLC CM Clients consume services
-          provided by servers.</dd>
-
-        <dt>Server</dt>
-        <dd>An implementation of the OSLC Change Management specifications as a server. OSLC CM clients consume services
-          provided by Servers. The use of the terms Client and Server are intended to distinguish typical consumers and
-          providers of OSLC resources in a distributed environment based on REST. A particular application component
-          could be a client for some OSLC domain services and a server for the same or another domain.</dd>
-      </dl>
     </section>
     <section id='references'>
       <h3>References</h3>
@@ -267,254 +266,458 @@
   <section id="baseRequirements">
     <h2>Base Requirements</h2>
 
-    <p>The following sub-sections define the mandatory and optional requirements for an OSLC Requirements Management
-      (OSLC RM) server.</p>
+    <section id="baseCompliance">
+      <h2>Compliance</h2>
+
+      <p class=‘conformance’>
+        This specification is based on [[!OSLCCore2]]. OSLC Reconciliation domain consumers and service providers
+        MUST be
+        compliant with both the Core specification and this specification, and SHOULD follow all the
+        guidelines and recommendations in both these specifications.
+      </p>
+
+      <p>The following table summarizes the requirements from OSLC Core Specification as well as additional requirements
+        specific to the Reconciliation domain.</p>
+
+      <p>Note that this specification further restricts some of the requirements from the OSLC Core Specification as
+        noted in the Origin column of the compliance table. See further sections in this specification or the OSLC Core
+        Specification to get further details on each of these requirements.</p>
+
+      <p class=‘conformance’>Any consumer or service provider behaviors are allowed unless explicitly prohibited by this
+        or dependent
+        specifications; conditional permissive requirements, especially those qualified with MAY, are
+        implicitly covered by the preceding clause. While technically redundant in light of that broad permission, OSLC
+        specifications do still make explicit MAY-qualified statements in cases where the editors believe doing so is
+        likely to add clarity.</p>
+
+      <h4 id="Requirements-on-OSLC-Consumers">Requirements on OSLC Consumers</h4>
+
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th><strong>Requirement</strong></th>
+            <th><strong>Level</strong></th>
+            <th><strong>Origin(s)</strong></th>
+            <th><strong>Meaning</strong></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Unknown properties and content</td>
+            <td class=‘conformance’>MUST</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Unknown_properties_and_content">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC clients MUST preserve unknown content</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 id="Requirements-on-OSLC-Service-Providers">Requirements on OSLC Service Providers</h4>
+
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th><strong>Requirement</strong></th>
+            <th><strong>Level</strong></th>
+            <th><strong>Origin(s)</strong></th>
+            <th><strong>Meaning</strong></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Unknown properties and content</td>
+            <td class=‘conformance’>MAY</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Unknown_properties_and_content">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MAY ignore unknown content</td>
+          </tr>
+          <tr>
+            <td>Unknown properties and content</td>
+            <td class=‘conformance’>MUST</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Unknown_properties_and_content">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MUST return an error code if recognized content is invalid.
+            </td>
+          </tr>
+          <tr>
+            <td>Unknown properties and content</td>
+            <td class=‘conformance’>SHOULD</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Unknown_properties_and_content">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers SHOULD NOT return an error code for unrecognized content.
+            </td>
+          </tr>
+          <tr>
+            <td>Resource Operations</td>
+            <td class=‘conformance’>MUST</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Resource_Operations">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MUST support resource operations via standard HTTP operations
+            </td>
+          </tr>
+          <tr>
+            <td>Resource Paging</td>
+            <td class=‘conformance’>MAY</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Resource_Paging">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC services MAY provide paging for resources</td>
+          </tr>
+          <tr>
+            <td>Partial Resource Representations</td>
+            <td class=‘conformance’>MAY</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Selective_Property_Values">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MAY support HTTP GET requests for retrieval of a subset of a
+              resource’s properties via the oslc.properties URL parameter</td>
+          </tr>
+          <tr>
+            <td>Partial Resource Representations</td>
+            <td class=‘conformance’>MAY</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Selective_Property_Values">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MAY support HTTP PUT requests for updating a subset of a
+              resource’s properties via the oslc.properties URL parameter</td>
+          </tr>
+          <tr>
+            <td>Service Provider Resources</td>
+            <td class=‘conformance’>MAY</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Service_Provider_Resources">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MAY provide a Service Provider Catalog resource</td>
+          </tr>
+          <tr>
+            <td>Service Provider Resources</td>
+            <td class=‘conformance’>MUST</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Service_Provider_Resources">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MUST provide a Service Provider resource</td>
+          </tr>
+          <tr>
+            <td>Creation Factories</td>
+            <td class=‘conformance’>MAY</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Creation_Factories">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MAY provide creation factories to enable resource creation
+              via HTTP POST</td>
+          </tr>
+          <tr>
+            <td>Query Capabilities</td>
+            <td class=‘conformance’>SHOULD<sup>1</sup></td>
+            <td><a href="#Compliance">Reconciliation</a>, <a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Query_Capabilities">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers SHOULD provide query capabilities to enable clients to query
+              for resources</td>
+          </tr>
+          <tr>
+            <td>Query Syntax</td>
+            <td class=‘conformance’>MUST<sup>2</sup></td>
+            <td><a href="#Compliance">Reconciliation</a>, <a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Query_Syntax">Core</a>
+            </td>
+            <td class=‘conformance’>If a service provider supports OSLC query capabilities, the query capabilities MUST
+              support the OSLC Core Query Syntax</td>
+          </tr>
+          <tr>
+            <td>Query Syntax</td>
+            <td class=‘conformance’>MAY</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Query_Syntax">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC query capabilities MAY support other query syntaxes</td>
+          </tr>
+          <tr>
+            <td>Delegated UI Dialogs</td>
+            <td class=‘conformance’>SHOULD</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Delegated_User_Interface_Dialogs">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers SHOULD allow clients to discover, via their service provider
+              resources, any Delegated UI Dialogs they offer.</td>
+          </tr>
+          <tr>
+            <td>Delegated UI Dialogs</td>
+            <td class=‘conformance’>SHOULD</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Delegated_User_Interface_Dialogs">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers SHOULD offer delegated UI dialogs for resource creation</td>
+          </tr>
+          <tr>
+            <td>Delegated UI Dialogs</td>
+            <td class=‘conformance’>SHOULD</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Delegated_User_Interface_Dialogs">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers SHOULD offer delegated UI dialogs for resource selection</td>
+          </tr>
+          <tr>
+            <td>UI Preview</td>
+            <td class=‘conformance’>SHOULD</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#User_Interface_Previews">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC Services SHOULD offer UI previews for resources that may be referenced by other
+              resources</td>
+          </tr>
+          <tr>
+            <td>HTTP Basic Authentication</td>
+            <td class=‘conformance’>MAY</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#HTTP_Basic_Authentication">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC Services MAY support Basic Auth</td>
+          </tr>
+          <tr>
+            <td>HTTP Basic Authentication</td>
+            <td class=‘conformance’>SHOULD</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#HTTP_Basic_Authentication">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC Services SHOULD support Basic Auth only over HTTPS</td>
+          </tr>
+          <tr>
+            <td>OAuth Authentication</td>
+            <td class=‘conformance’>MAY</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#OAuth_Authentication">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MAY support OAuth</td>
+          </tr>
+          <tr>
+            <td>OAuth Authentication</td>
+            <td class=‘conformance’>SHOULD</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#OAuth_Authentication">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers that support OAuth SHOULD allow clients to discover the
+              required OAuth URLs via their service provider resource</td>
+          </tr>
+          <tr>
+            <td>Error Responses</td>
+            <td class=‘conformance’>MAY</td>
+            <td><a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Error_Responses">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MAY provide error responses using Core-defined error formats
+            </td>
+          </tr>
+          <tr>
+            <td>RDF/XML Representations</td>
+            <td class=‘conformance’>MUST<sup>3</sup></td>
+            <td><a href="#Service_Provider_HTTP_Method_Sup">Reconciliation</a>, <a
+                href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html#Guidelines_for_application_rdf_x">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MUST offer an RDF/XML representation for HTTP GET responses
+            </td>
+          </tr>
+          <tr>
+            <td>RDF/XML Representations</td>
+            <td class=‘conformance’>MUST<sup>3</sup></td>
+            <td><a href="#Service_Provider_HTTP_Method_Sup">Reconciliation</a>, <a
+                href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html#Guidelines_for_application_rdf_x">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MUST accept RDF/XML representations on PUT requests.</td>
+          </tr>
+          <tr>
+            <td>RDF/XML Representations</td>
+            <td class=‘conformance’>MUST<sup>3</sup></td>
+            <td><a href="#Service_Provider_HTTP_Method_Sup">Reconciliation</a>, <a
+                href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html#Guidelines_for_application_rdf_x">Core</a>
+            </td>
+            <td class=‘conformance’>RDF/XML representations on POST requests whose semantic intent is to create a new
+              resource instance.</td>
+          </tr>
+          <tr>
+            <td>XML Representations</td>
+            <td class=‘conformance’>MAY<sup>3</sup></td>
+            <td><a href="#Service_Provider_HTTP_Method_Sup">Reconciliation</a>, <a
+                href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html#Guidelines_for_application_xml">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MAY provide a XML representation for HTTP GET, POST and PUT
+              requests that conform to the Core Guidelines for XML.</td>
+          </tr>
+          <tr>
+            <td>JSON Representations</td>
+            <td class=‘conformance’>MAY<sup>3</sup></td>
+            <td><a href="#Service_Provider_HTTP_Method_Sup">Reconciliation</a>, <a
+                href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html#Guidelines_for_JSON">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers MAY provide JSON representations for HTTP GET, POST and PUT
+              requests that conform to the Core Guidelines for JSON</td>
+          </tr>
+          <tr>
+            <td>HTML Representations</td>
+            <td class=‘conformance’>SHOULD<sup>3</sup></td>
+            <td><a href="#Service_Provider_HTTP_Method_Sup">Reconciliation</a>, <a
+                href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#OSLC_Defined_Resource_Representa">Core</a>
+            </td>
+            <td class=‘conformance’>OSLC service providers SHOULD provide HTML representations for HTTP GET requests
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ul>
+        <li><sup>1</sup>The OSLC Core Specification indicates service providers MAY provide Query Capabilities. This
+          specification strengthens the requirement.</li>
+        <li><sup>2</sup>The OSLC Core Specification indicates service providers MAY support the OSLC Query Syntax. This
+          specification makes OSLC Query Syntax support a MUST requirement for service providers providing query
+          capabilities.</li>
+        <li><sup>3</sup>Support for all common HTTP methods is not required for all resources defined by this
+          specification. See the <a href="#Service_Provider_HTTP_Method_Sup">HTTP Method support table</a> for details.
+        </li>
+      </ul>
+
+
+    </section>
 
     <section id="versioning">
       <h2 id="specificationversioningspec_versioning">Specification Versioning</h2>
 
-      <p>This specification follows the specification version guidelines given in [OSLCCore3].</p>
+      <p>See
+        [[!OSLCCore2]] Specification Versioning section.</p>
     </section>
 
     <section id="namespaces">
       <h2>Namespaces</h2>
 
-      <p>In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>,
-        <code>dcterms</code> and <code>foaf</code> defined in the [OSLCCore3], OSLC CM defines the namespace URI of
-        <code>http://open-services.net/ns/cm#</code> with a namespace prefix of <code>oslc_cm</code>.</p>
-
-      <p>This specification also uses these namespace prefix definitions:</p>
+      <p>In addition to the namespace URIs and namespace prefixes defined in the [[!OSLCCore2]], OSLC Reconciliation
+        Workgroup defines a namespace</p>
 
       <ul>
-        <li>oslc_rm : <code>http://open-services.net/ns/rm#</code> [[OSLCRM]]</li>
-        <li>oslc_qm : <code>http://open-services.net/ns/qm#</code> [[OSLCQM]]</li>
+        <li><a
+            href="https://archive.open-services.net/wiki/reconciliation/Common-IT-Resource-Type-Vocabulary-Version-2.0/index.html"><code>http://open-services.net/ns/crtv#</code></a>
+          with a default namespace prefix of
+          <code>crtv</code>. This namespace URI and prefix are used to designate the
+          resources defined by the Common IT Resource Type vocabulary. The namespace prefix is used in this
+          specification for consistency but client and provider implementations might use others.</li>
       </ul>
+
     </section>
 
     <section id="formats">
       <h2>Resource Formats</h2>
 
-      <p>In addition to the requirements for resource representations in [[!OSLCCore3]], this section outlines further
-        refinements and restrictions.</p>
+      <p>In addition to the requirements for <a
+          href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#OSLC_Defined_Resource_Representa">OSLC
+          Defined
+          Resource Representations</a>, this section outlines further refinements and restrictions.</p>
 
-      <p>For HTTP GET requests on all OSLC CM and OSLC Core defined resource types,</p>
+      <p>See <a href="#Service_Provider_HTTP_Method_Sup">HTTP Method support table</a> for further clarification on
+        support for HTTP methods and media types for each OSLC resource.</p>
+
+      <p>For HTTP GET requests on all OSLC Reconciliation and OSLC Core defined resource types,</p>
 
       <ul>
-        <li>CM servers MUST provide Turtle and JSON-LD, and SHOULD provide RDF/XML and XML representations. The XML and
-          JSON representations SHOULD follow the guidelines outlined in the <a
-            href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations
-            Guidance</a> to maintain compatibility with [[!OSLCCore2]].</li>
-        <li>CM clients requesting RDF/XML SHOULD be prepared for any valid RDF/XML document. CM clients requesting XML
-          SHOULD be prepared for representations that follow the guidelines outlined in the <a
-            href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations
+        <li class=‘conformance’>Reconciliation Providers MUST provide RDF/XML representations. The RDF/XML
+          representation
+          SHOULD follow the guidelines outlined in the <a
+            href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html#Guidelines_for_application_rdf_x">OSLC
+            Core Representations Guidance for RDF/XML</a>.</li>
+        <li class=‘conformance’>Reconciliation Providers MAY provide other representations. Other representations
+          SHOULD follow the guidelines outlined in the <a
+            href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html">OSLC Core
+            Representations
             Guidance</a>.</li>
-        <li>CM servers SHOULD support an [X]HTML representation and a user interface (UI) preview as defined by <a
-            href="http://open-services.net/bin/view/Main/OslcCoreUiPreview">UI Preview Guidance</a></li>
+        <li class=‘conformance’>Reconciliation Consumers requesting RDF/XML SHOULD be prepared for any valid RDF/XML
+          document. Reconciliation Consumers requesting XML SHOULD be prepared for representations that
+          follow the guidelines outlined in the <a
+            href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html">OSLC Core
+            Representations
+            Guidance</a>.</li>
+        <li class=‘conformance’>Reconciliation Providers SHOULD support an [X]HTML representation and a user interface
+          (UI)
+          preview as defined by <a href="https://archive.open-services.net/bin/view/Main/OslcCoreUiPreview.html">UI
+            Preview Guidance</a></li>
       </ul>
 
-      <p>For HTTP PUT/POST request formats for resource type of ChangeRequest:</p>
+      <p>For HTTP PUT/POST request formats for Reconciliation resources,</p>
 
       <ul>
-        <li>CM servers MUST accept Turtle and JSON-LD representations and SHOULD accept RDF/XML and XML representations.
-          CM servers accepting RDF/XML SHOULD be prepared for any valid RDF/XML document. For XML CM servers SHOULD be
-          prepared for representations that follow the guidelines outlined in the <a
-            href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations
+        <li class=‘conformance’>Reconciliation Providers MUST accept RDF/XML representations and MAY
+          accept XML representations. Reconciliation Providers accepting RDF/XML SHOULD be prepared for
+          any valid RDF/XML document. If XML is accepted, Reconciliation Providers SHOULD be prepared
+          for representations that follow the guidelines outlined in the <a
+            href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html">OSLC Core
+            Representations
             Guidance</a>.</li>
+        <li class=‘conformance’>Reconciliation Providers MAY accept XML and JSON representations. Reconciliation
+          Providers
+          accepting XML or JSON SHOULD be prepared for representations that follow the guidelines
+          outlined in the <a
+            href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html">OSLC Core
+            Representations Guidance</a>.</li>
       </ul>
 
       <p>For HTTP GET response formats for Query requests,</p>
 
-      <p>CM servers MUST provide Turtle and JSON-LD, SHOULD provide RDF/XML, XML, and MAY provide Atom Syndication
-        Format XML representations.</p>
-
-      <p>When CM clients request:</p>
-
       <ul>
-        <li><code>text/turtle</code> CM servers MUST respond with Turtle representation.</li>
-        <li><code>application/ld+json</code> CM servers MUST respond with JSON-LD representation.</li>
-        <li><code>application/rdf+xml</code> CM servers SHOULD respond with RDF/XML representation without restrictions.
-        </li>
-        <li><code>application/xml</code> CM servers SHOULD respond with OSLC-defined abbreviated XML representation as
-          defined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core
-            Representations Guidance</a></li>
-        <li><code>application/atom+xml</code> CM servers SHOULD respond with Atom Syndication Format XML representation
-          as defined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC
-            Core Representations Guidance</a></li>
-        <li>The Atom Syndication Format XML representation SHOULD use RDF/XML representation without restrictions for
-          the atom:content entries representing the resource representations.</li>
+        <li class=‘conformance’>Reconciliation Providers MUST provide RDF/XML and MAY provide other
+          representations such as JSON and XML.</li>
       </ul>
 
-      <p>See Query Capabilities for additional information when Resource Shapes affect representation.</p>
+      <p>When Reconciliation Consumers request:</p>
 
-      <section id="contentNegotiation">
-        <h2>Content Negotiation</h2>
+      <ul>
+        <li class=‘conformance’><code>application/rdf+xml</code> Reconciliation Providers MUST respond with RDF/XML
+          representation without restrictions.</li>
+        <li class=‘conformance’><code>application/xml</code> Reconciliation Providers SHOULD respond with OSLC-defined
+          abbreviated XML representation as defined in the <a
+            href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html">OSLC Core
+            Representations
+            Guidance</a></li>
+      </ul>
 
-        <p>[[!OSLCCore3]] specifies RDF representations (and specifically Turtle and JSON-LD) as a convention that all
-          OSLC server implementations minimally provide and accept. OSLC CM server implementations are strongly
-          encouraged to adopt this convention. Future versions of this specification are expected to require RDF
-          representations for all operations and relax requirements for specialized XML representations.</p>
-
-        <p><strong>XML Representation</strong> - identified by the <code>application/xml</code> content type. Format
-          representation rules are outlined in Core <a
-            href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Resource Formats
-            section</a></p>
-
-        <p><strong>RDF/XML Representation</strong> - identified by the <code>application/rdf+xml</code> content type. No
-          additional guidance is given.</p>
-
-        <p><strong>JSON-LD Representation</strong> - identified by the <code>application/ld+json</code> content type.
-          Format representation rules are specified in <a href="http://www.w3.org/TR/json-ld/">JSON-LD 1.0</a>.</p>
-
-        <p><strong>Atom Syndication Format XML Representation</strong> - identified by the
-          <code>application/atom+xml</code> content type. Format representation rules are outlined in Core <a
-            href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Resource Formats
-            section</a>.</p>
-      </section>
     </section>
 
     <section id="authentication">
       <h2>Authentication</h2>
 
-      <p>[[!OSLCCore3]] specifies the recommended OSLC authentication mechanisms. In addition to the OSLC Core
-        authentication requirements, OSLC CM servers SHOULD support [[!OpenIDConnect]].</p>
+      <p>See
+        [[!OSLCCore2]] Authentication section. This specification puts no additional constraints on authentication.</p>
     </section>
 
     <section id="errors">
       <h2>Error Responses</h2>
 
-      <p>[[!OSLCCoreVocab]] specifies the OSLC Core error responses. OSLC CM puts no additional constraints on error
-        responses.</p>
+      <p>See
+        [[!OSLCCore2]] Error Responses section. This specification puts no additional constraints on error responses.
+      </p>
     </section>
 
     <section id="pagination">
       <h2>Pagination</h2>
 
-      <p>OSLC CM servers SHOULD support pagination of query results and MAY support pagination of a single resource's
-        properties as defined by [[!OSLCCore3]].</p>
-    </section>
-
-    <section id="requestProps">
-      <h3>Requesting and Updating Properties</h3>
-
-      <section id="requestSubset">
-        <h4>Requesting a Subset of Properties</h4>
-
-        <p>A client MAY request a subset of a resource's properties as well as properties from a referenced resource. In
-          order to support this behavior a server MUST support the <code>oslc.properties</code> and
-          <code>oslc.prefix</code> URL parameter on a HTTP GET request on individual resource request or a collection of
-          resources by query. If the <code>oslc.properties</code> parameter is omitted on the request, then all resource
-          properties MUST be provided in the response.</p>
-      </section>
-
-      <section id="updateSubset">
-        <h4>Updating a Subset of Properties</h4>
-
-        <p>A client MAY request that a subset of a resource's properties be updated by using the [[LDPPatch]]
-          <code>PATCH</code> method.</p>
-
-        <p>For compatibility with [[!OSLCCore2]], CM servers MAY also support partial update by identifying those
-          properties to be modified using the <code>oslc.properties</code> URL parameter on a HTTP PUT request.</p>
-
-        <p>If the parameter <code>oslc.properties</code> contains a valid resource property on the request that is not
-          provided in the content, the server MUST set the resource's property to a null or empty value. If the
-          parameter <code>oslc.properties</code> contains an invalid resource property, then a <code>409 Conflict</code>
-          MUST be returned.</p>
-      </section>
-
-      <section id="updatingMultiValueProps">
-        <h4>Updating Multi-Valued Properties</h4>
-
-        <p>For multi-valued properties that contain a large number of values, it may be difficult and inefficient to add
-          or remove property values. OSLC CM servers MAY provide support for a partial update of the multi-valued
-          properties as defined by draft specification [[LDPPatch]]. CM servers MAY also support partial updates through
-          HTTP PUT where only the updated properties are included in the entity request body.</p>
-      </section>
-    </section>
-
-    <section id="statePredicates">
-      <h3>Status, State and State Predicates</h3>
-      <p>Probably the most important property of a Change Request is the status property. "Status" specifies the
-        location of a Change Request in a workflow. The <code>oslc_cm:status</code> property is a typically read-only
-        string that servers can set to describe the status of a ChangeRequest. In queries the oslc_cm:status property
-        can be used to filter change request (e.g. all change requests that are "fixed") and may be used to perform
-        state transitions (not part of this specification) on a change request, e.g. closing a change request as
-        "fixed".</p>
-
-      <p>The problem is that different CM servers may use different properties (or even a set of properties) and
-        different values to represent the change request's state. Even providing access to meta data does not help
-        because knowing all possible state values does not reveal the semantics of a state.</p>
-
-      <p>[[OSLCCM20]] introduced State Predicates to define single-value often read-only Boolean properties on a Change
-        Request resource that allow servers to translate their specific status string values into a standard boolean
-        state predicate value. An attempt to update read-only predicates SHOULD be answered with a 409 Conflict HTTP
-        status code. Their presence in a resource representation used for an update via PUT MUST NOT prevent the
-        resource from being updated. Predicates MUST be queryable. The Change Request resource definition sections
-        defines the complete set of predicates.</p>
-
-      <p>OSLC CM 3.0 provides a similar means of defining a set of standard states that is also extensible. The
-        <code>oslc_cm:state</code> property can have a value of type <code>oslc_cm:State</code> which represents an
-        enumeration of individuals representing a standard set of ChangeRequest states. Servers MAY define additional
-        individuals to extend the states of different ChangeRequest types and lifecycles.</p>
+      <p class=‘conformance’>Reconciliation Providers SHOULD support pagination of query results and MAY
+        support pagination of a single resource’s properties as defined by the [[!OSLCCore2]].</p>
     </section>
 
     <section id="labels" class='informative'>
       <h3>Labels for Relationships</h3>
 
-      <p>Change Management relationships to other resources are represented by RDF properties. Instances of a
-        relationship - often called links - are RDF triples with a subject URI, a predicate that is the property, and a
-        value (or object) that is the URI of target resource. When a link is to be presented in a user interface, it may
-        be helpful to display an informative and useful textual label instead of or in addition to the URI of the
-        predicate and or object. There are three items that clients could display:
-        <ul>
-          <li><b>The property</b>: OSLC recommends using the rdfs:label property of the rdf:Property from the vocabulary
-            to display the property.</li>
-          <li><b>The value, or object of the triple</b>: OSLC recommends using OSLC resource preview
-            [[!OSLCResourcePreview]] to obtain an appropriate icon and label, and possibly a small and/or large dialog
-            for displaying the object.</li>
-          <li><b>The link</b>: The link is a combination of the subject, predicate and object of the triple (RDF
-            statement or assertion). In the case where the link requires a unique label that is not available from the
-            target resource, only then OSLC servers may support a dcterms:title on a reified statement to provide a
-            label for a link that describes the assertion itself.</li>
-        </ul>
-      </p>
-
-      <p>Turtle example using a reified statement:</p>
-
-      <pre class="example">
-@prefix ns0: &lt;http://open-services.net/ns/cm#&gt; .
-@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
-@prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
-
-&lt;http://example.com/bugs/4321&gt;
-  a &lt;http://open-services.net/ns/cm#ChangeRequest&gt; ;
-  ns0:relatedChangeRequest &lt;http://anotherexample.com/defects/123&gt; .
-
-&lt;http://njh.me/#link1&gt;
-  a rdf:Statement ;
-  rdf:subject &lt;http://example.com/bugs/4321&gt; ;
-  rdf:predicate ns0:relatedChangeRequest ;
-  rdf:object &lt;http://anotherexample.com/defects/123&gt; ;
-  dcterms:title &quot;Defect 123: Problems during install&quot; .
-</pre>
-
-      <p>JSON-LD example using reified statement:</p>
-
-      <pre class="example">
-{
-  "@context": {
-    "dcterms": "http://purl.org/dc/terms/",
-    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    "oslc": "http://open-services.net/ns/core#",
-    "oslc_cm": "http://open-services.net/ns/cm#"
-  },
-  "@id": "http://example.com/bugs/4321",
-  "@type": "oslc_cm:ChangeRequest",
-  "oslc_cm:relatedChangeRequest": {
-    "@id": "http://anotherexample.com/defects/123",
-    "dcterms:title": "Defect 123: Problems during install"
-  }
-}
-</pre>
+      <p class=‘conformance’>Relationships to other resources are represented as properties whose values are the URI of the object or target
+        resource. When a relationship property is to be presented in a user interface, it may be helpful to provide an
+        informative and useful textual label for that relationship instance. (This in addition to the relationship
+        property URI and the object resource URI, which are also candidates for presentation to a user.) <a
+          href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecAppendixLinks.html">OSLC Core Links Guidance</a> allows OSLC
+        providers to support a <code>dcterms:title</code> link property in resource representations, using the anchor
+        approach (reification), but this specification discourages its use (providers SHOULD NOT use
+        it, and consumers SHOULD NOT depend on it). At the time this specification was written, the W3C
+        RDF working group was on a path to remove reification from the next version of RDF, and it was noted that
+        reification never was normatively defined even in the RDF/XML syntax W3C Recommendation, where it occurs
+        informatively.</p>
     </section>
   </section>
 
@@ -534,13 +737,15 @@
 
       <p>OSLC CM servers MUST support OSLC Discovery capabilities defined by [[!OSLCCore3]].</p>
 
-      <p>OSLC CM servers MAY provide a ServiceProvider Resource that can be retrieved at a implementation dependent URI.
+      <p>OSLC CM servers MAY provide a ServiceProvider Resource that can be retrieved at a implementation dependent
+        URI.
       </p>
 
       <p>OSLC CM servers MAY provide a ServiceProviderCatalog Resource that can be retrieved at a implementation
         dependent URI.</p>
 
-      <p>OSLC CM servers MAY provide a <code>oslc:serviceProvider</code> property for their defined resources that will
+      <p>OSLC CM servers MAY provide a <code>oslc:serviceProvider</code> property for their defined resources that
+        will
         be the URI to a ServiceProvider Resource.</p>
 
       <p>OSLC CM servers MUST supply a value of <code>http://open-services.net/ns/cm#</code> for the property
@@ -554,8 +759,10 @@
       <h3>Creation Factories</h3>
 
       <p>OSLC CM servers MUST support <a
-          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Creation_Factories">Creation Factories</a>
-        and list them in the Service Provider Resource as defined by OSLC Core. OSLC CM servers SHOULD support Resource
+          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Creation_Factories">Creation
+          Factories</a>
+        and list them in the Service Provider Resource as defined by OSLC Core. OSLC CM servers SHOULD support
+        Resource
         Shapes for Creation Factories as defined in [[!OSLCShapes]]</p>
     </section>
 
@@ -563,8 +770,10 @@
       <h3 id="querycapabilities">Query Capabilities</h3>
 
       <p>OSLC CM servers SHOULD support the <a
-          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities">Query Capabilities</a>
-        as defined by [[!OSLCCore3]]. OSLC CM servers SHOULD support Resource Shapes for Query Capability as defined in
+          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities">Query
+          Capabilities</a>
+        as defined by [[!OSLCCore3]]. OSLC CM servers SHOULD support Resource Shapes for Query Capability as defined
+        in
         [[!OSLCShapes]]</p>
 
       <p>The Query Capability, if supported, MUST support these parameters:</p>
@@ -605,7 +814,8 @@
     <section id="usageidentifiers">
       <h3>Usage Identifiers</h3>
 
-      <p>An OSLC CM server can identify or distinguish the usage of various services with additional property values for
+      <p>An OSLC CM server can identify or distinguish the usage of various services with additional property values
+        for
         the <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources">OSLC
           Core</a> defined <code>oslc:usage</code> property on <code>oslc:Dialog</code>, <code>CreationFactory</code>
         and <code>QueryCapability</code>. The <code>oslc:usage</code> property value of
@@ -619,7 +829,8 @@
           testing.</li>
         <li><code>http://open-services.net/ns/cm#planItem</code> - used by QM and PPM tools for associating change
           requests into plans (project, release, sprint, etc).</li>
-        <li><code>http://open-services.net/ns/cm#task</code> - used by QM and PPM tools for associating change requests
+        <li><code>http://open-services.net/ns/cm#task</code> - used by QM and PPM tools for associating change
+          requests
           into executable and track-able items.</li>
         <li><code>http://open-services.net/ns/cm#requirementsChangeRequest</code> - used by RM tools for associating a
           change request for usage in tracking changes to a Requirements resource</li>
@@ -727,8 +938,10 @@
             <td>CM-11</td>
             <td>UI Preview</td>
             <td>SHOULD</td>
-            <td>OSLC Services SHOULD offer UI previews for resources that may be referenced by other resources specified
-              via OSLC Core 3.0 Preview and SHOULD include discovery through a server resource for OSLC v2 compatibility
+            <td>OSLC Services SHOULD offer UI previews for resources that may be referenced by other resources
+              specified
+              via OSLC Core 3.0 Preview and SHOULD include discovery through a server resource for OSLC v2
+              compatibility
             </td>
           </tr>
           <tr>
@@ -761,7 +974,8 @@
             <td>CM-16</td>
             <td>XML Representations</td>
             <td>SHOULD</td>
-            <td>OSLC servers SHOULD provide a XML representation for HTTP GET, POST and PUT requests that conform to the
+            <td>OSLC servers SHOULD provide a XML representation for HTTP GET, POST and PUT requests that conform to
+              the
               Core 2.0 Guidelines for XML.</td>
           </tr>
           <tr>
@@ -815,7 +1029,8 @@
             <td>A short string representation for the type, example <code>Defect</code>.</td>
           </tr>
           <tr>
-            <td><strong>Relationship properties:</strong> This grouping of properties are used to identify relationships
+            <td><strong>Relationship properties:</strong> This grouping of properties are used to identify
+              relationships
               between resources managed by other OSLC servers</td>
             <td></td>
             <td></td>
@@ -900,7 +1115,8 @@
 
     <section id="changesFrom2">
       <h2>Changes from 2.0</h2>
-      <p>The following lists the significant vocabulary changes that were introduced in this specification. The changes
+      <p>The following lists the significant vocabulary changes that were introduced in this specification. The
+        changes
         are all upward compatible additions and therefore do not introduce incompatibilities with version 2.0.
         <ul>
           <li>Added <em>oslc_cm:priority</em> and <em>oslc_cm:severity</em></li>
