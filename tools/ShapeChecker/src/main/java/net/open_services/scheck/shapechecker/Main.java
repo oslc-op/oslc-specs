@@ -16,7 +16,7 @@ import net.open_services.scheck.util.GlobExpander;
 
 
 /**
- * Main entrypoint to OSLC Shape and Vocabulary checker.
+ * Main entry point to OSLC Shape and Vocabulary checker.
  * @author Nick Crossley. Released to public domain 2015.
  */
 public class Main
@@ -27,7 +27,7 @@ public class Main
     private boolean   verbose      = false;
 
     /**
-     * Main entrypoint to OSLC Shape and Vocabulary checker.
+     * Main entry point to OSLC Shape and Vocabulary checker.
      * @param args command line arguments specify vocabularies and shapes to be checked
      * <ul>
      * <li>Each -v argument introduces a vocabulary, by local path or by URI</li>
@@ -46,7 +46,7 @@ public class Main
 
     private void run(String[] args)
     {
-        ResultModel resultModel = new ResultModel();
+        ResultModel resultModel = new ResultModel(args);
         HttpHandler httpHandler = new HttpHandler();
 
         if (!checkUsage(args,resultModel,httpHandler))
@@ -59,8 +59,6 @@ public class Main
                 + " [-V|--verbose] [-D]"
                 );
         }
-
-        int errors = 0;
 
         // TODO: there's a fundamental problem here in the way the tables are built for the cross-check.
         // Instantiation of VocabularyCheck loads a vocabulary document into memory (good), and
@@ -82,7 +80,7 @@ public class Main
                 {
                     System.err.println("Parsing "+vocab.toString());
                 }
-                errors += new VocabularyCheck(vocab, httpHandler, resultModel).checkVocabularies();
+                new VocabularyCheck(vocab, httpHandler, resultModel).checkVocabularies();
             }
             catch (RiotNotFoundException e)
             {
@@ -102,7 +100,7 @@ public class Main
                 {
                     System.err.println("Parsing "+shape.toString());
                 }
-                errors += new ShapesDocCheck(shape, httpHandler, resultModel).checkShapes();
+                new ShapesDocCheck(shape, httpHandler, resultModel).checkShapes();
             }
             catch (RiotNotFoundException e)
             {
@@ -121,18 +119,19 @@ public class Main
             crossCheck.buildMaps(verbose);
             if (shapes.size() != 0)
             {
-                errors += crossCheck.check();
+                crossCheck.check();
             }
         }
 
-        resultModel.getSummary().addLiteral(ResultModel.issueCount, errors);
+        int errors = resultModel.summarizeIssues();
         if (debug)
         {
             Models.write(resultModel.getModel(), System.out);
         }
-        resultModel.print(System.out);
+        new ResultModelPrinter(resultModel,System.out).print();
 
-        if(errors > 0) {
+        if (errors > 0)
+        {
             System.exit(1);
         }
     }
@@ -209,9 +208,10 @@ public class Main
 
 
     /**
-     * Make a URI for an argument that is either a URI string or a file path.
-     * @param argVal an argument that is either a URI string or a file path
-     * @return a URI that is either one formed from the provided string, or a file: URI for a local path
+     * Make a list of URIs for an argument that is either a single URI string,
+     * or a file path that contains shell-style globs to be expanded.
+     * @param argVal an argument that is either a URI string or a file path with globs
+     * @return a list of URIs that are formed from the provided string
      * @throws URISyntaxException if the URI is not valid
      */
     @javax.annotation.CheckReturnValue

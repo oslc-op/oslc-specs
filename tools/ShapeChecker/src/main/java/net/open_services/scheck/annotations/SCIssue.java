@@ -18,4 +18,11 @@ public @interface SCIssue
      * @return a human-readable description of the issue
      */
     String description();
+
+    /**
+     * The severity of the issue: Info, Warning, or Error.
+     * The default value is Warning.
+     * @return the severity of the issue
+     */
+    IssueSeverity issueSeverity() default IssueSeverity.Warning;
 }

@@ -78,23 +78,41 @@ scheck:checks
     rdfs:label "checks" ;
     rdfs:comment "The subject of a check." .
 
+scheck:errorCount
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "errorCount" ;
+    rdfs:comment "The number of error issues reported by the checker within the current scope." .
+
+scheck:infoCount
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "infoCount" ;
+    rdfs:comment "The number of info issues reported by the checker within the current scope." .
+
 scheck:issue
     a rdf:Property ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "issue" ;
     rdfs:comment "An issue reported by the checker." .
 
-scheck:issueCount
+scheck:issueCounts
     a rdf:Property ;
     rdfs:isDefinedBy scheck: ;
-    rdfs:label "issueCount" ;
-    rdfs:comment "The number of issues reported by the checker within the current scope." .
+    rdfs:label "issueCounts" ;
+    rdfs:comment "The overall number of issues reported by the checker within the current scope." .
 
 scheck:result
     a rdf:Property ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "result" ;
     rdfs:comment "The check results for a set of resources within the current scope." .
+
+scheck:severity
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "severity" ;
+    rdfs:comment "The severity of an issue." .
 
 scheck:subject
     a rdf:Property ;
@@ -132,6 +150,12 @@ scheck:value
     rdfs:label "value" ;
     rdfs:comment "The value concerning which an issue is being reported." .
 
+scheck:warnCount
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "warnCount" ;
+    rdfs:comment "The number of warning issues reported by the checker within the current scope." .
+
 
 
 # Issues
@@ -140,149 +164,200 @@ scheck:BadImpactType
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "BadImpactType" ;
-    rdfs:comment "Impact type must be one of oslc:UpstreamImpact, oslc:DownstreamImpact, oslc:SymmetricImpact, or oslc:NoImpact." .
+    rdfs:comment "Impact type must be one of oslc:UpstreamImpact, oslc:DownstreamImpact, oslc:SymmetricImpact, or oslc:NoImpact." ;
+    scheck:severity scheck:Warning .
 
 scheck:BadOccurs
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "BadOccurs" ;
-    rdfs:comment "The oslc:occurs property must be one of oslc:Exactly-one, oslc:One-or-many, oslc:Zero-or-one, or oslc:Zero-or-many." .
+    rdfs:comment "The oslc:occurs property must be one of oslc:Exactly-one, oslc:One-or-many, oslc:Zero-or-one, or oslc:Zero-or-many." ;
+    scheck:severity scheck:Warning .
 
 scheck:BadTermStatus
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "BadTermStatus" ;
-    rdfs:comment "The vs:term_status property must be either \"stable\" or \"archaic\"; \"unstable\" or \"testing\" are bad practice in published vocabularies." .
+    rdfs:comment "The vs:term_status property must be either \"stable\" or \"archaic\"; \"unstable\" or \"testing\" are bad practice in published vocabularies." ;
+    scheck:severity scheck:Warning .
 
 scheck:BadXMLLiteral
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "BadXMLLiteral" ;
-    rdfs:comment "The XML literal is not well-formed." .
+    rdfs:comment "The XML literal is not well-formed." ;
+    scheck:severity scheck:Warning .
 
 scheck:Duplicate
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "Duplicate" ;
-    rdfs:comment "This property name, definition, or oslc:describes is not unique." .
+    rdfs:comment "This property name, definition, or oslc:describes is not unique." ;
+    scheck:severity scheck:Warning .
 
 scheck:DuplicateLangString
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "DuplicateLangString" ;
-    rdfs:comment "Duplicate language on string literal." .
+    rdfs:comment "Duplicate language on string literal." ;
+    scheck:severity scheck:Warning .
 
 scheck:InappropriateMaxSize
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "InappropriateMaxSize" ;
-    rdfs:comment "The property oslc:maxSize appplies only to string or XMLLiteral value types." .
+    rdfs:comment "The property oslc:maxSize appplies only to string or XMLLiteral value types." ;
+    scheck:severity scheck:Warning .
 
 scheck:InvalidRdf
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "InvalidRdf" ;
-    rdfs:comment "The target resource cannot be fetched or parsed as RDF." .
+    rdfs:comment "The target resource cannot be fetched or parsed as RDF." ;
+    scheck:severity scheck:Warning .
 
 scheck:InvalidUri
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "InvalidUri" ;
-    rdfs:comment "The URI of the target is invalid." .
+    rdfs:comment "The URI of the target is invalid." ;
+    scheck:severity scheck:Warning .
 
 scheck:LocalResourceDeprecated
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "LocalResourceDeprecated" ;
-    rdfs:comment "Use of oslc:LocalResource should be replaced by oslc:AnyResource with oslc:representation=oslc:Inline." .
+    rdfs:comment "Use of oslc:LocalResource should be replaced by oslc:AnyResource with oslc:representation=oslc:Inline." ;
+    scheck:severity scheck:Warning .
 
 scheck:MismatchingRepresentation
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "MismatchingRepresentation" ;
-    rdfs:comment "Mismatching values of oslc:ValueType and oslc:Representation." .
+    rdfs:comment "Mismatching values of oslc:ValueType and oslc:Representation." ;
+    scheck:severity scheck:Warning .
 
 scheck:Missing
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "Missing" ;
-    rdfs:comment "The named property should be specified for this resource." .
+    rdfs:comment "The named property should be specified for this resource." ;
+    scheck:severity scheck:Warning .
 
 scheck:MissingPeriod
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "MissingPeriod" ;
-    rdfs:comment "The description or comment should end with a period (full stop)." .
+    rdfs:comment "The description or comment should end with a period (full stop)." ;
+    scheck:severity scheck:Warning .
 
 scheck:MoreThanOne
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "MoreThanOne" ;
-    rdfs:comment "This property should appear at most once." .
+    rdfs:comment "This property should appear at most once." ;
+    scheck:severity scheck:Warning .
 
 scheck:NoOntology
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "NoOntology" ;
-    rdfs:comment "This subject does not appear to be part of an ontology or one of its terms." .
+    rdfs:comment "This subject does not appear to be part of an ontology or one of its terms." ;
+    scheck:severity scheck:Warning .
 
 scheck:NoShape
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "NoShape" ;
-    rdfs:comment "This property definition or other subject does not appear to be part of a defined shape." .
+    rdfs:comment "This property definition or other subject does not appear to be part of a defined shape." ;
+    scheck:severity scheck:Warning .
 
 scheck:NotHash
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "NotHash" ;
-    rdfs:comment "The term or property should use a hash URI, relative to its ontology or shape, respectively." .
+    rdfs:comment "The term or property should use a hash URI, relative to its ontology or shape, respectively." ;
+    scheck:severity scheck:Warning .
 
 scheck:NotLiteral
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "NotLiteral" ;
-    rdfs:comment "A literal value is expected here, not a resource." .
+    rdfs:comment "A literal value is expected here, not a resource." ;
+    scheck:severity scheck:Warning .
 
 scheck:NotResource
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "NotResource" ;
-    rdfs:comment "A resource value is expected here, not a literal." .
+    rdfs:comment "A resource value is expected here, not a literal." ;
+    scheck:severity scheck:Warning .
 
 scheck:Redundant
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "Redundant" ;
-    rdfs:comment "This property is unexpected." .
+    rdfs:comment "This property is unexpected." ;
+    scheck:severity scheck:Warning .
 
 scheck:SourceNotTurtle
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "SourceNotTurtle" ;
-    rdfs:comment "The vocabulary or shape source does not appear to be in Turtle." .
+    rdfs:comment "The vocabulary or shape source does not appear to be in Turtle." ;
+    scheck:severity scheck:Warning .
 
 scheck:TermNotInVocab
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "TermNotInVocab" ;
-    rdfs:comment "This term does not have rdfs:isDefinedBy its parent ontology." .
+    rdfs:comment "This term does not have rdfs:isDefinedBy its parent ontology." ;
+    scheck:severity scheck:Warning .
 
 scheck:UndefinedTerm
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "UndefinedTerm" ;
-    rdfs:comment "This resource is not defined in its parent vocabulary." .
+    rdfs:comment "This resource is not defined in its parent vocabulary." ;
+    scheck:severity scheck:Warning .
 
 scheck:Unreachable
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "Unreachable" ;
-    rdfs:comment "This resource is not fetchable." .
+    rdfs:comment "This resource is not fetchable." ;
+    scheck:severity scheck:Warning .
 
 scheck:WrongType
     a scheck:Issue ;
     rdfs:isDefinedBy scheck: ;
     rdfs:label "WrongType" ;
-    rdfs:comment "Wrong type for oslc:valueType, or for a property definition, or for a literal." .
+    rdfs:comment "Wrong type for oslc:valueType, or for a property definition, or for a literal." ;
+    scheck:severity scheck:Warning .
+
+
+# The severity enumeration
+scheck:Severity
+    a rdfs:Class ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Severity" ;
+    rdfs:comment "A class for the severity enumeration." .
+
+scheck:Error
+    a scheck:Severity ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Error" ;
+    rdfs:comment "Error severity." .
+
+scheck:Info
+    a scheck:Severity ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Info" ;
+    rdfs:comment "Info severity." .
+
+scheck:Warning
+    a scheck:Severity ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Warning" ;
+    rdfs:comment "Warning severity." .
 

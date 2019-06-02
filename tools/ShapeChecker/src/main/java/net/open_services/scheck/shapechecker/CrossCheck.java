@@ -43,10 +43,10 @@ public class CrossCheck
     public void buildMaps(boolean printTerms)
     {
         // Add vocabulary classes to vocabs map
-        ResIterator vi = resultModel.getModel().listResourcesWithProperty(RDF.type, ResultModel.VocabResult);
+        ResIterator vi = resultModel.getModel().listResourcesWithProperty(RDF.type, Terms.VocabResult);
         while (vi.hasNext())
         {
-            StmtIterator ri = vi.next().listProperties(ResultModel.checks);
+            StmtIterator ri = vi.next().listProperties(Terms.checks);
             while (ri.hasNext())
             {
                 Resource res = ri.next().getObject().asResource();
@@ -56,19 +56,19 @@ public class CrossCheck
         }
 
         // Add vocabulary terms to termsInVocab map
-        ResIterator ti = resultModel.getModel().listResourcesWithProperty(RDF.type, ResultModel.TermResult);
+        ResIterator ti = resultModel.getModel().listResourcesWithProperty(RDF.type, Terms.TermResult);
         while (ti.hasNext())
         {
-            final Resource res = ti.next().getPropertyResourceValue(ResultModel.checks);
+            final Resource res = ti.next().getPropertyResourceValue(Terms.checks);
             assert res != null;
             termsInVocabs.put(res,false);
         }
 
         // Add shape classes to classesInShapes map
-        ResIterator si = resultModel.getModel().listResourcesWithProperty(RDF.type, ResultModel.ShapeResult);
+        ResIterator si = resultModel.getModel().listResourcesWithProperty(RDF.type, Terms.ShapeResult);
         while (si.hasNext())
         {
-            StmtIterator ri = si.next().listProperties(ResultModel.checks);
+            StmtIterator ri = si.next().listProperties(Terms.checks);
             while (ri.hasNext())
             {
                 Resource res = ri.next().getObject().asResource();
@@ -78,11 +78,11 @@ public class CrossCheck
         }
 
         // Add internal property definitions to the internalProps map
-        ResIterator pi = resultModel.getModel().listResourcesWithProperty(RDF.type, ResultModel.PropertyResult);
+        ResIterator pi = resultModel.getModel().listResourcesWithProperty(RDF.type, Terms.PropertyResult);
         while (pi.hasNext())
         {
-            Resource next = pi.next();
-            final Resource checkRes = next.getPropertyResourceValue(ResultModel.checks);
+            Resource propertyDefResult = pi.next();
+            final Resource checkRes = propertyDefResult.getPropertyResourceValue(Terms.checks);
             if (checkRes != null)
             {
                 final Resource vocab = ResourceFactory.createResource(checkRes.getURI().replaceFirst("#.*$","#"));
@@ -95,7 +95,7 @@ public class CrossCheck
             }
 
             // Add internal value references to the internalProps map
-            StmtIterator ri = next.listProperties(DCTerms.references);
+            StmtIterator ri = propertyDefResult.listProperties(DCTerms.references);
             while (ri.hasNext())
             {
                 final Resource refRes = ri.next().getObject().asResource();
@@ -122,6 +122,7 @@ public class CrossCheck
                 termsInVocabs.put(clss, true);
             }
         }
+
         // Cross reference internal properties into terms
         for (Resource prop : internalProps.keySet())
         {
@@ -144,19 +145,14 @@ public class CrossCheck
 
     /**
      * Check consistency of the vocabs and shapes.
-     * @return the number of errors
      */
-    @javax.annotation.CheckReturnValue
-    public int check()
+    public void check()
     {
-        int errors = 0;
-
         for (Map.Entry<Resource,Boolean> vocab : vocabs.entrySet())
         {
             if (!vocab.getValue())
             {
-                resultModel.getSummary().addProperty(ResultModel.unusedVocabulary, vocab.getKey());
-                errors++;
+                resultModel.getSummary().addProperty(Terms.unusedVocabulary, vocab.getKey());
             }
         }
 
@@ -164,8 +160,7 @@ public class CrossCheck
         {
             if (!term.getValue())
             {
-                resultModel.getSummary().addProperty(ResultModel.unusedTerm, term.getKey());
-                errors++;
+                resultModel.getSummary().addProperty(Terms.unusedTerm, term.getKey());
             }
         }
 
@@ -173,8 +168,7 @@ public class CrossCheck
         {
             if (!clss.getValue())
             {
-                resultModel.getSummary().addProperty(ResultModel.undefinedClass, clss.getKey());
-                errors++;
+                resultModel.getSummary().addProperty(Terms.undefinedClass, clss.getKey());
             }
         }
 
@@ -182,11 +176,8 @@ public class CrossCheck
         {
             if (!prop.getValue())
             {
-                resultModel.getSummary().addProperty(ResultModel.undefinedProp, prop.getKey());
-                errors++;
+                resultModel.getSummary().addProperty(Terms.undefinedProp, prop.getKey());
             }
         }
-
-        return errors;
-   }
+    }
 }

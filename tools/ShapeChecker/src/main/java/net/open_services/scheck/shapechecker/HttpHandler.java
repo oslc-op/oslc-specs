@@ -78,7 +78,7 @@ public class HttpHandler
         catch (URISyntaxException e)
         {
             throw new ShapeCheckException(
-                ResultModel.InvalidUri,
+                Terms.InvalidUri,
                 ResourceFactory.createResource(uri),
                 null,
                 e);
@@ -93,7 +93,7 @@ public class HttpHandler
         {
             httpResourceIsRDF.put(httpUri, false);
             throw new ShapeCheckException(
-                ResultModel.InvalidRdf,
+                Terms.InvalidRdf,
                 ResourceFactory.createResource(uri),
                 null,
                 e1);
@@ -196,7 +196,7 @@ public class HttpHandler
             // Not found - but add it so we report an error only once
             foundRDFResources.add(uri);
             throw new ShapeCheckException(
-                ResultModel.UndefinedTerm,
+                Terms.UndefinedTerm,
                 ResourceFactory.createResource(uri),
                 ResourceFactory.createResource(httpUri.toString()));
         }
@@ -215,7 +215,7 @@ public class HttpHandler
         {
             httpResourceIsRDF.put(httpUri, false);
             throw new ShapeCheckException(
-                ResultModel.InvalidRdf,
+                Terms.InvalidRdf,
                 ResourceFactory.createResource(httpUri.toString()),
                 ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
         }
