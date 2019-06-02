@@ -74,7 +74,26 @@ $vocab.prefix:$issue.name
     a $vocab.prefix:Issue ;
     rdfs:isDefinedBy $vocab.prefix: ;
     rdfs:label "$issue.name" ;
-    rdfs:comment "$issue.description" .
+    rdfs:comment "$issue.description" ;
+    $vocab.prefix:severity $vocab.prefix:$issue.severity .
+
+#end
+#end
+
+#if($severities)
+# The severity enumeration
+$vocab.prefix:Severity
+    a rdfs:Class ;
+    rdfs:isDefinedBy $vocab.prefix: ;
+    rdfs:label "Severity" ;
+    rdfs:comment "A class for the severity enumeration." .
+
+#foreach ($sev in $severities)
+$vocab.prefix:$sev.name
+    a $vocab.prefix:Severity ;
+    rdfs:isDefinedBy $vocab.prefix: ;
+    rdfs:label "$sev.name" ;
+    rdfs:comment "$sev.description" .
 
 #end
 #end

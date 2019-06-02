@@ -25,6 +25,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
+import net.open_services.scheck.annotations.IssueSeverity;
 import net.open_services.scheck.annotations.SCIssue;
 import net.open_services.scheck.annotations.SCTerm;
 import net.open_services.scheck.annotations.SCVocab;
@@ -46,6 +47,7 @@ public class SCResultProcessor extends AbstractProcessor
     private Map<String,SCTermModel> properties = new TreeMap<>();
     private Map<String,SCTermModel> resources = new TreeMap<>();
     private Map<String,SCTermModel> issues = new TreeMap<>();
+    private Map<String,SCTermModel> severities = new TreeMap<>();
 
 
     /**
@@ -60,6 +62,8 @@ public class SCResultProcessor extends AbstractProcessor
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round)
     {
+        processSeverities();
+
         if (annotations.isEmpty())
         {
             return true;
@@ -80,6 +84,20 @@ public class SCResultProcessor extends AbstractProcessor
 
         writeVocab();
         return true;
+    }
+
+
+    /**
+     * Process the severities enumeration
+     */
+    private void processSeverities()
+    {
+        for (IssueSeverity sev : IssueSeverity.values())
+        {
+            String s = sev.toString();
+            SCTermModel sevTerm = new SCTermModel(s, s + " severity.");
+            severities.put(s, sevTerm);
+        }
     }
 
 
@@ -150,7 +168,8 @@ public class SCResultProcessor extends AbstractProcessor
 
         VariableElement varElement = (VariableElement) element;
         SCIssue issueAnnotation = varElement.getAnnotation(SCIssue.class);
-        SCTermModel issue = new SCTermModel(varElement.getSimpleName().toString(),issueAnnotation.description());
+        SCTermModel issue = new SCTermModel(varElement.getSimpleName().toString(),
+            issueAnnotation.description(),issueAnnotation.issueSeverity());
         issues.put(issue.getName(), issue);
     }
 
@@ -185,6 +204,10 @@ public class SCResultProcessor extends AbstractProcessor
             if (!issues.isEmpty())
             {
                 vc.put("issues", issues);
+            }
+            if (!severities.isEmpty())
+            {
+                vc.put("severities", severities);
             }
 
             FileObject vocabFile =
