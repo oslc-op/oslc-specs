@@ -63,6 +63,7 @@ public class Main
                 + " [-N|--nocrosscheck]"
                 + " [-V|--verbose] [-D]"
                 );
+            System.exit(1);
         }
 
         // TODO: there's a fundamental problem here in the way the tables are built for the cross-check.
@@ -156,6 +157,7 @@ public class Main
                 {
                     index++;
                     debug = true;
+                    System.err.println("Arguments: "+String.join(" ",args));
                 }
                 if (args[index].equals("-V") || args[index].equals("--verbose"))
                 {
@@ -194,6 +196,7 @@ public class Main
                 }
                 else
                 {
+                    System.err.println("Unexpected option "+args[index]);
                     return false;
                 }
             }
@@ -211,6 +214,7 @@ public class Main
 
         if (args.length > index)
         {
+            System.err.println("Unexpected argument "+args[index]);
             return false;
         }
         return passed;
@@ -237,6 +241,10 @@ public class Main
            for (String path : GlobExpander.expand(argVal))
            {
                uris.add(new File(path).toURI());
+           }
+           if (uris.isEmpty())
+           {
+               System.err.println("Warning: nothing matches "+argVal);
            }
            return uris;
         }
