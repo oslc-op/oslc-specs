@@ -1,6 +1,7 @@
 package net.open_services.scheck.shapechecker;
 
 import java.io.PrintStream;
+import java.util.stream.StreamSupport;
 
 import org.apache.jena.datatypes.xsd.XSDDateTime;
 import org.apache.jena.rdf.model.Model;
@@ -177,11 +178,11 @@ public class ResultModelPrinter
         if (sti.hasNext())
         {
             printStream.printf("%n%s%n",vocabulary.getProperty(property, RDFS.comment).getString());
-            while (sti.hasNext())
-            {
-                Statement st = sti.next();
-                printStream.printf("   %s%n",st.getResource().getURI());
-            }
+            Iterable<Statement> it = (Iterable<Statement>)() -> sti;
+            StreamSupport.stream(it.spliterator(),false)
+                .map(st->st.getResource().getURI())
+                .sorted().
+                forEachOrdered(s -> printStream.printf("   %s%n",s));
         }
     }
 
