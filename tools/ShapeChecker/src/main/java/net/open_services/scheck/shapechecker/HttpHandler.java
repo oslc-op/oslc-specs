@@ -117,7 +117,7 @@ public class HttpHandler
         sb.append(httpUri.getHost());
         if (httpUri.getPort() > 0)
         {
-            sb.append(":");
+            sb.append(':');
             sb.append(httpUri.getPort());
         }
         sb.append(httpUri.getPath());
@@ -147,7 +147,7 @@ public class HttpHandler
             httpResourceIsRDF.put(httpUri, true);
             if (verbose)
             {
-                System.err.println("Parsing "+httpUri.toString());
+                System.err.println("Parsing "+httpUri);
             }
             Model foundModel = ModelFactory.createDefaultModel().read(httpUri.toString());
             ResIterator ri = foundModel.listSubjects();
@@ -208,25 +208,32 @@ public class HttpHandler
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpGet get = new HttpGet(httpUri);
-        get.addHeader("Accept", RDF_ACCEPT_HEADER);
-        HttpResponse response = httpClient.execute(get);
-        int statusCode = response.getStatusLine().getStatusCode();
-        if (statusCode != 200)
+        try
         {
-            httpResourceIsRDF.put(httpUri, false);
-            throw new ShapeCheckException(
-                Terms.InvalidRdf,
-                ResourceFactory.createResource(httpUri.toString()),
-                ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
-        }
-        Header[] contentTypes = response.getHeaders("Content-Type");
-        for (Header contentType : contentTypes)
-        {
-            if (contentType.getValue().matches(".*("+RDF_TYPES+").*"))
+            get.addHeader("Accept", RDF_ACCEPT_HEADER);
+            HttpResponse response = httpClient.execute(get);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != 200)
             {
-                return true;
+                httpResourceIsRDF.put(httpUri, false);
+                throw new ShapeCheckException(
+                    Terms.InvalidRdf,
+                    ResourceFactory.createResource(httpUri.toString()),
+                    ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
             }
+            Header[] contentTypes = response.getHeaders("Content-Type");
+            for (Header contentType : contentTypes)
+            {
+                if (contentType.getValue().matches(".*("+RDF_TYPES+").*"))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-        return false;
+        finally
+        {
+            get.reset();
+        }
     }
 }

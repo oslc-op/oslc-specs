@@ -181,6 +181,7 @@ public class ShapeCheck
      * or null if the name is unique
      */
     @javax.annotation.CheckReturnValue
+    @javax.annotation.Nullable
     public Resource checkUnique(Set<String> valueSet,String value)
     {
         if (valueSet.contains(value))

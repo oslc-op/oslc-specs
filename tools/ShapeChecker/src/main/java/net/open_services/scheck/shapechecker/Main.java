@@ -25,26 +25,30 @@ public class Main
     private List<URI> shapes       = new ArrayList<>();
     private boolean   debug        = false;
     private boolean   verbose      = false;
+    private boolean   crossCheck   = true;
 
     /**
      * Main entry point to OSLC Shape and Vocabulary checker.
      * @param args command line arguments specify vocabularies and shapes to be checked
      * <ul>
-     * <li>Each -v argument introduces a vocabulary, by local path or by URI</li>
-     * <li>Each -s argument introduces a shape, by local path or by URI</li>
-     * <li>Each -q argument names an issue to be ignored
-     * <li>Each -x argument specifies a regular expression for URIs not to be read</li
+     * <li>Each -v/--vocab argument introduces a vocabulary, by local path or by URI</li>
+     * <li>Each -s/--shape argument introduces a shape, by local path or by URI</li>
+     * <li>Each -q/--quiet argument names an issue to be ignored</li>
+     * <li>Each -x/--exclude argument specifies a regular expression for URIs not to be read</li>
+     * <li>-N/--nocrosscheck turns off the cross-checking of vocabularies and shapes</li>
+     * <li>-V/--verbose turns out more progress information</li>
+     * <li>-D/--debug turns on debugging output</li>
      * </ul>
      * The arguments may be repeated to check multiple vocabulary and shape documents.
      * The vocabulary and shape arguments can use globs (*.ttl, etc.)
      */
-    public static void main(String[] args)
+    public static void main(String... args)
     {
         new Main().run(args);
     }
 
 
-    private void run(String[] args)
+    private void run(String... args)
     {
         ResultModel resultModel = new ResultModel(args);
         HttpHandler httpHandler = new HttpHandler();
@@ -52,10 +56,11 @@ public class Main
         if (!checkUsage(args,resultModel,httpHandler))
         {
             System.err.println("Usage: "+this.getClass().getName()
-                + " [-s shapeFile|shapeURI ...]"
-                + " [-v vocabFile|vocabURI ...]"
-                + " [-q suppressedIssue ...]"
-                + " [-x excludeURIPattern ...]"
+                + " [-s|--shape shapeFile|shapeURI ...]"
+                + " [-v|--vocab vocabFile|vocabURI ...]"
+                + " [-q|--quiet suppressedIssue ...]"
+                + " [-x|--exclude excludeURIPattern ...]"
+                + " [-N|--nocrosscheck]"
                 + " [-V|--verbose] [-D]"
                 );
         }
@@ -78,7 +83,7 @@ public class Main
             {
                 if (verbose)
                 {
-                    System.err.println("Parsing "+vocab.toString());
+                    System.err.println("Parsing "+vocab);
                 }
                 new VocabularyCheck(vocab, httpHandler, resultModel).checkVocabularies();
             }
@@ -98,7 +103,7 @@ public class Main
             {
                 if (verbose)
                 {
-                    System.err.println("Parsing "+shape.toString());
+                    System.err.println("Parsing "+shape);
                 }
                 new ShapesDocCheck(shape, httpHandler, resultModel).checkShapes();
             }
@@ -113,13 +118,13 @@ public class Main
             }
         }
 
-        if (vocabularies.size() != 0)
+        if (!vocabularies.isEmpty() && (verbose || crossCheck))
         {
-            CrossCheck crossCheck = new CrossCheck(resultModel);
-            crossCheck.buildMaps(verbose);
-            if (shapes.size() != 0)
+            CrossCheck crossChecker = new CrossCheck(resultModel);
+            crossChecker.buildMaps(verbose);
+            if (crossCheck && !shapes.isEmpty())
             {
-                crossCheck.check();
+                crossChecker.check();
             }
         }
 
@@ -128,7 +133,7 @@ public class Main
         {
             Models.write(resultModel.getModel(), System.out);
         }
-        new ResultModelPrinter(resultModel,System.out).print();
+        new ResultModelPrinter(resultModel,System.out,crossCheck).print();
 
         if (errors > 0)
         {
@@ -147,37 +152,42 @@ public class Main
         {
             try
             {
-                if (args[index].equals("-D") || args[index].equals("-DEBUG"))
+                if (args[index].equals("-D") || args[index].equals("--debug"))
                 {
                     index++;
                     debug = true;
                 }
-                if (args[index].equals("-V") || args[index].equals("-VERBOSE") || args[index].equals("--verbose"))
+                if (args[index].equals("-V") || args[index].equals("--verbose"))
                 {
                     index++;
                     verbose = true;
                     httpHandler.setVerbose(verbose);
                 }
+                else if (args[index].equals("-N") || args[index].equals("--nocrossheck"))
+                {
+                    index++;
+                    crossCheck = false;
+                }
                 else if (args.length <= index+1)
                 {
                     return false;
                 }
-                else if (args[index].equals("-v") || args[index].equals("-vocab"))
+                else if (args[index].equals("-v") || args[index].equals("--vocab"))
                 {
                     index++;
                     vocabularies.addAll(checkFileOrURI(args[index++]));
                 }
-                else if (args[index].equals("-s") || args[index].equals("-shape"))
+                else if (args[index].equals("-s") || args[index].equals("--shape"))
                 {
                     index++;
                     shapes.addAll(checkFileOrURI(args[index++]));
                 }
-                else if (args[index].equals("-q") || args[index].equals("-quiet"))
+                else if (args[index].equals("-q") || args[index].equals("--quiet"))
                 {
                     index++;
                     resultModel.suppressIssue(args[index++]);
                 }
-                else if (args[index].equals("-x") || args[index].equals("-exclude"))
+                else if (args[index].equals("-x") || args[index].equals("--exclude"))
                 {
                     index++;
                     httpHandler.excludeURIPattern(args[index++]);

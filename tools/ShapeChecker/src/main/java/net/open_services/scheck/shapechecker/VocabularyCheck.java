@@ -44,12 +44,13 @@ public class VocabularyCheck
      */
     public VocabularyCheck(URI document, HttpHandler httpHandler, ResultModel resultModel)
     {
-        vocabModel = ModelFactory.createDefaultModel().read(document.toString(), "TURTLE");
+        String docURI = document.toString();
+        vocabModel = ModelFactory.createDefaultModel().read(docURI, "TURTLE");
         modelCopy = ModelFactory.createDefaultModel().add(vocabModel);
         this.httpHandler = httpHandler;
         this.resultModel = resultModel;
         vocabResult = this.resultModel.createOuterResult(Terms.VocabResult);
-        vocabResult.addProperty(DCTerms.source,resultModel.getModel().createResource(document.toString()));
+        vocabResult.addProperty(DCTerms.source,resultModel.getModel().createResource(docURI));
         vocabResult.addLiteral(DCTerms.extent, vocabModel.size());
         preferredNameSpace = vocabModel.createProperty("http://purl.org/vocab/vann/preferredNamespacePrefix");
     }

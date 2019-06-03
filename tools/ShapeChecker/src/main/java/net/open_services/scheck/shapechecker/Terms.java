@@ -33,7 +33,7 @@ public final class Terms
 {
     private static final String checkerNS          = "http://open-services.net/ns/scheck#";
 
-    private static Map<String, Resource> issueMap         = new HashMap<>();
+    private static Map<String, Resource> issueMap  = new HashMap<>();
 
 
     /**

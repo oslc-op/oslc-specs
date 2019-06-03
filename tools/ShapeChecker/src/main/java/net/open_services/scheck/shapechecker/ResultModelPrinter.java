@@ -21,18 +21,21 @@ public class ResultModelPrinter
     private PrintStream     printStream;
     private ResultModel     resultModel;
     private Model           vocabulary;
+    private boolean         printCrossCheck;
 
 
     /**
      * Construct a new ResultModelPrinter to print a given set of results to a given stream.
      * @param resultModel the ResultModel to print
      * @param printStream the output stream
+     * @param printCrossCheck true iff the cross-check results are to be shown
      */
-    public ResultModelPrinter(ResultModel resultModel, PrintStream printStream)
+    public ResultModelPrinter(ResultModel resultModel, PrintStream printStream, boolean printCrossCheck)
     {
-        this.printStream    = printStream;
-        this.resultModel    = resultModel;
-        this.vocabulary     = resultModel.getResultVocabModel();
+        this.printStream     = printStream;
+        this.resultModel     = resultModel;
+        this.printCrossCheck = printCrossCheck;
+        this.vocabulary      = resultModel.getResultVocabModel();
     }
 
 
@@ -157,11 +160,14 @@ public class ResultModelPrinter
 
     private void printCrossCheckResults(Resource summary)
     {
-        // Process the cross-check results
-        printResList(summary,Terms.undefinedClass);
-        printResList(summary,Terms.undefinedProp);
-        printResList(summary,Terms.unusedVocabulary);
-        printResList(summary,Terms.unusedTerm);
+        if (printCrossCheck)
+        {
+            // Process the cross-check results
+            printResList(summary,Terms.undefinedClass);
+            printResList(summary,Terms.undefinedProp);
+            printResList(summary,Terms.unusedVocabulary);
+            printResList(summary,Terms.unusedTerm);
+        }
     }
 
 

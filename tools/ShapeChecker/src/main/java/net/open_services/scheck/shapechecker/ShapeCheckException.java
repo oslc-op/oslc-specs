@@ -11,9 +11,9 @@ import org.apache.jena.rdf.model.Resource;
 public class ShapeCheckException extends Exception
 {
     private static final long serialVersionUID = 1L;
-    private final transient Resource issueClass;
-    private final transient Resource subject;
-    private final transient RDFNode  object;
+    private final Resource issueClass;
+    private final Resource subject;
+    private final RDFNode  object;
 
 
     /**

@@ -42,10 +42,11 @@ public class ShapesDocCheck
         this.document = document;
         this.resultModel = resultModel;
         this.httpHandler = httpHandler;
-        shapeModel = ModelFactory.createDefaultModel().read(document.toString(), "TURTLE");
+        String docURI = document.toString();
+        shapeModel = ModelFactory.createDefaultModel().read(docURI, "TURTLE");
         shapeCopy = ModelFactory.createDefaultModel().add(shapeModel);
         shapesResult = resultModel.createOuterResult(Terms.ShapesResult);
-        shapesResult.addProperty(DCTerms.source,resultModel.getModel().createResource(document.toString()));
+        shapesResult.addProperty(DCTerms.source,resultModel.getModel().createResource(docURI));
         shapesResult.addLiteral(DCTerms.extent, shapeModel.size());
     }
 

@@ -10,6 +10,7 @@ import org.apache.jena.vocabulary.RDF;
 
 import net.open_services.scheck.annotations.IssueSeverity;
 
+
 /**
  * A set of methods to count the issues in a {@link ResultModel}.
  * @author Nick Crossley. Released to public domain 2019.
@@ -120,4 +121,3 @@ public class IssueSummarizer
         int errorCount = 0;
     }
 }
-
