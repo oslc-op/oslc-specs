@@ -57,12 +57,13 @@ public class Main
         if (!checkUsage(args,resultModel,httpHandler))
         {
             System.err.println("Usage: "+this.getClass().getName()
-                + " [-s|--shape shapeFile|shapeURI ...]"
-                + " [-v|--vocab vocabFile|vocabURI ...]"
+                + " [-v|--vocab vocabFileGlob|vocabURI ...]"
+                + " [-s|--shape shapeFileGlob|shapeURI ...]"
                 + " [-q|--quiet suppressedIssue ...]"
                 + " [-x|--exclude excludeURIPattern ...]"
                 + " [-N|--nocrosscheck]"
-                + " [-V|--verbose] [-D]"
+                + " [-V|--verbose]"
+                + " [-D]"
                 );
             System.exit(1);
         }
@@ -79,13 +80,14 @@ public class Main
         // Meanwhile, work around this by setting @base in the source to make the URIs for terms reflect the
         // intended target, and use the -x command line option to exclude that (presumably older) target.
 
+        // Check each specified RDF Vocabulary
         for (URI vocab : vocabularies)
         {
             try
             {
                 if (verbose)
                 {
-                    System.err.println("Parsing "+vocab);
+                    System.out.println("Parsing "+vocab);
                 }
                 new VocabularyCheck(vocab, httpHandler, resultModel).checkVocabularies();
             }
@@ -99,13 +101,15 @@ public class Main
                 e.printStackTrace();
             }
         }
+
+        // Check each specified set of OSLC Resource Shapes
         for (URI shape : shapes)
         {
             try
             {
                 if (verbose)
                 {
-                    System.err.println("Parsing "+shape);
+                    System.out.println("Parsing "+shape);
                 }
                 new ShapesDocCheck(shape, httpHandler, resultModel).checkShapes();
             }
@@ -120,6 +124,7 @@ public class Main
             }
         }
 
+        // Check that terms and defined and used
         if (!vocabularies.isEmpty() && (verbose || crossCheck))
         {
             crossChecker = new CrossCheck(resultModel);
@@ -130,13 +135,23 @@ public class Main
             }
         }
 
+        // Scan the result model, adding issue counts
         int errors = resultModel.summarizeIssues();
         if (debug)
         {
-            Models.write(resultModel.getModel(), System.out);
+            System.err.println();
+            Models.write(resultModel.getModel(), System.err);
+        }
+
+        // Print ShapeChecker results
+        // Add blank line before results if we previously printed some progress messages
+        if (verbose)
+        {
+            System.out.println();
         }
         new ResultModelPrinter(resultModel,System.out,crossCheck).print();
 
+        // Print list of vocabulary terms if requested
         if (verbose && crossChecker != null)
         {
             crossChecker.printVocabTerms();
@@ -163,13 +178,13 @@ public class Main
                 {
                     index++;
                     debug = true;
+                    httpHandler.setDebug(debug);
                     System.err.println("Arguments: "+String.join(" ",args));
                 }
                 if (args[index].equals("-V") || args[index].equals("--verbose"))
                 {
                     index++;
                     verbose = true;
-                    httpHandler.setVerbose(verbose);
                 }
                 else if (args[index].equals("-N") || args[index].equals("--nocrossheck"))
                 {

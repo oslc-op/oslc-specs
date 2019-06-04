@@ -33,16 +33,16 @@ public class HttpHandler
     private Map<URI,Boolean> httpResourceIsRDF = new HashMap<>();
     private Set<String> foundRDFResources = new HashSet<>();
     private Set<Pattern> skipURIPatterns = new HashSet<>();
-    private boolean verbose = false;
+    private boolean debug = false;
 
 
     /**
-     * Sets the verbose option.
-     * @param verbose the verbose value to set.
+     * Sets the debug option.
+     * @param debug the debug value to set.
      */
-    public void setVerbose(boolean verbose)
+    public void setDebug(boolean debug)
     {
-        this.verbose = verbose;
+        this.debug = debug;
     }
 
 
@@ -145,7 +145,7 @@ public class HttpHandler
         {
             // Resource is RDF, so read it and save contained subjects
             httpResourceIsRDF.put(httpUri, true);
-            if (verbose)
+            if (debug)
             {
                 System.err.println("Parsing "+httpUri);
             }

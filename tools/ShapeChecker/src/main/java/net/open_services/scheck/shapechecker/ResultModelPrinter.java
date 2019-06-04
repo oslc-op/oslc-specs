@@ -190,8 +190,15 @@ public class ResultModelPrinter
             String message = getVocabProp(property, RDFS.comment);
             String singular = getVocabProp(property, Terms.singular);
             String plural = getVocabProp(property, Terms.plural);
-            printStream.printf("%n%s %s%n",
-                size==1 ? "This "+singular+" was " : "These "+size+" "+plural+" were ",
+            String severity = vocabulary
+                .getProperty(property,Terms.severity)
+                .getResource()
+                .getURI()
+                .replaceFirst(".*#","");
+
+            printStream.printf("%n%s: %s %s%n",
+                severity,
+                size==1 ? "This "+singular+" was" : "These "+size+" "+plural+" were",
                 message);
             resURIs.stream().forEachOrdered(s -> printStream.printf("   %s%n",s));
         }
