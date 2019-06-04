@@ -100,7 +100,7 @@ public class NodeCheck
         }
         if (count == 0 && !occurs.isOptional())
         {
-            resultModel.createIssue(resultNode, Terms.Missing, property);
+            resultModel.createIssue(resultNode, Terms.MissingError, property);
         }
         else if (count > 1 && !occurs.allowMultiple())
         {
@@ -168,7 +168,7 @@ public class NodeCheck
         }
         if (count == 0 && !occurs.isOptional())
         {
-            resultModel.createIssue(resultNode, Terms.Missing, property);
+            resultModel.createIssue(resultNode, Terms.MissingError, property);
         }
         else if (count > 1 && !occurs.allowMultiple())
         {
@@ -241,7 +241,7 @@ public class NodeCheck
         }
         if (count == 0 && !occurs.isOptional())
         {
-            resultModel.createIssue(resultNode, Terms.Missing, property);
+            resultModel.createIssue(resultNode, Terms.MissingError, property);
         }
     }
 
@@ -299,7 +299,9 @@ public class NodeCheck
         }
         if (count == 0 && !occurs.isOptional())
         {
-            resultModel.createIssue(resultNode, Terms.Missing, property);
+            resultModel.createIssue(resultNode,
+                property.equals(OSLC.describes) ? Terms.MissingWarn : Terms.MissingError,
+                property);
         }
         else if (count > 1 && !occurs.allowMultiple())
         {

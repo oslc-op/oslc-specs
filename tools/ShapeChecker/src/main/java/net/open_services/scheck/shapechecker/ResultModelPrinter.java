@@ -140,12 +140,14 @@ public class ResultModelPrinter
         Resource subjectRes = issueRes.getPropertyResourceValue(Terms.subject);
         Resource type = issueRes.getPropertyResourceValue(RDF.type);
         Resource badValue = issueRes.getPropertyResourceValue(Terms.value);
+        String severity = lookupSeverity(type);
         String prefix = pad(level);
 
         if (badValue == null)
         {
-            printStream.printf("%sOn %s: %s%n",
+            printStream.printf("%s%s on %s: %s%n",
                 prefix,
+                severity,
                 subjectRes.getURI(),
                 vocabulary.getProperty(type, RDFS.comment).getString());
         }
@@ -154,8 +156,9 @@ public class ResultModelPrinter
             String badValStr = badValue.isResource() ? badValue.getURI()
                 : badValue.asLiteral().getLexicalForm();
 
-            printStream.printf("%sOn %s: %s (bad value %s)%n",
+            printStream.printf("%s%s on %s: %s (bad value %s)%n",
                 prefix,
+                severity,
                 subjectRes.getURI(),
                 badValStr,
                 vocabulary.getProperty(type, RDFS.comment).getString());
@@ -190,11 +193,7 @@ public class ResultModelPrinter
             String message = getVocabProp(property, RDFS.comment);
             String singular = getVocabProp(property, Terms.singular);
             String plural = getVocabProp(property, Terms.plural);
-            String severity = vocabulary
-                .getProperty(property,Terms.severity)
-                .getResource()
-                .getURI()
-                .replaceFirst(".*#","");
+            String severity = lookupSeverity(property);
 
             printStream.printf("%n%s: %s %s%n",
                 severity,
@@ -202,6 +201,16 @@ public class ResultModelPrinter
                 message);
             resURIs.stream().forEachOrdered(s -> printStream.printf("   %s%n",s));
         }
+    }
+
+
+    private String lookupSeverity(Resource res)
+    {
+        return vocabulary
+            .getProperty(res,Terms.severity)
+            .getResource()
+            .getURI()
+            .replaceFirst(".*#","");
     }
 
 

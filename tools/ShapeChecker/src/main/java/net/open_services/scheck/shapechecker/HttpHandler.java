@@ -12,7 +12,10 @@ import java.util.regex.Pattern;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
@@ -93,7 +96,7 @@ public class HttpHandler
         {
             httpResourceIsRDF.put(httpUri, false);
             throw new ShapeCheckException(
-                Terms.InvalidRdf,
+                Terms.InvalidRdfError,
                 ResourceFactory.createResource(uri),
                 null,
                 e1);
@@ -206,7 +209,9 @@ public class HttpHandler
     @javax.annotation.CheckReturnValue
     private boolean isRDF(URI httpUri) throws ShapeCheckException, IOException
     {
-        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpParams httpParams = new BasicHttpParams();
+        HttpClientParams.setRedirecting(httpParams, true);
+        DefaultHttpClient httpClient = new DefaultHttpClient(httpParams);
         HttpGet get = new HttpGet(httpUri);
         try
         {
@@ -217,7 +222,7 @@ public class HttpHandler
             {
                 httpResourceIsRDF.put(httpUri, false);
                 throw new ShapeCheckException(
-                    Terms.InvalidRdf,
+                    Terms.InvalidRdfWarn,
                     ResourceFactory.createResource(httpUri.toString()),
                     ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
             }

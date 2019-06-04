@@ -212,7 +212,7 @@ public class VocabularyCheck
         }
         else
         {
-            resultModel.createIssue(termResult, Terms.Missing, RDF.type);
+            resultModel.createIssue(termResult, Terms.MissingError, RDF.type);
         }
         if (it.hasNext())
         {
