@@ -4,8 +4,10 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDF;
 
 import net.open_services.scheck.annotations.IssueSeverity;
@@ -43,7 +45,7 @@ public class IssueSummarizer
         ResultModelProcessor.processResults(
             resultModel,
             r -> startCounts(),
-            r -> addCounts(r),
+            r -> endCounts(r),
             (l,s,p,r) -> startCounts(),
             (l,s,p,r) -> incrementCounts(r),
             (l,s,p,r) -> addCounts(r));
@@ -62,6 +64,45 @@ public class IssueSummarizer
     {
         issueCounters.push(new IssueCounter());
     }
+
+
+    private void endCounts(Resource summary)
+    {
+        IssueCounter summaryCounts = issueCounters.pop();
+
+        // Process the cross-check results
+        addCrossChecks(summaryCounts,summary,Terms.undefinedClass);
+        addCrossChecks(summaryCounts,summary,Terms.undefinedProp);
+        addCrossChecks(summaryCounts,summary,Terms.unusedVocabulary);
+        addCrossChecks(summaryCounts,summary,Terms.unusedTerm);
+
+        // And store the final counts
+        addIssueCounts(summaryCounts,summary);
+    }
+
+
+    private void addCrossChecks(IssueCounter summaryCounts, Resource summary, Property property)
+    {
+        StmtIterator sti = summary.listProperties(property);
+        IssueSeverity severity = lookupSeverity(property);
+        int count = 0;
+        while (sti.hasNext())
+        {
+            sti.next();
+            count++;
+        }
+        switch (severity)
+        {
+        case Info: summaryCounts.infoCount += count;
+            break;
+        case Warning: summaryCounts.warnCount += count;
+            break;
+        case Error: summaryCounts.errorCount += count;
+            break;
+        default:
+            break;
+        }
+     }
 
 
     private void addCounts(Resource r)
@@ -92,12 +133,7 @@ public class IssueSummarizer
     private void incrementCounts(Resource issueRes)
     {
         Resource issueType = issueRes.getPropertyResourceValue(RDF.type);
-        IssueSeverity severity = IssueSeverity.findSeverity(
-            vocabulary
-                .getProperty(issueType,Terms.severity)
-                .getResource()
-                .getURI()
-                .replaceFirst(".*#",""));
+        IssueSeverity severity = lookupSeverity(issueType);
 
         IssueCounter current = issueCounters.peek();
         switch (severity)
@@ -111,6 +147,18 @@ public class IssueSummarizer
         default:
             break;
         }
+    }
+
+
+    private IssueSeverity lookupSeverity(Resource issueType)
+    {
+        IssueSeverity severity = IssueSeverity.findSeverity(
+            vocabulary
+                .getProperty(issueType,Terms.severity)
+                .getResource()
+                .getURI()
+                .replaceFirst(".*#",""));
+        return severity;
     }
 
     //CSOFF: Visibility

@@ -115,7 +115,7 @@ public class ResultModelPrinter
             printStream.printf("A total of %d issue%s found%n",
                 issueCount, issueCount==1 ? " was" : "s were");
         }
-        else if (issueCount > 0)
+        else if (level == 0 || issueCount > 0)
         {
             printStream.print(prefix);
             if (level == 0)
@@ -205,6 +205,6 @@ public class ResultModelPrinter
 
     private static String pad(int level)
     {
-        return level == 0 ? "" : String.format("%"+level*2+"s"," ");
+        return level == 0 ? "" : String.format("%"+level*3+"s"," ");
     }
 }

@@ -1,14 +1,14 @@
 # RDF Vocabulary document for ShapeChecker Result Vocabulary.
 
-@prefix dcterms:     <http://purl.org/dc/terms/> .
-@prefix owl:         <http://www.w3.org/2002/07/owl#> .
-@prefix oslc:        <http://open-services.net/ns/core#> .
-@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix vann:        <http://purl.org/vocab/vann/> .
-@prefix vs:          <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
-@prefix scheck:      <http://open-services.net/ns/scheck#> .
+@prefix dcterms:        <http://purl.org/dc/terms/> .
+@prefix owl:            <http://www.w3.org/2002/07/owl#> .
+@prefix oslc:           <http://open-services.net/ns/core#> .
+@prefix rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann:           <http://purl.org/vocab/vann/> .
+@prefix vs:             <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd:            <http://www.w3.org/2001/XMLSchema#> .
+@prefix scheck:  <http://open-services.net/ns/scheck#> .
 
 
 # The ontology resource
@@ -119,30 +119,6 @@ scheck:subject
     rdfs:isDefinedBy scheck: ;
     rdfs:label "subject" ;
     rdfs:comment "The subject of an issue." .
-
-scheck:undefinedClass
-    a rdf:Property ;
-    rdfs:isDefinedBy scheck: ;
-    rdfs:label "undefinedClass" ;
-    rdfs:comment "These classes are referenced in the given shapes, but not defined in the expected vocabulary:" .
-
-scheck:undefinedProp
-    a rdf:Property ;
-    rdfs:isDefinedBy scheck: ;
-    rdfs:label "undefinedProp" ;
-    rdfs:comment "These properties or resources are referenced in the given shapes, but not defined in the expected vocabulary:" .
-
-scheck:unusedTerm
-    a rdf:Property ;
-    rdfs:isDefinedBy scheck: ;
-    rdfs:label "unusedTerm" ;
-    rdfs:comment "These terms were defined in the given vocabularies, but were not referenced in the given shapes:" .
-
-scheck:unusedVocabulary
-    a rdf:Property ;
-    rdfs:isDefinedBy scheck: ;
-    rdfs:label "unusedVocabulary" ;
-    rdfs:comment "These vocabularies were given, but were not referenced in the given shapes:" .
 
 scheck:value
     a rdf:Property ;
@@ -333,6 +309,37 @@ scheck:WrongType
     rdfs:isDefinedBy scheck: ;
     rdfs:label "WrongType" ;
     rdfs:comment "Wrong type for oslc:valueType, or for a property definition, or for a literal." ;
+    scheck:severity scheck:Warning .
+
+
+# Cross-check issues
+
+scheck:undefinedClass
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "undefinedClass" ;
+    rdfs:comment "These classes are referenced in the given shapes, but not defined in the expected vocabulary:" ;
+    scheck:severity scheck:Warning .
+
+scheck:undefinedProp
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "undefinedProp" ;
+    rdfs:comment "These properties or resources are referenced in the given shapes, but not defined in the expected vocabulary:" ;
+    scheck:severity scheck:Warning .
+
+scheck:unusedTerm
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "unusedTerm" ;
+    rdfs:comment "These terms were defined in the given vocabularies, but were not referenced in the given shapes:" ;
+    scheck:severity scheck:Info .
+
+scheck:unusedVocabulary
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "unusedVocabulary" ;
+    rdfs:comment "These vocabularies were given, but were not referenced in the given shapes:" ;
     scheck:severity scheck:Warning .
 
 
