@@ -1,6 +1,8 @@
 package net.open_services.scheck.shapechecker;
 
 import java.io.PrintStream;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.jena.datatypes.xsd.XSDDateTime;
@@ -61,9 +63,8 @@ public class ResultModelPrinter
         // Results from summary node
         printStream.printf("Results from ShapeChecker run on %s%n",
             ((XSDDateTime)summary.getProperty(DCTerms.created).getLiteral().getValue()).asCalendar().getTime());
-// FIXME update and uncomment this code after testing that results otherwise look the same as code before severities
-//        printStream.printf("Command line arguments: %s%n",
-//            wrap(summary.getProperty(DCTerms.description).getString()));
+        printStream.printf("%nCommand line arguments:%n   %s%n%n",
+            wrap(summary.getProperty(DCTerms.description).getString()));
         printIssueCount(-1,"",summary);
     }
 
@@ -112,22 +113,25 @@ public class ResultModelPrinter
 
         if (level < 0)
         {
-            printStream.printf("A total of %d issue%s found%n",
-                issueCount, issueCount==1 ? " was" : "s were");
+            // For the outer summary, we always print the number of issues, even if zero
+            printStream.printf("A total of %d issue%s found (%d info, %d warnings, %d errors)%n",
+                issueCount, issueCount==1 ? " was" : "s were",
+                infoCount, warnCount, errorCount);
         }
         else if (level == 0 || issueCount > 0)
         {
+            // We print a section header if its the top level,
+            // or if there are issues found in that section
             printStream.print(prefix);
             if (level == 0)
             {
-                printStream.printf(", with %d %s%n", issueCount, issueCount==1 ? "issue" : "issues");
+                // We print the number of issues only on the section header,
+                // and not for intermediate result levels.
+                printStream.printf(", with %d %s (%d info, %d warnings, %d errors)%n",
+                    issueCount, issueCount==1 ? "issue" : "issues",
+                    infoCount, warnCount, errorCount);
             }
         }
-// FIXME update and uncomment this code after testing that results otherwise look the same as code before severities
-//          printStream.printf("%n%sA total of %d issue%s found (%d info, %d warnings, %d errors)%n",
-//              pad(level),
-//              issueCount, issueCount==1 ? " was" : "s were",
-//              infoCount, warnCount, errorCount);
     }
 
 
@@ -177,13 +181,26 @@ public class ResultModelPrinter
         StmtIterator sti = summary.listProperties(property);
         if (sti.hasNext())
         {
-            printStream.printf("%n%s%n",vocabulary.getProperty(property, RDFS.comment).getString());
             Iterable<Statement> it = (Iterable<Statement>)() -> sti;
-            StreamSupport.stream(it.spliterator(),false)
+            List<String> resURIs = StreamSupport.stream(it.spliterator(),false)
                 .map(st->st.getResource().getURI())
-                .sorted().
-                forEachOrdered(s -> printStream.printf("   %s%n",s));
+                .sorted()
+                .collect(Collectors.toList());
+            int size = resURIs.size();
+            String message = getVocabProp(property, RDFS.comment);
+            String singular = getVocabProp(property, Terms.singular);
+            String plural = getVocabProp(property, Terms.plural);
+            printStream.printf("%n%s %s%n",
+                size==1 ? "This "+singular+" was " : "These "+size+" "+plural+" were ",
+                message);
+            resURIs.stream().forEachOrdered(s -> printStream.printf("   %s%n",s));
         }
+    }
+
+
+    private String getVocabProp(Property term, Property predicate)
+    {
+        return vocabulary.getProperty(term, predicate).getString();
     }
 
 
@@ -200,7 +217,6 @@ public class ResultModelPrinter
 
         return sb.toString();
     }
-
 
 
     private static String pad(int level)

@@ -194,7 +194,10 @@ public class SCResultProcessor extends AbstractProcessor
         VariableElement varElement = (VariableElement) element;
         SCXCheck xcheckAnnotation = varElement.getAnnotation(SCXCheck.class);
         SCTermModel xcheck = new SCTermModel(varElement.getSimpleName().toString(),
-            xcheckAnnotation.description(),xcheckAnnotation.severity());
+            xcheckAnnotation.description(),
+            xcheckAnnotation.severity(),
+            xcheckAnnotation.singular(),
+            xcheckAnnotation.plural());
         xchecks.put(xcheck.getName(), xcheck);
     }
 

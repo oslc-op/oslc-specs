@@ -8,9 +8,11 @@ import net.open_services.scheck.annotations.IssueSeverity;
  */
 public class SCTermModel
 {
-    private String name;
-    private String description;
+    private String        name;
+    private String        description;
     private IssueSeverity severity;
+    private String        singular;
+    private String        plural;
 
 
     /**
@@ -36,6 +38,24 @@ public class SCTermModel
         this.name = name;
         this.description = description;
         this.severity = issueSeverity;
+    }
+
+
+    /**
+     * Construct a new SCTerm for an issue with a severity.
+     * @param name the name of the issue
+     * @param description a description of the issue
+     * @param severity the severity of the issue
+     * @param singular the singular for a cross-check artifact
+     * @param plural the plural for a cross-check artifact
+     */
+    public SCTermModel(String name, String description, IssueSeverity severity, String singular, String plural)
+    {
+        this.name = name;
+        this.description = description;
+        this.severity = severity;
+        this.singular = singular;
+        this.plural = plural;
     }
 
 
@@ -66,5 +86,25 @@ public class SCTermModel
     public IssueSeverity getSeverity()
     {
         return severity;
+    }
+
+
+    /**
+     * Get the singular.
+     * @return returns the singular.
+     */
+    public String getSingular()
+    {
+        return singular;
+    }
+
+
+    /**
+     * Get the plural.
+     * @return returns the plural.
+     */
+    public String getPlural()
+    {
+        return plural;
     }
 }

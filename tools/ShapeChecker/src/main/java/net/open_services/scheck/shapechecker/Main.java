@@ -21,11 +21,12 @@ import net.open_services.scheck.util.GlobExpander;
  */
 public class Main
 {
-    private List<URI> vocabularies = new ArrayList<>();
-    private List<URI> shapes       = new ArrayList<>();
-    private boolean   debug        = false;
-    private boolean   verbose      = false;
-    private boolean   crossCheck   = true;
+    private List<URI>  vocabularies = new ArrayList<>();
+    private List<URI>  shapes       = new ArrayList<>();
+    private boolean    debug        = false;
+    private boolean    verbose      = false;
+    private boolean    crossCheck   = true;
+    private CrossCheck crossChecker;
 
     /**
      * Main entry point to OSLC Shape and Vocabulary checker.
@@ -121,8 +122,8 @@ public class Main
 
         if (!vocabularies.isEmpty() && (verbose || crossCheck))
         {
-            CrossCheck crossChecker = new CrossCheck(resultModel);
-            crossChecker.buildMaps(verbose);
+            crossChecker = new CrossCheck(resultModel);
+            crossChecker.buildMaps();
             if (crossCheck && !shapes.isEmpty())
             {
                 crossChecker.check();
@@ -135,6 +136,11 @@ public class Main
             Models.write(resultModel.getModel(), System.out);
         }
         new ResultModelPrinter(resultModel,System.out,crossCheck).print();
+
+        if (verbose && crossChecker != null)
+        {
+            crossChecker.printVocabTerms();
+        }
 
         if (errors > 0)
         {

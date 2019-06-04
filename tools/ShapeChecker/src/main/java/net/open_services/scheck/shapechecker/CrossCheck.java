@@ -37,10 +37,8 @@ public class CrossCheck
 
     /**
      * Build the maps of resources in vocabs and shapes.
-     * Optionally, print list of vocabulary terms.
-     * @param printTerms if true, a list of vocabulary terms is printed
      */
-    public void buildMaps(boolean printTerms)
+    public void buildMaps()
     {
         // Add vocabulary classes to vocabs map
         ResIterator vi = resultModel.getModel().listResourcesWithProperty(RDF.type, Terms.VocabResult);
@@ -133,13 +131,6 @@ public class CrossCheck
                 termsInVocabs.put(prop, true);
             }
         }
-
-        if (printTerms && !termsInVocabs.isEmpty())
-        {
-            // Show list of all vocabulary terms
-            System.out.println("List of vocabulary terms:");
-            termsInVocabs.keySet().stream().map(r->r.getLocalName()).sorted().forEachOrdered(s->System.out.println(s));
-        }
     }
 
 
@@ -178,6 +169,25 @@ public class CrossCheck
             {
                 resultModel.getSummary().addProperty(Terms.undefinedProp, prop.getKey());
             }
+        }
+    }
+
+
+    /**
+     * Print a list of all vocabulary terms defined.
+     */
+    public void printVocabTerms()
+    {
+
+        if (!termsInVocabs.isEmpty())
+        {
+            // Show list of all vocabulary terms
+            System.out.println("\nList of vocabulary terms:");
+            termsInVocabs.keySet()
+                .stream()
+                .map(r->r.getLocalName())
+                .sorted()
+                .forEachOrdered(s->System.out.printf("   %s%n",s));
         }
     }
 }

@@ -20,6 +20,18 @@ public @interface SCXCheck
     String description();
 
     /**
+     * The singular for a cross-check artifact..
+     * @return the singular for a cross-check artifact.
+     */
+    String singular();
+
+    /**
+     * The plural for a cross-check artifact..
+     * @return the plural for a cross-check artifact.
+     */
+    String plural();
+
+    /**
      * The severity of the issue: Info, Warning, or Error.
      * The default value is Warning.
      * @return the severity of the issue
