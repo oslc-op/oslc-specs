@@ -8,11 +8,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 
-import net.open_services.scheck.annotations.IssueSeverity;
-import net.open_services.scheck.annotations.SCIssue;
-import net.open_services.scheck.annotations.SCTerm;
-import net.open_services.scheck.annotations.SCVocab;
-import net.open_services.scheck.annotations.TermType;
+import net.open_services.scheck.annotations.*;
 
 //CSOFF: DeclarationOrderCheck
 //CSOFF: ConstantNameCheck
@@ -237,19 +233,19 @@ public final class Terms
     public static final Property severity         = property("severity");
 
 
-    /** Summary predicate for an undefined class. */
-    @SCTerm(type=TermType.Property,description="These classes are referenced in the given shapes, but not defined in the expected vocabulary:")
+    /** Crosscheck predicate for an undefined class. */
+    @SCXCheck(description="These classes are referenced in the given shapes, but not defined in the expected vocabulary:")
     public static final Property undefinedClass   = property("undefinedClass");
 
-    /** Summary predicate for an undefined term. */
-    @SCTerm(type=TermType.Property,description="These properties or resources are referenced in the given shapes, but not defined in the expected vocabulary:")
+    /** Crosscheck predicate for an undefined term. */
+    @SCXCheck(description="These properties or resources are referenced in the given shapes, but not defined in the expected vocabulary:")
     public static final Property undefinedProp    = property("undefinedProp");
 
-    /** Summary predicate for an unreferenced vocabulary. */
-    @SCTerm(type=TermType.Property,description="These vocabularies were given, but were not referenced in the given shapes:")
+    /** Crosscheck predicate for an unreferenced vocabulary. */
+    @SCXCheck(description="These vocabularies were given, but were not referenced in the given shapes:")
     public static final Property unusedVocabulary = property("unusedVocabulary");
 
-    /** Summary predicate for an unreferenced vocabulary term. */
-    @SCTerm(type=TermType.Property,description="These terms were defined in the given vocabularies, but were not referenced in the given shapes:")
+    /** Crosscheck predicate for an unreferenced vocabulary term. */
+    @SCXCheck(severity=IssueSeverity.Info,description="These terms were defined in the given vocabularies, but were not referenced in the given shapes:")
     public static final Property unusedTerm       = property("unusedTerm");
 }
