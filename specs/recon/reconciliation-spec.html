@@ -707,11 +707,13 @@
     <section id="labels" class='informative'>
       <h3>Labels for Relationships</h3>
 
-      <p class=‘conformance’>Relationships to other resources are represented as properties whose values are the URI of the object or target
+      <p class=‘conformance’>Relationships to other resources are represented as properties whose values are the URI of
+        the object or target
         resource. When a relationship property is to be presented in a user interface, it may be helpful to provide an
         informative and useful textual label for that relationship instance. (This in addition to the relationship
         property URI and the object resource URI, which are also candidates for presentation to a user.) <a
-          href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecAppendixLinks.html">OSLC Core Links Guidance</a> allows OSLC
+          href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecAppendixLinks.html">OSLC Core Links
+          Guidance</a> allows OSLC
         providers to support a <code>dcterms:title</code> link property in resource representations, using the anchor
         approach (reification), but this specification discourages its use (providers SHOULD NOT use
         it, and consumers SHOULD NOT depend on it). At the time this specification was written, the W3C
@@ -723,92 +725,95 @@
 
   <section id='termsAndConstraints'>
     <h2>Vocabulary Terms and Constraints</h2>
-    <p><a href="http://docs.oasis-open.org/oslc-domains/cm/v3.0/cm-v3.0-part2-change-mgt-vocab.html">OSLC Change
-        Management Version 3.0. Part 2: Vocabulary</a>
-      Defines the vocabulary terms and constraints for OSLC Change Management resources.
+    <p><a
+        href="http://docs.oasis-open.org/oslc-domains/recon/v2.0/cs01/part2-reconciliation-vocab/recon-v2.0-cs01-part2-reconciliation-vocab.html">OSLC
+        Reconciliation Version 2.0. Part 2: Vocabulary</a>
+      Defines the vocabulary terms and constraints for OSLC Reconciliation resources.
       These terms and constraints are specified according to [[!OSLCCoreVocab]].</p>
   </section>
 
-  <section id="capabilities">
-    <h2>CM Server Capabilities</h2>
+  <section id="Reconciliation-Service-Provider-Capabilities">
+    <h2>Reconciliation Service Provider Capabilities</h2>
 
-    <section id="resources">
-      <h3>Server Resources</h3>
-
-      <p>OSLC CM servers MUST support OSLC Discovery capabilities defined by [[!OSLCCore3]].</p>
-
-      <p>OSLC CM servers MAY provide a ServiceProvider Resource that can be retrieved at a implementation dependent
-        URI.
-      </p>
-
-      <p>OSLC CM servers MAY provide a ServiceProviderCatalog Resource that can be retrieved at a implementation
-        dependent URI.</p>
-
-      <p>OSLC CM servers MAY provide a <code>oslc:serviceProvider</code> property for their defined resources that
-        will
-        be the URI to a ServiceProvider Resource.</p>
-
-      <p>OSLC CM servers MUST supply a value of <code>http://open-services.net/ns/cm#</code> for the property
-        <code>oslc:domain</code> on either <code>oslc:Service</code> or <code>oslc:ServiceProviderCatalog</code>
-        resources.</p>
+    <section id="Service-Discovery-and-Description">
+      <h3>Service Discovery and Description</h3>
     </section>
 
-    <p>OSLC CM servers MAY allow ChangeRequest state change through [[OSLCActions]].</p>
+    <section id="Resource-Shapes">
+      <h3>Resource Shapes</h3>
 
-    <section id="creationfactories">
-      <h3>Creation Factories</h3>
+      <p class=‘conformance’>Reconciliation service providers MAY support <a
+          href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixA.html#oslc_ResourceShape_Resource">Resource
+          Shapes</a> as
+        defined in <a href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixA.html">OSLC Core
+          Specification Appendix A</a>
+      </p>
 
-      <p>OSLC CM servers MUST support <a
-          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Creation_Factories">Creation
-          Factories</a>
-        and list them in the Service Provider Resource as defined by OSLC Core. OSLC CM servers SHOULD support
-        Resource
-        Shapes for Creation Factories as defined in [[!OSLCShapes]]</p>
     </section>
 
-    <section id="querycapabilities">
-      <h3 id="querycapabilities">Query Capabilities</h3>
+    <section id="Service-Provider-Resource">
+      <h3>Service Provider Resource</h3>
 
-      <p>OSLC CM servers SHOULD support the <a
-          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Query_Capabilities">Query
-          Capabilities</a>
-        as defined by [[!OSLCCore3]]. OSLC CM servers SHOULD support Resource Shapes for Query Capability as defined
-        in
-        [[!OSLCShapes]]</p>
+      <p class=‘conformance’>Reconciliation service providers MUST provide a <a
+          href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Service_Provider_Resources">Service
+          Provider
+          Resource</a> that can be retrieved at an implementation dependent URI.</p>
 
-      <p>The Query Capability, if supported, MUST support these parameters:</p>
+      <p class=‘conformance’>Reconciliation service providers MAY provide a <a
+          href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Service_Provider_Resources">Service
+          Provider
+          Catalog Resource</a> that can be retrieved at an implementation dependent URI.</p>
 
-      <ul>
-        <li><code>oslc.where</code></li>
-        <li><code>oslc.select</code></li>
-        <li><code>oslc.properties</code></li>
-        <li><code>oslc.prefix</code></li>
-      </ul>
+      <p class=‘conformance’>Reconciliation service providers MAY provide a <code>oslc:serviceProvider</code> property
+        for
+        their defined resources that will be the URI to a <a
+          href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Service_Provider_Resources">Service
+          Provider
+          Resource</a>.</p>
 
-      <p>If shape information is NOT present with the Query Capability, servers SHOULD use these default properties to
-        contain the result:
-        <ul>
-          <li>For RDF/XML and XML, use <code>rdf:Description</code> and <code>rdfs:member</code> as defined in <a
-              href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Specifying_the_shape_of_a_query">OSLC
-              Core RDF/XML Examples</a>.</li>
-          <li>For JSON, the query results are contained within <code>oslc:results</code> array. See <a
-              href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_JSON">OSLC
-              Core Representation Guidance for JSON</a></li>
-        </ul>
-      </p>
+    </section>
+
+    <section id="Creation-Factories">
+      <h3 id="Creation-Factories">Creation Factories</h3>
+
+      <p class=‘conformance’>If an OSLC Reconciliation service provider supports the creation of resources, there MUST
+        be
+        at least one <a
+          href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Creation_Factories">Creation
+          Factory</a>
+        entry in its Services definition.</p>
+
+      <p>See the <a href="#Service_Provider_HTTP_Method_Sup">HTTP Method support table</a> for further clarification on
+        support for HTTP methods and media types for each OSLC resource.</p>
+
+    </section>
+
+    <section id="Query-Capabilities">
+      <h3 id="Query-Capabilities">Query Capabilities</h3>
+
+      <p class=‘conformance’>There SHOULD be at least one <a
+          href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Query_Capabilities">Query
+          Capability</a> entry in the
+        Services definition.</p>
+
+      <p class=‘conformance’>If provided, the Query Capability MUST support the oslc:where parameter and
+        SHOULD support the oslc:select parameter:</p>
+
+      <p class=‘conformance’>If shape information is NOT present with the Query Capability, service providers SHOULD use
+        the default properties defined in <a
+          href="https://archive.open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations.html#Specifying_the_shape_of_a_query">OSLC
+          Core RDF/XML Examples</a> to contain the result.</p>
+
     </section>
 
     <section id="delegatedUIs">
       <h3>Delegated UIs</h3>
 
-      <p>OSLC CM servers MUST support the selection and creation of resources by delegated web-based user interface
-        dialogs <a
-          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs">Delegated
-          UIs</a> as defined by [[!OSLCCore3]].</p>
+      <p class=‘conformance’>Reconciliation service providers MAY support the selection of reconcilable and reconciled
+        resources as defined by <a
+          href="https://archive.open-services.net/bin/view/Main/OslcCoreSpecification.html#Delegated_User_Interface_Dialogs">Delegated UIs</a> in
+        OSLC Core.</p>
 
-      <p>OSLC CM servers MAY support the pre-filling of creation dialogs based on the definition at <a
-          href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Delegated_User_Interface_Dialogs">Delegated
-          UIs</a>.</p>
     </section>
 
     <section id="usageidentifiers">
