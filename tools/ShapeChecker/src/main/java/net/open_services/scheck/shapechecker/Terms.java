@@ -66,7 +66,7 @@ public final class Terms
 
 
     /** Summary result type. */
-    @SCTerm(type=TermType.Class,description="A summary of the results of a check.")
+    @SCTerm(type=TermType.Class,description="The summary of the results of a check.")
     public static final Resource Summary          = resource("Summary");
 
     /** VocabResult outer result type. */
@@ -244,7 +244,7 @@ public final class Terms
 
     /** Predicate for the a singular crosscheck object. */
     @SCTerm(type=TermType.Property,description="The singular for a cross-check artifact.")
-    public static final Property singular         = property("plural");
+    public static final Property singular         = property("singular");
 
     /** Predicate for the a plural crosscheck object. */
     @SCTerm(type=TermType.Property,description="The plural for a cross-check artifact.")
