@@ -42,29 +42,27 @@ public class ShapesDocCheck
         this.document = document;
         this.resultModel = resultModel;
         this.httpHandler = httpHandler;
-        shapeModel = ModelFactory.createDefaultModel().read(document.toString(), "TURTLE");
+        String docURI = document.toString();
+        shapeModel = ModelFactory.createDefaultModel().read(docURI, "TURTLE");
         shapeCopy = ModelFactory.createDefaultModel().add(shapeModel);
-        shapesResult = resultModel.createOuterResult(ResultModel.ShapesResult);
-        shapesResult.addProperty(DCTerms.source,resultModel.getModel().createResource(document.toString()));
+        shapesResult = resultModel.createOuterResult(Terms.ShapesResult);
+        shapesResult.addProperty(DCTerms.source,resultModel.getModel().createResource(docURI));
         shapesResult.addLiteral(DCTerms.extent, shapeModel.size());
     }
 
 
     /**
      * Perform a number of consistency checks on each shape in the model.
-     * @return the number of errors found
      */
-    @javax.annotation.CheckReturnValue
-    public int checkShapes()
+    public void checkShapes()
     {
-        int errors = 0;
         StmtIterator it = shapeModel.listStatements(null, RDF.type, OSLC.ResourceShape);
         while (it.hasNext())
         {
             Statement st = it.next();
             shapeCopy.remove(st);
             ShapeCheck shapeCheck = new ShapeCheck(describes, httpHandler, shapeModel, shapeCopy, resultModel, shapesResult);
-            errors += shapeCheck.checkShape(document, st.getSubject());
+            shapeCheck.checkShape(document, st.getSubject());
         }
 
         // Give one error for each property definition not linked to a shape,
@@ -73,8 +71,7 @@ public class ShapesDocCheck
         for (Statement st : sl)
         {
             Resource subject = st.getSubject();
-            resultModel.createIssue(shapesResult, ResultModel.NoShape, subject);
-            errors++;
+            resultModel.createIssue(shapesResult, Terms.NoShape, subject);
             it = shapeCopy.listStatements(subject, null, (RDFNode)null);
             while (it.hasNext())
             {
@@ -88,12 +85,8 @@ public class ShapesDocCheck
         while (it.hasNext())
         {
             Statement st = it.next();
-            resultModel.createIssue(shapesResult, ResultModel.NoShape, st.getSubject(), st.getPredicate());
-            errors++;
+            resultModel.createIssue(shapesResult, Terms.NoShape, st.getSubject(), st.getPredicate());
             it.remove();
         }
-
-        shapesResult.addLiteral(ResultModel.issueCount, errors);
-        return errors;
     }
 }

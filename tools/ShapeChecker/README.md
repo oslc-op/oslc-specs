@@ -19,21 +19,28 @@ and a prettier presentation of the results.
 Command line usage
 ------------------
 
-    net.open_services.shapechecker.Main [-s shapeFile|shapeURI ...] [-v vocabFile|vocabURI ...]
-        [-q suppressedIssue ...] [-x suppressedURI ...]
-        [-V|--verbose] [-D]
+    net.open_services.shapechecker.Main
+        [-v|--vocab vocabFileGlob|vocabURI ...]
+        [-s|--shape shapeFileGlob|shapeURI ...]
+        [-q|--quiet suppressedIssue ...]
+        [-x|--exclude excludeURIPattern ...]
+        [-N|--nocrosscheck]
+        [-V|--verbose]
+        [-D]
 
 where:
 
-    -s shapeFile|shapeURI ...
+    -v vocabFileGlob|vocabURI ...
 
-Each `-s` argument provides the path to a local file, or the URI for a file,
-containing the Turtle source for one or more OSLC Shape resources.
-
-    -v vocabFile|vocabURI ...
-
-Each `-v` argument provides the path to a local file, or the URI for a file,
+Each `-v` argument provides the path to a local file, supporting shell-style expansion,
+or the URI for a single resource,
 containing the Turtle source for a single RDF vocabulary.
+
+    -s shapeFileGlob|shapeURI ...
+
+Each `-s` argument provides the path to a local file, supporting shell-style expansion,
+or the URI for a single resource,
+containing the Turtle source for one or more OSLC Shape resources.
 
     -q suppressedIssue ...
 
@@ -42,7 +49,7 @@ Warning names are defined in `net.open_services.shapechecker.ResultModel`.
 For example, `-q BadTermStatus` suppresses warnings about uses of
 `vs:term_status` with values other than `stable` or `archaic`.
 
-    -x suppressedURI ...
+    -x excludeURIPattern ...
 
 Each `-x` argument specifies a URI **not** to be loaded when chasing down cross-references
 from vocabularies or shapes being checked. Use this to exclude older versions of the
@@ -55,5 +62,5 @@ of a not-yet-published vocabulary or shape.
 These optional flags enable extra progress or debugging information.
 
 The RDF model with the summary and warnings is described in the Javadoc for `net.open_services.shapechecker.ResultModel`.
-Note that not all 'issues' that are noted are necessarily errors - for example, a vocabulary may define some terms used
-in resource discovery that are not defined in any resource shape.
+Issues are classified into informational messages, warnings, and errors;
+the command returns a non-zero exit status if any errors are found.

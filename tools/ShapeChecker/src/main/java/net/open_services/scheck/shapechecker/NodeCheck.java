@@ -54,12 +54,10 @@ public class NodeCheck
      * Check the validity of an object that can be either a literal or a URI.
      * @param property the property whose existence should be checked
      * @param occurs the valid occurrences for the property
-     * @return the number of errors noted in this check
      */
-    @javax.annotation.CheckReturnValue
-    public int checkNode(Property property, Occurrence occurs)
+    public void checkNode(Property property, Occurrence occurs)
     {
-        return checkNode(property,occurs,null,null);
+        checkNode(property,occurs,null,null);
     }
 
 
@@ -69,12 +67,9 @@ public class NodeCheck
      * @param occurs the valid occurrences for the property
      * @param literalValidator a function to perform extra validation for a literal property value
      * @param uriValidator a function to perform extra validation for a URI property value
-     * @return the number of errors noted in this check
      */
-    @javax.annotation.CheckReturnValue
-    public int checkNode(Property property, Occurrence occurs, Function<String,Resource> literalValidator, Function<String,Resource> uriValidator)
+    public void checkNode(Property property, Occurrence occurs, Function<String,Resource> literalValidator, Function<String,Resource> uriValidator)
     {
-        int errCount = 0;
         int count = 0;
 
         StmtIterator it = originalModel.listStatements(subject,property,(RDFNode)null);
@@ -92,7 +87,6 @@ public class NodeCheck
                 if (literalValidator != null && (validation = literalValidator.apply(node.toString())) != null)
                 {
                     resultModel.createIssue(resultNode, validation, property, node);
-                    errCount++;
                 }
             }
             else
@@ -100,22 +94,18 @@ public class NodeCheck
                 if (uriValidator != null && (validation = uriValidator.apply(node.toString())) != null)
                 {
                     resultModel.createIssue(resultNode, validation, property, node);
-                    errCount++;
                 }
             }
             shrinkingModel.remove(st);
         }
         if (count == 0 && !occurs.isOptional())
         {
-            resultModel.createIssue(resultNode, ResultModel.Missing, property);
-            errCount++;
+            resultModel.createIssue(resultNode, Terms.MissingError, property);
         }
         else if (count > 1 && !occurs.allowMultiple())
         {
-            resultModel.createIssue(resultNode, ResultModel.MoreThanOne, property);
-            errCount++;
+            resultModel.createIssue(resultNode, Terms.MoreThanOne, property);
         }
-        return errCount;
     }
 
 
@@ -125,12 +115,9 @@ public class NodeCheck
      * @param datatype the type of the literal
      * @param occurs the valid occurrences for the property
      * @param validator a function to perform extra validation
-     * @return the number of errors noted in this check
      */
-    @javax.annotation.CheckReturnValue
-    public int checkLiteral(Property property, RDFDatatype datatype, Occurrence occurs, Function<String,Resource> validator)
+    public void checkLiteral(Property property, RDFDatatype datatype, Occurrence occurs, Function<String,Resource> validator)
     {
-        int errCount = 0;
         int count = 0;
 
         StmtIterator it = originalModel.listStatements(subject,property,(RDFNode)null);
@@ -143,8 +130,7 @@ public class NodeCheck
 
             if (!node.isLiteral())
             {
-                resultModel.createIssue(resultNode, ResultModel.NotLiteral, property, node);
-                errCount++;
+                resultModel.createIssue(resultNode, Terms.NotLiteral, property, node);
             }
             else
             {
@@ -161,8 +147,7 @@ public class NodeCheck
                 // Check valid XML strings
                 if (dt.equals(RDF.dtXMLLiteral) && !lit.isWellFormedXML())
                 {
-                    resultModel.createIssue(resultNode, ResultModel.BadXMLLiteral, property, node);
-                    errCount++;
+                    resultModel.createIssue(resultNode, Terms.BadXMLLiteral, property, node);
                 }
 
                 // Check literal type matches - but consider XMLLiteral as a string type
@@ -170,30 +155,25 @@ public class NodeCheck
                         || (datatype.equals(RDF.dtXMLLiteral) && dt.equals(XSDDatatype.XSDstring))
                         || (datatype.equals(XSDDatatype.XSDstring) && dt.equals(RDF.dtXMLLiteral))))
                 {
-                    resultModel.createIssue(resultNode, ResultModel.WrongType, property, node);
-                    errCount++;
+                    resultModel.createIssue(resultNode, Terms.WrongType, property, node);
                 }
 
                 // Custom validation?
                 if (validator != null && (validation = validator.apply(lit.getLexicalForm())) != null)
                 {
                     resultModel.createIssue(resultNode, validation, property, node);
-                    errCount++;
                 }
             }
             shrinkingModel.remove(st);
         }
         if (count == 0 && !occurs.isOptional())
         {
-            resultModel.createIssue(resultNode, ResultModel.Missing, property);
-            errCount++;
+            resultModel.createIssue(resultNode, Terms.MissingError, property);
         }
         else if (count > 1 && !occurs.allowMultiple())
         {
-            resultModel.createIssue(resultNode, ResultModel.MoreThanOne, property);
-            errCount++;
+            resultModel.createIssue(resultNode, Terms.MoreThanOne, property);
         }
-        return errCount;
     }
 
 
@@ -204,12 +184,9 @@ public class NodeCheck
      * @param property the property whose literal values should be checked
      * @param occurs the valid occurrences for the property
      * @param validator a function to perform extra validation
-     * @return the number of errors noted in this check
      */
-    @javax.annotation.CheckReturnValue
-    public int checkLangString(Property property, Occurrence occurs, Function<String,Resource> validator)
+    public void checkLangString(Property property, Occurrence occurs, Function<String,Resource> validator)
     {
-        int errCount = 0;
         int count = 0;
         Set<String> langTags = new HashSet<>();
 
@@ -223,8 +200,7 @@ public class NodeCheck
 
             if (!node.isLiteral())
             {
-                resultModel.createIssue(resultNode, ResultModel.NotLiteral, property, node);
-                errCount++;
+                resultModel.createIssue(resultNode, Terms.NotLiteral, property, node);
             }
             else
             {
@@ -235,21 +211,18 @@ public class NodeCheck
                 if (!(dt == null || dt.equals(RDF.dtLangString) || dt.equals(XSDDatatype.XSDstring) || dt.equals(RDF.dtXMLLiteral)))
                 {
                     // Literal of type other than some string
-                    resultModel.createIssue(resultNode, ResultModel.WrongType, property, node);
-                    errCount++;
+                    resultModel.createIssue(resultNode, Terms.WrongType, property, node);
                 }
                 else if (dt!=null && dt.equals(RDF.dtXMLLiteral) && !lit.isWellFormedXML())
                 {
-                    resultModel.createIssue(resultNode, ResultModel.BadXMLLiteral, property, node);
-                    errCount++;
+                    resultModel.createIssue(resultNode, Terms.BadXMLLiteral, property, node);
                 }
                 else
                 {
                     String lang = lit.getLanguage();
                     if (langTags.contains(lang))
                     {
-                        resultModel.createIssue(resultNode, ResultModel.DuplicateLangString, property, node);
-                        errCount++;
+                        resultModel.createIssue(resultNode, Terms.DuplicateLangString, property, node);
                     }
                     else
                     {
@@ -261,7 +234,6 @@ public class NodeCheck
                     if (validator != null && (validation = validator.apply(lit.getLexicalForm())) != null)
                     {
                         resultModel.createIssue(resultNode, validation, property, node);
-                        errCount++;
                     }
                 }
             }
@@ -269,10 +241,8 @@ public class NodeCheck
         }
         if (count == 0 && !occurs.isOptional())
         {
-            resultModel.createIssue(resultNode, ResultModel.Missing, property);
-            errCount++;
+            resultModel.createIssue(resultNode, Terms.MissingError, property);
         }
-        return errCount;
     }
 
 
@@ -283,12 +253,9 @@ public class NodeCheck
      * @param property the property whose uri values should be checked
      * @param occurs the valid occurrences for the property
      * @param validator a function to perform extra validation
-     * @return the number of errors noted in this check
      */
-    @javax.annotation.CheckReturnValue
-    public int checkURI(Property property, Occurrence occurs, Function<String,Resource> validator)
+    public void checkURI(Property property, Occurrence occurs, Function<String,Resource> validator)
     {
-        int errCount = 0;
         int count = 0;
 
         StmtIterator it = originalModel.listStatements(subject, property, (RDFNode)null);
@@ -302,8 +269,7 @@ public class NodeCheck
 
             if (!node.isResource())
             {
-                resultModel.createIssue(resultNode, ResultModel.NotResource, property, node);
-                errCount++;
+                resultModel.createIssue(resultNode, Terms.NotResource, property, node);
             }
             else
             {
@@ -321,29 +287,26 @@ public class NodeCheck
                     catch (ShapeCheckException e)
                     {
                         resultModel.createIssue(resultNode, e);
-                        errCount++;
                     }
                 }
 
                 if (validator != null && (validation = validator.apply(uri)) != null)
                 {
                     resultModel.createIssue(resultNode, validation, property, node);
-                    errCount++;
                 }
             }
             shrinkingModel.remove(st);
         }
         if (count == 0 && !occurs.isOptional())
         {
-            resultModel.createIssue(resultNode, ResultModel.Missing, property);
-            errCount++;
+            resultModel.createIssue(resultNode,
+                property.equals(OSLC.describes) ? Terms.MissingWarn : Terms.MissingError,
+                property);
         }
         else if (count > 1 && !occurs.allowMultiple())
         {
-            resultModel.createIssue(resultNode, ResultModel.MoreThanOne, property);
-            errCount++;
+            resultModel.createIssue(resultNode, Terms.MoreThanOne, property);
         }
-        return errCount;
     }
 
 
@@ -355,8 +318,8 @@ public class NodeCheck
     public static Resource checkPeriod(String str)
     {
         // If you want to allow trailing white space, use this:
-        // return (str.matches(".*\\.\\s*$") ? null : ResultModel.MissingPeriod);
+        // return (str.matches(".*\\.\\s*$") ? null : Terms.MissingPeriod);
 
-        return (str.endsWith(".") ? null : ResultModel.MissingPeriod);
+        return (str.endsWith(".") ? null : Terms.MissingPeriod);
     }
 }
