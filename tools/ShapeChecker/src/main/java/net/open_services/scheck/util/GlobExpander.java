@@ -43,7 +43,7 @@ public class GlobExpander extends SimpleFileVisitor<Path>
 
 
     // Run the file tree walk from the extracted prefix, and match against the extracted glob
-    private List<String> expand()
+    private List<String> expandMe()
     {
         try
         {
@@ -85,7 +85,7 @@ public class GlobExpander extends SimpleFileVisitor<Path>
         }
 
         GlobExpander expander = new GlobExpander(glob,parts);
-        return expander.expand();
+        return expander.expandMe();
     }
 
 

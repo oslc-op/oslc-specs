@@ -12,7 +12,10 @@ import java.util.regex.Pattern;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
@@ -33,16 +36,16 @@ public class HttpHandler
     private Map<URI,Boolean> httpResourceIsRDF = new HashMap<>();
     private Set<String> foundRDFResources = new HashSet<>();
     private Set<Pattern> skipURIPatterns = new HashSet<>();
-    private boolean verbose = false;
+    private boolean debug = false;
 
 
     /**
-     * Sets the verbose option.
-     * @param verbose the verbose value to set.
+     * Sets the debug option.
+     * @param debug the debug value to set.
      */
-    public void setVerbose(boolean verbose)
+    public void setDebug(boolean debug)
     {
-        this.verbose = verbose;
+        this.debug = debug;
     }
 
 
@@ -78,7 +81,7 @@ public class HttpHandler
         catch (URISyntaxException e)
         {
             throw new ShapeCheckException(
-                ResultModel.InvalidUri,
+                Terms.InvalidUri,
                 ResourceFactory.createResource(uri),
                 null,
                 e);
@@ -93,7 +96,7 @@ public class HttpHandler
         {
             httpResourceIsRDF.put(httpUri, false);
             throw new ShapeCheckException(
-                ResultModel.InvalidRdf,
+                Terms.InvalidRdfError,
                 ResourceFactory.createResource(uri),
                 null,
                 e1);
@@ -117,7 +120,7 @@ public class HttpHandler
         sb.append(httpUri.getHost());
         if (httpUri.getPort() > 0)
         {
-            sb.append(":");
+            sb.append(':');
             sb.append(httpUri.getPort());
         }
         sb.append(httpUri.getPath());
@@ -145,9 +148,9 @@ public class HttpHandler
         {
             // Resource is RDF, so read it and save contained subjects
             httpResourceIsRDF.put(httpUri, true);
-            if (verbose)
+            if (debug)
             {
-                System.err.println("Parsing "+httpUri.toString());
+                System.err.println("Parsing "+httpUri);
             }
             Model foundModel = ModelFactory.createDefaultModel().read(httpUri.toString());
             ResIterator ri = foundModel.listSubjects();
@@ -196,7 +199,7 @@ public class HttpHandler
             // Not found - but add it so we report an error only once
             foundRDFResources.add(uri);
             throw new ShapeCheckException(
-                ResultModel.UndefinedTerm,
+                Terms.UndefinedTerm,
                 ResourceFactory.createResource(uri),
                 ResourceFactory.createResource(httpUri.toString()));
         }
@@ -206,27 +209,36 @@ public class HttpHandler
     @javax.annotation.CheckReturnValue
     private boolean isRDF(URI httpUri) throws ShapeCheckException, IOException
     {
-        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpParams httpParams = new BasicHttpParams();
+        HttpClientParams.setRedirecting(httpParams, true);
+        DefaultHttpClient httpClient = new DefaultHttpClient(httpParams);
         HttpGet get = new HttpGet(httpUri);
-        get.addHeader("Accept", RDF_ACCEPT_HEADER);
-        HttpResponse response = httpClient.execute(get);
-        int statusCode = response.getStatusLine().getStatusCode();
-        if (statusCode != 200)
+        try
         {
-            httpResourceIsRDF.put(httpUri, false);
-            throw new ShapeCheckException(
-                ResultModel.InvalidRdf,
-                ResourceFactory.createResource(httpUri.toString()),
-                ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
-        }
-        Header[] contentTypes = response.getHeaders("Content-Type");
-        for (Header contentType : contentTypes)
-        {
-            if (contentType.getValue().matches(".*("+RDF_TYPES+").*"))
+            get.addHeader("Accept", RDF_ACCEPT_HEADER);
+            HttpResponse response = httpClient.execute(get);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != 200)
             {
-                return true;
+                httpResourceIsRDF.put(httpUri, false);
+                throw new ShapeCheckException(
+                    Terms.InvalidRdfWarn,
+                    ResourceFactory.createResource(httpUri.toString()),
+                    ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
             }
+            Header[] contentTypes = response.getHeaders("Content-Type");
+            for (Header contentType : contentTypes)
+            {
+                if (contentType.getValue().matches(".*("+RDF_TYPES+").*"))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-        return false;
+        finally
+        {
+            get.reset();
+        }
     }
 }

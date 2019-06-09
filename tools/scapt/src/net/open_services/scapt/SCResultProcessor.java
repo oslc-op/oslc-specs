@@ -25,9 +25,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
-import net.open_services.scheck.annotations.SCIssue;
-import net.open_services.scheck.annotations.SCTerm;
-import net.open_services.scheck.annotations.SCVocab;
+import net.open_services.scheck.annotations.*;
 
 
 /**
@@ -37,15 +35,18 @@ import net.open_services.scheck.annotations.SCVocab;
 @SupportedAnnotationTypes({
     "net.open_services.scheck.annotations.SCVocab",
     "net.open_services.scheck.annotations.SCTerm",
-    "net.open_services.scheck.annotations.SCIssue"})
+    "net.open_services.scheck.annotations.SCIssue",
+    "net.open_services.scheck.annotations.SCXCheck"})
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class SCResultProcessor extends AbstractProcessor
 {
-    private SCVocabModel vocabulary = null;
-    private Map<String,SCTermModel> classes = new TreeMap<>();
+    private SCVocabModel            vocabulary = null;
+    private Map<String,SCTermModel> classes    = new TreeMap<>();
     private Map<String,SCTermModel> properties = new TreeMap<>();
-    private Map<String,SCTermModel> resources = new TreeMap<>();
-    private Map<String,SCTermModel> issues = new TreeMap<>();
+    private Map<String,SCTermModel> resources  = new TreeMap<>();
+    private Map<String,SCTermModel> issues     = new TreeMap<>();
+    private Map<String,SCTermModel> xchecks    = new TreeMap<>();
+    private Map<String,SCTermModel> severities = new TreeMap<>();
 
 
     /**
@@ -60,6 +61,8 @@ public class SCResultProcessor extends AbstractProcessor
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round)
     {
+        processSeverities();
+
         if (annotations.isEmpty())
         {
             return true;
@@ -77,9 +80,27 @@ public class SCResultProcessor extends AbstractProcessor
         {
             processIssue(element);
         }
+        for (Element element : round.getElementsAnnotatedWith(SCXCheck.class))
+        {
+            processXCheck(element);
+        }
 
         writeVocab();
         return true;
+    }
+
+
+    /**
+     * Process the severities enumeration
+     */
+    private void processSeverities()
+    {
+        for (IssueSeverity sev : IssueSeverity.values())
+        {
+            String s = sev.toString();
+            SCTermModel sevTerm = new SCTermModel(s, s + " severity.");
+            severities.put(s, sevTerm);
+        }
     }
 
 
@@ -150,8 +171,34 @@ public class SCResultProcessor extends AbstractProcessor
 
         VariableElement varElement = (VariableElement) element;
         SCIssue issueAnnotation = varElement.getAnnotation(SCIssue.class);
-        SCTermModel issue = new SCTermModel(varElement.getSimpleName().toString(),issueAnnotation.description());
+        SCTermModel issue = new SCTermModel(varElement.getSimpleName().toString(),
+            issueAnnotation.description(),issueAnnotation.issueSeverity());
         issues.put(issue.getName(), issue);
+    }
+
+
+    /**
+     * Process a cross-check issue to be added to the ShapeChecker vocabulary.
+     * @param element the annotated element to be processed; must be a field
+     */
+    private void processXCheck(Element element)
+    {
+        if (element.getKind() != ElementKind.FIELD)
+        {
+            processingEnv.getMessager().printMessage(
+                Diagnostic.Kind.WARNING,
+                "Invalid SCXCheck annotation on " + element.getKind().toString() + " " + element.getSimpleName()
+                    + ". The SCXCheck annotation may only be applied to fields.");
+        }
+
+        VariableElement varElement = (VariableElement) element;
+        SCXCheck xcheckAnnotation = varElement.getAnnotation(SCXCheck.class);
+        SCTermModel xcheck = new SCTermModel(varElement.getSimpleName().toString(),
+            xcheckAnnotation.description(),
+            xcheckAnnotation.severity(),
+            xcheckAnnotation.singular(),
+            xcheckAnnotation.plural());
+        xchecks.put(xcheck.getName(), xcheck);
     }
 
 
@@ -185,6 +232,14 @@ public class SCResultProcessor extends AbstractProcessor
             if (!issues.isEmpty())
             {
                 vc.put("issues", issues);
+            }
+            if (!xchecks.isEmpty())
+            {
+                vc.put("xchecks", xchecks);
+            }
+            if (!severities.isEmpty())
+            {
+                vc.put("severities", severities);
             }
 
             FileObject vocabFile =

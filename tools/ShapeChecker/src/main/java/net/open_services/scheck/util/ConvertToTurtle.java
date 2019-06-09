@@ -1,15 +1,16 @@
 package net.open_services.scheck.util;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 
 /**
- * Convert one or more RDF files form XML to Turtle.
+ * Convert one or more RDF files from XML to Turtle.
  * @author Nick Crossley. Released to public domain 2015.
  */
 public final class ConvertToTurtle
@@ -37,7 +38,7 @@ public final class ConvertToTurtle
             String newName = arg.replaceAll("\\.(xml|rdf)$","") + ".ttl";
             System.out.println("Converting "+arg+" to "+newName);
             Model model = ModelFactory.createDefaultModel().read(arg);
-            try (OutputStream os = new FileOutputStream(newName))
+            try (OutputStream os = Files.newOutputStream(Paths.get(newName)))
             {
                 model.write(os, "TURTLE");
             }

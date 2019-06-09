@@ -49,7 +49,7 @@ public class ShapeCheck
         this.shapeModel = shapeModel;
         this.shapeCopy = shapeCopy;
         this.resultModel = resultModel;
-        shapeResult = resultModel.createInnerResult(shapesResult, ResultModel.ShapeResult);
+        shapeResult = resultModel.createInnerResult(shapesResult, Terms.ShapeResult);
 
         names = new HashSet<>();
         predicates = new HashSet<>();
@@ -60,51 +60,45 @@ public class ShapeCheck
      * Perform a number of consistency checks on a single shape in the model.
      * @param document the URI of the document containing this shape
      * @param shape the shape resource to be checked
-     * @return the number of errors found
      */
     @javax.annotation.CheckReturnValue
-    public int checkShape(URI document, Resource shape)
+    public void checkShape(URI document, Resource shape)
     {
-        int errors = 0;
-
         NodeCheck node = new NodeCheck(shape, httpHandler, shapeModel, shapeCopy, resultModel, shapeResult);
 
         // Look for the required properties
         // TODO Note that oslc:describes is not truly required, but we check for it because almost all shapes should have one.
         // Shapes that are introduced by use of oslc:valueShape need not have an oslc:describes property,
         // but this code has no way to check for that yet.
-        errors += node.checkURI(OSLC.describes, Occurrence.OneOrMany,
-            (uri)->{shapeResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri)); return checkUnique(describes,uri); });
+        node.checkURI(OSLC.describes, Occurrence.OneOrMany,
+            (uri)->{shapeResult.addProperty(Terms.checks, ResourceFactory.createResource(uri)); return checkUnique(describes,uri); });
 
         // Look for the optional properties
-        errors += node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
-        errors += node.checkLangString(DCTerms.description, Occurrence.ZeroOrOne,
+        node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
+        node.checkLangString(DCTerms.description, Occurrence.ZeroOrOne,
             (desc) -> (NodeCheck.checkPeriod(desc)));
-        errors += node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
-        errors += node.checkURI(RDFS.seeAlso, Occurrence.ZeroOrMany, null);
+        node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
+        node.checkURI(RDFS.seeAlso, Occurrence.ZeroOrMany, null);
 
         // Allow optional OSLC properties for any resource
-        errors += node.checkNode(OSLC.accessContext, Occurrence.ZeroOrOne, (lit)->ResultModel.WrongType,null);
-        errors += node.checkNode(OSLC.serviceProvider, Occurrence.ZeroOrOne, (lit)->ResultModel.WrongType,null);
+        node.checkNode(OSLC.accessContext, Occurrence.ZeroOrOne, (lit)->Terms.WrongType,null);
+        node.checkNode(OSLC.serviceProvider, Occurrence.ZeroOrOne, (lit)->Terms.WrongType,null);
 
         StmtIterator it = shapeCopy.listStatements(shape, OSLC.property, (RDFNode)null);
         while (it.hasNext())
         {
             Statement st = it.next();
             it.remove();
-            errors += checkPropDef(document, shape,st.getObject());
+            checkPropDef(document, shape,st.getObject());
         }
 
         it = shapeCopy.listStatements(shape, null, (RDFNode)null);
         while (it.hasNext())
         {
             Statement st = it.next();
-            resultModel.createIssue(shapeResult, ResultModel.Redundant, st.getPredicate(), st.getObject());
+            resultModel.createIssue(shapeResult, Terms.Redundant, st.getPredicate(), st.getObject());
             it.remove();
-            errors++;
         }
-
-        return errors;
     }
 
 
@@ -114,21 +108,17 @@ public class ShapeCheck
      * @param document the URI of the document containing this shape
      * @param shape the shape in which the property appears
      * @param propDefNode the property definition to be checked
-     * @return the number of errors found
      */
     @javax.annotation.CheckReturnValue
-    private int checkPropDef(URI document, Resource shape, RDFNode propDefNode)
+    private void checkPropDef(URI document, Resource shape, RDFNode propDefNode)
     {
-        int errors = 0;
         Resource propDef = null;
-        final Resource propResult = resultModel.createInnerResult(shapeResult, ResultModel.PropertyResult);
+        final Resource propResult = resultModel.createInnerResult(shapeResult, Terms.PropertyResult);
 
         // Check the property definition is a hash resource with the same base as the shape
         if (propDefNode.isLiteral())
         {
-            errors++;
-            resultModel.createIssue(propResult, ResultModel.NotResource, propDefNode.asLiteral().getLexicalForm());
-            return errors;
+            resultModel.createIssue(propResult, Terms.NotResource, propDefNode.asLiteral().getLexicalForm());
         }
         else if (!(propDef=propDefNode.asResource()).isAnon()
                 && !propDef.getURI().replaceAll("#[^/]+$","").equals(shape.getURI().replaceAll("#[^/]+$",""))
@@ -136,52 +126,50 @@ public class ShapeCheck
                     .replaceAll("#[^/]+$","")
                     .replaceAll("file:/(?!/)", "file:///")))
         {
-            errors++;
-            resultModel.createIssue(propResult, ResultModel.NotHash, propDefNode.asResource());
+            resultModel.createIssue(propResult, Terms.NotHash, propDefNode.asResource());
         }
 
         // Check the mandatory properties of the property definition
         NodeCheck node = new NodeCheck(propDef, httpHandler, shapeModel, shapeCopy, resultModel, propResult);
-        errors += node.checkLangString(DCTerms.description, Occurrence.ExactlyOne,
+        node.checkLangString(DCTerms.description, Occurrence.ExactlyOne,
             (desc) -> (NodeCheck.checkPeriod(desc)));
-        errors += node.checkLiteral(OSLC.name, null, Occurrence.ExactlyOne,
+        node.checkLiteral(OSLC.name, null, Occurrence.ExactlyOne,
             (literal) -> (checkUnique(names,literal)));
-        errors += node.checkURI(OSLC.occurs, Occurrence.ExactlyOne,
-            (uri) -> (Occurrence.isValidURI(uri) ? null : ResultModel.BadOccurs));
-        errors += node.checkURI(OSLC.propertyDefinition, Occurrence.ExactlyOne,
-            (uri) -> {propResult.addProperty(ResultModel.checks, ResourceFactory.createResource(uri)); return checkUnique(predicates,uri); });
-        errors += node.checkURI(RDF.type, Occurrence.ExactlyOne,
-            (uri) -> (uri.equals(OSLC.Property.getURI()) ? null : ResultModel.WrongType));
+        node.checkURI(OSLC.occurs, Occurrence.ExactlyOne,
+            (uri) -> (Occurrence.isValidURI(uri) ? null : Terms.BadOccurs));
+        node.checkURI(OSLC.propertyDefinition, Occurrence.ExactlyOne,
+            (uri) -> {propResult.addProperty(Terms.checks, ResourceFactory.createResource(uri)); return checkUnique(predicates,uri); });
+        node.checkURI(RDF.type, Occurrence.ExactlyOne,
+            (uri) -> (uri.equals(OSLC.Property.getURI()) ? null : Terms.WrongType));
 
         // Check the optional properties of the property definition
-        errors += node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
-        errors += node.checkLiteral(OSLC.readOnly, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
-        errors += node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
-        errors += node.checkLiteral(OSLC.isMemberProperty, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
-        errors += node.checkURI(OSLC.valueShape, Occurrence.ZeroOrOne, null); // TODO - add this shape to a list of shapes that must be defined
-        errors += node.checkURI(OSLC.range, Occurrence.ZeroOrMany, null);
-        errors += node.checkNode(OSLC.allowedValue, Occurrence.ZeroOrMany, null,
+        node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
+        node.checkLiteral(OSLC.readOnly, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
+        node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
+        node.checkLiteral(OSLC.isMemberProperty, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
+        node.checkURI(OSLC.range, Occurrence.ZeroOrMany, null);
+        node.checkNode(OSLC.allowedValue, Occurrence.ZeroOrMany, null,
             (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null; });
-        errors += node.checkNode(OSLC.defaultValue, Occurrence.ZeroOrOne, null,
+        node.checkNode(OSLC.defaultValue, Occurrence.ZeroOrOne, null,
             (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null; });
+
+        // TODO - add this shape to a list of shapes that must be defined and/or checked
+        node.checkURI(OSLC.valueShape, Occurrence.ZeroOrOne, null);
 
         // Special check for value type
-        errors += checkValueType(propDef,propResult);
+        checkValueType(propDef,propResult);
 
         // Special check for allowed values
-        errors += checkAllowedValues(propDef,propResult);
+        checkAllowedValues(propDef,propResult);
 
         // Check that the prop def has no other properties
         StmtIterator it = shapeCopy.listStatements(propDef, null, (RDFNode)null);
         while (it.hasNext())
         {
             Statement st = it.next();
-            resultModel.createIssue(propResult, ResultModel.Redundant, st.getPredicate());
+            resultModel.createIssue(propResult, Terms.Redundant, st.getPredicate());
             it.remove();
-            errors++;
         }
-
-        return errors;
     }
 
 
@@ -193,11 +181,12 @@ public class ShapeCheck
      * or null if the name is unique
      */
     @javax.annotation.CheckReturnValue
+    @javax.annotation.Nullable
     public Resource checkUnique(Set<String> valueSet,String value)
     {
         if (valueSet.contains(value))
         {
-            return ResultModel.Duplicate;
+            return Terms.Duplicate;
         }
         else
         {
@@ -212,12 +201,10 @@ public class ShapeCheck
      *
      * @param propDef the property definition whose type is being checked
      * @param propResult the {@link ResultModel} resource to which to add errors
-     * @return the number of errors found
      */
     @javax.annotation.CheckReturnValue
-    public int checkValueType(Resource propDef,Resource propResult)
+    public void checkValueType(Resource propDef,Resource propResult)
     {
-        int errCount = 0;
         Resource valueType = OSLC.Any;
         StmtIterator it = shapeModel.listStatements(propDef, OSLC.valueType, (RDFNode)null);
         if (it.hasNext())
@@ -227,8 +214,7 @@ public class ShapeCheck
             shapeCopy.remove(st);
             if (!(tnode = st.getObject()).isResource())
             {
-                resultModel.createIssue(propResult, ResultModel.NotResource, OSLC.valueType, tnode);
-                errCount++;
+                resultModel.createIssue(propResult, Terms.NotResource, OSLC.valueType, tnode);
             }
             else
             {
@@ -237,8 +223,7 @@ public class ShapeCheck
         }
         if (it.hasNext())
         {
-            resultModel.createIssue(propResult, ResultModel.MoreThanOne, OSLC.valueType);
-            errCount++;
+            resultModel.createIssue(propResult, Terms.MoreThanOne, OSLC.valueType);
         }
 
         NodeCheck node = new NodeCheck(propDef, httpHandler, shapeModel, shapeCopy, resultModel, propResult);
@@ -255,33 +240,29 @@ public class ShapeCheck
         }
         else if (valueType.equals(OSLC.LocalResource))
         {
-            resultModel.createIssue(propResult, ResultModel.LocalResourceDeprecated, OSLC.valueType);
-            errCount++;
-            errCount += node.checkURI(OSLC.representation, Occurrence.ExactlyOne,
+            resultModel.createIssue(propResult, Terms.LocalResourceDeprecated, OSLC.valueType);
+            node.checkURI(OSLC.representation, Occurrence.ExactlyOne,
                 (uri) -> {
                     Resource res = ResourceFactory.createResource(uri);
-                    return res.equals(OSLC.Inline) ? null : ResultModel.MismatchingRepresentation; });
+                    return res.equals(OSLC.Inline) ? null : Terms.MismatchingRepresentation; });
         }
         else if (valueType.equals(OSLC.AnyResource) || valueType.equals(OSLC.Resource))
         {
-            errCount += node.checkURI(OSLC.representation, Occurrence.ExactlyOne,
+            node.checkURI(OSLC.representation, Occurrence.ExactlyOne,
                 (uri) -> {
                     Resource res = ResourceFactory.createResource(uri);
                     return (finalValueType.equals(OSLC.AnyResource) ? (res.equals(OSLC.Inline) || res.equals(OSLC.Either))
                             : (res.equals(OSLC.Inline) || res.equals(OSLC.Either) || res.equals(OSLC.Reference)))
-                                ? null : ResultModel.MismatchingRepresentation;
+                                ? null : Terms.MismatchingRepresentation;
                 });
         }
         else
         {
-            resultModel.createIssue(propResult, ResultModel.WrongType, OSLC.valueType, valueType);
-            errCount++;
+            resultModel.createIssue(propResult, Terms.WrongType, OSLC.valueType, valueType);
         }
 
-        errCount += node.checkLiteral(OSLC.maxSize, XSDDatatype.XSDinteger, Occurrence.ZeroOrOne,
-            (lit)->(finalValueType.equals(XSD.xstring) || finalValueType.equals(RDF.xmlLiteral) ? null : ResultModel.InappropriateMaxSize));
-
-        return errCount;
+        node.checkLiteral(OSLC.maxSize, XSDDatatype.XSDinteger, Occurrence.ZeroOrOne,
+            (lit)->(finalValueType.equals(XSD.xstring) || finalValueType.equals(RDF.xmlLiteral) ? null : Terms.InappropriateMaxSize));
     }
 
 
@@ -290,12 +271,10 @@ public class ShapeCheck
      *
      * @param propDef the property definition whose type is being checked
      * @param propResult the {@link ResultModel} resource to which to add errors
-     * @return the number of errors found
      */
     @javax.annotation.CheckReturnValue
-    int checkAllowedValues(Resource propDef, Resource propResult)
+    private void checkAllowedValues(Resource propDef, Resource propResult)
     {
-        int errCount = 0;
         StmtIterator it = shapeModel.listStatements(propDef, OSLC.allowedValues, (RDFNode)null);
         while (it.hasNext())
         {
@@ -304,19 +283,17 @@ public class ShapeCheck
             shapeCopy.remove(st);
             if (!(vnode = st.getObject()).isResource())
             {
-                resultModel.createIssue(propResult, ResultModel.NotResource, OSLC.allowedValues, vnode);
-                errCount++;
+                resultModel.createIssue(propResult, Terms.NotResource, OSLC.allowedValues, vnode);
             }
             else
             {
                 Resource allowedValues = vnode.asResource();
                 NodeCheck node = new NodeCheck(allowedValues, httpHandler, shapeModel, shapeCopy, resultModel, propResult);
-                errCount += node.checkURI(RDF.type, Occurrence.ZeroOrOne,
-                    (uri) -> (uri.equals(OSLC.AllowedValues.getURI()) ? null : ResultModel.WrongType));
-                errCount += node.checkNode(OSLC.allowedValue, Occurrence.ZeroOrMany, null,
+                node.checkURI(RDF.type, Occurrence.ZeroOrOne,
+                    (uri) -> (uri.equals(OSLC.AllowedValues.getURI()) ? null : Terms.WrongType));
+                node.checkNode(OSLC.allowedValue, Occurrence.ZeroOrMany, null,
                     (uri) -> {propResult.addProperty(DCTerms.references, ResourceFactory.createResource(uri)); return null; });
             }
         }
-        return errCount;
     }
 }
