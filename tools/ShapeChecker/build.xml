@@ -91,6 +91,16 @@
         </jar>
     </target>
 
+    <target depends="build" name="makeCompletejar" description="Create a jar for ShapeChecker, including all dependencies">
+        <delete file="lib/shapechecker.jar" />
+        <jar jarfile="${ELIB}/shapecheckercomplete.jar" basedir="bin">
+            <manifest>
+                <attribute name="Main-Class" value="net.open_services.scheck.shapechecker.Main"/>
+            </manifest>
+            <zipgroupfileset dir="lib" includes="**/*.jar" />
+        </jar>
+    </target>
+
     <target depends="makejar" name="OSLC CM Check" description="Run ShapeChecker on OSLC Change Management">
         <echo message="Checking ${cmvocab} and ${cmshapes}"/>
         <java classpathref="sc.run.classpath" classname="net.open_services.scheck.shapechecker.Main" failonerror="true" fork="yes">
