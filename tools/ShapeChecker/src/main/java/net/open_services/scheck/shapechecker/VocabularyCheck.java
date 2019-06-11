@@ -158,18 +158,18 @@ public class VocabularyCheck
         NodeCheck node = new NodeCheck(term, httpHandler, vocabModel, modelCopy, resultModel, termResult);
         node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, null);
         node.checkLiteral(RDFS.comment, null, Occurrence.ExactlyOne,
-            (comment) -> (NodeCheck.checkPeriod(comment)));
+            comment -> (NodeCheck.checkPeriod(comment)));
         node.checkURI(RDFS.isDefinedBy, Occurrence.ExactlyOne,
-            (uri) -> (uri.equals(vocab.getURI()) ? null : Terms.TermNotInVocab));
+            uri -> (uri.equals(vocab.getURI()) ? null : Terms.TermNotInVocab));
 
         // Check the optional properties of the term
         node.checkLiteral(OSLC.inverseLabel, null, Occurrence.ZeroOrOne, null);
         node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         node.checkLiteral(VS_TERM_STATUS, null, Occurrence.ZeroOrOne,
-            (literal) -> (literal.matches("stable|archaic") ? null : Terms.BadTermStatus));
+            literal -> (literal.matches("stable|archaic") ? null : Terms.BadTermStatus));
         node.checkURI(RDFS.seeAlso, Occurrence.ZeroOrMany, null);
         node.checkURI(OSLC.impactType, Occurrence.ZeroOrOne,
-            (uri) -> (ImpactType.isValidURI(uri) ? null : Terms.BadImpactType));
+            uri -> (ImpactType.isValidURI(uri) ? null : Terms.BadImpactType));
 
         // Special checks for the term type, and the type-specific properties of a term
         checkTermType(term, termResult);
@@ -231,6 +231,11 @@ public class VocabularyCheck
             node.checkURI(RDFS.range, Occurrence.ZeroOrOne, null);
             node.checkURI(RDFS.domain, Occurrence.ZeroOrOne, null);
             node.checkURI(OWL.sameAs, Occurrence.ZeroOrMany, null);
+        }
+        else if (!termType.equals(RDFS.Resource))
+        {
+            node.checkSuppressibleURI(RDF.type, Occurrence.OneOrMany, true,
+                uri -> uri != null ? null : Terms.BadTermType);
         }
     }
 }

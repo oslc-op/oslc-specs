@@ -181,7 +181,7 @@ public class Main
                     httpHandler.setDebug(debug);
                     System.err.println("Arguments: "+String.join(" ",args));
                 }
-                if (args[index].equals("-V") || args[index].equals("--verbose"))
+                else if (args[index].equals("-V") || args[index].equals("--verbose"))
                 {
                     index++;
                     verbose = true;

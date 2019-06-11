@@ -246,7 +246,6 @@ public class NodeCheck
     }
 
 
-
     /**
      * Check the validity of a uri.
      *
@@ -255,6 +254,24 @@ public class NodeCheck
      * @param validator a function to perform extra validation
      */
     public void checkURI(Property property, Occurrence occurs, Function<String,Resource> validator)
+    {
+        checkSuppressibleURI(property,occurs,false,validator);
+    }
+
+
+    /**
+     * Check the validity of a uri, optionally suppressing the built-in issue creation.
+     *
+     * @param property the property whose uri values should be checked
+     * @param occurs the valid occurrences for the property
+     * @param suppressBadUri true if the message about a bad uri is to be suppressed,
+     *    and instead a null URI passed to the custom validator,
+     *    to allow it to produce a more specific message
+     * @param validator a function to perform extra validation
+     */
+    public void checkSuppressibleURI(Property property, Occurrence occurs,
+            boolean suppressBadUri,
+            Function<String,Resource> validator)
     {
         int count = 0;
 
@@ -286,7 +303,14 @@ public class NodeCheck
                     }
                     catch (ShapeCheckException e)
                     {
-                        resultModel.createIssue(resultNode, e);
+                        if (suppressBadUri)
+                        {
+                            uri = null;
+                        }
+                        else
+                        {
+                            resultModel.createIssue(resultNode, e);
+                        }
                     }
                 }
 

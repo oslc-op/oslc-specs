@@ -105,6 +105,10 @@ public final class Terms
     @SCIssue(issueSeverity=Error,description="The vs:term_status property must be either \\\"stable\\\" or \\\"archaic\\\"; \\\"unstable\\\" or \\\"testing\\\" are bad practice in published vocabularies.")
     public static final Resource BadTermStatus    = resource("BadTermStatus");
 
+    /** Error class for an unknown vocabulary term type. */
+    @SCIssue(issueSeverity=Error,description="A vocabulary term must be of type rdfs:Class, rdf:Property, rdfs:Resource, or some other valid URI.")
+    public static final Resource BadTermType    = resource("BadTermType");
+
     /** Error class for an ill-formed XML literal. */
     @SCIssue(issueSeverity=Warning,description="The XML literal is not well-formed.")
     public static final Resource BadXMLLiteral    = resource("BadXMLLiteral");
