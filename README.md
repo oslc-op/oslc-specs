@@ -3,13 +3,15 @@
 [![CircleCI](https://circleci.com/gh/oslc-op/oslc-specs.svg?style=svg)](https://circleci.com/gh/oslc-op/oslc-specs)
 [![Discourse status](https://img.shields.io/discourse/https/meta.discourse.org/status.svg)](https://forum.open-services.net/c/oslc-op)
 
-This repository is for managing the development of OSLC Core TC
+This repository is for managing the development of OSLC Open Project
 specifications including Core 3.0, OSLC Query, Tracked Resource Sets,
-and Configuration Management.
+Configuration Management, and all the various OSLC domain specifications.
 
 ## Getting started
 
-In order to preview the specifications, you need to run a local webserver (you shall never disable the security protections against running AJAX requests on local filesystem). With Python 3 installed:
+In order to preview the specifications in your local workspace, you should run a local webserver
+(it is inadvisable to disable the security protections against running AJAX requests on local filesystem).
+With Python 3 installed:
 
     cd docs/
     python3 -m http.server 8000 --bind 127.0.0.1
