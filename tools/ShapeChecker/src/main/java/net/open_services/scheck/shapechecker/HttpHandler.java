@@ -227,9 +227,10 @@ public class HttpHandler
                     ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
             }
             Header[] contentTypes = response.getHeaders("Content-Type");
+            Pattern rdfTypes = Pattern.compile(".*("+RDF_TYPES+").*");
             for (Header contentType : contentTypes)
             {
-                if (contentType.getValue().matches(".*("+RDF_TYPES+").*"))
+                if (rdfTypes.matcher(contentType.getValue()).matches())
                 {
                     return true;
                 }

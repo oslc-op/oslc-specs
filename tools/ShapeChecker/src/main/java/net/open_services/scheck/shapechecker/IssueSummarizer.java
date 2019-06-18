@@ -152,13 +152,12 @@ public class IssueSummarizer
 
     private IssueSeverity lookupSeverity(Resource issueType)
     {
-        IssueSeverity severity = IssueSeverity.findSeverity(
+        return IssueSeverity.findSeverity(
             vocabulary
                 .getProperty(issueType,Terms.severity)
                 .getResource()
                 .getURI()
                 .replaceFirst(".*#",""));
-        return severity;
     }
 
     //CSOFF: Visibility
