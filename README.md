@@ -7,6 +7,18 @@ This repository is for managing the development of OSLC Open Project
 specifications including Core 3.0, OSLC Query, Tracked Resource Sets,
 Configuration Management, and all the various OSLC domain specifications.
 
+| Title | Description |
+|-------|-------------|
+| [Core 3.0 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/core/oslc-core.html) | A collection of specifications that defines the basic patterns, protocols and capabilities of OSLC clients and servers. |
+| [Query 3.0 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/query/oslc-query.html) | Defines a simple, implementation independent selection and projection query capability. |
+| [Tracked Resource Set 3.0 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/trs/tracked-resource-set.html) | Allows servers to expose a set of resources whose state can be tracked by clients. |
+| [Requirements Management 2.1 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/rm/requirements-management-spec.html) | Defines the OSLC services and vocabulary for the Requirements Management domain. |
+| [Configuration Management 1.0 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/config/oslc-config-mgt.html) | OSLC Configuration Management defines an RDF vocabulary and a set of REST APIs for managing versions and configurations of linked data resources from multiple domains. |
+| [Quality Management 2.1 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/qm/quality-management-spec.html) | Defines the OSLC services and vocabulary for the Quality Management domain. |
+| [Asset Management 2.1 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/asset/asset-management-spec.html) | Defines the OSLC services and vocabulary for the Asset Management domain. |
+| [Automation 2.1 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/auto/automation-spec.html) | Defines the OSLC services and vocabulary for the domain that supports automation of sequences of actions on OSLC resources. |
+| [Performance Monitoring 2.1 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/perfmon/performance-monitoring-spec.html) | Defines the OSLC services and vocabulary for the Performance Monitoring domain. |
+
 ## Getting started
 
 In order to preview the specifications in your local workspace, you should run a local webserver
