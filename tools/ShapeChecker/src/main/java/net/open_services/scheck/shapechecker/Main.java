@@ -135,11 +135,18 @@ public class Main
             }
         }
 
-        // Scan the result model, adding issue counts
-        int errors = resultModel.summarizeIssues();
         if (debug)
         {
-            System.err.println();
+            System.err.println("\nResult model before summarizing:");
+            Models.write(resultModel.getModel(), System.err);
+        }
+
+        // Scan the result model, adding issue counts
+        int errors = resultModel.summarizeIssues();
+
+        if (debug)
+        {
+            System.err.println("\nResult model after summarizing:");
             Models.write(resultModel.getModel(), System.err);
         }
 

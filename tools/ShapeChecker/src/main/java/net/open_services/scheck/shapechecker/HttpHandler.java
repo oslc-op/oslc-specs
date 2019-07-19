@@ -209,10 +209,16 @@ public class HttpHandler
     @javax.annotation.CheckReturnValue
     private boolean isRDF(URI httpUri) throws ShapeCheckException, IOException
     {
+        // Work around issue 44
+        URI theUri = httpUri;
+        if (theUri.toString().startsWith("http://xmlns.com/foaf/0.1"))
+        {
+            theUri = URI.create("http://xmlns.com/foaf/spec/index");
+        }
         HttpParams httpParams = new BasicHttpParams();
         HttpClientParams.setRedirecting(httpParams, true);
         DefaultHttpClient httpClient = new DefaultHttpClient(httpParams);
-        HttpGet get = new HttpGet(httpUri);
+        HttpGet get = new HttpGet(theUri);
         try
         {
             get.addHeader("Accept", RDF_ACCEPT_HEADER);
@@ -220,10 +226,10 @@ public class HttpHandler
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != 200)
             {
-                httpResourceIsRDF.put(httpUri, false);
+                httpResourceIsRDF.put(theUri, false);
                 throw new ShapeCheckException(
                     Terms.InvalidRdfWarn,
-                    ResourceFactory.createResource(httpUri.toString()),
+                    ResourceFactory.createResource(theUri.toString()),
                     ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
             }
             Header[] contentTypes = response.getHeaders("Content-Type");
