@@ -69,6 +69,20 @@ public class VocabularyCheck
             checkVocabulary(st.getSubject());
         }
 
+        // Ignore OSLC prefix definitions
+        it = vocabModel.listStatements(null, RDF.type, OSLC.PrefixDefinition);
+        while (it.hasNext())
+        {
+            Statement st = it.next();
+            Resource subject = st.getSubject();
+            StmtIterator it2 = vocabModel.listStatements(subject, null, (RDFNode)null);
+            while (it2.hasNext())
+            {
+                modelCopy.remove(it2.next());
+            }
+        }
+
+        // Complain about anything left after that
         StmtIterator sti = modelCopy.listStatements();
         while (sti.hasNext())
         {

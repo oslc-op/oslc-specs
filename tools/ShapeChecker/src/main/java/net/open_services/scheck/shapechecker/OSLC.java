@@ -49,6 +49,7 @@ public final class OSLC
     public static final Resource Either             = resource("Either");
     public static final Resource Inline             = resource("Inline");
     public static final Resource LocalResource      = resource("LocalResource");
+    public static final Resource PrefixDefinition   = resource("PrefixDefinition");
     public static final Resource Property           = resource("Property");
     public static final Resource Reference          = resource("Reference");
     public static final Resource Resource           = resource("Resource");

@@ -162,6 +162,12 @@ public class ShapeCheck
         // Special check for allowed values
         checkAllowedValues(propDef,propResult);
 
+        // Allow and ignore optional properties for JRS
+        node.checkLiteral(JRS.inversePropertyLabel, null, Occurrence.ZeroOrOne, null);
+        node.checkLiteral(JRS.inContainer, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
+        node.checkURI(JRS.inversePropertyDefinition, Occurrence.ZeroOrOne, null);
+        node.checkURI(JRS.superShape, Occurrence.ZeroOrMany, null);
+
         // Check that the prop def has no other properties
         StmtIterator it = shapeCopy.listStatements(propDef, null, (RDFNode)null);
         while (it.hasNext())

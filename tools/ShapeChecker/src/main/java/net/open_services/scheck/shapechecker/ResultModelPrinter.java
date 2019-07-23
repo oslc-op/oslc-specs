@@ -8,6 +8,7 @@ import java.util.stream.StreamSupport;
 import org.apache.jena.datatypes.xsd.XSDDateTime;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
@@ -139,30 +140,26 @@ public class ResultModelPrinter
     {
         Resource subjectRes = issueRes.getPropertyResourceValue(Terms.subject);
         Resource type = issueRes.getPropertyResourceValue(RDF.type);
-        Resource badValue = issueRes.getPropertyResourceValue(Terms.value);
+        Statement badValueSt = issueRes.getProperty(Terms.value);
         String severity = lookupSeverity(type);
         String prefix = pad(level);
 
-        if (badValue == null)
+        printStream.printf("%s%s on %s: %s",
+            prefix,
+            severity,
+            subjectRes.getURI(),
+            vocabulary.getProperty(type, RDFS.comment).getString());
+
+
+        if (badValueSt != null)
         {
-            printStream.printf("%s%s on %s: %s%n",
-                prefix,
-                severity,
-                subjectRes.getURI(),
-                vocabulary.getProperty(type, RDFS.comment).getString());
-        }
-        else
-        {
-            String badValStr = badValue.isResource() ? badValue.getURI()
+            RDFNode badValue = badValueSt.getObject();
+            String badValStr = badValue.isResource() ? badValue.asResource().getURI()
                 : badValue.asLiteral().getLexicalForm();
 
-            printStream.printf("%s%s on %s: %s (bad value %s)%n",
-                prefix,
-                severity,
-                subjectRes.getURI(),
-                badValStr,
-                vocabulary.getProperty(type, RDFS.comment).getString());
+            printStream.printf(" (bad value %s)", badValStr);
         }
+        printStream.println();
     }
 
 

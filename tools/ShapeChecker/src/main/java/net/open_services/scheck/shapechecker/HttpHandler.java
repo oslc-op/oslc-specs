@@ -1,6 +1,5 @@
 package net.open_services.scheck.shapechecker;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -9,13 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
@@ -29,10 +22,6 @@ import org.apache.jena.riot.RiotException;
  */
 public class HttpHandler
 {
-    private static final String RDF_ACCEPT_HEADER =
-            "text/turtle,application/n-triples;q=0.9,application/ld+json;q=0.8,application/rdf+xml;q=0.7,text,*/*;q=0.5";
-    private static final String RDF_TYPES = "turtle|n-triples|json|rdf|xml";
-
     private Map<URI,Boolean> httpResourceIsRDF = new HashMap<>();
     private Set<String> foundRDFResources = new HashSet<>();
     private Set<Pattern> skipURIPatterns = new HashSet<>();
@@ -83,7 +72,7 @@ public class HttpHandler
             throw new ShapeCheckException(
                 Terms.InvalidUri,
                 ResourceFactory.createResource(uri),
-                null,
+                ResourceFactory.createResource(e.toString()),
                 e);
         }
 
@@ -92,13 +81,13 @@ public class HttpHandler
             fetchHttpResource(httpUri);
             findRDFResource(httpUri,uri);
         }
-        catch (RiotException | IOException e1)
+        catch (RiotException | HttpException e1)
         {
             httpResourceIsRDF.put(httpUri, false);
             throw new ShapeCheckException(
                 Terms.InvalidRdfError,
                 ResourceFactory.createResource(uri),
-                null,
+                ResourceFactory.createResource(e1.toString()),
                 e1);
         }
     }
@@ -128,7 +117,7 @@ public class HttpHandler
     }
 
 
-    private void fetchHttpResource(URI httpUri) throws ShapeCheckException, IOException
+    private void fetchHttpResource(URI httpUri) throws HttpException
     {
         if (httpResourceIsRDF.containsKey(httpUri))
         {
@@ -137,11 +126,6 @@ public class HttpHandler
         else if (containsMatch(skipURIPatterns,httpUri.toString()))
         {
             // Do not try to read or parse this
-            httpResourceIsRDF.put(httpUri, false);
-        }
-        else if (!isRDF(httpUri))
-        {
-            // Resource is present, but is not RDF
             httpResourceIsRDF.put(httpUri, false);
         }
         else
@@ -202,50 +186,6 @@ public class HttpHandler
                 Terms.UndefinedTerm,
                 ResourceFactory.createResource(uri),
                 ResourceFactory.createResource(httpUri.toString()));
-        }
-    }
-
-
-    @javax.annotation.CheckReturnValue
-    private boolean isRDF(URI httpUri) throws ShapeCheckException, IOException
-    {
-        // Work around issue 44
-        URI theUri = httpUri;
-        if (theUri.toString().startsWith("http://xmlns.com/foaf/0.1"))
-        {
-            theUri = URI.create("http://xmlns.com/foaf/spec/index");
-        }
-        HttpParams httpParams = new BasicHttpParams();
-        HttpClientParams.setRedirecting(httpParams, true);
-        DefaultHttpClient httpClient = new DefaultHttpClient(httpParams);
-        HttpGet get = new HttpGet(theUri);
-        try
-        {
-            get.addHeader("Accept", RDF_ACCEPT_HEADER);
-            HttpResponse response = httpClient.execute(get);
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != 200)
-            {
-                httpResourceIsRDF.put(theUri, false);
-                throw new ShapeCheckException(
-                    Terms.InvalidRdfWarn,
-                    ResourceFactory.createResource(theUri.toString()),
-                    ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
-            }
-            Header[] contentTypes = response.getHeaders("Content-Type");
-            Pattern rdfTypes = Pattern.compile(".*("+RDF_TYPES+").*");
-            for (Header contentType : contentTypes)
-            {
-                if (rdfTypes.matcher(contentType.getValue()).matches())
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        finally
-        {
-            get.reset();
         }
     }
 }
