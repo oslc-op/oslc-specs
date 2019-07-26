@@ -64,7 +64,7 @@ public class Main
                 + " [-x|--exclude excludeURIPattern ...]"
                 + " [-N|--nocrosscheck]"
                 + " [-V|--verbose]"
-                + " [-D]"
+                + " [-D|--debug]"
                 );
             System.exit(1);
         }
