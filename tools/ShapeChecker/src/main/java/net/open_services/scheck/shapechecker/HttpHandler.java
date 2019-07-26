@@ -1,5 +1,6 @@
 package net.open_services.scheck.shapechecker;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -8,7 +9,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.jena.atlas.web.HttpException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
@@ -39,61 +45,6 @@ public class HttpHandler
 
 
     /**
-     * Exclude a URI pattern from being fetched and parsed.
-     * @param uri the URI pattern to be skipped
-     */
-    public void excludeURIPattern(String uri)
-    {
-        skipURIPatterns.add(Pattern.compile(uri));
-    }
-
-
-    /**
-     * Check to see if a URI is reachable.
-     * @param uri the uri to check
-     * @throws ShapeCheckException if there was a problem checking the URI
-     */
-    public void checkValidReference(String uri) throws ShapeCheckException
-    {
-        URI httpUri;
-
-        if (foundRDFResources.contains(uri))
-        {
-            // Resource previously found, or noted as undefined
-            return;
-        }
-
-        try
-        {
-            httpUri = removeFragment(uri);
-        }
-        catch (URISyntaxException e)
-        {
-            throw new ShapeCheckException(
-                Terms.InvalidUri,
-                ResourceFactory.createResource(uri),
-                ResourceFactory.createResource(e.toString()),
-                e);
-        }
-
-        try
-        {
-            fetchHttpResource(httpUri);
-            findRDFResource(httpUri,uri);
-        }
-        catch (RiotException | HttpException e1)
-        {
-            httpResourceIsRDF.put(httpUri, false);
-            throw new ShapeCheckException(
-                Terms.InvalidRdfError,
-                ResourceFactory.createResource(uri),
-                ResourceFactory.createResource(e1.toString()),
-                e1);
-        }
-    }
-
-
-    /**
      * Remove the fragment portion of a URI.
      * @param uri the uri whose fragment, if any, is to be removed
      * @return the uri minus any fragment part
@@ -117,7 +68,30 @@ public class HttpHandler
     }
 
 
-    private void fetchHttpResource(URI httpUri) throws HttpException
+    /**
+     * Exclude a URI pattern from being fetched and parsed.
+     * @param uri the URI pattern to be skipped
+     */
+    public void excludeURIPattern(String uri)
+    {
+        skipURIPatterns.add(Pattern.compile(uri));
+    }
+
+
+    private static boolean containsMatch(Set<Pattern> patterns, String str)
+    {
+        for (Pattern p : patterns)
+        {
+            if (p.matcher(str).matches())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private void fetchRdfHttpResource(URI httpUri)
     {
         if (httpResourceIsRDF.containsKey(httpUri))
         {
@@ -126,11 +100,17 @@ public class HttpHandler
         else if (containsMatch(skipURIPatterns,httpUri.toString()))
         {
             // Do not try to read or parse this
+            if (debug)
+            {
+                System.err.println("Skipping reference check for "+httpUri);
+            }
             httpResourceIsRDF.put(httpUri, false);
         }
         else
         {
-            // Resource is RDF, so read it and save contained subjects
+            // Resource might be RDF, so try to read it and save contained subjects
+            // An exception will be thrown by Jena if the resource is not RDF, and the
+            // setting below will be reversed.
             httpResourceIsRDF.put(httpUri, true);
             if (debug)
             {
@@ -151,16 +131,29 @@ public class HttpHandler
     }
 
 
-    private static boolean containsMatch(Set<Pattern> patterns, String str)
+    private void fetchPlainHttpResource(URI httpUri) throws ShapeCheckException, IOException
     {
-        for (Pattern p : patterns)
+        HttpParams httpParams = new BasicHttpParams();
+        HttpClientParams.setRedirecting(httpParams, true);
+        DefaultHttpClient httpClient = new DefaultHttpClient(httpParams);
+        HttpGet get = new HttpGet(httpUri);
+        try
         {
-            if (p.matcher(str).matches())
+            HttpResponse response = httpClient.execute(get);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != 200)
             {
-                return true;
+                httpResourceIsRDF.put(httpUri, false);
+                throw new ShapeCheckException(
+                    Terms.Unreachable,
+                    ResourceFactory.createResource(httpUri.toString()),
+                    ResourceFactory.createTypedLiteral(Integer.valueOf(statusCode)));
             }
         }
-        return false;
+        finally
+        {
+            get.reset();
+        }
     }
 
 
@@ -187,5 +180,72 @@ public class HttpHandler
                 ResourceFactory.createResource(uri),
                 ResourceFactory.createResource(httpUri.toString()));
         }
+    }
+
+
+    /**
+     * Check to see if a URI is reachable.
+     * @param uri the uri to check
+     * @param shouldBeRdf true if the target should be RDF
+     * @throws ShapeCheckException if there was a problem checking the URI,
+     * or if it should have been RDF but was not.
+     */
+    public void checkValidReference(String uri, boolean shouldBeRdf) throws ShapeCheckException
+    {
+        URI httpUri;
+
+        if (foundRDFResources.contains(uri))
+        {
+            // Resource previously found, or noted as undefined
+            return;
+        }
+
+        try
+        {
+            httpUri = removeFragment(uri);
+        }
+        catch (URISyntaxException e)
+        {
+            throw new ShapeCheckException(
+                Terms.InvalidUri,
+                ResourceFactory.createResource(uri),
+                ResourceFactory.createResource(e.toString()),
+                e);
+        }
+
+        try
+        {
+            if (shouldBeRdf)
+            {
+                fetchRdfHttpResource(httpUri);
+            }
+            else
+            {
+                fetchPlainHttpResource(httpUri);
+            }
+            findRDFResource(httpUri,uri);
+        }
+        catch (IOException | org.apache.jena.atlas.web.HttpException e1)
+        {
+            httpResourceIsRDF.put(httpUri, false);
+            throw new ShapeCheckException(
+                Terms.Unreachable,
+                ResourceFactory.createResource(uri),
+                ResourceFactory.createResource(e1.toString()),
+                e1);
+        }
+        catch (RiotException e2)
+        {
+            httpResourceIsRDF.put(httpUri, false);
+            if (shouldBeRdf)
+            {
+                throw new ShapeCheckException(
+                    Terms.InvalidRdfError,
+                    ResourceFactory.createResource(uri),
+                    ResourceFactory.createResource(e2.toString()),
+                    e2);
+            }
+        }
+
     }
 }

@@ -16,6 +16,7 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
+
 /**
  * A set of methods to print a {@link ResultModel}.
  * @author Nick Crossley. Released to public domain 2019.
@@ -92,7 +93,29 @@ public class ResultModelPrinter
         else
         {
             assert level > 0;
-            prefix = String.format("%sWhile examining %s:%n", pad(level), name);
+            Resource res = r.getProperty(RDF.type).getResource();
+            String type;
+            if (res.equals(Terms.OntologyResult))
+            {
+                type = "ontology";
+            }
+            else if (res.equals(Terms.TermResult))
+            {
+                type = "vocabulary term";
+            }
+            else if (res.equals(Terms.ShapeResult))
+            {
+                type = "resource shape";
+            }
+            else if (res.equals(Terms.PropertyResult))
+            {
+                type = "property definition";
+            }
+            else
+            {
+                type = "???";
+            }
+            prefix = String.format("%sWhile examining %s %s:%n", pad(level), type, name);
         }
         printIssueCount(level,prefix,r);
     }
@@ -168,8 +191,7 @@ public class ResultModelPrinter
         if (printCrossCheck)
         {
             // Process the cross-check results
-            printResList(summary,Terms.undefinedClass);
-            printResList(summary,Terms.undefinedProp);
+            printResList(summary,Terms.undefinedTerm);
             printResList(summary,Terms.unusedVocabulary);
             printResList(summary,Terms.unusedTerm);
         }

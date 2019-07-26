@@ -112,8 +112,8 @@ public final class ResultModelProcessor
                 Statement st = sti2.next();
                 issueVisitor.visit(level+1,parentName,resultRes,st.getResource());
             }
-            postVisitor.visit(level,parentName,parent,resultRes);
             processInnerIssues(level+1,resultRes,parentName,preVisitor,issueVisitor,postVisitor);
+            postVisitor.visit(level,parentName,parent,resultRes);
         }
     }
 }
