@@ -2,6 +2,7 @@ package net.open_services.scheck.shapechecker;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.ResIterator;
@@ -63,12 +64,13 @@ public class CrossCheck
         }
 
         // Add terms referenced by shapes to termsInShapes map
+        Pattern regex = Pattern.compile("#.*$");
         StmtIterator si = resultModel.getModel().listStatements(null, DCTerms.references, (RDFNode) null);
         while (si.hasNext())
         {
             Resource ref = si.next().getObject().asResource();
             assert ref != null;
-            Resource vocab = ResourceFactory.createResource(ref.getURI().replaceFirst("#.*$","#"));
+            Resource vocab = ResourceFactory.createResource(regex.matcher(ref.getURI()).replaceFirst("#"));
             if (vocabs.containsKey(vocab))
             {
                 assert vocab != null;
