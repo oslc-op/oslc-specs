@@ -155,7 +155,7 @@
     <li>Enable parallel, independent, development streams with branching and merging of all lifecycle information</li>
     <li>Save and restore consistent sets of related information for any purpose including regulatory compliance and product maintenance releases</li>
     <li>Manage different variants of a related set of deliverables, solutions and/or products</li>
-    <li>Reuse utilizing commonality/variability for Product Line Engineering</li>
+    <li>Reuse utilizing commonality/variability for Product Line Engineering (PLE)</li>
   </ul>
   <p>Some typical uses of versioning and configuration management capabilities include:</p>
   <ul>
@@ -239,7 +239,7 @@
     <dd>A modifiable configuration of resources. For example, team members deliver to a stream when they want to make their changes visible to other team members.
       In many systems, changes to versioned resources can only be made in a stream.</dd>
     <dt><dfn>Tag</dfn></dt>
-    <dd>A short string used to find, mark, qualify, or indentify some resource.
+    <dd>A short string used to find, mark, qualify, or identify some resource.
       Resources can have multiple tags.
       Tags can be used to indicate the intended purpose of a resource, or to flag it for some intention.</dd>
     <dt><dfn>Variant</dfn></dt>
@@ -264,12 +264,15 @@
     a <strong><em>version resource</em></strong> is a resource that represents one specific state of a versioned resource.
     Not every past state is necessarily kept; a server may elide or discard states that are no longer referenced.</p>
   <p>Not all resource types need be versioned - for example, OSLC change requests are typically not versioned. OSLC configurations and components need not be versioned.</p>
-  <p>For a versioned resource, a GET on the URI of a concept resource resolves that URI to an appropriate state of (version of) that concept resource
+  <p>For a versioned resource, a GET on the URI of a concept resource normally resolves that URI to an appropriate state of (version of) that concept resource
     for the appropriate configuration context (see later).
     The returned http resource will contain RDF statements about both the version resource and the concept resource;
     most statements should use the concept resource as the subject, because a version resource reflects the state of (properties of) the concept resource as it appeared at some time.
     Using the concept resource URI as the subject of RDF statements is more consistent with the handling of non-versioned resources;
     using the versioned resource URI as the subject of RDF statements requires more client knowledge of versioning.</p>
+  <p>For some PLM or PLE applications, it is useful to be able to represent incomplete or abstract hierarchies as partially-bound configurations,
+    where not all versions of the concepts in that configuration have yet been determined.
+    That determination may be made later in time, or dynamically based on parameters defined elsewhere in the system.</p>
   <p>Since different versions reflecting different states of the concept resource may return conflicting RDF statements about the same subject,
     it is important for clients handling multiple versions (multiple configurations) to keep track of the relevant versions; this can be done using RDF named graphs.</p>
   <p>As an example, <code>GET http://example.com/conceptResourceA</code> in one configuration context might return:</p>
