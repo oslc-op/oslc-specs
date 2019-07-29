@@ -10,11 +10,10 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
@@ -28,11 +27,24 @@ import org.apache.jena.riot.RiotException;
  */
 public class HttpHandler
 {
-    private Map<URI,Boolean> httpResourceIsRDF = new HashMap<>();
-    private Set<String> foundRDFResources = new HashSet<>();
-    private Set<Pattern> skipURIPatterns = new HashSet<>();
-    private boolean debug = false;
+    private Map<URI, Boolean> httpResourceIsRDF = new HashMap<>();
+    private Set<String>       foundRDFResources = new HashSet<>();
+    private Set<Pattern>      skipURIPatterns   = new HashSet<>();
+    private boolean           debug             = false;
+    private HttpClient        httpClient;
 
+
+    /**
+     * Construct a new HttpHandler that will redirect.
+     */
+    public HttpHandler()
+    {
+         httpClient = HttpClientBuilder
+                .create()
+                .setRedirectStrategy(new LaxRedirectStrategy())
+                .build();
+
+    }
 
     /**
      * Sets the debug option.
@@ -133,9 +145,6 @@ public class HttpHandler
 
     private void fetchPlainHttpResource(URI httpUri) throws ShapeCheckException, IOException
     {
-        HttpParams httpParams = new BasicHttpParams();
-        HttpClientParams.setRedirecting(httpParams, true);
-        DefaultHttpClient httpClient = new DefaultHttpClient(httpParams);
         HttpGet get = new HttpGet(httpUri);
         try
         {
