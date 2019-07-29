@@ -2,7 +2,9 @@ package net.open_services.scheck.shapechecker;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
@@ -20,8 +22,7 @@ public class CrossCheck
 {
     private Map<Resource,Boolean> vocabs           = new HashMap<>();
     private Map<Resource,Boolean> termsInVocabs    = new HashMap<>();
-    private Map<Resource,Boolean> classesInShapes  = new HashMap<>();
-    private Map<Resource,Boolean> internalProps    = new HashMap<>();
+    private Map<Resource,Boolean> termsInShapes    = new HashMap<>();
     private ResultModel           resultModel;
 
 
@@ -62,73 +63,30 @@ public class CrossCheck
             termsInVocabs.put(res,false);
         }
 
-        // Add shape classes to classesInShapes map
-        ResIterator si = resultModel.getModel().listResourcesWithProperty(RDF.type, Terms.ShapeResult);
+        // Add terms referenced by shapes to termsInShapes map
+        Pattern regex = Pattern.compile("#.*$");
+        StmtIterator si = resultModel.getModel().listStatements(null, DCTerms.references, (RDFNode) null);
         while (si.hasNext())
         {
-            StmtIterator ri = si.next().listProperties(Terms.checks);
-            while (ri.hasNext())
+            Resource ref = si.next().getObject().asResource();
+            assert ref != null;
+            Resource vocab = ResourceFactory.createResource(regex.matcher(ref.getURI()).replaceFirst("#"));
+            if (vocabs.containsKey(vocab))
             {
-                Resource res = ri.next().getObject().asResource();
+                assert vocab != null;
+                vocabs.put(vocab, true);
+                termsInShapes.put(ref,false);
+            }
+        }
+
+        // Cross reference refs into terms
+        for (Resource res : termsInShapes.keySet())
+        {
+            if (termsInVocabs.containsKey(res))
+            {
                 assert res != null;
-                classesInShapes.put(res,false);
-            }
-        }
-
-        // Add internal property definitions to the internalProps map
-        ResIterator pi = resultModel.getModel().listResourcesWithProperty(RDF.type, Terms.PropertyResult);
-        while (pi.hasNext())
-        {
-            Resource propertyDefResult = pi.next();
-            final Resource checkRes = propertyDefResult.getPropertyResourceValue(Terms.checks);
-            if (checkRes != null)
-            {
-                final Resource vocab = ResourceFactory.createResource(checkRes.getURI().replaceFirst("#.*$","#"));
-                if (vocabs.containsKey(vocab))
-                {
-                    assert vocab != null;
-                    vocabs.put(vocab, true);
-                    internalProps.put(checkRes,false);
-                }
-            }
-
-            // Add internal value references to the internalProps map
-            StmtIterator ri = propertyDefResult.listProperties(DCTerms.references);
-            while (ri.hasNext())
-            {
-                final Resource refRes = ri.next().getObject().asResource();
-                if (refRes != null)
-                {
-                    final Resource vocab = ResourceFactory.createResource(refRes.getURI().replaceFirst("#.*$","#"));
-                    if (vocabs.containsKey(vocab))
-                    {
-                        assert vocab != null;
-                        vocabs.put(vocab, true);
-                        internalProps.put(refRes,false);
-                    }
-                }
-            }
-        }
-
-        // Cross reference classes into terms
-        for (Resource clss : classesInShapes.keySet())
-        {
-            if (termsInVocabs.containsKey(clss))
-            {
-                assert clss != null;
-                classesInShapes.put(clss, true);
-                termsInVocabs.put(clss, true);
-            }
-        }
-
-        // Cross reference internal properties into terms
-        for (Resource prop : internalProps.keySet())
-        {
-            if (termsInVocabs.containsKey(prop))
-            {
-                assert prop != null;
-                internalProps.put(prop, true);
-                termsInVocabs.put(prop, true);
+                termsInShapes.put(res, true);
+                termsInVocabs.put(res, true);
             }
         }
     }
@@ -155,19 +113,11 @@ public class CrossCheck
             }
         }
 
-        for (Map.Entry<Resource,Boolean> clss : classesInShapes.entrySet())
+        for (Map.Entry<Resource,Boolean> term : termsInShapes.entrySet())
         {
-            if (!clss.getValue())
+            if (!term.getValue())
             {
-                resultModel.getSummary().addProperty(Terms.undefinedClass, clss.getKey());
-            }
-        }
-
-        for (Map.Entry<Resource,Boolean> prop : internalProps.entrySet())
-        {
-            if (!prop.getValue())
-            {
-                resultModel.getSummary().addProperty(Terms.undefinedProp, prop.getKey());
+                resultModel.getSummary().addProperty(Terms.undefinedTerm, term.getKey());
             }
         }
     }

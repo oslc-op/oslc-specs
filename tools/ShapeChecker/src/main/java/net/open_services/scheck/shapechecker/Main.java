@@ -41,7 +41,8 @@ public class Main
      * <li>-D/--debug turns on debugging output</li>
      * </ul>
      * The arguments may be repeated to check multiple vocabulary and shape documents.
-     * The vocabulary and shape arguments can use globs (*.ttl, etc.)
+     * The vocabulary and shape arguments can use shell-style globs (*.ttl, etc.),
+     * but just to be different, the exclude option uses full regular expressions, not globs.
      */
     public static void main(String... args)
     {
@@ -63,7 +64,7 @@ public class Main
                 + " [-x|--exclude excludeURIPattern ...]"
                 + " [-N|--nocrosscheck]"
                 + " [-V|--verbose]"
-                + " [-D]"
+                + " [-D|--debug]"
                 );
             System.exit(1);
         }
@@ -135,11 +136,18 @@ public class Main
             }
         }
 
+        if (debug && verbose)
+        {
+            System.err.println("\nResult model before summarizing:");
+            Models.write(resultModel.getModel(), System.err);
+        }
+
         // Scan the result model, adding issue counts
         int errors = resultModel.summarizeIssues();
-        if (debug)
+
+        if (debug && verbose)
         {
-            System.err.println();
+            System.err.println("\nResult model after summarizing:");
             Models.write(resultModel.getModel(), System.err);
         }
 

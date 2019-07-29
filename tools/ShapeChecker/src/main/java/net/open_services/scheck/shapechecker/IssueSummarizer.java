@@ -49,6 +49,7 @@ public class IssueSummarizer
             (l,s,p,r) -> startCounts(),
             (l,s,p,r) -> incrementCounts(r),
             (l,s,p,r) -> addCounts(r));
+        assert issueCounters.size() == 0;
 
         Statement counts = resultModel.getSummary().getProperty(Terms.issueCounts);
         if (counts == null)
@@ -71,8 +72,7 @@ public class IssueSummarizer
         IssueCounter summaryCounts = issueCounters.pop();
 
         // Process the cross-check results
-        addCrossChecks(summaryCounts,summary,Terms.undefinedClass);
-        addCrossChecks(summaryCounts,summary,Terms.undefinedProp);
+        addCrossChecks(summaryCounts,summary,Terms.undefinedTerm);
         addCrossChecks(summaryCounts,summary,Terms.unusedVocabulary);
         addCrossChecks(summaryCounts,summary,Terms.unusedTerm);
 

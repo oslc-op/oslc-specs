@@ -92,13 +92,14 @@
     </target>
 
     <target depends="build" name="makeCompletejar" description="Create a jar for ShapeChecker, including all dependencies">
-        <delete file="lib/shapechecker.jar" />
+        <move file="lib/shapechecker.jar" tofile="lib/shapechecker.jar.tmp"/>
         <jar jarfile="${ELIB}/shapecheckercomplete.jar" basedir="bin">
             <manifest>
                 <attribute name="Main-Class" value="net.open_services.scheck.shapechecker.Main"/>
             </manifest>
             <zipgroupfileset dir="lib" includes="**/*.jar" />
         </jar>
+        <move file="lib/shapechecker.jar.tmp" tofile="lib/shapechecker.jar"/>
     </target>
 
     <target depends="makejar" name="OSLC CM Check" description="Run ShapeChecker on OSLC Change Management">

@@ -69,6 +69,20 @@ public class VocabularyCheck
             checkVocabulary(st.getSubject());
         }
 
+        // Ignore OSLC prefix definitions
+        it = vocabModel.listStatements(null, RDF.type, OSLC.PrefixDefinition);
+        while (it.hasNext())
+        {
+            Statement st = it.next();
+            Resource subject = st.getSubject();
+            StmtIterator it2 = vocabModel.listStatements(subject, null, (RDFNode)null);
+            while (it2.hasNext())
+            {
+                modelCopy.remove(it2.next());
+            }
+        }
+
+        // Complain about anything left after that
         StmtIterator sti = modelCopy.listStatements();
         while (sti.hasNext())
         {
@@ -115,16 +129,16 @@ public class VocabularyCheck
         node.checkLiteral(DCTerms.title, null, Occurrence.ExactlyOne, null);
         node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, null);
         node.checkURI(DCTerms.source, Occurrence.ExactlyOne,
-            (uri) -> (uri.matches(".*\\.ttl") ? null : Terms.SourceNotTurtle));
+            uri -> uri.matches(".*\\.ttl") ? null : Terms.SourceNotTurtle);
 
         // Check the optional properties of the ontology
         node.checkNode(DCTerms.license, Occurrence.ZeroOrOne);
         node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne,
-            (desc) -> (NodeCheck.checkPeriod(desc)));
+            desc -> NodeCheck.checkPeriod(desc));
         node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
         node.checkLiteral(preferredNameSpace, null, Occurrence.ZeroOrOne, null);
 
-        node.checkURI(RDFS.seeAlso, Occurrence.ZeroOrMany, null);
+        node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
 
         StmtIterator it = modelCopy.listStatements(ontology, null, (RDFNode)null);
         while (it.hasNext())
@@ -158,18 +172,18 @@ public class VocabularyCheck
         NodeCheck node = new NodeCheck(term, httpHandler, vocabModel, modelCopy, resultModel, termResult);
         node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, null);
         node.checkLiteral(RDFS.comment, null, Occurrence.ExactlyOne,
-            comment -> (NodeCheck.checkPeriod(comment)));
+            comment -> NodeCheck.checkPeriod(comment));
         node.checkURI(RDFS.isDefinedBy, Occurrence.ExactlyOne,
-            uri -> (uri.equals(vocab.getURI()) ? null : Terms.TermNotInVocab));
+            uri -> uri.equals(vocab.getURI()) ? null : Terms.TermNotInVocab);
 
         // Check the optional properties of the term
         node.checkLiteral(OSLC.inverseLabel, null, Occurrence.ZeroOrOne, null);
         node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         node.checkLiteral(VS_TERM_STATUS, null, Occurrence.ZeroOrOne,
-            literal -> (literal.matches("stable|archaic") ? null : Terms.BadTermStatus));
-        node.checkURI(RDFS.seeAlso, Occurrence.ZeroOrMany, null);
+            literal -> literal.matches("stable|archaic") ? null : Terms.BadTermStatus);
+        node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
         node.checkURI(OSLC.impactType, Occurrence.ZeroOrOne,
-            uri -> (ImpactType.isValidURI(uri) ? null : Terms.BadImpactType));
+            uri -> ImpactType.isValidURI(uri) ? null : Terms.BadImpactType);
 
         // Special checks for the term type, and the type-specific properties of a term
         checkTermType(term, termResult);
@@ -234,7 +248,7 @@ public class VocabularyCheck
         }
         else if (!termType.equals(RDFS.Resource))
         {
-            node.checkSuppressibleURI(RDF.type, Occurrence.OneOrMany, true,
+            node.checkSuppressibleURI(RDF.type, Occurrence.OneOrMany, true, true,
                 uri -> uri != null ? null : Terms.BadTermType);
         }
     }

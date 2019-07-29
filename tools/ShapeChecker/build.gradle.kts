@@ -21,9 +21,10 @@ application {
 }
 
 dependencies {
-    implementation("org.apache.jena:jena-core:3.0.0")
-    implementation("org.apache.jena:jena-arq:3.0.0")
-    implementation("com.google.code.findbugs:annotations:3.0.1")
+    implementation("org.apache.jena:jena-core:3.+")
+    implementation("org.apache.jena:jena-arq:3.+")
+    implementation("com.google.code.findbugs:annotations:3.+")
+    implementation("org.slf4j:slf4j-simple:1.7.+")
 
     testImplementation("junit:junit:4.12")
 }

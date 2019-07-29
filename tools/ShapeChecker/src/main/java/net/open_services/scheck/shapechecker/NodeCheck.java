@@ -51,6 +51,24 @@ public class NodeCheck
 
 
     /**
+     * Check to see if the subject resource is in the model at all.
+     * @return true if the resource is there, false if not.
+     */
+    public boolean checkExists()
+    {
+        if (originalModel.contains(subject, null, (RDFNode) null))
+        {
+            return true;
+        }
+        else
+        {
+            resultModel.createIssue(resultNode, Terms.NotDefined, subject);
+            return false;
+        }
+    }
+
+
+    /**
      * Check the validity of an object that can be either a literal or a URI.
      * @param property the property whose existence should be checked
      * @param occurs the valid occurrences for the property
@@ -255,7 +273,7 @@ public class NodeCheck
      */
     public void checkURI(Property property, Occurrence occurs, Function<String,Resource> validator)
     {
-        checkSuppressibleURI(property,occurs,false,validator);
+        checkSuppressibleURI(property,occurs,false,true,validator);
     }
 
 
@@ -267,10 +285,12 @@ public class NodeCheck
      * @param suppressBadUri true if the message about a bad uri is to be suppressed,
      *    and instead a null URI passed to the custom validator,
      *    to allow it to produce a more specific message
+     * @param shouldBeRdf true if the target should be RDF
      * @param validator a function to perform extra validation
      */
     public void checkSuppressibleURI(Property property, Occurrence occurs,
             boolean suppressBadUri,
+            boolean shouldBeRdf,
             Function<String,Resource> validator)
     {
         int count = 0;
@@ -299,7 +319,7 @@ public class NodeCheck
                 {
                     try
                     {
-                        httpHandler.checkValidReference(uri);
+                        httpHandler.checkValidReference(uri,shouldBeRdf);
                     }
                     catch (ShapeCheckException e)
                     {
@@ -344,6 +364,6 @@ public class NodeCheck
         // If you want to allow trailing white space, use this:
         // return (str.matches(".*\\.\\s*$") ? null : Terms.MissingPeriod);
 
-        return (str.endsWith(".") ? null : Terms.MissingPeriod);
+        return str.endsWith(".") ? null : Terms.MissingPeriod;
     }
 }
