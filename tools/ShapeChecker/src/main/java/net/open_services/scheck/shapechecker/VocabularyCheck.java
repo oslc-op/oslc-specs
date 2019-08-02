@@ -16,6 +16,7 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.SKOS;
 
 
 
@@ -128,7 +129,7 @@ public class VocabularyCheck
         NodeCheck node = new NodeCheck(ontology, httpHandler, vocabModel, modelCopy, resultModel, ontResult);
         node.checkLiteral(DCTerms.title, null, Occurrence.ExactlyOne, null);
         node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, null);
-        node.checkURI(DCTerms.source, Occurrence.ExactlyOne,
+        node.checkSuppressibleURI(DCTerms.source, Occurrence.ExactlyOne, false, false,
             uri -> uri.matches(".*\\.ttl") ? null : Terms.SourceNotTurtle);
 
         // Check the optional properties of the ontology
@@ -184,6 +185,8 @@ public class VocabularyCheck
         node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
         node.checkURI(OSLC.impactType, Occurrence.ZeroOrOne,
             uri -> ImpactType.isValidURI(uri) ? null : Terms.BadImpactType);
+        node.checkURI(SKOS.narrower, Occurrence.ZeroOrMany, null);
+        node.checkURI(SKOS.broader, Occurrence.ZeroOrMany, null);
 
         // Special checks for the term type, and the type-specific properties of a term
         checkTermType(term, termResult);
@@ -246,10 +249,15 @@ public class VocabularyCheck
             node.checkURI(RDFS.domain, Occurrence.ZeroOrOne, null);
             node.checkURI(OWL.sameAs, Occurrence.ZeroOrMany, null);
         }
-        else if (!termType.equals(RDFS.Resource))
+        else if (termType.equals(RDFS.Resource))
+        {
+            node.checkLiteral(RDF.value, null, Occurrence.ZeroOrOne, null);
+        }
+        else
         {
             node.checkSuppressibleURI(RDF.type, Occurrence.OneOrMany, true, true,
                 uri -> uri != null ? null : Terms.BadTermType);
+            node.checkLiteral(RDF.value, null, Occurrence.ZeroOrOne, null);
         }
     }
 }
