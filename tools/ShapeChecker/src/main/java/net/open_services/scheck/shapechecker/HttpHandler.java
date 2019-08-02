@@ -3,6 +3,7 @@ package net.open_services.scheck.shapechecker;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -10,11 +11,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.message.BasicHeader;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
@@ -39,11 +43,12 @@ public class HttpHandler
      */
     public HttpHandler()
     {
-         httpClient = HttpClientBuilder
+        Header header = new BasicHeader(HttpHeaders.ACCEPT, "text/html;text/*;*/*");
+        httpClient = HttpClientBuilder
                 .create()
                 .setRedirectStrategy(new LaxRedirectStrategy())
+                .setDefaultHeaders(Collections.singletonList(header))
                 .build();
-
     }
 
     /**
@@ -103,41 +108,34 @@ public class HttpHandler
     }
 
 
-    private void fetchRdfHttpResource(URI httpUri)
+    private void fetchRdfHttpResource(URI httpUriOrig)
     {
-        // Hack to work around Jena parsing issue
-        Pattern dcterms = Pattern.compile("^http://purl\\.org/dc/terms/(.*)$");
-        URI httpUri2 = httpUri;
-        Matcher m = dcterms.matcher(httpUri2.toString());
+        URI httpUri = issue88(httpUriOrig);
 
-        if (m.matches())
-        {
-            httpUri2 = URI.create("https://www.dublincore.org/2012/06/14/dcterms.rdf#" + m.group(1));
-        }
-        if (httpResourceIsRDF.containsKey(httpUri2))
+        if (httpResourceIsRDF.containsKey(httpUri))
         {
             // Resource previously found
         }
-        else if (containsMatch(skipURIPatterns,httpUri2.toString()))
+        else if (containsMatch(skipURIPatterns,httpUri.toString()))
         {
             // Do not try to read or parse this
             if (debug)
             {
-                System.err.println("Skipping reference check for "+httpUri2);
+                System.err.println("Skipping reference check for "+httpUri);
             }
-            httpResourceIsRDF.put(httpUri2, false);
+            httpResourceIsRDF.put(httpUri, false);
         }
         else
         {
             // Resource might be RDF, so try to read it and save contained subjects
             // An exception will be thrown by Jena if the resource is not RDF, and the
             // setting below will be reversed.
-            httpResourceIsRDF.put(httpUri2, true);
+            httpResourceIsRDF.put(httpUri, true);
             if (debug)
             {
-                System.err.println("Parsing "+httpUri2);
+                System.err.println("Parsing "+httpUri);
             }
-            Model foundModel = ModelFactory.createDefaultModel().read(httpUri2.toString());
+            Model foundModel = ModelFactory.createDefaultModel().read(httpUri.toString());
             ResIterator ri = foundModel.listSubjects();
             while (ri.hasNext())
             {
@@ -152,9 +150,32 @@ public class HttpHandler
     }
 
 
+    /**
+     * Hack to work around issue with Jena handling of Dublin Core redirects.
+     * @param httpUriOrig a URI
+     * @return if the input was a DCTerms URI, return a modified URI reflecting the several redirects
+     */
+    private static URI issue88(URI httpUriOrig)
+    {
+        Pattern dcterms = Pattern.compile("^http://purl\\.org/dc/terms/(.*)$");
+        URI httpUri = httpUriOrig;
+        Matcher m = dcterms.matcher(httpUri.toString());
+
+        if (m.matches())
+        {
+            httpUri = URI.create("https://www.dublincore.org/2012/06/14/dcterms.rdf#" + m.group(1));
+        }
+        return httpUri;
+    }
+
+
     private void fetchPlainHttpResource(URI httpUri) throws ShapeCheckException, IOException
     {
         HttpGet get = new HttpGet(httpUri);
+        if (debug)
+        {
+            System.err.println("Fetching " + httpUri);
+        }
         try
         {
             HttpResponse response = httpClient.execute(get);
@@ -236,12 +257,12 @@ public class HttpHandler
             if (shouldBeRdf)
             {
                 fetchRdfHttpResource(httpUri);
+                findRDFResource(httpUri,uri);
             }
             else
             {
                 fetchPlainHttpResource(httpUri);
             }
-            findRDFResource(httpUri,uri);
         }
         catch (IOException | org.apache.jena.atlas.web.HttpException e1)
         {
