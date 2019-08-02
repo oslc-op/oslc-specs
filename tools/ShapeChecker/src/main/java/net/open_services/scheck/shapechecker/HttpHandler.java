@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.http.HttpResponse;
@@ -18,7 +19,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.riot.RiotException;
 
 
 /**
@@ -105,30 +105,39 @@ public class HttpHandler
 
     private void fetchRdfHttpResource(URI httpUri)
     {
-        if (httpResourceIsRDF.containsKey(httpUri))
+        // Hack to work around Jena parsing issue
+        Pattern dcterms = Pattern.compile("^http://purl\\.org/dc/terms/(.*)$");
+        URI httpUri2 = httpUri;
+        Matcher m = dcterms.matcher(httpUri2.toString());
+
+        if (m.matches())
+        {
+            httpUri2 = URI.create("https://www.dublincore.org/2012/06/14/dcterms.rdf#" + m.group(1));
+        }
+        if (httpResourceIsRDF.containsKey(httpUri2))
         {
             // Resource previously found
         }
-        else if (containsMatch(skipURIPatterns,httpUri.toString()))
+        else if (containsMatch(skipURIPatterns,httpUri2.toString()))
         {
             // Do not try to read or parse this
             if (debug)
             {
-                System.err.println("Skipping reference check for "+httpUri);
+                System.err.println("Skipping reference check for "+httpUri2);
             }
-            httpResourceIsRDF.put(httpUri, false);
+            httpResourceIsRDF.put(httpUri2, false);
         }
         else
         {
             // Resource might be RDF, so try to read it and save contained subjects
             // An exception will be thrown by Jena if the resource is not RDF, and the
             // setting below will be reversed.
-            httpResourceIsRDF.put(httpUri, true);
+            httpResourceIsRDF.put(httpUri2, true);
             if (debug)
             {
-                System.err.println("Parsing "+httpUri);
+                System.err.println("Parsing "+httpUri2);
             }
-            Model foundModel = ModelFactory.createDefaultModel().read(httpUri.toString());
+            Model foundModel = ModelFactory.createDefaultModel().read(httpUri2.toString());
             ResIterator ri = foundModel.listSubjects();
             while (ri.hasNext())
             {
@@ -243,7 +252,7 @@ public class HttpHandler
                 ResourceFactory.createResource(e1.toString()),
                 e1);
         }
-        catch (RiotException e2)
+        catch (org.apache.jena.shared.JenaException e2)
         {
             httpResourceIsRDF.put(httpUri, false);
             if (shouldBeRdf)
