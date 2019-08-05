@@ -110,7 +110,7 @@ public class HttpHandler
 
     private void fetchRdfHttpResource(URI httpUriOrig)
     {
-        URI httpUri = issue88(httpUriOrig);
+        URI httpUri = dctermsRedirectWorkaround(httpUriOrig);
 
         if (httpResourceIsRDF.containsKey(httpUri))
         {
@@ -151,11 +151,12 @@ public class HttpHandler
 
 
     /**
-     * Hack to work around issue with Jena handling of Dublin Core redirects.
+     * Hack to work around <a href="https://github.com/oslc-op/oslc-specs/issues/88">issue88</a>
+     * with Jena handling of Dublin Core redirects.
      * @param httpUriOrig a URI
      * @return if the input was a DCTerms URI, return a modified URI reflecting the several redirects
      */
-    private static URI issue88(URI httpUriOrig)
+    private static URI dctermsRedirectWorkaround(URI httpUriOrig)
     {
         Pattern dcterms = Pattern.compile("^http://purl\\.org/dc/terms/(.*)$");
         URI httpUri = httpUriOrig;
