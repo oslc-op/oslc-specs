@@ -9,7 +9,7 @@ Configuration Management, and all the various OSLC domain specifications.
 
 | Title | Description |Editor|
 |-------|-------------|------|
-| [Core 3.0 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/core/oslc-core.html) | A collection of specifications that defines the basic patterns, protocols and capabilities of OSLC clients and servers. | Jim Amsden |
+| [Core 3.0 WD](https://oslc-op.github.io/oslc-specs/specs/core/oslc-core.html) | A collection of specifications that defines the basic patterns, protocols and capabilities of OSLC clients and servers. | Jim Amsden |
 | [Change Management 3.0 WD](https://oslc-op.github.io/oslc-specs/specs/cm/change-mgt-spec.html) | TBD | Jim Amsden |
 | [Query 3.0 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/query/oslc-query.html) | Defines a simple, implementation independent selection and projection query capability. ||
 | [Tracked Resource Set 3.0 WD](https://raw.githack.com/oslc-op/oslc-specs/master/specs/trs/tracked-resource-set.html) | Allows servers to expose a set of resources whose state can be tracked by clients. | Nick Crossley|
