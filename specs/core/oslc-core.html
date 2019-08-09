@@ -1,189 +1,158 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head>
-<meta charset='utf-8' />
-<title>OSLC Core Version 3.0. Part 1: Overview</title>
-<script
-  src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js'
-  async class='remove'></script>
-<script class='remove'>
-  var respecConfig = {
+  <meta charset='utf-8' />
+  <title>OSLC Core Version 3.0. Part 1: Overview</title>
+  <script src='./config.js' class='remove'></script>
+  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.6/builds/respec-oasis-common.min.js' async
+    class='remove'></script>
+    <!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
+  <script class='remove'>
+    var fileName = "oslc-core.html";
 
-    // === The following settings are mandatory for every spec ===
+    var respecConfig = {
+      specStatus: specConfig.status,
+      revision: specConfig.revision,
+      // publishDate:  "2019-08-08",
+      previousPublishDate: specConfig.previousPublishDate,
+      previousMaturity: specConfig.previousMaturity,
 
-    // Specification status:
-    //        WD      Working Draft
-    //        PSD     Project Specification Draft
-    //        PS      Project Specification
-    //        COS     Candidate OASIS Standard
-    //        OS      OASIS Standard
-    //        Errata  Approved Errata
-    //        PND     Project Note Draft
-    //        PN      Project Note
-    specStatus : "PSD",
-    shortName : "oslc-core",
-    conformanceLabelPrefix: "CORE",
-    label: "3.0-psd-04",
-    citationLabel: "OSLC-Core-3.0-Part1",
+      thisVersion: thisBase + fileName,
+      prevVersion: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part1-overview/oslc-core-v3.0-csprd03-part1-overview.html",
+      latestVersion: oasisBase + fileName,
+      latestSpecVersion: "https://open-services.net/spec/core/latest",
+      edDraftURI: "https://open-services.net/spec/core/latest-draft",
 
-    // Any of the following URIs may be set if you want to override the defaults
-    prevLabel: "3.0-cs-01",
-    //edDraftURI : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-core.html",
-    //thisVersion : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part1-overview/oslc-core-v3.0-csprd03-part1-overview.html",
-    //prevVersion : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/cs01/part1-overview/oslc-core-v3.0-cs01-part1-overview.html",
-    //latestVersion : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
 
-    // === The following settings are optional
+      // Other parts of multi-part spec
+      additionalArtifacts: [
+        { title: "OSLC Core Version 3.0. Part 1: Overview (this document)", href: thisBase + "oslc-core.html" },
+        { title: "OSLC Core Version 3.0. Part 2: Discovery", href: thisBase + "discovery.html" },
+        { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: thisBase + "resource-preview.html" },
+        { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: thisBase + "dialogs.html" },
+        { title: "OSLC Core Version 3.0. Part 5: Attachments", href: thisBase + "attachments.html" },
+        { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: thisBase + "resource-shape.html" },
+        { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: thisBase + "core-vocab.html" }
+      ],
 
-    // Only include h1 and h2 levels in the TOC (this is the default)
-    // maxTocLevel: 2,
+      relatedWork: [
+        {
+          title: "OSLC Core Version 3.0: Link Guidance",
+          href: "https://oslc-op.github.io/oslc-specs/notes/link-guidance.html",
+          status: "Work in progress. Current draft",
+        }],
 
-    // if your specification has a subtitle that goes below the main
-    // formal title, define it here
-    // subtitle:  "an excellent document",
-
-    // if you wish the publication date to be other than the last modification, set this
-    // this value is ignored if the status is WD, when the last modify time is always shown
-    publishDate:  "2018-05-31",
-
-    // if the specification's copyright date is a range of years, specify
-    // the start date here:
-    // copyrightStart: "2005"
-    
-    // Set these if you do not want the defaults shown below:
-    //wg:           "OASIS Open Services for Lifecycle Integration (OSLC) Open Project",
-    //wgShortName:  "oslc-op",
-    //wgURI:        "https://github.com/oslc-op/oslc-specs",
-    //wgPublicList: "oslc-op",
-    
-
-    // chairs and editors, add as many as you like, but you should have at least one chair or editor
-    // only "name" is required
-    chairs : [ {
-      name : "Jim Amsden",
-      mailto : "jamsden@us.ibm.com",
-      company: "IBM",
-      companyURL: "http://www.ibm.com/"
-    }, {
-      name : "Andrii Berezovskyi",
-      mailto: "andriib@kth.se",
-      company: "KTH",
-      companyURL: "https://www.kth.se/en"
-    } ],
-    editors : [ {
-      name : "Jim Amsden",
-      mailto : "jamsden@us.ibm.com",
-      company: "IBM",
-      companyURL: "http://www.ibm.com/"
-    } ],
-
-    // The namespaces defined by this spec - not the namespaces used
-    namespaces : [ {
-            href : "http://open-services.net/ns/core#",
-            prefix : "oslc"
-    } ],
-
-    // Other parts of multi-part spec
-    additionalArtifacts : [
-      { title: "OSLC Core Version 3.0. Part 1: Overview (this document)", href: "http://open-services.net/specifications/core/v3.0/psprd04/oslc-core.html" },
-      { title: "OSLC Core Version 3.0. Part 2: Discovery", href: "http://open-services.net/specifications/core/v3.0/psprd04/discovery.html" },
-      { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: "http://open-services.net/specifications/core/v3.0/psprd04/resource-preview.html" },
-      { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: "http://open-services.net/specifications/core/v3.0/psprd04/dialogs.html" },
-      { title: "OSLC Core Version 3.0. Part 5: Attachments", href: "http://open-services.net/specifications/core/v3.0/psprd04/attachments.html" },
-      { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: "http://open-services.net/specifications/core/v3.0/psprd04/resource-shape.html" },
-      { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: "http://open-services.net/specifications/core/v3.0/psprd04/core-vocab.html" }
-    ],
-
-    relatedWork : [
-      {title: "OSLC Core Version 3.0: Link Guidance",
-       href: "https://raw.githack.com/oslc-op/oslc-specs/master/notes/link-guidance.html",
-       status: "Work in progress. Current draft",
-    }],
-
-    localBiblio : {
-      "OSLCCore2" : {
-          title:    "OSLC Core 2.0",
-          href:     "https://open-services.net/bin/view/Main/OslcCoreSpecification",
-          authors:  ["S. Speicher", "D. Johnson"],
-          status:   "Finalized",
-          publisher:  "http://open-services.net",
+      localBiblio: {
+        "OSLCCore2": {
+          title: "OSLC Core 2.0",
+          href: "https://open-services.net/bin/view/Main/OslcCoreSpecification",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCQuery3": {
+          title: "OSLC Query Version 3.0",
+          href: "http://open-services.net/specifications/query/oslc-query.html",
+          authors: ["Jim Amsden", "S. Padgett", "S. Speicher", "David Honey"],
+          status: "Public Review Draft Project Specification",
+          publisher: "OASIS",
+        },
+        "OSLCTRS3": {
+          title: "OSLC Tracked Resource Set Version 3.0",
+          href: "https://raw.githack.com/oslc-op/oslc-specs/master/specs/trs/tracked-resource-set.html",
+          authors: ["Nick Crossley, Axel Reichwein"],
+          status: "Draft",
+          publisher: "OASIS",
+        },
+        "OSLCCCM1": {
+          title: "OSLC Configuration Management 1.0",
+          href: "https://raw.githack.com/oslc-op/oslc-specs/master/specs/config/oslc-config-mgt.html",
+          authors: ["Nick Crossley"],
+          status: "Draft",
+          publisher: "OASIS",
+        },
+        "OSLCSPR": {
+          title: "OSLC Core 2.0 Service Provider Resources",
+          href: "https://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCSPV": {
+          title: "OSLC Core 2.0 Selective Property Values",
+          href: "https://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCPaging": {
+          title: "OSLC Core 2.0 Resource Paging",
+          href: "https://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "LDPPaging": {
+          title: "Linked Data Platform Paging 1.0",
+          href: "https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp-paging.html",
+          authors: ["S. Speicher", "J. Arwe", "A. Malhotra"],
+          status: "Working Group Note",
+          publisher: "http://www.w3c.org",
+        },
+        "OSLCShapes": {
+          title: "OSLC Resource Shape 3.0",
+          href: "http://open-services.net/specifications/core/resource-shape.html",
+          authors: ["Arthur Ryman", "Jim Amsden"],
+          status: "Project Specification",
+          publisher: "OASIS",
+        },
+        "SHACL": {
+          title: "Shapes Constraint Language (SHACL)",
+          href: "https://w3c.github.io/data-shapes/shacl/",
+          authors: ["Holger Knublauch", "Arthur Ryman"],
+          status: "Draft",
+          publisher: "http://www.w3.org/",
+        },
+        "OpenIDConnect": {
+          title: "OpenID Connect",
+          href: "http://openid.net/connect/",
+          publisher: "openid.net",
+        },
+        "LDBestPractices": {
+          title: "Linked Data Best Practices",
+          href: "https://jazz.net/wiki/bin/view/LinkedData/BestPractices",
+          publisher: "jazz.net",
+        }
       },
-      "OSLCQuery3" : {
-          title:    "OSLC Query Version 3.0",
-          href : "http://open-services.net/specifications/query/oslc-query.html",
-          authors : [ "Jim Amsden", "S. Padgett", "S. Speicher", "David Honey" ],
-          status:   "Public Review Draft Project Specification",
-          publisher : "OASIS",
-      },
-      "OSLCTRS3" : {
-          title:    "OSLC Tracked Resource Set Version 3.0",
-          href:     "https://raw.githack.com/oslc-op/oslc-specs/master/specs/trs/tracked-resource-set.html",
-          authors:  ["Nick Crossley, Axel Reichwein"],
-          status:   "Draft",
-          publisher:  "OASIS",
-      },
-      "OSLCCCM1" : {
-          title:    "OSLC Configuration Management 1.0",
-          href:     "https://raw.githack.com/oslc-op/oslc-specs/master/specs/config/oslc-config-mgt.html",
-          authors:  ["Nick Crossley"],
-          status:   "Draft",
-          publisher:  "OASIS",
-      },
-      "OSLCSPR" : {
-          title:    "OSLC Core 2.0 Service Provider Resources",
-          href:     "https://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources",
-          authors:  ["S. Speicher", "D. Johnson"],
-          status:   "Finalized",
-          publisher:  "http://open-services.net",
-      },
-      "OSLCSPV": {
-          title:    "OSLC Core 2.0 Selective Property Values",
-          href:     "https://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values",
-          authors:  ["S. Speicher", "D. Johnson"],
-          status:   "Finalized",
-          publisher:  "http://open-services.net",
-      },
-      "OSLCPaging": {
-          title:    "OSLC Core 2.0 Resource Paging",
-          href:     "https://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging",
-          authors:  ["S. Speicher", "D. Johnson"],
-          status:   "Finalized",
-          publisher:  "http://open-services.net",
-      },
-      "LDPPaging": {
-          title:    "Linked Data Platform Paging 1.0",
-          href:     "https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp-paging.html",
-          authors:  ["S. Speicher", "J. Arwe", "A. Malhotra"],
-          status:   "Working Group Note",
-          publisher:  "http://www.w3c.org",
-      },
-      "OSLCShapes": {
-              title : "OSLC Resource Shape 3.0",
-              href : "http://open-services.net/specifications/core/resource-shape.html",
-              authors : [ "Arthur Ryman", "Jim Amsden" ],
-              status:   "Project Specification",
-              publisher : "OASIS",
-      },
-      "SHACL" : {
-          title:    "Shapes Constraint Language (SHACL)",
-          href:     "https://w3c.github.io/data-shapes/shacl/",
-          authors:  ["Holger Knublauch", "Arthur Ryman"],
-          status:   "Draft",
-          publisher:  "http://www.w3.org/",
-      },
-      "OpenIDConnect" : {
-          title : "OpenID Connect",
-          href : "http://openid.net/connect/",
-          publisher : "openid.net",
-      },
-     "LDBestPractices": {
-          title : "Linked Data Best Practices",
-          href : "https://jazz.net/wiki/bin/view/LinkedData/BestPractices",
-          publisher : "jazz.net",
-      }
-    }
-  };
-</script>
+
+
+      shortName: "oslc-core",
+      conformanceLabelPrefix: "CORE",
+      citationLabel: "OSLC-Core-3.0-Part1",
+      namespaces: [{
+        href: "http://open-services.net/ns/core#",
+        prefix: "oslc"
+      }],
+
+      chairs: [{
+        name: "Jim Amsden",
+        mailto: "jamsden@us.ibm.com",
+        company: "IBM",
+        companyURL: "https://www.ibm.com/"
+      }, {
+        name: "Andrii Berezovskyi",
+        mailto: "andriib@kth.se",
+        company: "KTH",
+        companyURL: "https://www.kth.se/"
+      }],
+      editors: [{
+        name: "Jim Amsden",
+        mailto: "jamsden@us.ibm.com",
+        company: "IBM",
+        companyURL: "https://www.ibm.com/"
+      }],
+    };
+  </script>
 </head>
 <body>
 
