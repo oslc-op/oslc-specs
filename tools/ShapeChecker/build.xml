@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="build" name="ShapeChecker in Git">
+<project basedir="." default="build" name="ShapeChecker">
     <property environment="env"/>
 
+    <property name="lib" value="build/distributions/ShapeChecker-0.1.0/lib"/>
     <property name="scapt.location" value="../scapt"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
@@ -27,31 +28,38 @@
     </path>
 
     <path id="sc.run.classpath">
-        <pathelement location="lib/shapechecker.jar"/>
+        <pathelement location="${lib}/shapechecker.jar"/>
         <path refid="sc.depends.classpath"/>
     </path>
 
     <path id="sc.depends.classpath">
-        <pathelement location="lib/jena-base-3.0.0.jar"/>
-        <pathelement location="lib/jena-core-3.0.0.jar"/>
-        <pathelement location="lib/httpclient-4.2.6.jar"/>
-        <pathelement location="lib/httpcore-4.2.5.jar"/>
-        <pathelement location="lib/findbugs-annotations.jar"/>
-        <pathelement location="lib/jena-arq-3.0.0.jar"/>
-        <pathelement location="lib/jena-iri-3.0.0.jar"/>
-        <pathelement location="lib/commons-logging-1.1.1.jar"/>
-        <pathelement location="lib/slf4j-api-1.7.6.jar"/>
-        <pathelement location="lib/slf4j-log4j12-1.7.6.jar"/>
-        <pathelement location="lib/log4j-1.2.17.jar"/>
-        <pathelement location="lib/xercesImpl-2.11.0.jar"/>
-        <pathelement location="lib/xml-apis-1.4.01.jar"/>
-        <pathelement location="lib/guava-18.0.jar"/>
-        <pathelement location="lib/jena-shaded-guava-3.0.0.jar"/>
-        <pathelement location="lib/jackson-annotations-2.3.0.jar"/>
-        <pathelement location="lib/jackson-core-2.3.3.jar"/>
-        <pathelement location="lib/jackson-databind-2.3.3.jar"/>
-        <pathelement location="lib/jsonld-java-0.5.1.jar"/>
-        <pathelement location="lib/httpclient-cache-4.2.6.jar"/>
+        <pathelement location="${lib}/jena-arq-3.12.0.jar"/>
+        <pathelement location="${lib}/jena-core-3.12.0.jar"/>
+        <pathelement location="${lib}/annotations-3.0.1.jar"/>
+        <pathelement location="${lib}/slf4j-simple-1.7.26.jar"/>
+        <pathelement location="${lib}/jena-iri-3.12.0.jar"/>
+        <pathelement location="${lib}/jena-base-3.12.0.jar"/>
+        <pathelement location="${lib}/jena-shaded-guava-3.12.0.jar"/>
+        <pathelement location="${lib}/libthrift-0.12.0.jar"/>
+        <pathelement location="${lib}/jsonld-java-0.12.3.jar"/>
+        <pathelement location="${lib}/jcl-over-slf4j-1.7.26.jar"/>
+        <pathelement location="${lib}/slf4j-api-1.7.26.jar"/>
+        <pathelement location="${lib}/commons-cli-1.4.jar"/>
+        <pathelement location="${lib}/httpclient-cache-4.5.5.jar"/>
+        <pathelement location="${lib}/httpclient-4.5.6.jar"/>
+        <pathelement location="${lib}/commons-codec-1.11.jar"/>
+        <pathelement location="${lib}/jackson-databind-2.9.9.jar"/>
+        <pathelement location="${lib}/jackson-core-2.9.9.jar"/>
+        <pathelement location="${lib}/commons-lang3-3.4.jar"/>
+        <pathelement location="${lib}/jcip-annotations-1.0.jar"/>
+        <pathelement location="${lib}/jsr305-3.0.1.jar"/>
+        <pathelement location="${lib}/commons-csv-1.5.jar"/>
+        <pathelement location="${lib}/commons-io-2.6.jar"/>
+        <pathelement location="${lib}/commons-compress-1.18.jar"/>
+        <pathelement location="${lib}/collection-0.7.jar"/>
+        <pathelement location="${lib}/httpcore-4.4.10.jar"/>
+        <pathelement location="${lib}/jackson-annotations-2.9.0.jar"/>
+        <pathelement location="${lib}/commons-logging-1.2.jar"/>
     </path>
 
     <target name="init">
@@ -69,7 +77,7 @@
 
     <target name="clean" description="Remove bin directory and jar file">
         <delete dir="bin"/>
-        <delete file="lib/shapechecker.jar" />
+        <delete file="${lib}/shapechecker.jar" />
     </target>
 
     <target depends="init" name="build" description="Compile ShapeChecker">
@@ -84,7 +92,7 @@
     <!-- Public targets -->
 
     <target depends="build" name="makejar" description="Create a jar for ShapeChecker">
-        <jar jarfile="lib/shapechecker.jar" basedir="bin">
+        <jar jarfile="${ELIB}/shapechecker.jar" basedir="bin">
             <manifest>
                 <attribute name="Main-Class" value="net.open_services.scheck.shapechecker.Main"/>
             </manifest>
@@ -92,14 +100,14 @@
     </target>
 
     <target depends="build" name="makeCompletejar" description="Create a jar for ShapeChecker, including all dependencies">
-        <move file="lib/shapechecker.jar" tofile="lib/shapechecker.jar.tmp"/>
+        <move file="${lib}/ShapeChecker-0.1.0.jar" tofile="${lib}/shapechecker.jar.tmp"/>
         <jar jarfile="${ELIB}/shapecheckercomplete.jar" basedir="bin">
             <manifest>
                 <attribute name="Main-Class" value="net.open_services.scheck.shapechecker.Main"/>
             </manifest>
-            <zipgroupfileset dir="lib" includes="**/*.jar" />
+            <zipgroupfileset dir="${lib}" includes="**/*.jar" />
         </jar>
-        <move file="lib/shapechecker.jar.tmp" tofile="lib/shapechecker.jar"/>
+        <move file="${lib}/shapechecker.jar.tmp" tofile="${lib}/ShapeChecker-0.1.0.jar"/>
     </target>
 
     <target depends="makejar" name="OSLC CM Check" description="Run ShapeChecker on OSLC Change Management">
