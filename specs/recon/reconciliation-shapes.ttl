@@ -1,0 +1,249 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
+@prefix crtv:  <http://open-services.net/ns/crtv#> .
+@base <http://open-services.net/ns/core/shapes/2.0/reconciliation-shapes.ttl> .
+
+<#instancePath>  a               oslc:Property ;
+        oslc:name                "instancePath" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:instancePath ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The directory where the files for this SoftwareServer are stored."^^rdf:XMLLiteral .
+
+<#sm-name>  a                    oslc:Property ;
+        oslc:name                "name" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:name ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The name of the SoftwareModule."^^rdf:XMLLiteral .
+
+<#deployedTo>  a                 oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "deployedTo" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:deployedTo ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The application server on which this SoftwareModule is deployed. Typically refers to a resource of type crtv:SoftwareServer but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#shortHostname>  a              oslc:Property ;
+        oslc:name                "shortHostname" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  crtv:shortHostname ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "A label assigned to a machine and used for communications on the local network."^^rdf:XMLLiteral .
+
+<#serialNumber>  a               oslc:Property ;
+        oslc:name                "serialNumber" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:serialNumber ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "Serial number assigned by the manufacturer. The value should be provided by the manufacturer of the resource."^^rdf:XMLLiteral .
+
+<#name>  a                       oslc:Property ;
+        oslc:name                "name" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:name ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "\tThe name assigned to the database by the database administrator."^^rdf:XMLLiteral .
+
+<#contextAddressSpace>
+        a                        oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "contextAddressSpace" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:contextAddressSpace ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "the anchor IP address for an IPAddress in a Network Address Translation (NAT) scenario, that is IPv4 addresses within the set of IANA privately defined address ranges of 10.0.0.0 - 10.255.255.255, 172.16.0.0 - 172.31.255.255, 192.168.0.0 - 192.168.255.255 . Typically refers to a resource of type crtv:IPAddress but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#tb-softwareModule>  a  oslc:ResourceShape ;
+        oslc:describes  crtv:SoftwareModule ;
+        oslc:property   <#sm-name> , <#fileName> , <#deployedTo> ;
+        dcterms:title   "SoftwareModule" .
+
+<#tb-computerSystem>  a  oslc:ResourceShape ;
+        oslc:describes  crtv:ComputerSystem ;
+        oslc:property   <#serialNumber> , <#fqdn> , <#vmid> , <#manufacturer> , <#hostid> , <#shortHostname> , <#systemBoardUUID> , <#model> , <#ipAddress> ;
+        dcterms:title   "ComputerSystem" .
+
+<#model>  a                      oslc:Property ;
+        oslc:name                "model" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:model ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "Value of the device model. The model number as provided by the device manufacturer."^^rdf:XMLLiteral .
+
+<#sa-ipAddress>  a               oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "ipAddress" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  crtv:ipAddress ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The specific IP address which the ServerAccessPoint uses. Typically refers to a resource of type crtv:IPAddress but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#runsOn>  a                     oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "runsOn" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:runsOn ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The system this SoftwareServer instance is running on. Typically refers to a resource of type crtv:ComputerSystem but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#address>  a                    oslc:Property ;
+        oslc:name                "address" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  crtv:address ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The canonical string representation of the IP address."^^rdf:XMLLiteral .
+
+<#tb-ipAddress>  a      oslc:ResourceShape ;
+        oslc:describes  crtv:IPAddress ;
+        oslc:property   <#contextAddressSpace> , <#address> ;
+        dcterms:title   "IPAddress" .
+
+<#systemBoardUUID>  a            oslc:Property ;
+        oslc:name                "systemBoardUUID" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:systemBoardUUID ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The unique identifier of the system board."^^rdf:XMLLiteral .
+
+<#vmid>  a                       oslc:Property ;
+        oslc:name                "vmid" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:vmid ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The VMID is a unique identifier for a virtual machine."^^rdf:XMLLiteral .
+
+<#manufacturer>  a               oslc:Property ;
+        oslc:name                "manufacturer" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:manufacturer ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "Name of the device manufacturer."^^rdf:XMLLiteral .
+
+<#tb-serviceInstance>
+        a               oslc:ResourceShape ;
+        oslc:describes  crtv:ServiceInstance ;
+        oslc:property   <#parentServiceInstance> , <#si-name> ;
+        dcterms:title   "ServiceInstance" .
+
+<#si-name>  a                    oslc:Property ;
+        oslc:name                "name" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  crtv:name ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The name assigned by the organization that owns and supports this ServiceInstance."^^rdf:XMLLiteral .
+
+<#ss-name>  a                    oslc:Property ;
+        oslc:name                "name" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:name ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The name assigned by an administrator ."^^rdf:XMLLiteral .
+
+<#fileName>  a                   oslc:Property ;
+        oslc:name                "fileName" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:fileName ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The file name of the package containing the SoftwareModule."^^rdf:XMLLiteral .
+
+<#parentServiceInstance>
+        a                        oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "parentServiceInstance" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:parentServiceInstance ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "In cases where services are organized in a hierarchy, this refers to the service that is immediately higher in the hierarchy. Typically refers to a resource of type crtv:ServiceInstance but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#dbInstance>  a                 oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "dbInstance" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  crtv:dbInstance ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The database instance that manages this database. Typically refers to a resource of type crtv:SoftwareServer but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#serverAccessPoint>  a          oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "serverAccessPoint" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  crtv:serverAccessPoint ;
+        oslc:range               oslc:Any ;
+        oslc:readOnly            false ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "The Server Access Point clients use for communications with this resource. Typically refers to a resource of type crtv:ServerAccessPoint but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#tb-serverAccessPoint>
+        a               oslc:ResourceShape ;
+        oslc:describes  crtv:ServerAccessPoint ;
+        oslc:property   <#portNumber> , <#sa-ipAddress> ;
+        dcterms:title   "ServerAccessPoint" .
+
+<#tb-database>  a       oslc:ResourceShape ;
+        oslc:describes  crtv:Database ;
+        oslc:property   <#dbInstance> , <#name> ;
+        dcterms:title   "Database" .
+
+<#fqdn>  a                       oslc:Property ;
+        oslc:name                "fqdn" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  crtv:fqdn ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The fully qualified domain name (FQDN). In Internet communications, the name of a host system that includes all of the subnames of the domain name."^^rdf:XMLLiteral .
+
+<#hostid>  a                     oslc:Property ;
+        oslc:name                "hostid" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  crtv:hostid ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "A globally unique ID assigned to their machines by some manufacturers (.e.g Sun Solaris)."^^rdf:XMLLiteral .
+
+<#ipAddress>  a                  oslc:Property ;
+        oslc:Representation      oslc:Reference ;
+        oslc:name                "ipAddress" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  crtv:ipAddress ;
+        oslc:range               oslc:Any ;
+        oslc:valueType           oslc:Resource , xsd:string ;
+        dcterms:description      "an IP address assigned to this system. Typically refers to a resource of type crtv:IPAddress but it MAY refer to other resource types."^^rdf:XMLLiteral .
+
+<#portNumber>  a                 oslc:Property ;
+        oslc:name                "portNumber" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  crtv:portNumber ;
+        oslc:readOnly            false ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      "The port number as defined by the IANA"^^rdf:XMLLiteral .
+
+<#tb-softwareServer>  a  oslc:ResourceShape ;
+        oslc:describes  crtv:SoftwareServer ;
+        oslc:property   <#runsOn> , <#instancePath> , <#serverAccessPoint> , <#ss-name> ;
+        dcterms:title   "SoftwareServer" .
