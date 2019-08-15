@@ -31,10 +31,9 @@ With Python 3 installed:
 
 Now you can browse all specs via http://localhost:8000/. For an even better experience, install Browsersync (`npm i -g browser-sync`) and run it the following way:
 
-    cd docs/
-    browser-sync start --server --directory
+    browser-sync start --config bs-config.js
 
-Now you can browse all specs via http://localhost:8000/. Anytime you save a spec file, every browser tab where this file is opened will be reloaded automatically.
+Now you can browse all specs via http://localhost:3000/. **Anytime you save a spec file, every browser tab where this file is opened will be reloaded automatically.**
 
 ## Contributions
 
@@ -46,4 +45,3 @@ Please see the
 [LICENSE](https://github.com/oslc-op/oslc-admin/blob/master/LICENSE.md)
 file for description of the license terms and OASIS policies applicable
 to the OSLC Open Project work items.
-
