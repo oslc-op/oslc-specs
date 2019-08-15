@@ -33,12 +33,11 @@ Now you can browse all specs via http://localhost:8000/. For an even better
 experience, install Browsersync (`npm i -g browser-sync`) and run it the
 following way:
 
-    cd docs/
-    browser-sync start --server --directory
+    browser-sync start --config bs-config.js
 
-Now you can browse all specs via http://localhost:8000/. Anytime you save a spec
+Now you can browse all specs via http://localhost:8000/. **Anytime you save a spec
 file, every browser tab where this file is opened will be reloaded
-automatically.
+automatically.**
 
 ## Contributions
 
