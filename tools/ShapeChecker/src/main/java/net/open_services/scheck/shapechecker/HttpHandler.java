@@ -3,22 +3,26 @@ package net.open_services.scheck.shapechecker;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.message.BasicHeader;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.riot.RiotException;
 
 
 /**
@@ -39,11 +43,12 @@ public class HttpHandler
      */
     public HttpHandler()
     {
-         httpClient = HttpClientBuilder
+        Header header = new BasicHeader(HttpHeaders.ACCEPT, "text/html;text/*;*/*");
+        httpClient = HttpClientBuilder
                 .create()
                 .setRedirectStrategy(new LaxRedirectStrategy())
+                .setDefaultHeaders(Collections.singletonList(header))
                 .build();
-
     }
 
     /**
@@ -103,8 +108,10 @@ public class HttpHandler
     }
 
 
-    private void fetchRdfHttpResource(URI httpUri)
+    private void fetchRdfHttpResource(URI httpUriOrig)
     {
+        URI httpUri = dctermsRedirectWorkaround(httpUriOrig);
+
         if (httpResourceIsRDF.containsKey(httpUri))
         {
             // Resource previously found
@@ -143,9 +150,33 @@ public class HttpHandler
     }
 
 
+    /**
+     * Hack to work around <a href="https://github.com/oslc-op/oslc-specs/issues/88">issue88</a>
+     * with Jena handling of Dublin Core redirects.
+     * @param httpUriOrig a URI
+     * @return if the input was a DCTerms URI, return a modified URI reflecting the several redirects
+     */
+    private static URI dctermsRedirectWorkaround(URI httpUriOrig)
+    {
+        Pattern dcterms = Pattern.compile("^http://purl\\.org/dc/terms/(.*)$");
+        URI httpUri = httpUriOrig;
+        Matcher m = dcterms.matcher(httpUri.toString());
+
+        if (m.matches())
+        {
+            httpUri = URI.create("https://www.dublincore.org/2012/06/14/dcterms.rdf#" + m.group(1));
+        }
+        return httpUri;
+    }
+
+
     private void fetchPlainHttpResource(URI httpUri) throws ShapeCheckException, IOException
     {
         HttpGet get = new HttpGet(httpUri);
+        if (debug)
+        {
+            System.err.println("Fetching " + httpUri);
+        }
         try
         {
             HttpResponse response = httpClient.execute(get);
@@ -227,12 +258,12 @@ public class HttpHandler
             if (shouldBeRdf)
             {
                 fetchRdfHttpResource(httpUri);
+                findRDFResource(httpUri,uri);
             }
             else
             {
                 fetchPlainHttpResource(httpUri);
             }
-            findRDFResource(httpUri,uri);
         }
         catch (IOException | org.apache.jena.atlas.web.HttpException e1)
         {
@@ -243,7 +274,7 @@ public class HttpHandler
                 ResourceFactory.createResource(e1.toString()),
                 e1);
         }
-        catch (RiotException e2)
+        catch (org.apache.jena.shared.JenaException e2)
         {
             httpResourceIsRDF.put(httpUri, false);
             if (shouldBeRdf)
