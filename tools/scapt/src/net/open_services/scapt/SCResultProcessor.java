@@ -114,7 +114,7 @@ public class SCResultProcessor extends AbstractProcessor
         {
             processingEnv.getMessager().printMessage(
                 Diagnostic.Kind.ERROR,
-                "Duplicate SCVocab annotation on " + element.getKind().toString() + " " + element.getSimpleName()
+                "Duplicate SCVocab annotation on " + element.getKind() + " " + element.getSimpleName()
                     + ". The SCVocab annotation may only be applied once.");
         }
         SCVocab annotation = element.getAnnotation(SCVocab.class);
@@ -132,7 +132,7 @@ public class SCResultProcessor extends AbstractProcessor
         {
             processingEnv.getMessager().printMessage(
                 Diagnostic.Kind.WARNING,
-                "Invalid SCTerm annotation on " + element.getKind().toString() + " " + element.getSimpleName()
+                "Invalid SCTerm annotation on " + element.getKind() + " " + element.getSimpleName()
                     + ". The SCTerm annotation may only be applied to fields.");
             return;
         }
@@ -165,7 +165,7 @@ public class SCResultProcessor extends AbstractProcessor
         {
             processingEnv.getMessager().printMessage(
                 Diagnostic.Kind.WARNING,
-                "Invalid SCIssue annotation on " + element.getKind().toString() + " " + element.getSimpleName()
+                "Invalid SCIssue annotation on " + element.getKind() + " " + element.getSimpleName()
                     + ". The SCIssue annotation may only be applied to fields.");
         }
 
@@ -187,7 +187,7 @@ public class SCResultProcessor extends AbstractProcessor
         {
             processingEnv.getMessager().printMessage(
                 Diagnostic.Kind.WARNING,
-                "Invalid SCXCheck annotation on " + element.getKind().toString() + " " + element.getSimpleName()
+                "Invalid SCXCheck annotation on " + element.getKind() + " " + element.getSimpleName()
                     + ". The SCXCheck annotation may only be applied to fields.");
         }
 

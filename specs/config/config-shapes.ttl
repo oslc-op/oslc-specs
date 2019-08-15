@@ -585,7 +585,7 @@ Servers SHOULD treat this property as read-only after intial creation."""^^rdf:X
     oslc:representation      oslc:Reference ;
     oslc:valueType           oslc:Resource ;
     oslc:range               oslc_config:Baseline ;
-    dcterms:description      """A reference to the immediately preceeding baseline of this stream.
+    dcterms:description      """A reference to the immediately preceding baseline of this stream.
 Multiple instances of this property imply the stream was merged from one or more baselines,
 and no baseline of the merged result has yet been taken.
 If the property is absent, no baseline of this stream has been taken."""^^rdf:XMLLiteral .
@@ -667,7 +667,8 @@ This property is read-only for contributions to a baseline, and modifiable for c
     oslc:range               rdfs:Class ;
     dcterms:description      """A resource type URI.
 Clients can infer a resource type of <code>oslc_config:Selections</code>,
-but there is no requirement for servers to materialize this triple in the RDF representation."""^^rdf:XMLLiteral .
+but there is no requirement for servers to materialize this triple in the RDF representation.
+Selections resources may also have the explicit type <code>oslc_config:UnboundSelections</code>."""^^rdf:XMLLiteral .
 
 
 <#selects>
@@ -677,7 +678,14 @@ but there is no requirement for servers to materialize this triple in the RDF re
     oslc:occurs              oslc:Zero-or-many ;
     oslc:representation      oslc:Reference ;
     oslc:valueType           oslc:Resource ;
-    dcterms:description      """A selected version resource.
+    dcterms:description      """If the selection type is not <code>oslc_config:UnboundSelections</code>,
+the target resource MUST be a version resource.
+If the selection type is <code>oslc_config:UnboundSelections</code>,
+the target is a concept URI for a concept resource that should be in the configuration,
+but for which no version is determined by this selection.
+Unbound selections can be bound to specific versions by mechanisms not defined by this specification
+(such as effectivity parameters, variability parameters, etc.), or may be left unbound,
+in which case the configuration may represent an incomplete or abstract view of a system.
 Selected resources MUST NOT be of type <code>oslc_config:Configuration</code>;
 sub-configurations are given in the <code>oslc_config:contributions</code> property.
 No meaning is assigned to a selected resource of type <code>oslc_config:Component</code>.
@@ -781,7 +789,8 @@ Servers MAY treat this property as read-only."""^^rdf:XMLLiteral .
     dcterms:description      """A resource type URI.
 Clients may infer resource types of <code>oslc_config:Selections</code> and <code>oslc_config:ChangeSetSelections</code>,
 but there is no requirement for servers to materialize either such triple in the RDF representation.
-Change set selections resources may also have one of the explicit types <code>oslc_config:Removals</code> or <code>oslc_config:RemoveAll</code>."""^^rdf:XMLLiteral .
+In addition to any types defined by <code>oslc_config:Selections</code>,
+change set selections resources may also have one of the explicit types <code>oslc_config:Removals</code> or <code>oslc_config:RemoveAll</code>."""^^rdf:XMLLiteral .
 
 <#cselects>
     a                        oslc:Property ;
@@ -795,11 +804,15 @@ Selected resources MUST NOT be of type <code>oslc_config:Configuration</code>;
 sub-configurations are given in the <code>oslc_config:contributions</code> property.
 No meaning is assigned to a selected resource of type <code>oslc_config:Component</code>.
 This property MAY be modifiable for selections of a change set.
-If the subject has the type <code>oslc_config:RemoveAll</code>, all selections in the overriden configuration are to be ignored; all selections are in this and other <code>oslc_selects</code> properties of the change set.
-Any target version resources indicated in this selection resource are selected in this configuration.
-Otherwise, if the subject has the type <code>oslc_config:Removals</code>, the indicated target versions are explicitly removed from the set of versions selected by the configuration overridden by this configuration.
-Otherwise, if the subject has only the (possibly inferred) type <code>oslc_config:Selections</code>, the indicated target version resources are selected by this configuration;
-a change set selection overrides (replaces) the version selected by a matching concept resource in the overridden configuration's selection,
+If the subject has the type <code>oslc_config:RemoveAll</code>, all selections in the overriden configuration are to be ignored;
+all selections are in this and other <code>oslc_selects</code> properties of the change set.
+Any target concept or version resources (depending on the presence or absence of the type <code>oslc_config:UnboundSelections</code>)
+indicated in this selection resource are selected in this configuration.
+Otherwise, if the subject has the type <code>oslc_config:Removals</code>,
+the indicated target concepts or versions are explicitly removed from the set of versions selected by the configuration overridden by this configuration.
+Otherwise, if the subject has only the (possibly inferred) type <code>oslc_config:Selections</code>,
+the indicated target concept or version resources are selected by this configuration;
+a change set selection overrides (replaces) the concepts or versions selected by a matching concept resource in the overridden configuration's selection,
 and adds additional selections for concept resources that are not mentioned in the overridden configuration's selection.
 Since selections properties are not ordered, there is no defined meaning to a selection that appears in two or more different selections properties of any types,
 or to a change set that include both a <code>oslc_config:RemoveAll</code> and a <code>oslc_config:Removals</code> selection;

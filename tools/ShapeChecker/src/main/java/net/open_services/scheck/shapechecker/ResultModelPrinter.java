@@ -8,12 +8,14 @@ import java.util.stream.StreamSupport;
 import org.apache.jena.datatypes.xsd.XSDDateTime;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+
 
 /**
  * A set of methods to print a {@link ResultModel}.
@@ -91,7 +93,29 @@ public class ResultModelPrinter
         else
         {
             assert level > 0;
-            prefix = String.format("%sWhile examining %s:%n", pad(level), name);
+            Resource res = r.getProperty(RDF.type).getResource();
+            String type;
+            if (res.equals(Terms.OntologyResult))
+            {
+                type = "ontology";
+            }
+            else if (res.equals(Terms.TermResult))
+            {
+                type = "vocabulary term";
+            }
+            else if (res.equals(Terms.ShapeResult))
+            {
+                type = "resource shape";
+            }
+            else if (res.equals(Terms.PropertyResult))
+            {
+                type = "property definition";
+            }
+            else
+            {
+                type = "???";
+            }
+            prefix = String.format("%sWhile examining %s %s:%n", pad(level), type, name);
         }
         printIssueCount(level,prefix,r);
     }
@@ -139,30 +163,26 @@ public class ResultModelPrinter
     {
         Resource subjectRes = issueRes.getPropertyResourceValue(Terms.subject);
         Resource type = issueRes.getPropertyResourceValue(RDF.type);
-        Resource badValue = issueRes.getPropertyResourceValue(Terms.value);
+        Statement badValueSt = issueRes.getProperty(Terms.value);
         String severity = lookupSeverity(type);
         String prefix = pad(level);
 
-        if (badValue == null)
+        printStream.printf("%s%s on %s: %s",
+            prefix,
+            severity,
+            subjectRes.getURI(),
+            vocabulary.getProperty(type, RDFS.comment).getString());
+
+
+        if (badValueSt != null)
         {
-            printStream.printf("%s%s on %s: %s%n",
-                prefix,
-                severity,
-                subjectRes.getURI(),
-                vocabulary.getProperty(type, RDFS.comment).getString());
-        }
-        else
-        {
-            String badValStr = badValue.isResource() ? badValue.getURI()
+            RDFNode badValue = badValueSt.getObject();
+            String badValStr = badValue.isResource() ? badValue.asResource().getURI()
                 : badValue.asLiteral().getLexicalForm();
 
-            printStream.printf("%s%s on %s: %s (bad value %s)%n",
-                prefix,
-                severity,
-                subjectRes.getURI(),
-                badValStr,
-                vocabulary.getProperty(type, RDFS.comment).getString());
+            printStream.printf(" (bad value %s)", badValStr);
         }
+        printStream.println();
     }
 
 
@@ -171,8 +191,7 @@ public class ResultModelPrinter
         if (printCrossCheck)
         {
             // Process the cross-check results
-            printResList(summary,Terms.undefinedClass);
-            printResList(summary,Terms.undefinedProp);
+            printResList(summary,Terms.undefinedTerm);
             printResList(summary,Terms.unusedVocabulary);
             printResList(summary,Terms.unusedTerm);
         }

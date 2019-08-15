@@ -3,39 +3,19 @@
 <head>
 <meta charset='utf-8' />
 <title>OSLC Configuration Management 1.0 Part 3: Configuration Specification</title>
-<link rel="stylesheet" type="text/css" href="../../styles/oslc-ccm-styles.css" />
-<link rel="stylesheet" type="text/css" href="../../styles/table-styles.css" />
-<link rel="stylesheet" type="text/css" href="../../styles/definition-styles.css" />
 <script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async class='remove'></script>
 <script class='remove'>
   var respecConfig = {
-      // specification status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
-      specStatus:           "ED",
-      edDraftURI:           "http://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/config/config-resources.html",
-
-      // the document's short name, as in http://www.w3.org/TR/short-name/
-      shortName: "oslc-config-mgmt-cr-10",
-
-      // the document's citation label
-      citationLabel: "OSLC-ConfigMgmt-v1.0-cr",
-
-      // OSLC version number for the spec, and the revision level of the document within its stage
-      revision:     "01",
-
-      // if you wish the publication date to be other than the last modification, set this
-      // publishDate:  "2009-08-06",
-
-      // if the specification's copyright date is a range of years, specify
-      // the start date here:
-      // copyrightStart: "2005"
-
-      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-      // and its maturity status
-      // previousPublishDate:  "1977-03-15",
-      // previousMaturity:  "WD",
-
-      // if this is a LCWD, uncomment and set the end of its review period
-      // lcEnd: "2009-08-05",
+      specStatus:             "WD",
+      conformanceLabelPrefix: "CONFIG",
+      thisVersion:            "https://raw.githack.com/oslc-op/oslc-specs/master/specs/config/oslc-config-mgt.html",
+      prevVersion:            "http://tools.oasis-open.org/version-control/svn/oslc-ccm/trunk/specs/config-mgt/oslc-config-mgt.html",
+      copyrightStart:         "2013",
+      shortName:              "oslc-config-mgmt-cr",
+      citationLabel:          "OSLC-ConfigMgmt-v1.0-cr",
+      revision:               "01",
+      license:                "cc-by-4",
+      label:                  "config-mgmt-draft",
 
       // chairs and editors, add as many as you like
       // only "name" is required
@@ -48,17 +28,7 @@
           },
       ],
 
-      // name of the WG
-      wg:           "OASIS OSLC Change and Configuration Management (OSLC CCM) TC",
-      wgShortName:  "oslc-core",
-
-      // URI of the public WG page
-      wgURI:        "http://www.oasis-open.org/apps/org/workgroup/oslc-core/",
-
-      // name (without the @w3c.org) of the public mailing to which comments are due
-      wgPublicList: "oslc-core@lists.oasis-open.org",
-
-      // Namespaces defined by this TC
+      // Namespaces defined by this spec
       namespaces : [ { href: "http://open-services.net/ns/config#"} ],
 
       // Other parts of multi-part spec
@@ -68,14 +38,6 @@
          { title: "OSLC Configuration Management 1.0 Part 3: Configuration Specification (this document)", href: "config-resources.html" },
          { title: "OSLC Configuration Management 1.0 Part 4: RDF Vocabulary", href: "config-vocab.html" },
          ],
-
-      // Related work
-      // relatedWork : [
-      //    { title: "Some title", href: "http://example.com/relatedDocument.html" },
-      //    ],
-      // supersedes : [
-      //    { title: "Some title", href: "http://example.com/supercededDocument.html" },
-      //    ],
 
       localBiblio : {
         "OSLCCore2": {
@@ -415,7 +377,8 @@ Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
   <ol>
   <li>if there is no version of that resource in any of the selections in the contributions to the context configuration,
   nor in any of the selections in their recursive contributions,
-  the request MUST fail with a 404 Resource not found</li>
+  the request MUST fail with a 404 Resource not found
+  (note that this includes unbound selections from a selection with type <code>oslc_config:UnboundSelections</code>)</li>
   <li>if there is exactly one version of that resource in the union of the selections in the recursive contributions,
   the request MUST return that one version</li>
   <li>if there is more than one version of that resource in the union of the selections in the recursive contributions,

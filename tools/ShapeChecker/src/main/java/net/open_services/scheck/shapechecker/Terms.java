@@ -169,6 +169,10 @@ public final class Terms
     @SCIssue(issueSeverity=Warning,description="This property definition or other subject does not appear to be part of a defined shape.")
     public static final Resource NoShape          = resource("NoShape");
 
+    /** Error class for an resource not found. */
+    @SCIssue(issueSeverity=Warning,description="This resource is not defined in this document.")
+    public static final Resource NotDefined       = resource("NotDefined");
+
     /** Error class for a term or property that does not have a hash URI based on the parent URI. */
     @SCIssue(issueSeverity=Info,description="The term or property should use a hash URI, relative to its ontology or shape, respectively.")
     public static final Resource NotHash          = resource("NotHash");
@@ -254,23 +258,18 @@ public final class Terms
     @SCTerm(type=TermType.Property,description="The plural for a cross-check artifact.")
     public static final Property plural         = property("plural");
 
-    /** Crosscheck predicate for an undefined class. */
-    @SCXCheck(severity=IssueSeverity.Error,singular="class",plural="classes",
-            description="referenced in the given shapes, but not defined in the expected vocabulary:")
-    public static final Property undefinedClass   = property("undefinedClass");
-
     /** Crosscheck predicate for an undefined term. */
-    @SCXCheck(severity=IssueSeverity.Error,singular="property or resource",plural="properties or resources",
+    @SCXCheck(severity=IssueSeverity.Error,singular="term",plural="terms",
             description="referenced in the given shapes, but not defined in the expected vocabulary:")
-    public static final Property undefinedProp    = property("undefinedProp");
+    public static final Property undefinedTerm    = property("undefinedTerm");
+
+    /** Crosscheck predicate for an unreferenced term. */
+    @SCXCheck(severity=IssueSeverity.Info,singular="term",plural="terms",
+            description="defined in the given vocabularies, but not referenced in the given shapes:")
+    public static final Property unusedTerm       = property("unusedTerm");
 
     /** Crosscheck predicate for an unreferenced vocabulary. */
     @SCXCheck(severity=IssueSeverity.Warning,singular="vocabulary",plural="vocabularies",
             description="given, but not referenced in the given shapes:")
     public static final Property unusedVocabulary = property("unusedVocabulary");
-
-    /** Crosscheck predicate for an unreferenced vocabulary term. */
-    @SCXCheck(severity=IssueSeverity.Info,singular="term",plural="terms",
-            description="defined in the given vocabularies, but not referenced in the given shapes:")
-    public static final Property unusedTerm       = property("unusedTerm");
 }

@@ -3,40 +3,19 @@
 <head>
 <meta charset='utf-8' />
 <title>OSLC Configuration Management 1.0 Part 1: Overview</title>
-<link rel="stylesheet" type="text/css" href="../../styles/oslc-ccm-styles.css" />
-<link rel="stylesheet" type="text/css" href="../../styles/table-styles.css" />
-<link rel="stylesheet" type="text/css" href="../../styles/definition-styles.css" />
 <script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async class='remove'></script>
 <script class='remove'>
   var respecConfig = {
-      // document status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
-      specStatus:    "ED",
-      edDraftURI:    "http://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/config/oslc-config-mgt.html",
-      prevED:        "http://tools.oasis-open.org/version-control/svn/oslc-ccm/trunk/specs/config-mgt/oslc-config-mgt.html",
-
-      // the document's short name, as in http://www.w3.org/TR/short-name/
-      shortName: "oslc-config-mgmt",
-
-      // the document's citation label
-      citationLabel: "OSLC-ConfigMgmt-v1.0-Overview",
-
-      // OSLC version number for the spec, and the revision level of the document within its stage
-      revision: "01",
-
-      // if you wish the publication date to be other than the last modification, set this
-      // publishDate:  "2009-08-06",
-
-      // if the specification's copyright date is a range of years, specify
-      // the start date here:
-      // copyrightStart: "2005"
-
-      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-      // and its maturity status
-      // previousPublishDate:  "1977-03-15",
-      // previousMaturity:  "WD",
-
-      // if this is a LCWD, uncomment and set the end of its review period
-      // lcEnd: "2009-08-05",
+      specStatus:             "WD",
+      conformanceLabelPrefix: "CONFIG",
+      thisVersion:            "https://raw.githack.com/oslc-op/oslc-specs/master/specs/config/oslc-config-mgt.html",
+      prevVersion:            "http://tools.oasis-open.org/version-control/svn/oslc-ccm/trunk/specs/config-mgt/oslc-config-mgt.html",
+      copyrightStart:         "2013",
+      shortName:              "oslc-config-mgmt",
+      citationLabel:          "OSLC-ConfigMgmt-v1.0-Overview",
+      revision:               "01",
+      license:                "cc-by-4",
+      label:                  "config-mgmt-draft",
 
       // chairs and editors, add as many as you like
       // only "name" is required
@@ -49,17 +28,7 @@
           },
       ],
 
-      // name of the WG
-      wg:           "OASIS OSLC Change and Configuration Management (OSLC CCM) TC",
-      wgShortName:  "oslc-core",
-
-      // URI of the public WG page
-      wgURI:        "http://www.oasis-open.org/apps/org/workgroup/oslc-core/",
-
-      // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
-      wgPublicList: "oslc-core",
-
-      // Namespaces defined by this TC
+      // Namespaces defined by this spec
       namespaces : [ { href: "http://open-services.net/ns/config#"} ],
 
       additionalArtifacts : [
@@ -68,14 +37,6 @@
          { title: "OSLC Configuration Management 1.0 Part 3: Configuration Specification", href: "config-resources.html" },
          { title: "OSLC Configuration Management 1.0 Part 4: RDF Vocabulary", href: "config-vocab.html" },
          ],
-
-      // Related work
-      // relatedWork : [
-      //    { title: "Some title", href: "http://example.com/relatedDocument.html" },
-      //    ],
-      // supersedes : [
-      //    { title: "Some title", href: "http://example.com/supercededDocument.html" },
-      //    ],
 
       localBiblio : {
         "OSLCCore2": {
@@ -194,7 +155,7 @@
     <li>Enable parallel, independent, development streams with branching and merging of all lifecycle information</li>
     <li>Save and restore consistent sets of related information for any purpose including regulatory compliance and product maintenance releases</li>
     <li>Manage different variants of a related set of deliverables, solutions and/or products</li>
-    <li>Reuse utilizing commonality/variability for Product Line Engineering</li>
+    <li>Reuse utilizing commonality/variability for Product Line Engineering (PLE)</li>
   </ul>
   <p>Some typical uses of versioning and configuration management capabilities include:</p>
   <ul>
@@ -250,6 +211,9 @@
       Configurations commonly identify exactly one version of each resource in a component.
       Configurations can also aggregate other configurations ('contributions'),
       identifying further sets of versions of resources in other components, thus assembling a shared context across multiple components.</dd>
+    <dt><dfn>Configuration Item</dfn></dt>
+    <dd>A configuration item is a resource selected in a configuration - that is, it is a versioned resource.
+      See <a href="#dfn-version">version</a>.
     <dt><dfn>Container</dfn></dt>
     <dd>A <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container</a>, often abbreviated to <em><strong>LDPC</strong></em>.</dd>
     <dt><dfn>Contribution</dfn></dt>
@@ -271,13 +235,11 @@
       but does not prohibit systems from providing the distinction.</dd>
     <dt><dfn>Selections</dfn></dt>
     <dd>The set of versions of resources identified by a given configuration.</dd>
-    <dd>This term is not used formally by the specifications, but informally it may refer to a version of a resource that is designed to replace an earlier version,
-      such as an edited version of a source file, or a modified requirement.</dd>
     <dt><dfn>Stream</dfn></dt>
     <dd>A modifiable configuration of resources. For example, team members deliver to a stream when they want to make their changes visible to other team members.
       In many systems, changes to versioned resources can only be made in a stream.</dd>
     <dt><dfn>Tag</dfn></dt>
-    <dd>A short string used to find, mark, qualify, or indentify some resource.
+    <dd>A short string used to find, mark, qualify, or identify some resource.
       Resources can have multiple tags.
       Tags can be used to indicate the intended purpose of a resource, or to flag it for some intention.</dd>
     <dt><dfn>Variant</dfn></dt>
@@ -302,12 +264,15 @@
     a <strong><em>version resource</em></strong> is a resource that represents one specific state of a versioned resource.
     Not every past state is necessarily kept; a server may elide or discard states that are no longer referenced.</p>
   <p>Not all resource types need be versioned - for example, OSLC change requests are typically not versioned. OSLC configurations and components need not be versioned.</p>
-  <p>For a versioned resource, a GET on the URI of a concept resource resolves that URI to an appropriate state of (version of) that concept resource
+  <p>For a versioned resource, a GET on the URI of a concept resource normally resolves that URI to an appropriate state of (version of) that concept resource
     for the appropriate configuration context (see later).
     The returned http resource will contain RDF statements about both the version resource and the concept resource;
     most statements should use the concept resource as the subject, because a version resource reflects the state of (properties of) the concept resource as it appeared at some time.
     Using the concept resource URI as the subject of RDF statements is more consistent with the handling of non-versioned resources;
     using the versioned resource URI as the subject of RDF statements requires more client knowledge of versioning.</p>
+  <p>For some PLM or PLE applications, it is useful to be able to represent incomplete or abstract hierarchies as partially-bound configurations,
+    where not all versions of the concepts in that configuration have yet been determined.
+    That determination may be made later in time, or dynamically based on parameters defined elsewhere in the system.</p>
   <p>Since different versions reflecting different states of the concept resource may return conflicting RDF statements about the same subject,
     it is important for clients handling multiple versions (multiple configurations) to keep track of the relevant versions; this can be done using RDF named graphs.</p>
   <p>As an example, <code>GET http://example.com/conceptResourceA</code> in one configuration context might return:</p>

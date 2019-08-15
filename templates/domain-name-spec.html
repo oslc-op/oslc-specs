@@ -5,17 +5,22 @@
 <meta charset='utf-8' />
 <head>
 <title>OSLC domain-name Specification 3.0</title>
-<link rel="stylesheet" type="text/css" href="../../styles/oslc-styles.css" />
-<link rel="stylesheet" type="text/css" href="../../styles/table-styles.css" />
-<link rel="stylesheet" type="text/css" href="../../styles/definition-styles.css" />
 <script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async class='remove'></script>
 <script class='remove'>
   var respecConfig = {
-      // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN).
-    // If in doubt use WD.
-    // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
-    // CSPRD is the most likely document you'll deliver first, so we'll start there.
-    specStatus : "CSPRD",
+        // specification status:
+        //        WD      Working Draft
+        //        PSD     Project Specification Draft
+        //        PSPRD   Project Specification Public Review Draft
+        //        PS      Project Specification
+        //        COS     Candidate OASIS Standard
+        //        OS      OASIS Standard
+        //        Errata  Approved Errata
+        //        PND     Project Note Draft
+        //        PNPRD   Project Note Public Review Draft
+        //        PN      Project Note
+        // If in doubt use WD.
+        specStatus : "WD",
 
         // the specification's short name with version but no dots
         shortName : "oslc-domain-short-name",
@@ -68,18 +73,8 @@
       companyURL: "http://www.ibm.com"
     } ],
 
-    // name of the TC
-    wg : "OASIS OSLC",
-        wgShortName:  "oslc-op",
-
-    // URI of the public OP page
-    wgURI : "https://github.com/oslc-op/oslc-specs",
-
-        // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
-        wgPublicList: "oslc-domains-comment",
-
-    // Namespaces defined by this TC
-    namespaces : [ 
+    // Namespaces defined by this spec
+    namespaces : [
       { href: "http://open-services.net/ns/core/domain-short-name#", prefix: "oslc_domain-short-name" }
      ],
 
@@ -197,7 +192,7 @@
 <body>
 <section id='abstract'>
   <p>This specification defines the OSLC domain-name domain, a RESTful web
-    services interface for the management of domain specifica and supporting resources defined in the OSLC Core specification. To support these scenarios, this specification
+    services interface for the management of domain specific and supporting resources defined in the OSLC Core specification. To support these scenarios, this specification
     defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET,
     POST, PUT and DELETE, HTTP response codes, content type handling and resource
     formats</p>
@@ -211,15 +206,6 @@
 <section id='intro' class='informative'>
   <h2>Introduction</h2>
   <p></p>
-
-<section id="iprPolicy">
-<h2>IPR Policy</h2>
-    <p>
-      This Committee Specification Public Review Draft is being developed under the <a href="https://www.oasis-open.org/policies-guidelines/ipr#RF-on-Limited-Mode">RF on Limited Terms</a> Mode of the <a href="https://www.oasis-open.org/policies-guidelines/ipr">OASIS IPR Policy</a>, the mode chosen when the Technical Committee was established. For information on whether any patents have been disclosed that may be essential to implementing this specification,
-      and any offers of patent licensing terms, please refer to the Intellectual Property Rights section of the TC’s web page
-      (<a href='{{tcBaseURI}}/{{wgShortName}}/ipr.php'>{{tcBaseURI}}/{{wgShortName}}/ipr.php</a>).
-    </p>
-</section>
 
   <section id='terminology' class='informative'>
     <h3>Terminology</h3>
@@ -288,7 +274,7 @@
   </li> <li> RM Servers MUST support XML representations with media-type <code>application/xml</code>. The XML representations MUST follow the guidelines outlined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations Guidance</a> to maintain compatibility with [[!OSLCCore2]].
   </li> <li> RM Servers MAY support JSON representations with media-type <code>application/json</code>. The JSON representations MUST follow the guidelines outlined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations Guidance</a> to maintain compatibility with [[!OSLCCore2]].
   </li>
-</ul> 
+</ul>
 
 <p>For HTTP PUT/POST request formats for resource type of ChangeRequest:</p>
 
@@ -380,7 +366,7 @@
   <li><b>The property</b>: OSLC recommends using the rdfs:label property of the rdf:Property from the vocabulary to display the property.</li>
   <li><b>The value, or object of the triple</b>: OSLC recommends using OSLC resource preview [[!OSLCResourcePreview]] to obtain an appropriate icon and label, and possibly a small and/or large dialog for displaying the object.</li>
   <li><b>The link</b>: The link is a combination of the subject, predicate and object of the triple (RDF statement or assertion). In the case where the link requires a unique label that is not available from the target resource, only then OSLC servers may support a dcterms:title on a reified statement to provide a label for a link that describes the assertion itself.</li>
-</ul></p> 
+</ul></p>
 
 <p>Turtle example using a reified statement:</p>
 
@@ -470,7 +456,7 @@
 <p>Where <code>oslc:ResourceShape</code> is not supported by the Query Capability, Servers SHOULD use the following guidance to represent query results: <ul>
 <li> For RDF/XML and XML, use <code>rdf:Description</code> and <code>rdfs:member</code> as defined by <a class="twikiAnchorLink" href="https://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#RDF_XML_Examples">Core Specification Appendix B:Representations and Examples - RDF/XML Examples</a>.
 </li> <li> For JSON the query results are contained within <code>oslc:results</code> array. See <a class="twikiAnchorLink" href="https://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_JSON">Core Specification Appendix B: Representations and Examples - Guidelines for JSON</a>.
-</li></ul> 
+</li></ul>
 </p>
 The stability of query results is OPTIONAL (see <a class="twikiLink" href="https://open-services.net/bin/view/Main/OslcCoreSpecification">Core Specification Version 2.0 - Stable Paging</a>).</p>
 </section>
@@ -546,7 +532,7 @@ requirements.</p>
   <td>domain-short-name-1</td>
   <td>Partial Resource Representations</td>
   <td>MUST/MAY</td>
-  <td>OSLC servers MUST support request for a subset of a resource's properties via the oslc.properties URL parameter retrieval via HTTP GET and MAY support via HTTP PUT</td> 
+  <td>OSLC servers MUST support request for a subset of a resource's properties via the oslc.properties URL parameter retrieval via HTTP GET and MAY support via HTTP PUT</td>
 </tr>
 <tr>
   <td>domain-short-name-1</td>

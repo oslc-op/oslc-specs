@@ -1,187 +1,117 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset='utf-8'/>
-<title>OSLC Core Version 3.0. Part 4: Delegated Dialogs</title>
-<link rel="stylesheet" type="text/css" href="../../styles/oslc-styles.css" />
-<link rel="stylesheet" type="text/css" href="../../styles/table-styles.css" />
-<link rel="stylesheet" type="text/css" href="../../styles/definition-styles.css" />
-<script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async class='remove'></script>
-<script class='remove'>
-  var respecConfig = {
-    // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN). If in doubt use WD.
-    // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
-    specStatus:           "CSPRD",
-    // if there a publicly available Editor's Draft, this is the link
-    //edDraftURI: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/dialogs.html",
-    thisVersion: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part4-delegated-dialogs/oslc-core-v3.0-csprd03-part4-delegated-dialogs.html",
-    prevVersion: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/cs01/part4-delegated-dialogs/oslc-core-v3.0-cs01-part4-delegated-dialogs.html",
-    latestVersion: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part4-delegated-dialogs.html",
-    // previousURI: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+  <meta charset='utf-8' />
+  <title>OSLC Core Version 3.0. Part 4: Delegated Dialogs</title>
+  <script src='./config.js' class='remove'></script>
+  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.6/builds/respec-oasis-common.min.js' async
+    class='remove'></script>
+  <!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
+  <script class='remove'>
+    var fileName = "dialogs.html";
+    var respecConfig = {
+      // ===== Revision-specific settings =====
 
-    // the specification's short name, as in http://www.w3.org/TR/short-name/
-    shortName:            "OSLC Delegated Dialogs 3.0",
-    conformanceLabelPrefix: "DD",
+      specStatus: specConfig.status,
+      revision: specConfig.revision,
+      publishDate:  specConfig.publishDate,
+      previousPublishDate: specConfig.previousPublishDate,
+      previousMaturity: specConfig.previousMaturity,
 
-    // the document's citation label
-    citationLabel: "OSLC-Dialogs-3.0",
+      prevVersion: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part4-delegated-dialogs/oslc-core-v3.0-csprd03-part4-delegated-dialogs.html",
+      thisVersion: thisBase + fileName,
+      latestVersion: oasisBase + fileName,
+      latestSpecVersion: "https://open-services.net/spec/core/latest",
+      edDraftURI: "https://open-services.net/spec/core/latest-draft",
 
-    // OSLC version number for the spec, and the revision level of the document within its stage
-    revision: "03",
+      // ===== Links =====
 
-    // Only include h1 and h2 level in the TOC
-    maxTocLevel: 2,
+      additionalArtifacts: [
+        { title: "OSLC Core Version 3.0. Part 1: Overview", href: thisBase + "oslc-core.html" },
+        { title: "OSLC Core Version 3.0. Part 2: Discovery", href: thisBase + "discovery.html" },
+        { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: thisBase + "resource-preview.html" },
+        { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs (this document)", href: thisBase + "dialogs.html" },
+        { title: "OSLC Core Version 3.0. Part 5: Attachments", href: thisBase + "attachments.html" },
+        { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: thisBase + "resource-shape.html" },
+        { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: thisBase + "core-vocab.html" }
+      ],
 
-    // if your specification has a subtitle that goes below the main
-    // formal title, define it here
-    // subtitle   :  "an excellent document",
+      relatedWork: [
+        { title: "OSLC Core Version 3.0: Link Guidance", href: "https://oslc-op.github.io/oslc-specs/notes/link-guidance.html" }
+      ],
 
-    // if you wish the publication date to be other than the last modification, set this
-    publishDate:  "2018-05-31",
+      localBiblio: {
+        "OSLCCore3": {
+          title: "OSLC Core 3.0",
+          href: "http://open-services.net/specifications/core/oslc-core.html",
+          authors: ["Jim Amsden", "S. Speicher"],
+          status: "Project Specification",
+          publisher: "OASIS",
+        },
+        "OSLCCoreVocab": {
+          title: "OSLC Core Vocabulary",
+          href: "http://open-services.net/specifications/core/core-vocab.html",
+          authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+          status: "Project Specification",
+          publisher: "OASIS",
+        },
+        "OSLCPreview30": {
+          title: "OSLC Resource Preview 3.0",
+          href: "http://open-services.net/specifications/core/resource-preview.html",
+          authors: ["Jim Amsden", "S. Speicher"],
+          status: "Project Specification",
+          publisher: "OASIS",
+        },
+        "OSLCCore2": {
+          title: "OSLC Core 2.0",
+          href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net"
+        }
+      },
 
-    // if the specification's copyright date is a range of years, specify
-    // the start date here:
-    // copyrightStart: "2005"
+      // ===== Spec settings =====
 
-    // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-    // and its maturity status
-    // previousPublishDate:  "1977-03-15",
-    // previousMaturity:  "WD",
+      shortName: "OSLC Delegated Dialogs 3.0",
+      conformanceLabelPrefix: "DD",
+      citationLabel: "OSLC-Dialogs-3.0",
+      maxTocLevel: 2,
+      namespaces: [{
+        href: "http://open-services.net/ns/core#",
+        prefix: "oslc"
+      }],
+      license: "cc-by-4",
+      additionalLicenses: [{
+        licenseName: "Apache License 2.0",
+        licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+      }],
+      editors: [{
+        name: "Jim Amsden",
+        mailto: "jamsden@us.ibm.com",
+        company: "IBM",
+        companyURL: "http://www.ibm.com/"
+      }],
 
-    // if there a publicly available Editor's Draft, this is the link
-    // edDraftURI:           "http://berjon.com/",
+      // =====  Overall OSLC OP settings =====
 
-    // if this is a LCWD, uncomment and set the end of its review period
-    // lcEnd: "2009-08-05",
-
-    // editors, add as many as you like
-    // only "name" is required
-      chairs : [ {
-        name : "Jim Amsden",
-        mailto : "jamsden@us.ibm.com",
+      wg: "OASIS OSLC OP",
+      wgShortName: "oslc-op",
+      wgURI: "https://github.com/oslc-op/oslc-specs",
+      chairs: [{
+        name: "Jim Amsden",
+        mailto: "jamsden@us.ibm.com",
         company: "IBM",
         companyURL: "http://www.ibm.com/"
       }, {
-        name : "Martin Sarabura",
-        mailto: "msarabura@ptc.com",
-        company: "PTC",
-        companyURL: "http://www.ptc.com"
-      } ],
-      editors : [ {
-        name : "Jim Amsden",
-        mailto : "jamsden@us.ibm.com",
-        company: "IBM",
-        companyURL: "http://www.ibm.com/"
-      } ],
-
-
-    // name of the WG
-    wg: "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
-    wgShortName : "oslc-core",
-    // URI of the public WG page
-    wgURI:        "https://www.oasis-open.org/committees/oslc-core/",
-    // name (without the @w3c.org) of the public mailing to which comments are due
-    wgPublicList: "oslc-core-comments",
-
-    // URI of the patent status for this WG, for Rec-track documents
-    // !!!! IMPORTANT !!!!
-    // This is important for Rec-track documents, do not copy a patent URI from a random
-    // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
-    // Team Contact.
-    wgPatentURI:  "",
-    // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
-
-   namespaces : [ {
-            href : "http://open-services.net/ns/core#",
-            prefix : "oslc"
-    } ],
-
-    // Other parts of multi-part spec
-    additionalArtifacts : [
-      { title: "OSLC Core Version 3.0. Part 1: Overview", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part1-overview/oslc-core-v3.0-csprd03-part1-overview.html" },
-      { title: "OSLC Core Version 3.0. Part 2: Discovery", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part2-discovery/oslc-core-v3.0-csprd03-part2-discovery.html" },
-      { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html" },
-      { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs (this document)", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part4-delegated-dialogs/oslc-core-v3.0-csprd03-part4-delegated-dialogs.html" },
-      { title: "OSLC Core Version 3.0. Part 5: Attachments", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part5-attachments/oslc-core-v3.0-csprd03-part5-attachments.html" },
-      { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part6-resource-shape/oslc-core-v3.0-csprd03-part6-resource-shape.html" },
-      { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part7-core-vocabulary/oslc-core-v3.0-csprd03-part7-core-vocabulary.html" }
-    ],
-
-    relatedWork : [
-        {title: "OSLC Core Version 3.0: Link Guidance", href: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/link-guidance.html"}
-    ],
-
-    localBiblio:  {
-        "OSLCCore3" : {
-                title : "OSLC Core 3.0",
-                href : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
-                authors : [ "Jim Amsden", "S. Padgett", "S. Speicher"],
-                status:   "Working Draft",
-                publisher : "OASIS",
-        },
-        "OSLCCoreVocab" : {
-                title : "OSLC Core Vocabulary",
-                href : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
-                authors : [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
-                status:   "Working Draft",
-                publisher : "OASIS",
-        },
-        "OSLCPreview30": {
-            title:    "OSLC Resource Preview 3.0",
-            href:     "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part3-resource-preview.html",
-            authors:  [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
-            status:   "Working Draft",
-            publisher:  "https://www.oasis-open.org/"
-        },
-        "OSLCCore2": {
-            title:    "OSLC Core 2.0",
-            href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification",
-            authors:  ["S. Speicher", "D. Johnson"],
-            status:   "Finalized",
-            publisher:  "http://open-services.net"
-        }
-    }
-  };
-</script>
-<style type="text/css">
-    table, thead, tr, td {
-        padding: 5px;
-        border-width: 1px;
-        border-spacing: 0px;
-        border-style: solid;
-        border-collapse: collapse;
-    }
-
-    td {
-        min-width: 100px;
-    }
-
-    .conformance section {
-        margin-top: 1.33em;
-        margin-bottom: 1.33em;
-    }
-
-    .conformance h4 {
-        color: black;
-        font-family: inherit;
-        font-size: 100%;
-        font-weight: normal;
-        display: inline;
-    }
-
-    code {
-        font-weight:bold;
-    }
-
-    .rfc2119 {
-        font-weight:bold;
-    }
-
-    dd {
-        padding-top: 5px;
-        padding-bottom: 10px;
-    }
-</style>
+        name: "Andrii Berezovskyi",
+        mailto: "andriib@kth.se",
+        company: "KTH",
+        companyURL: "https://www.kth.se/en"
+      }],
+    };
+  </script>
 </head>
 
 <body>
@@ -192,7 +122,6 @@
 </section>
 
   <section id='toc'></section>
-  <hr />
   <section id='sotd'></section>
 
 
@@ -966,7 +895,7 @@ Allow: GET,POST,HEAD,OPTIONS
 <section id="dialog_shape">
     <h2>Resource Constraints</h2>
     <p>This document applies the following constraints to the Dialog [[!OSLCCoreVocab]] vocabulary term.</p>
-	<p class='conformance'>An OSLC server providing Dialog capability MUST implement the vocabulary defined in this section.</p>
+    <p class='conformance'>An OSLC server providing Dialog capability MUST implement the vocabulary defined in this section.</p>
 
     <div title='Resource Constraints for Dialog'
             data-include='shapes/Dialog-shape.ttl'
@@ -1090,6 +1019,12 @@ Allow: GET,POST,HEAD,OPTIONS
   <td>Jim Amsden</td>
   <td>Minor editorial changes only.</td>
  </tr>
+  <tr>
+    <td>04</td>
+    <td>26 June 2019</td>
+    <td>Jim Amsden</td>
+    <td>Added conformance section and migrated to Open Project</td>
+  </tr>
 </table>
 
 </section>

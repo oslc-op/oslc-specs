@@ -4,123 +4,87 @@
 <head>
   <meta charset='utf-8'>
   <title>OSLC Actions</title>
-  <style type="text/css">
-      table, thead, tr, td {
-          padding: 5px;
-          border-width: 1px;
-          border-spacing: 0px;
-          border-style: solid;
-          border-collapse: collapse;
-      }
-
-      td {
-          min-width: 100px;
-      }
-
-      .conformance section {
-          margin-top: 1.33em;
-          margin-bottom: 1.33em;
-      }
-
-      .conformance h4 {
-          color: black;
-          font-family: inherit;
-          font-size: 100%;
-          font-weight: normal;
-          display: inline;
-      }
-
-      code {
-          font-weight:bold;
-      }
-
-      .rfc2119 {
-          font-weight:bold;
-      }
-
-      dd {
-          padding-top: 5px;
-          padding-bottom: 10px;
-      }
-  </style>
   <script src=
               'https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js'
           async="" class='remove'>
   </script>
   <script type="text/javascript">
   var respecConfig = {
-        // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN). If in doubt use WD.
-        // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
-        specStatus : "WD",
+    specStatus : "WD",
+    revision: "01",
 
-        // Only include h1 and h2 level
-        maxTocLevel: 2,
+    license : "cc-by-4",
 
-        shortName : "oslc-actions",
+    additionalLicenses : [{
+       licenseName : "Apache License 2.0",
+       licenseURI : "https://www.apache.org/licenses/LICENSE-2.0",
+     }],
 
-        // if your specification has a subtitle that goes below the main
-        // formal title, define it here
-        // subtitle   :  "Committee Specification Draft 01",
 
-        // if you wish the publication date to be other than the last modification, set this
-        // publishDate:  "2009-08-06",
+    // Only include h1 and h2 level
+    maxTocLevel: 2,
 
-        // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-        // and its maturity status
-        // previousPublishDate:  "1977-03-15",
-        // previousMaturity:  "WD",
+    shortName : "oslc-actions",
+    conformanceLabelPrefix: "Actions",
 
-        // if there a publicly available Editor's Draft, this is the link
-        edDraftURI: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/actions.html",
+    // if there a publicly available Editor's Draft, this is the link
+    edDraftURI: "https://raw.githack.com/oslc-op/oslc-specs/master/specs/core/actions.html",
 
-        // if this is a LCWD, uncomment and set the end of its review period
-        // lcEnd: "2009-08-05",
+    // if this is a LCWD, uncomment and set the end of its review period
+    // lcEnd: "2009-08-05",
 
-        // includePermalinks: true,
+    // includePermalinks: true,
 
-        chairs : [ {
-                name : "Steve Speicher",
-                url : "http://stevespeicher.me/",
-                mailto : "sspeiche@us.ibm.com",
-                company : "IBM",
-                companyURL : "http://ibm.com/"
-        } ],
-        editors : [ {
-                name : "Martin Pain",
-                mailto : "martinpain@uk.ibm.com",
-                company : "IBM",
-                companyURL : "http://ibm.com/"
+    chairs : [ {
+      name : "Jim Amsden",
+      mailto : "jamsden@us.ibm.com",
+      company: "IBM",
+      companyURL: "http://www.ibm.com/"
+    }, {
+      name : "Andrii Berezovskyi",
+      mailto: "andriib@kth.se",
+      company: "KTH",
+      companyURL: "https://www.kth.se/en"
+    }],
+    editors : [ {
+            name : "Martin Pain",
+            mailto : "martinpain@uk.ibm.com",
+            company : "IBM",
+            companyURL : "http://ibm.com/"
+    },
+    {
+        name:       "Samuel Padgett",
+        mailto:     "spadgett@us.ibm.com",
+        company:    "IBM",
+        companyURL: "http://ibm.com/"
+    } ],
+
+    wg: "OASIS OSLC OP",
+    wgShortName:  "oslc-op",
+    wgURI: "https://github.com/oslc-op/oslc-specs",
+
+    namespaces : [ {
+            href : "http://open-services.net/ns/core#",
+            prefix : "oslc"
+    } ],
+
+    localBiblio : {
+        "OSLCCore3" : {
+          title:    "OSLC Core 3.0",
+          href:     "http://open-services.net/specifications/core/oslc-core.html",
+          authors:  ["Jim Amsden", "S. Speicher"],
+          status:   "Project Specification",
+          publisher:  "OASIS",
         },
-        {
-            name:       "Samuel Padgett",
-            mailto:     "spadgett@us.ibm.com",
-            company:    "IBM",
-            companyURL: "http://ibm.com/"
-        } ],
-        wg : "OASIS OSLC Lifecycle Integration Core (OSLC Core) TC",
-        wgURI : "https://www.oasis-open.org/committees/oslc-core/",
-        namespaces : [ {
-                href : "http://open-services.net/ns/core#",
-                prefix : "oslc"
-        } ],
-        wgPublicList : "oslc-core-comments",
-
-        localBiblio : {
-            "OSLCCore3" : {
-                title : "OSLC Core 3.0",
-                href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-core.html",
-                authors : [ "Steve Speicher" ],
-                publisher : "OASIS",
-            },
-          "OSLCCoreVocab" : {
-                  title : "OSLC Core Vocabulary",
-                  href : "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/core-vocab.html",
-                  authors : [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
-                  status:   "Working Draft",
-                  publisher : "OASIS",
-          },
-        }
-    };
+      "OSLCCoreVocab" : {
+          title : "OSLC Core Vocabulary",
+          href : "http://open-services.net/specifications/core/core-vocab.html",
+          authors : [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
+          status:   "Project Specification",
+          publisher : "OASIS",
+      },
+    }
+  };
   </script>
 </head>
 
@@ -137,7 +101,6 @@
   </section>
 
   <section id='toc'></section>
-  <hr>
 
   <section id='intro'>
     <h2>Introduction</h2>
@@ -583,17 +546,6 @@
     </ul>
   </section>
 
-  <section id="conformance">
-    <p><em>TODO: needed for public review version of
-    standards-track specifications, more details in <a href=
-    "http://docs.oasis-open.org/templates/TCHandbook/ConformanceGuidelines.html#_Toc170119664">
-    TC Handbook</a>. Some examples: <a href=
-    "https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp.html#conformance">
-    LDP</a>, <a href=
-    "http://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.html#S-CONFORMANCE">
-    UBL</a></em></p>
-  </section>
-
   <section class='informative'>
     <h2>Motivation</h2>
 
@@ -617,41 +569,41 @@
     <h3>Re-use by domain specifications</h3>
 
     <p>Domain specifications re-using this specification
-    <strong>SHOULD</strong> make their readers aware of <a href=
+    SHOULD make their readers aware of <a href=
     "#best-practices">Best Practices</a> for representing actions
     and their related resources.<br></p>
 
     <p>Domain specifications re-using this specification are
     strongly <strong>RECOMMENDED</strong> to require at least one
     specification profile for interoperability within the target
-    domain. They <strong>SHOULD</strong> re-use the profiles
+    domain. They SHOULD re-use the profiles
     defined or referenced in this specification where possible, or
-    they <strong>MAY</strong> define new specification profile(s)
+    they MAY define new specification profile(s)
     when no existing profile meets their needs. The working groups
     defining them must consult with OSLC Core before defining new
     profiles, to determine if they are better added to Core or kept
     separate.</p>
 
     <p>Domain specifications re-using this specification
-    <strong>MAY</strong> add new constraints beyond the ones here.
+    MAY add new constraints beyond the ones here.
     Domain specifications re-using this specification <strong>MUST
     NOT</strong> weaken absolute constraints (MUST, MUST NOT) in
     this specification.</p>
 
     <p>Domain specifications re-using this specification
-    <strong>MAY</strong> define new predicates beyond the ones here
+    MAY define new predicates beyond the ones here
     that link to actions not available when the response is formed.
-    Likewise they <strong>MAY</strong> define new <a href=
+    Likewise they MAY define new <a href=
     "#types-of-actions">action types</a>, as <a href=
     "http://open-services.net/wiki/automation/OSLC-Automation-Specification-Version-2.1/">OSLC
     Automation 2.1</a> does for <a href=
     "http://open-services.net/wiki/automation/OSLC-Automation-Specification-Version-2.1/#Teardown-action-type">
     teardown actions</a>; widely applicable action types
-    <strong>SHOULD</strong> be allocated (by the Core working
+    SHOULD be allocated (by the Core working
     group) within the OSLC Core vocabulary.</p>
 
     <p>Domain specifications re-using this specification
-    <strong>MUST</strong> comply with requirements imposed by later
+    MUST comply with requirements imposed by later
     sections in this specification, for example those in <a href=
     "#recognizing-patterns">recognizing interaction patterns</a>
     and <a href="#profiles-other">specification profiles</a>. The
@@ -664,7 +616,7 @@
     <section id="oslc-action-discovery">
     <h3>Discovering the actions available from a resource</h3>
 
-    <p>Any resource <strong>MAY</strong> link to any number of
+    <p>Any resource MAY link to any number of
     Actions, using the <code>oslc:action</code> predicate as shown
     in the graphic below. The <code>oslc:action</code> predicate
     links to actions <em>available when the response is
@@ -678,10 +630,10 @@
     <h3>Action resources</h3>
 
     <p>All resources in this specification, such as Actions, action
-    bindings, and HTTP requests, <strong>MAY</strong> be
+    bindings, and HTTP requests, MAY be
     represented as either blank nodes or URI-identified resources,
     and when identified by URIs either hash or non-hash URIs
-    <strong>MAY</strong> be used.</p>
+    MAY be used.</p>
 
     <p>[[Image:Actions-Finding-Actions-From-Resources.png]]</p>
     </section>
@@ -703,15 +655,15 @@
 
     <p>Action types are identified by <code>rdf:type</code> values,
     e.g. <code>oslc-automation:TeardownAction</code>, which
-    <strong>SHOULD</strong> all be <code>rdfs:subClassOf</code>
+    SHOULD all be <code>rdfs:subClassOf</code>
     <code>oslc:Action</code>. Since informal OSLC Core guidance
     states that providers cannot depend upon client-side
     inferencing, action representations are multi-typed: they
-    <strong>MUST</strong> contain <code>oslc:Action</code> as one
-    type, and <strong>MAY</strong> (usually do, in practice)
+    MUST contain <code>oslc:Action</code> as one
+    type, and MAY (usually do, in practice)
     contain additional types that convey more specific semantics
     necessary for programmatic consumption. The additional type
-    URIs <strong>MAY</strong> belong to any vocabulary or
+    URIs MAY belong to any vocabulary or
     namespace, however working groups in need of new types should
     consult with Core before defining new actions outside the Core
     namespace. Widely applicable action types should be allocated
@@ -729,7 +681,7 @@
 
     <p>Implementations <strong>MUST NOT</strong> assume that
     actions with the same action types are semantically
-    <em>identical</em>. Actions <strong>SHOULD</strong> use a
+    <em>identical</em>. Actions SHOULD use a
     combination of both standardised and (if needed)
     non-standardised types to make the identification of its type
     more specific. The standardised types allow loosely-coupled
@@ -773,34 +725,34 @@
     <p>A consumer executes an action by following a single
     interaction pattern, applying information supplied in the
     action binding to the pattern. Out of the patterns that it
-    supports, the consumer <strong>MUST</strong> use a pattern
+    supports, the consumer MUST use a pattern
     whose recognition rule is matched by the binding. If multiple
     patterns match (theoretically possible, but not currently
-    specified), the consumer <strong>MAY</strong> use any
+    specified), the consumer MAY use any
     interaction pattern whose recognition rule is matched by the
     action binding. This specification permits the use of resources
     with types in addition to those defined in interaction patterns
     in this specification, but it assigns them no meaning and when
     they are used interoperability will be reduced. Consumers
-    <strong>MUST</strong> tolerate other resource types, but
-    <strong>MAY</strong> ignore them.</p>
+    MUST tolerate other resource types, but
+    MAY ignore them.</p>
 
     <p>[[Image:Actions-Request-Linkage.png]]</p>
 
     <p>Each binding describes a means that the consumer can use to
     execute the action, by matching one or more interaction
     patterns and supplying data needed to perform it. Each of the
-    bindings linked to from a single Action <strong>MUST</strong>
+    bindings linked to from a single Action MUST
     be semantically equivalent -- the different bindings are
     different means of achieving the same desired result, within
     the bounds of what the Action's type(s) require and prohibit.
-    However, the different bindings <strong>MAY</strong> (and
+    However, the different bindings MAY (and
     almost always will) source any parameters from different
-    sources (e.g. some use a dialog), <strong>MAY</strong> have
-    different numbers of parameters, <strong>MAY</strong> be used
+    sources (e.g. some use a dialog), MAY have
+    different numbers of parameters, MAY be used
     to execute the action at different times (e.g. some can be used
     to schedule it for execution at a later time), and
-    <strong>MAY</strong> have different side effects unless its
+    MAY have different side effects unless its
     types' semantics specifically prohibit them.</p>
 
     <p>The consumer picks a binding based on which interaction
@@ -820,7 +772,7 @@
     Automation 2.1</a>'s associated scenarios for example uses
     specific to the Automation domain, and the paragraph below on
     resource shapes for another. Domain specifications
-    <strong>SHOULD</strong> re-use <code>oslc:futureAction</code>
+    SHOULD re-use <code>oslc:futureAction</code>
     rather than inventing their own new term, when the semantics
     are compatible. This specification also defines a
     <code>oslc:executes</code> predicate for linking from a
@@ -881,7 +833,7 @@
     what the relationship is between any bindings present on a
     future action and those present when it becomes available for
     execution. Domain specifications re-using this specification
-    <strong>MAY</strong> add such requirements.</p>
+    MAY add such requirements.</p>
     </section>
 
     <section id="recognizing-patterns">
@@ -895,7 +847,7 @@
     use.</p>
 
     <p>When defining new interaction patterns in other
-    specifications, the new patterns <strong>SHOULD</strong>
+    specifications, the new patterns SHOULD
     either:</p>
 
     <ul>
@@ -907,18 +859,18 @@
 
         <ul>
           <li>These extension interaction patterns
-          <strong>MUST</strong> be 100% compatible with the
+          MUST be 100% compatible with the
           patterns they extend -- that is, when Action bindings use
           these extension patterns the providers
-          <strong>MUST</strong> support those bindings being
+          MUST support those bindings being
           executed as either the base or extension pattern.</li>
 
           <li>New interaction patterns that extend existing
-          patterns <strong>MUST</strong> include an explicit
+          patterns MUST include an explicit
           reference to the extended pattern's recognition rule in
           the new pattern's recognition rule.</li>
 
-          <li>They <strong>MAY</strong> also include a copy of the
+          <li>They MAY also include a copy of the
           extended pattern's rule alongside that reference for
           clarity.</li>
         </ul>
@@ -957,16 +909,16 @@
     success status code (2xx class) is returned, consumers
     interpret that to mean that the action ran
     <strong>successfully</strong>. Single-message interaction
-    pattern definitions <strong>SHOULD</strong> avoid other
+    pattern definitions SHOULD avoid other
     interpretations.<br></p>
 
-    <p>When using interaction patterns that sometimes or always
+    <p class="conformance">When using interaction patterns that sometimes or always
     consist of multiple HTTP message flows, in general consumers
     cannot expect "the" HTTP status code to <strong>equate</strong>
     to the success or failure of the desired result (the final
     status of executing the action), because the issue of which
     message's status code to use arises. Multi-message interaction
-    patterns <strong>MUST</strong> define how a consumer
+    patterns MUST define how a consumer
     unambiguously determines the final status of its desired result
     from the messages.</p>
 
@@ -1130,14 +1082,14 @@
 
     <ul>
       <li>at least one <code>rdf:type</code> property
-      <strong>MUST</strong> have the value
+      MUST have the value
       <code>http:Request</code>, and</li>
 
-      <li>the <code>http:body</code> property <strong>MUST</strong>
+      <li>the <code>http:body</code> property MUST
       have the value <code>rdf:nil</code>.</li>
 
       <li>the <code>oslc:finalStatusLocation</code> property
-      <strong>MUST</strong> have the value
+      MUST have the value
       <code>http:StatusCode</code>.</li>
     </ul>
 
@@ -1197,15 +1149,15 @@
 
     <ul>
       <li>at least one <code>rdf:type</code> property
-      <strong>MUST</strong> have the value of
+      MUST have the value of
       <code>http:Request</code>, and</li>
 
-      <li>the <code>http:body</code> property <strong>MUST</strong>
+      <li>the <code>http:body</code> property MUST
       link to a resource with at least one <code>rdf:type</code> of
       <code>oslc:ResourceShape</code>.</li>
 
       <li>the <code>oslc:finalStatusLocation</code> property
-      <strong>MUST</strong> have the value
+      MUST have the value
       <code>http:StatusCode</code>.</li>
     </ul>
 
@@ -1261,25 +1213,25 @@
 
     <ul>
       <li>at least one <code>rdf:type</code> property
-      <strong>MUST</strong> have the value
+      MUST have the value
       <code>http:Request</code>, and</li>
 
-      <li>the <code>http:body</code> property <strong>MUST</strong>
+      <li>the <code>http:body</code> property MUST
       link to a resource that meets these conditions:
 
         <ul>
           <li>at least one <code>rdf:type</code> property
-          <strong>MUST</strong> have the value
+          MUST have the value
           <code>oslc-automation:ParameterInstance</code>, and</li>
 
-          <li><strong>MUST</strong> have exactly one
+          <li>MUST have exactly one
           <code>rdf:value</code> property that links to the
           resource that is to be serialised</li>
         </ul>
       </li>
 
       <li>the <code>oslc:finalStatusLocation</code> property
-      <strong>MUST</strong> have the value
+      MUST have the value
       <code>http:StatusCode</code>.</li>
     </ul>
 
@@ -1353,21 +1305,21 @@
 
     <ul>
       <li>at least one <code>rdf:type</code> property
-      <strong>MUST</strong> have the value
+      MUST have the value
       <code>http:Request</code>, and</li>
 
-      <li>the <code>http:body</code> property <strong>MUST</strong>
+      <li>the <code>http:body</code> property MUST
       link to a resource that meets these conditions:
 
         <ul>
           <li>at least one <code>rdf:type</code> property
-          <strong>MUST</strong> have the value
+          MUST have the value
           <code>oslc-automation:AutomationRequest</code>.</li>
         </ul>
       </li>
 
       <li>the <code>oslc:finalStatusLocation</code> property
-      <strong>MUST</strong> have the value
+      MUST have the value
       <code>oslc-automation:AutomationResult</code>.</li>
     </ul>
 
@@ -1396,12 +1348,12 @@
     pattern:</p>
 
     <ul>
-      <li><strong>MUST</strong> specify POST as the value of the
+      <li>MUST specify POST as the value of the
       <code>http:mthd</code> property in the action binding's
       <code>http:Request</code> resource</li>
 
       <li>
-        <strong>MUST</strong> specify an
+        MUST specify an
         <code>oslc-automation:AutomationRequest</code> that
         conforms to the requirements placed on those resources by
         the <a href=
@@ -1409,7 +1361,7 @@
         OSLC Automation specification</a>.
       </li>
 
-      <li><strong>MUST</strong> include an
+      <li>MUST include an
       <code>oslc-automation:executesAutomationPlan</code> property
       on the Automation Request, pointing to the Automation Plan
       that this action binding executes.</li>
@@ -1423,7 +1375,7 @@
       clients can obtain the creation factory's URI from the
       <code>oslc:creation</code> property.</li>
 
-      <li><strong>MUST</strong> accept any valid Automation
+      <li>MUST accept any valid Automation
       Requests for the Automation Plan executed by this action
       binding (i.e. it must not rely on the consumer submitting
       exactly the Automation Request that was provided by the
@@ -1464,7 +1416,7 @@
     <a href=
     "http://open-services.net/wiki/automation/OSLC-Automation-Specification-Version-2.1/#Asynchronous-and-Synchronous-Automation-Execution">
     Automation permits both</a> single-message and multiple-message
-    interactions, but the client <strong>MUST</strong> use the
+    interactions, but the client MUST use the
     state and verdict for determining the <a href=
     "http://open-services.net/wiki/core/Exposing-arbitrary-actions-on-RDF-resources/#Interaction-patterns">
     status of the client's desired result</a> when the HTTP status
@@ -1503,15 +1455,15 @@
 
     <ul>
       <li>at least one <code>rdf:type</code> property
-      <strong>MUST</strong> have the value
+      MUST have the value
       <code>oslc:Dialog</code>, and</li>
 
       <li>at least one <code>oslc:usage</code> property
-      <strong>MUST</strong> have the value
+      MUST have the value
       <code>oslc:ActionDialog</code>.</li>
 
       <li>the <code>oslc:finalStatusLocation</code> property
-      <strong>MUST</strong> have the value
+      MUST have the value
       <code>oslc:ActionDialog</code>.</li>
     </ul>
 
@@ -1535,8 +1487,8 @@
     The dialog is responsible for everything necessary to execute
     the action, including but not limited to accepting any
     parameters and displaying any output, and
-    <strong>SHOULD</strong> be displayed until the action is
-    completed or cancelled. The dialog <strong>MUST</strong> return
+    SHOULD be displayed until the action is
+    completed or cancelled. The dialog MUST return
     a <code>oslc:results</code> object conforming to the <a href=
     "#resource-results">resource shape for action dialog
     results</a>.</p>
@@ -1779,7 +1731,7 @@
 
           <td>Title (reference: Dublin Core) of the resource,
           represented as rich text using XHTML content.
-          <strong>SHOULD</strong> include only content that is
+          SHOULD include only content that is
           valid and suitable inside an XHTML &lt;div&gt;
           element.</td>
         </tr>
@@ -1809,7 +1761,7 @@
 
           <td>Descriptive text (reference: Dublin Core) about the
           resource, represented as rich text using XHTML content.
-          <strong>SHOULD</strong> include only content that is
+          SHOULD include only content that is
           valid and suitable inside an XHTML &lt;div&gt;
           element.</td>
         </tr>
@@ -1842,7 +1794,7 @@
           </td>
 
           <td>The resource type URIs. At least one type
-          <strong>MUST</strong> be <code>oslc:Action</code>.</td>
+          MUST be <code>oslc:Action</code>.</td>
         </tr>
 
         <tr>
@@ -1895,7 +1847,7 @@
           <code>oslc-automation:AutomationRequest</code>, or
           <code>oslc:Dialog</code>, but that is not necessarily the
           case. Multiple occurrences of this property
-          <strong>MUST</strong> be different ways of achieving the
+          MUST be different ways of achieving the
           same operation; they are semantically the same, but
           achieved through different data or technologies or at
           different times.</td>
@@ -2144,7 +2096,7 @@
           </td>
 
           <td>The resource type URIs. At least one type
-          <strong>MUST</strong> be <code>http:Request</code>.</td>
+          MUST be <code>http:Request</code>.</td>
         </tr>
 
         <tr>
@@ -2223,7 +2175,7 @@
 
           <td>
             HTTP method for the request. The target resource
-            <strong>SHOULD</strong> come from the <a href=
+            SHOULD come from the <a href=
             "http://www.w3.org/2011/http-methods">http-methods</a>
             vocabulary. Many clients are likely to support only
             widely used methods such as <a href=
@@ -2384,7 +2336,7 @@
     content for describing HTTP requests, beyond those listed
     above; only a subset of HTTP in RDF is used by Core Actions to
     address known scenarios. Implementations that need additional
-    content <strong>SHOULD</strong> re-use the W3C vocabulary where
+    content SHOULD re-use the W3C vocabulary where
     possible instead of inventing their own, for example if
     specific headers are required, but client interoperability may
     be limited.</p>
@@ -2627,7 +2579,7 @@
           </td>
 
           <td>The resource type URIs. At least one type
-          <strong>MUST</strong> be
+          MUST be
           <code>oslc-automation:ParameterInstance</code>.</td>
         </tr>
 
@@ -2730,17 +2682,17 @@
     <section id="using-specification-profiles">
     <h3>Using specification profiles</h3>
 
-    <p>Provider implementations <strong>SHOULD</strong> choose one
+    <p>Provider implementations SHOULD choose one
     or more profiles that they will comply with. To "comply with" a
-    profile a provider <strong>MUST</strong>, for each Action
+    profile a provider MUST, for each Action
     resource served by that provider, provide <em>at least one</em>
     Action binding that meets the constraints of that profile - as
     well as meeting any other requirements imposed on a provider by
     that profile.</p>
 
-    <p>Consumer implementations <strong>SHOULD</strong> choose one
+    <p>Consumer implementations SHOULD choose one
     or more profiles to support. To "support" a profile a consumer
-    <strong>MUST</strong> be able to recognize and execute all the
+    MUST be able to recognize and execute all the
     interaction patterns included in the profile, and meet any
     other requirements imposed on a consumer by that profile.
     Consumers will work best when integrated with providers that
@@ -2750,13 +2702,13 @@
     <section id="recognizing-profiles">
     <h3>Recognizing profiles</h3>
 
-    <p>Providers <strong>SHOULD</strong> state, in their user or
+    <p>Providers SHOULD state, in their user or
     integration documentation, which profile(s) they comply with.
-    This information <strong>SHOULD</strong> include the names of
+    This information SHOULD include the names of
     the profiles with hyperlinks or URL references to the
     specifications in which they were defined. (If only a subset of
     a provider's actions comply with a profile, the documentation
-    <strong>SHOULD</strong> make it clear which subset that
+    SHOULD make it clear which subset that
     is).</p>
 
     <section id="why-are-profiles-only-identified-in-documentation-not-data"
@@ -2807,7 +2759,7 @@
     <h3>Choosing one or more profiles to implement</h3>
 
     <p>When implementing a consumer or a provider, profile(s)
-    <strong>SHOULD</strong> be chosen by considering the providers
+    SHOULD be chosen by considering the providers
     or consumers (respectively) that the implementation is to
     integrate with. This can be done by looking at specific
     implementations that already exist, or by using the profile
@@ -2817,7 +2769,7 @@
 
     <p>Most implementations of this specification will occur in the
     context of another specification, for a specific domain. In
-    those cases, implementations <strong>SHOULD</strong> choose, as
+    those cases, implementations SHOULD choose, as
     a minimum, the profile(s) required by that domain
     specification.</p>
     </section>
@@ -2896,7 +2848,7 @@
     </ul>
 
     <p>To meet the constraints of this profile, Action bindings
-    <strong>MUST</strong> use one of the following Core Actions'
+    MUST use one of the following Core Actions'
     interaction patterns:</p>
 
     <ul>
@@ -2914,13 +2866,13 @@
 
     <ul>
       <li>The <code>oslc:requestURI</code> object
-      <strong>MUST</strong> be the URL of the action resource that
+      MUST be the URL of the action resource that
       links to it.</li>
 
-      <li>The <code>http:mthd</code> object <strong>MUST</strong>
+      <li>The <code>http:mthd</code> object MUST
       be <code>http-methods:POST</code>.</li>
 
-      <li>The bindings <strong>MUST</strong> adhere to the standard
+      <li>The bindings MUST adhere to the standard
       restrictions on <code>http:Request</code> resources for
       simple specification profiles in <a href=
       "#constructing-http-requests">Appendix A: Constructing HTTP
@@ -2967,7 +2919,7 @@
     </ul>
 
     <p>To meet the constraints of this profile, action bindings
-    <strong>MUST</strong> use the following Core Actions'
+    MUST use the following Core Actions'
     interaction pattern:</p>
 
     <ul>
@@ -2980,7 +2932,7 @@
     bindings:</p>
 
     <ul>
-      <li>The bindings <strong>MUST</strong> adhere to the standard
+      <li>The bindings MUST adhere to the standard
       restrictions on <code>http:Request</code> resources for
       simple specification profiles in <a href= "#constructing-http-requests"></a>
       </li>
@@ -3020,7 +2972,7 @@
 
     <p>As specification profiles can require that providers offer
     action bindings that don't use some of these features, then
-    consumers <strong>MAY</strong> decide not to implement all of
+    consumers MAY decide not to implement all of
     these features. However, if a consumer has not implemented one
     of these features then they <strong>MUST NOT</strong> attempt
     to use a binding that uses that feature. For example, if a
@@ -3031,7 +2983,7 @@
 
     <p>When constructing and sending an HTTP request based on an
     <code>http:Request</code> object, a consumer
-    <strong>MUST</strong>:</p>
+    MUST:</p>
 
     <ul>
       <li>use the HTTP version specified by the
@@ -3114,7 +3066,7 @@
     this list.</p>
 
     <p>When these restrictions are included in a specification
-    profile, the providers <strong>MUST</strong>, for each action
+    profile, the providers MUST, for each action
     linked to from an <code>oslc:action</code> predicate, provide
     at least one binding that:</p>
 
@@ -3129,12 +3081,12 @@
       URI, NOT a literal</li>
     </ul>
 
-    <p>Consumers supporting this profile <strong>MAY</strong>
+    <p>Consumers supporting this profile MAY
     decide not to implement support for bindings that do not adhere
     to these restrictions. However, if they do not implement
     support for bindings that do not meet these restrictions the
     consumers <strong>MUST NOT</strong> attempt to execute such
-    bindings. That is, in that case they <strong>MUST</strong>
+    bindings. That is, in that case they MUST
     check that the value of these properties is as stated in these
     restrictions.</p>
   </section>
@@ -3223,10 +3175,13 @@
     </ul>
   </section>
 
+  <section  id="conformance"></section>
+  </section>
+
   <section class='appendix informative'>
     <h2>Acknowledgements</h2>
 
-    <p>Many thanks to the various OASIS Core TC members and other
+    <p>Many thanks to the various OASIS Core TC and Open Project members and other
     key contributors and reviewers.</p>
   </section>
 

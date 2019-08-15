@@ -3,27 +3,29 @@
 <meta charset='utf-8' />
 <head>
 <title>OSLC Architecture Management Specification 2.1</title>
-<link rel="stylesheet" type="text/css" href="../../styles/oslc-styles.css" /> 
-<link rel="stylesheet" type="text/css" href="../../styles/table-styles.css" /> 
-<link rel="stylesheet" type="text/css" href="../../styles/definition-styles.css" />
-<link rel="stylesheet" type="text/css" href="../../styles/conformance.css" />
-
 <script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async class='remove'></script>
 <script class='remove'>
   var respecConfig = {
-      // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN).
-    // If in doubt use WD.
-    // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
-    specStatus : "CSPRD",
+    specStatus : "PSD",
+    revision: "01",
+    publishDate:  "2018-10-09",
+
+    license : "cc-by-4",
+
+
+    additionalLicenses : [{
+       licenseName : "Apache License 2.0",
+       licenseURI : "https://www.apache.org/licenses/LICENSE-2.0",
+     }],
 
     // the specification's short name with version but no dots
     shortName : "oslc-am",
 
     // if there a publicly available Editor's Draft, this is the link
-    edDraftURI: "https://github.com/oslc-op/oslc-specs/blob/master/specs/am/architecture-management-spec.html",
-    thisVersion: "http://docs.oasis-open.org/oslc-domains/am/v2.1/csprd01/part1-architecture-management-spec/am-v2.1-csprd01-part1-architecture-management-spec.html",
-    latestVersion: "http://docs.oasis-open.org/oslc-domains/am/v2.1/am-v2.1-part1-architecture-management-spec.html",
-    prevVersion: "",
+    edDraftURI: "https://raw.githack.com/oslc-op/oslc-specs/master/specs/am/architecture-management-spec.html",
+    thisVersion: "http://open-services.net/specifications/am/v2.1/ps01/architecture-management-spec.html",
+    prevVersion: "http://docs.oasis-open.org/oslc-domains/oslc-am/v2.1/cs01/part1-architecture-management-spec/oslc-am-v2.1-cs01-part1-architecture-management-spec.html",
+    latestVersion: "http://open-services.net/specifications/am/architecture-management-spec.html",
 
     // if your specification has a subtitle that goes below the main
     // formal title, define it here
@@ -32,11 +34,8 @@
     // the document's citation label
     citationLabel: "OSLC-AM-2.1",
 
-    // Revision level of the document within its stage
-    revision: "01",
 
     // if you wish the publication date to be other than the last modification, set this
-    // publishDate:  "2009-08-06",
 
     // if the specification's copyright date is a range of years, specify the start date here:
     // copyrightStart: "2005"
@@ -69,37 +68,37 @@
       company: "IBM",
       companyURL: "http://www.ibm.com/"
     }, {
-      name : "Graham Bachelor",
-      mailto: "gray_bachelor@uk.ibm.com",
-      company: "IBM",
-      companyURL: "http://www.ibm.com"
+      name : "Andrii Berezovskyi",
+      mailto: "andriib@kth.se",
+      company: "KTH",
+      companyURL: "https://www.kth.se/en"
     } ],
 
     // name of the TC
-    wg : "OASIS OSLC Lifecycle Integration Domains TC",
-        wgShortName:  "oslc-domains",
+    wg : "OASIS OSLC OP",
+        wgShortName:  "oslc-op",
 
     // URI of the public TC page
-    wgURI : "https://www.oasis-open.org/committees/oslc-domains/",
+    wgURI : "https://github.com/oslc-op/oslc-specs",
 
         // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
-        wgPublicList: "oslc-domains-comment",
+        wgPublicList: "oslc-op",
 
     // Namespaces defined by this TC
-    namespaces : [ 
+    namespaces : [
       { href: "http://open-services.net/ns/core/am#", prefix: "oslc_am" }
      ],
 
     // Other parts of multi-part spec
     additionalArtifacts : [
-      { title: "OSLC Architecture Management Version 2.1. Part 1: Specification (this document)", 
-        href: "http://docs.oasis-open.org/oslc-domains/am/v2.1/csprd01/part1-architecture-management-spec/cm-v2.1-csprd01-part1-architecture-management-spec.html" },
-      { title: "OSLC Architecture Management Version 2.1. Part 2: Vocabulary", 
-        href: "http://docs.oasis-open.org/oslc-domains/am/v2.1/csprd01/part2-architecture-management-vocab/am-v2.1-csprd01-part2-architecture-management-vocab.html" }
+      { title: "OSLC Architecture Management Version 2.1. Part 1: Specification (this document)",
+        href: "http://open-services.net/specifications/am/v2.1/ps01/architecture-management-spec.html" },
+      { title: "OSLC Architecture Management Version 2.1. Part 2: Vocabulary",
+        href: "http://open-services.net/specifications/am/v2.1/ps01/architecture-management-vocab.html" }
     ],
 
     relatedWork : [
-      { title: "OSLC Architecture Management Specification Version 2.0", 
+      { title: "OSLC Architecture Management Specification Version 2.0",
         href: "http://open-services.net/wiki/architecture-management/OSLC-Architecture-Management-Specification-Version-2.0/" }
     ],
 
@@ -113,23 +112,25 @@
                 publisher:  "http://open-services.net",
             },
             "OSLCCore3": {
-                title:    "OSLC Core 3.0",
-                href:     "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
-                authors:  ["Jim Amsden", "S. Speicher"],
-                status:   "Committee Specification",
-                publisher:  "OASIS",
+              title:    "OSLC Core 3.0",
+              href:     "http://open-services.net/specifications/core/oslc-core.html",
+              authors:  ["Jim Amsden", "S. Speicher"],
+              status:   "Project Specification",
+              publisher:  "OASIS",
             },
              "OSLCShapes": {
               title : "OSLC Resource Shape 3.0",
-              href : "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part6-resource-shape.html",
+              href : "http://open-services.net/specifications/core/resource-shape.html",
               authors : [ "Arthur Ryman", "Jim Amsden" ],
+              status:   "Project Specification",
               publisher : "OASIS",
             },
             "OSLCPreview": {
-                title:     "OSLC Resource Preview 3.0",
-                href:      "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part3-resource-preview.html",
-                status:    "Committee Specification",
-                publisher: "OASIS",
+              title:    "OSLC Core 3.0 Resource Preview",
+              href:     "http://open-services.net/specifications/core/resource-preview.html",
+              authors:  ["Jim Amsden", "S. Speicher"],
+              status:   "Project Specification",
+              publisher:  "OASIS",
             },
             "DublinCore" : {
                 title : "Dublin Core Metadata Element Set, Version 1.1",
@@ -172,7 +173,7 @@
             "XML Base" : {
                 title : "XML Base (Second Edition)",
                 href : "http://www.w3.org/TR/xmlbase/",
-                authors : ["Jonathan Marsh", "Richard Tobin"], 
+                authors : ["Jonathan Marsh", "Richard Tobin"],
                 status: "Recommendation" ,
                 publisher : "www.w3.org",
             },
@@ -200,7 +201,6 @@
 </section>
 
 <section id='toc'></section>
-<hr />
 
 <section id='sotd'></section>
 
@@ -208,18 +208,9 @@
   <h2>Introduction</h2>
   <p>This specification defines a RESTful web services interface for the Architecture Management (AM) domain. This domain addresses the management of product design artifacts including models, and relationships with other resources such as requirements, testing resources and change requests. To support these scenarios, this specification defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET, POST, PUT and DELETE, HTTP response codes, content type handling and resource formats..</p>
 
-  <p>The intent of this specification is to define the capabilities needed to support integration scenarios defined by the Architecture Management working group and not to provide a comprehensive interface to Architecture Management. The resource formats and operations may not match exactly the native artifacts supported by architecture management AM Servers but are intended to be compatible with them. The approach to supporting these scenarios is to delegate operations, as driven by service provider contributed user interfaces, as much as possible and not require a service provider to expose its complete data model and application logic.</p> 
- 
-  <p>This specification is a [[!OSLCCore3]] compliant specification, and as such most of its content are references to [[!OSLCCore3]].</p>
+  <p>The intent of this specification is to define the capabilities needed to support integration scenarios defined by the Architecture Management working group and not to provide a comprehensive interface to Architecture Management. The resource formats and operations may not match exactly the native artifacts supported by architecture management AM Servers but are intended to be compatible with them. The approach to supporting these scenarios is to delegate operations, as driven by service provider contributed user interfaces, as much as possible and not require a service provider to expose its complete data model and application logic.</p>
 
-<section id="iprPolicy">
-  <h2>IPR Policy</h2>
-      <p>
-        This Committee Specification Public Review Draft is being developed under the <a href="https://www.oasis-open.org/policies-guidelines/ipr#RF-on-Limited-Mode">RF on Limited Terms</a> Mode of the <a href="https://www.oasis-open.org/policies-guidelines/ipr">OASIS IPR Policy</a>, the mode chosen when the Technical Committee was established. For information on whether any patents have been disclosed that may be essential to implementing this specification,
-        and any offers of patent licensing terms, please refer to the Intellectual Property Rights section of the TC’s web page
-        (<a href='https://www.oasis-open.org/committees/oslc-domains/ipr.php'>https://www.oasis-open.org/committees/oslc-domains/ipr.php</a>).
-      </p>
-</section>
+  <p>This specification is a [[!OSLCCore3]] compliant specification, and as such most of its content are references to [[!OSLCCore3]].</p>
 
   <section id='terminology'>
     <h3>Terminology</h3>
@@ -228,35 +219,35 @@
       <dd>An artifact used in the Application Lifecycle Management (ALM) space. A resource is directly addressable with an absolute URL.</dd>
 
       <dt><dfn>Architecture Management Resource (AMR)</dfn></dt>
-      <dd>Directly addressable resources of some domain/notation (i.e. UML, 
-        BMPN, ER) that represent an abstraction of some behavior or construct of 
-        a system under development. An AMR maintains its identity after 
-        refactoring. In the semantic web, an AMR might correspond to a graph 
-        that is an instance of some vocabulary or micro-theory.</dd> 
-        
+      <dd>Directly addressable resources of some domain/notation (i.e. UML,
+        BMPN, ER) that represent an abstraction of some behavior or construct of
+        a system under development. An AMR maintains its identity after
+        refactoring. In the semantic web, an AMR might correspond to a graph
+        that is an instance of some vocabulary or micro-theory.</dd>
+
         <dt><dfn>Link</dfn></dt>
-      <dd>A logical relationship from one resource to another resource. An OSLC AM Link is uni-directional. 
-        The subject (source) of a link represents the resource that "knows 
-        about" and is referencing another resource (target). The type of 
-        relationship is given by a predicate URI (link type). In semantic web 
-        terminology, a link would correspond to an RDF statement with a subject 
-        (source), a predicate (type) and object (target). The predicate could be 
+      <dd>A logical relationship from one resource to another resource. An OSLC AM Link is uni-directional.
+        The subject (source) of a link represents the resource that "knows
+        about" and is referencing another resource (target). The type of
+        relationship is given by a predicate URI (link type). In semantic web
+        terminology, a link would correspond to an RDF statement with a subject
+        (source), a predicate (type) and object (target). The predicate could be
         defined by property in an RDF schema.</dd>
 
 
          <dt><dfn>Link type (LT)</dfn></dt>
-      <dd>A URI that represents the type of a link. In semantic web terminology it is the predicate of an 
-        RDF triple. It clarifies the type of relationship between two resources. 
-        Link Type URIs may be defined locally, within the OSLC, or externally 
-        (i.e. Dublin Core terms). Link types could be defined in RDF 
+      <dd>A URI that represents the type of a link. In semantic web terminology it is the predicate of an
+        RDF triple. It clarifies the type of relationship between two resources.
+        Link Type URIs may be defined locally, within the OSLC, or externally
+        (i.e. Dublin Core terms). Link types could be defined in RDF
         Schemas.</dd>
 
 
          <dt><dfn>Link type Resource (LTR)</dfn></dt>
-      <dd>A resource that contains human consumable information about a Link Type, like its human readable 
-        name and description. The resource is managed by the AM provider. The 
-        information may be about a Link Type in a different domain (i.e. Dublin 
-        Core Terms or OWL). The main use of an LTR is for clients who want to 
+      <dd>A resource that contains human consumable information about a Link Type, like its human readable
+        name and description. The resource is managed by the AM provider. The
+        information may be about a Link Type in a different domain (i.e. Dublin
+        Core Terms or OWL). The main use of an LTR is for clients who want to
         build a UI for users that clearly labels potential link types.</dd>
 
 
@@ -326,7 +317,7 @@ requirements.</p>
 </tr>
 <tr>
   <td>Partial Resource Representations</td>
-  <td class='conformance'>AM Servers MAY support requests for a subset of a resource's properties via the oslc.properties URL parameter retrieval via HTTP GET</td> 
+  <td class='conformance'>AM Servers MAY support requests for a subset of a resource's properties via the oslc.properties URL parameter retrieval via HTTP GET</td>
 </tr>
 <tr>
   <td>Partial Update</td>
@@ -402,18 +393,18 @@ requirements.</p>
 <p>In addition to the requirements for resource representations in [[!OSLCCore3]], this section outlines further refinements and restrictions.</p>
 
 <p>For HTTP GET/PUT/POST requests on all OSLC AM and OSLC Core defined resource types,
-</p> 
+</p>
 
 <ul>
   <li class='conformance'>AM Servers MUST support RDF/XML representations with media-type <code>application/rdf+xml</code>. AM Clients should be prepared to deal with any valid RDF/XML document.
-  </li> 
+  </li>
   <li class='conformance'>AM Servers MUST support XML representations with media-type <code>application/xml</code>. The XML representations MUST follow the guidelines outlined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations Guidance</a> to maintain compatibility with [[!OSLCCore2]].
-  </li> 
+  </li>
   <li class='conformance'>AM Servers MAY support JSON representations with media-type <code>application/json</code>. The JSON representations MUST follow the guidelines outlined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations Guidance</a> to maintain compatibility with [[!OSLCCore2]].
   </li>
-</ul> 
+</ul>
 </section>
-  
+
   <section id="resourceOps">
 <h2>Resource Operations</h2>
 
@@ -434,20 +425,20 @@ requirements.</p>
 <section id="authentication">
 <h2>Authentication</h2>
 
-<p>See [[!OSLCCore3]], OSLC AM puts no additional constraints on authentication.</p> 
+<p>See [[!OSLCCore3]], OSLC AM puts no additional constraints on authentication.</p>
 </section>
 
 <section id="errors">
 <h2>Error Responses</h2>
 
-<p>See [[!OSLCCore3]], OSLC AM puts no additional constraints on error 
+<p>See [[!OSLCCore3]], OSLC AM puts no additional constraints on error
   responses</p>
 </section>
 
 <section id="pagination">
 <h2>Pagination</h2>
 
-<p class='conformance'>OSLC AM Servers SHOULD support pagination of query results and MAY 
+<p class='conformance'>OSLC AM Servers SHOULD support pagination of query results and MAY
   support pagination of a single resource's properties as defined by [[!OSLCCore3]].</p>
 </section>
 
@@ -457,17 +448,17 @@ requirements.</p>
 <section id="requestSubset">
 <h4>Requesting a Subset of Properties</h4>
 
-<p class='conformance'>An OSLC AM server MAY support the <code>oslc.properties</code> URL query parameter on an HTTP 
-  GET request on individual resource request or a collection of resources by 
-  query. If the <code>oslc.properties</code> query parameter is omitted on the request, then all 
+<p class='conformance'>An OSLC AM server MAY support the <code>oslc.properties</code> URL query parameter on an HTTP
+  GET request on individual resource request or a collection of resources by
+  query. If the <code>oslc.properties</code> query parameter is omitted on the request, then all
   resource properties MUST be provided in the response.</p>
 </section>
 
 <section id="updateSubset">
 <h4>Updating a Subset of Properties</h4>
 
-<p class='conformance'>An OSLC AM client MAY request that a subset of a resource's properties be updated by 
-  identifying those properties to be modified using the <code>oslc.properties</code> URL 
+<p class='conformance'>An OSLC AM client MAY request that a subset of a resource's properties be updated by
+  identifying those properties to be modified using the <code>oslc.properties</code> URL
   parameter on a HTTP PUT request.</p>
 
 </section>
@@ -480,9 +471,9 @@ requirements.</p>
 <p class='conformance'>For compatibility with [[!OSLCCore2]], an AM Server MAY also support partial update by identifying those properties to be modified using the <code>oslc.properties</code> URL parameter on a HTTP PUT request.</p>
 
 <p class='conformance'>If the parameter <code>oslc.properties</code> contains a valid resource property on the request that is not provided in the content, the server MUST set the resource's property to a null or empty value. If the parameter <code>oslc.properties</code> contains an invalid resource property, then a <code>409 Conflict</code> MUST be returned.</p>
-</section> 
 </section>
-</section> 
+</section>
+</section>
 
 <section id="ResourceDefs">
 <h2>Vocabulary Terms and Constraints</h2>
@@ -561,10 +552,10 @@ requirements.</p>
 <section id="samples" class="appendix">
 <h2>Samples</h2>
 
-<p>See <a 
+<p>See <a
  href="http://open-services.net/wiki/architecture-management/OSLC-Architecture-Management-2.0-Appendix-A%3A-Samples" title="OSLC-Architecture-Management-2.0-Appendix-A:-Samples">OSLC Architecture Management 2.0 Appendix A: Samples</a></p>
 </section>
-  
+
 <section class='appendix informative' id='acknowledgments'>
   <h2>Acknowledgements</h2>
   <p>The following individuals have participated in the creation of this specification and are gratefully acknowledged:</p>
