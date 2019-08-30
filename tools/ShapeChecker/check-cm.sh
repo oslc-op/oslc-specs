@@ -7,6 +7,6 @@
 
 build/install/ShapeChecker/bin/ShapeChecker \
 -v ../../specs/cm/change-mgt-vocab.ttl \
--v ../../specs/cm/change-mgt-shapes.ttl
+-s ../../specs/cm/change-mgt-shapes.ttl
 
 exit 1
