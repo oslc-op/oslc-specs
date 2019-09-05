@@ -14,88 +14,109 @@
 
 # Template Vocabulary document for OSLC Specifications
 
-@prefix dcterms:     <http://purl.org/dc/terms/> .
-@prefix owl:         <http://www.w3.org/2002/07/owl#> .
-@prefix oslc:        <http://open-services.net/ns/core#> .
-@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix vann:        <http://purl.org/vocab/vann/> .
-@prefix vs:          <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann:  <http://purl.org/vocab/vann/> .
+@prefix vs:    <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix oslc_rm: <http://open-services.net/ns/rm#> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
 
-@prefix oslc_rm:    <http://open-services.net/ns/rm#> .
+oslc_rm:  a                            owl:Ontology ;
+        rdfs:label                     "Requirements Management(RM)" ;
+        dcterms:description            "All vocabulary URIs defined in the OSLC Requirements Management (RM) namespace."^^rdf:XMLLiteral ;
+        dcterms:source                 <https://github.com/oslc-op/oslc-specs/blob/master/specs/blob/master/rm/requirements-management-vocab.ttl> ;
+        dcterms:title                  "The OSLC Requirements Management(RM) Vocabulary" ;
+        vann:preferredNamespacePrefix  "oslc_rm" .
 
-# The Requirements Management ontology
 
-oslc_rm:
-  a owl:Ontology ;
-  dcterms:title "The OSLC Requirements Management(RM) Vocabulary" ;
-  dcterms:description "All vocabulary URIs defined in the OSLC Requirements Management (RM) namespace."^^rdf:XMLLiteral ;
-  dcterms:source <https://github.com/oslc-op/oslc-specs/raw/master/specs/rm/requirements-management-vocab.ttl> ;
-  vann:preferredNamespacePrefix "oslc_rm" ;
-  rdfs:label "Requirements Management(RM)" .
-
-# ******** Classes ********
-
-oslc_rm:Requirement
-        a                    rdfs:Class ;
-        rdfs:isDefinedBy     oslc_rm: ;
-        rdfs:label           "Requirement" ;
-        rdfs:comment  "Statement of need." .
+oslc_rm:Requirement  a      rdfs:Class ;
+        rdfs:comment        "Statement of need." ;
+        rdfs:isDefinedBy    oslc_rm: ;
+        rdfs:label          "Requirement" ;
+        oslc:hasBasicShape  oslc_rm:requirementShape .
 
 oslc_rm:RequirementCollection
-        a                    rdfs:Class ;
-        rdfs:isDefinedBy     oslc_rm: ;
-        rdfs:label           "RequirementCollection" ;
-        rdfs:comment  "Collection of requirements. A collection uses zero or more requirements." .
+        a                   rdfs:Class ;
+        rdfs:comment        "Collection of requirements. A collection uses zero or more requirements." ;
+        rdfs:isDefinedBy    oslc_rm: ;
+        rdfs:label          "RequirementCollection" ;
+        oslc:hasBasicShape  <http://open-services-net/shapes/rm#requirementCollectionShape> .
 
 
-# ******** Properties ********
+oslc_rm:implementedBy   a       rdf:Property ;
+        rdfs:comment      "Expresses an implementation relationship between entities, where the object entity is a necessary or desirable aspect of an implementation of the subject entity." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "implementedBy" .
 
-oslc_rm:implementedBy
-        a                    rdf:Property ;
-        rdfs:comment         "Expresses an implementation relationship between entities, where the object entity is a necessary or desirable aspect of an implementation of the subject entity." ;
-        rdfs:isDefinedBy     oslc_rm: ;
-        rdfs:label           "implementedBy" .
+oslc_rm:trackedBy  a      rdf:Property ;
+        rdfs:comment      "Expresses a tracking relationship between entities, where the object entity in some way tracks or governs the evolution of the subject entity. For example, a requirement may be said to be tracked by a change request, in that it governs the changes to a requirement according to some process machinery." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "trackedBy" .
 
-oslc_rm:trackedBy
-        a                    rdf:Property ;
-        rdfs:comment         "Expresses a tracking relationship between entities, where the object entity in some way tracks or governs the evolution of the subject entity. For example, a requirement may be said to be tracked by a change request, in that it governs the changes to a requirement according to some process machinery." ;
-        rdfs:isDefinedBy     oslc_rm: ;
-        rdfs:label           "trackedBy" .
+oslc_rm:satisfiedBy  a    rdf:Property ;
+        rdfs:comment      "The subject is satisfied by the object. For example, a user requirement is satisfied by a system requirement." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "satisfiedBy" .
 
-oslc_rm:uses
-        a                    rdf:Property ;
-        rdfs:comment         "Expresses a use relationship between entities, where the object entity is used by the subject entity. For example, a requirement collection may use a requirement." ;
-        rdfs:isDefinedBy     oslc_rm: ;
-        rdfs:label           "uses" .
+oslc_rm:uses  a           rdf:Property ;
+        rdfs:comment      "Expresses a use relationship between entities, where the object entity is used by the subject entity. For example, a requirement collection may use a requirement." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "uses" .
 
-oslc_rm:elaboratedBy
-        a                    rdf:Property ;
-        rdfs:comment         "Expresses an elaboration relationship between entities, where the object entity elaborates the subject entity. For example, a requirement is elaborated by a model element." ;
-        rdfs:isDefinedBy     oslc_rm: ;
-        rdfs:label           "elaboratedBy" .
+oslc_rm:elaboratedBy  a   rdf:Property ;
+        rdfs:comment      "Expresses an elaboration relationship between entities, where the object entity elaborates the subject entity. For example, a requirement is elaborated by a model element." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "elaboratedBy" .
 
-oslc_rm:specifiedBy
-        a                    rdf:Property ;
-        rdfs:comment         "Expresses a specification relationship between entities, where the object entity further clarifies or specifies the subject entity. For example, a requirement is specified by a model element." ;
-        rdfs:isDefinedBy     oslc_rm: ;
-        rdfs:label           "specifiedBy" .
+oslc_rm:specifiedBy  a    rdf:Property ;
+        rdfs:comment      "Expresses a specification relationship between entities, where the object entity further clarifies or specifies the subject entity. For example, a requirement is specified by a model element." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "specifiedBy" .
 
-oslc_rm:satisfiedBy
-        a                    rdf:Property ;
-        rdfs:comment         "The subject is satisfied by the object. For example, a user requirement is satisfied by a system requirement." ;
-        rdfs:isDefinedBy     oslc_rm: ;
-        rdfs:label           "satisfiedBy" .
+oslc_rm:affectedBy  a     rdf:Property ;
+        rdfs:comment      "Expresses an affects relationship between entities, where the object entity in some way affects the subject entity. For example, a requirement is affected by a defect." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "affectedBy" .
 
-oslc_rm:affectedBy
-        a                    rdf:Property ;
-        rdfs:comment         "Expresses an affects relationship between entities, where the object entity in some way affects the subject entity. For example, a requirement is affected by a defect." ;
-        rdfs:isDefinedBy     oslc_rm: ;
-        rdfs:label           "affectedBy" .
+oslc_rm:validatedBy  a    rdf:Property ;
+        rdfs:comment      "Expresses a validation relationship between entities, where the object entity in some way validates the subject entity. For example, a requirement collection may be said to be validated by a test plan." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "validatedBy" .
 
-oslc_rm:validatedBy
-        a                    rdf:Property ;
-        rdfs:comment         "Expresses a validation relationship between entities, where the object entity in some way validates the subject entity. For example, a requirement collection may be said to be validated by a test plan." ;
-        rdfs:isDefinedBy     oslc_rm: ;
-        rdfs:label           "validatedBy" .
+oslc_rm:decomposedBy   a       rdf:Property ;
+        rdfs:comment      "Expresses a decomposition relationship between entities, where the object entity decomposes the subject entity. For example, a system requirement is decomposed into a collection of system requirements." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "decomposedBy" .
+
+oslc_rm:constrainedBy   a       rdf:Property ;
+        rdfs:comment      "Expresses a constraining relationship between entities, where the object entity constrains the subject entity. For example, a functional requirement is constrained by a safety requirement." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "constrainedBy" .
+
+oslc_rm:satisfies   a       rdf:Property ;
+        rdfs:comment      "Expresses a relationship between entities, where the subject entity satisfies the object entity. For example, a system requirement satisfies a user requirement." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "satisfies" .
+
+oslc_rm:elaborates   a       rdf:Property ;
+        rdfs:comment      "Expresses an elaboration relationship between entities, where the subject entity elaborates the object entity. For example, a model element elaborates a requirement." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "elaborates" .
+
+oslc_rm:specifies   a       rdf:Property ;
+        rdfs:comment      "Expresses a specification relationship between entities, where the subject entity further clarifies or specifies the object entity. For example, a model element specifies a requirement." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "specifies" .
+
+oslc_rm:decomposes   a       rdf:Property ;
+        rdfs:comment      "Expresses a decomposition relationship between entities, where the subject entity decomposes the object entity. For example, a collection of system requirements decompose a system requirement." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "decomposes" .
+
+oslc_rm:constrains   a       rdf:Property ;
+        rdfs:comment      "Expresses a constraining relationship between entities, where the subject entity constrains the object entity. For example, a safety requirement constrains a functional requirement." ;
+        rdfs:isDefinedBy  oslc_rm: ;
+        rdfs:label        "constrains" .
