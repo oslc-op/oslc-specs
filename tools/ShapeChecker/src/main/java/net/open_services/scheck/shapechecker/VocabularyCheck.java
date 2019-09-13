@@ -1,6 +1,8 @@
 package net.open_services.scheck.shapechecker;
 
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
@@ -34,6 +36,7 @@ public class VocabularyCheck
     private ResultModel resultModel;
     private Resource    vocabResult;
     private Property    preferredNameSpace;
+    private Set<String> labels = new HashSet<>();
 
 
     /**
@@ -128,7 +131,7 @@ public class VocabularyCheck
         // Check the mandatory properties of the ontology
         NodeCheck node = new NodeCheck(ontology, httpHandler, vocabModel, modelCopy, resultModel, ontResult);
         node.checkLiteral(DCTerms.title, null, Occurrence.ExactlyOne, null);
-        node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, null);
+        node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, label -> checkUniqueLabel(labels,label));
         node.checkSuppressibleURI(DCTerms.source, Occurrence.ExactlyOne, false, false,
             uri -> uri.matches(".*\\.ttl") ? null : Terms.SourceNotTurtle);
 
@@ -171,7 +174,7 @@ public class VocabularyCheck
 
         // Check the mandatory properties of the term
         NodeCheck node = new NodeCheck(term, httpHandler, vocabModel, modelCopy, resultModel, termResult);
-        node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, null);
+        node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, label -> checkUniqueLabel(labels,label));
         node.checkLiteral(RDFS.comment, null, Occurrence.ExactlyOne,
             comment -> NodeCheck.checkPeriod(comment));
         node.checkURI(RDFS.isDefinedBy, Occurrence.ExactlyOne,
@@ -258,6 +261,29 @@ public class VocabularyCheck
             node.checkSuppressibleURI(RDF.type, Occurrence.OneOrMany, true, true,
                 uri -> uri != null ? null : Terms.BadTermType);
             node.checkLiteral(RDF.value, null, Occurrence.ZeroOrOne, null);
+        }
+    }
+
+
+    /**
+     * Check that a label has a value unique to the vocabulary.
+     * @param valueSet the set of the values to be checked
+     * @param value the value of the label to be checked
+     * @return the duplicate label error class if the label is not unique,
+     * or null if the label is unique
+     */
+    @javax.annotation.CheckReturnValue
+    @javax.annotation.Nullable
+    public Resource checkUniqueLabel(Set<String> valueSet,String value)
+    {
+        if (valueSet.contains(value))
+        {
+            return Terms.DuplicateLabel;
+        }
+        else
+        {
+            valueSet.add(value);
+            return null;
         }
     }
 }

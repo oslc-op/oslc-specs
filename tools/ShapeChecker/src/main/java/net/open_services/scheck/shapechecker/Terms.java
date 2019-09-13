@@ -117,6 +117,10 @@ public final class Terms
     @SCIssue(issueSeverity=Error,description="This property name, definition, or oslc:describes is not unique.")
     public static final Resource Duplicate        = resource("Duplicate");
 
+    /** Error class for a duplicate property value. */
+    @SCIssue(issueSeverity=Warning,description="This label is not unique.")
+    public static final Resource DuplicateLabel   = resource("DuplicateLabel");
+
     /** Error class for a duplicate language-tagged string. */
     @SCIssue(issueSeverity=Error,description="Duplicate language on string literal.")
     public static final Resource DuplicateLangString = resource("DuplicateLangString");
