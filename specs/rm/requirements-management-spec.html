@@ -4,164 +4,148 @@
 <!-- replace am with your domains's short name, e.g., cm -->
 <head>
 <meta charset='utf-8' />
+<meta name="description" content="This specification defines the OSLC Requirements Management domain, a RESTful web services interface for the management of Requirements, Requirements Collections and supporting resources defined in the OSLC Core specification.">
+
 <title>OSLC Requirements Management Version 2.1. Part 1: Specification</title>
-<script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.4/builds/respec-oasis-common.min.js' async class='remove'></script>
+<script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.10/builds/respec-oasis-common.min.js' async class='remove'></script>
 <!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
 <script class='remove'>
-  var thisBase = "https://oslc-op.github.io/oslc-specs/specs/rm";
+  var wdBase = "https://oslc-op.github.io/oslc-specs/specs/rm/";
+  var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/rm/v2.1/"
+  var thisBase = wdBase;
+  // var thisBase = oasisBase + "psd02/";
   var respecConfig = {
-    // the specification's short name with version but no dots
-    shortName : "oslc-rm",
-    specStatus : "WD",
-    revision: "02",
-    label: "WD02",
-    //publishDate:  "",
-    // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-    // and its maturity status
-    previousPublishDate:  "2018-05-31",
-    previousMaturity:  "CS",
+      // === Revision-specific ===
 
-    license : "cc-by-4",
+      // the specification's short name with version but no dots
+      shortName: "oslc-rm",
+      specStatus: "WD",
+      revision: "02",
+      //publishDate:  "",
+      previousPublishDate: "2018-05-31",
+      previousMaturity: "CS",
 
-    additionalLicenses : [{
-       licenseName : "Apache License 2.0",
-       licenseURI : "https://www.apache.org/licenses/LICENSE-2.0",
-     }],
+      prevVersion: "https://docs.oasis-open.org/oslc-domains/oslc-rm/v2.1/cs01/part1-requirements-management-spec/oslc-rm-v2.1-cs01-part1-requirements-management-spec.html",
+      // latestVersion: oasisBase + "requirements-management-spec.html",
+      latestVersion: "https://docs.oasis-open.org/oslc-domains/oslc-rm/v2.1/oslc-rm-v2.1-part1-requirements-management-spec.html",
+
+      thisVersion: thisBase + "requirements-management-spec.html",
+      latestSpecVersion: "https://open-services.net/spec/rm/latest",
+      edDraftURI: "https://open-services.net/spec/rm/latest-draft",
+
+      additionalArtifacts: [
+        { title: "OSLC Requirements Management Version 2.1. Part 1: Specification (this document)", href: "requirements-management-spec.html" },
+        { title: "OSLC Requirements Management Version 2.1. Part 2: Vocabulary", href: "requirements-management-vocab.html" },
+      ],
+
+      relatedWork: [
+        { title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0", href: "http://open-services.net/bin/view/Main/RmSpecificationV2" }
+      ],
+
+      localBiblio: {
+        "OSLCCore2": {
+          title: "OSLC Core 2.0",
+          href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+          authors: ["S. Speicher", "D. Johnson"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCore3": {
+          title: "OSLC Core 3.0",
+          href: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+          authors: ["Jim Amsden", "S. Speicher"],
+          status: "Project Specification",
+          publisher: "OASIS",
+        },
+        "OSLCQuery3": {
+          title: "OSLC Query Capability Version 3.0",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-query/v3.0/oslc-query.html ",
+          authors: ["David Honey"],
+          status: "Public Review Draft",
+          publisher: "OASIS",
+        },
+        "OSLCShapes": {
+          title: "OSLC Resource Shape 3.0",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part6-resource-shape/oslc-core-v3.0-csprd03-part6-resource-shape.html",
+          authors: ["Arthur Ryman", "Jim Amsden"],
+          status: "Project Specification",
+          publisher: "OASIS",
+        },
+        "OSLCResourcePreview": {
+          title: "OSLC Core 3.0 Resource Preview",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html",
+          authors: ["Jim Amsden", "S. Speicher"],
+          status: "Project Specification",
+          publisher: "OASIS",
+        },
+        "OSLCRM20": {
+          title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
+          href: "http://open-services.net/bin/view/Main/RmSpecificationV2",
+          authors: ["Ian Green"],
+          status: "Finalized",
+          publisher: "http://open-services.net"
+        },
+        "OpenIDConnect": {
+          title: "OpenID Connect",
+          href: "http://openid.net/connect/",
+          publisher: "openid.net",
+        },
+        "LDPPatch": {
+          title: "Linked Data Patch Format",
+          href: "http://www.w3.org/TR/ldpatch/",
+          status: "Working Group Note",
+          publisher: "http://www.w3.org/",
+        },
+        "OSLCCoreVocab": {
+          title: "OSLC Core 3.0 Vocabulary",
+          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part7-core-vocabulary/oslc-core-v3.0-csprd03-part7-core-vocabulary.html",
+          authors: ["Jim Amsden", "S. Speicher"],
+          status: "Project Specification",
+          publisher: "OASIS",
+        }
+      },
 
 
-
-    // the document's citation label
-    citationLabel: "OSLC-RM-2.1-Part1",
-
-    edDraftURI: "http://open-services.net/spec/rm/latest-draft",
-    thisVersion: thisBase + "/requirements-management-spec.html",
-    prevVersion: "http://docs.oasis-open.org/oslc-domains/oslc-rm/v2.1/cs01/part1-requirements-management-spec/oslc-rm-v2.1-cs01-part1-requirements-management-spec.html",
-    latestVersion: "http://open-services.net/spec/rm/latest",
-
-    // if the specification's copyright date is a range of years, specify the start date here:
-    // copyrightStart: "2005"
-
-    // Only include h1 and h2 levels in the table of contents
-    maxTocLevel: 2,
-
-    // Chairs and editors, add as many as you like: you must have at least one editor.
-    // Only "name" is required, but the other fields are recommended.
-    editors:  [ {
-        name:        "Mark Schulte",
-        mailto :     "mark.d.schulte@boeing.com",
-        company :    "The Boeing Company",
-        companyURL : "http://www.boeing.com"
+      // === Spec related ===
+      license: "cc-by-4",
+      additionalLicenses: [{
+        licenseName: "Apache License 2.0",
+        licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+      }],
+      citationLabel: "OSLC-RM-2.1-Part1",
+      maxTocLevel: 2,
+      namespaces: [
+        { href: "http://open-services.net/ns/rm#", prefix: "oslc_rm" }
+      ],
+      editors: [{
+        name: "Mark Schulte",
+        mailto: "mark.d.schulte@boeing.com",
+        company: "The Boeing Company",
+        companyURL: "http://www.boeing.com"
       },
       {
-        name:        "Jad El-khoury",
-        mailto :     "jad@kth.se",
-        company :    "KTH The Royal Institute of Technology",
-        companyURL : "http://www.kth.se"
+        name: "Jad El-khoury",
+        mailto: "jad@kth.se",
+        company: "KTH The Royal Institute of Technology",
+        companyURL: "https://www.kth.se/"
       }
-    ],
-    chairs : [ {
-      name : "Jim Amsden",
-      mailto : "jamsden@us.ibm.com",
-      company: "IBM",
-      companyURL: "http://www.ibm.com/"
-    }, {
-      name : "Andrii Berezovskyi",
-      mailto: "andriib@kth.se",
-      company: "KTH",
-      companyURL: "https://www.kth.se"
-    } ],
+      ],
 
-    // name of the OP
-    wg : "OASIS OSLC OP",
-    wgShortName:  "oslc-op",
 
-    // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
-    wgPublicList: "oslc-op",
-
-    // Namespaces defined by this OP
-    namespaces : [
-      { href: "http://open-services.net/ns/rm#", prefix: "oslc_rm" }
-     ],
-
-    // Other parts of multi-part spec
-    additionalArtifacts : [
-      { title: "OSLC Requirements Management Version 2.1. Part 1: Specification (this document)", href: thisBase + "/requirements-management-spec.html" },
-      { title: "OSLC Requirements Management Version 2.1. Part 2: Vocabulary", href: thisBase + "/requirements-management-vocab.html" },
-    ],
-
-    relatedWork : [
-      { title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0", href: "http://open-services.net/bin/view/Main/RmSpecificationV2" }
-    ],
-
-    localBiblio : {
-        "OSLCCore2" : {
-            title:    "OSLC Core 2.0",
-            href:     "http://open-services.net/bin/view/Main/OslcCoreSpecification",
-            authors:  ["S. Speicher", "D. Johnson"],
-            status:   "Finalized",
-            publisher:  "http://open-services.net",
-        },
-      "OSLCCore3": {
-          title:    "OSLC Core 3.0",
-          href:     "http://open-services.net/specifications/core/oslc-core.html",
-          authors:  ["Jim Amsden", "S. Speicher"],
-          status:   "Project Specification",
-          publisher:  "OASIS",
-      },
-      "OSLCCore3ResourceRepresentations": {
-          title:    "OSLC Core 3.0 - Resource Representations",
-          href:     "http://open-services.net/specifications/core/oslc-core.html#resourceRepresentations",
-          authors:  ["Jim Amsden", "S. Speicher"],
-          status:   "Project Specification",
-          publisher:  "OASIS",
-      },
-      "OSLCQuery3" : {
-          title:    "OSLC Query Capability Version 3.0",
-          href:     "http://docs.oasis-open.org/oslc-core/oslc-query/v3.0/oslc-query.html ",
-          authors:  ["David Honey"],
-          status:   "Public Review Draft",
-          publisher:  "OASIS",
-      },
-       "OSLCShapes": {
-        title : "OSLC Resource Shape 3.0",
-        href : "http://open-services.net/specifications/core/resource-shape.html",
-        authors : [ "Arthur Ryman", "Jim Amsden" ],
-          status:   "Project Specification",
-        publisher : "OASIS",
-      },
-      "OSLCResourcePreview": {
-          title:    "OSLC Core 3.0 Resource Preview",
-          href:     "http://open-services.net/specifications/core/resource-preview.html",
-          authors:  ["Jim Amsden", "S. Speicher"],
-          status:   "Project Specification",
-          publisher:  "OASIS",
-      },
-      "OSLCRM20" : {
-          title:    "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
-          href:     "http://open-services.net/bin/view/Main/RmSpecificationV2",
-          authors:  ["Ian Green"],
-          status:   "Finalized",
-          publisher:  "http://open-services.net"
-      },
-      "OpenIDConnect" : {
-          title : "OpenID Connect",
-          href : "http://openid.net/connect/",
-          publisher : "openid.net",
-      },
-      "LDPPatch" : {
-          title : "Linked Data Patch Format",
-          href : "http://www.w3.org/TR/ldpatch/",
-          status : "Working Group Note",
-          publisher : "http://www.w3.org/",
-      },
-      "OSLCCoreVocab" : {
-          title : "OSLC Core Vocabulary",
-          href : "http://open-services.net/specifications/core/core-vocab.html",
-          authors : [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
-          status:   "Project Specification",
-          publisher : "OASIS",
-        }
-      }
+      // === OSLC OP related ===
+      wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+      wgShortName: "oslc-op",
+      chairs: [{
+        name: "Jim Amsden",
+        mailto: "jamsden@us.ibm.com",
+        company: "IBM",
+        companyURL: "https://www.ibm.com/"
+      }, {
+        name: "Andrii Berezovskyi",
+        mailto: "andriib@kth.se",
+        company: "KTH",
+        companyURL: "https://www.kth.se/"
+      }],
     };
 </script>
 
@@ -330,7 +314,7 @@ requirements.</p>
 <section id="formats">
 <h2>Resource Formats</h2>
 
-<p>In addition to the requirements for resource representations in [[!OSLCCore3ResourceRepresentations]], this section outlines further refinements and restrictions.</p>
+<p>In addition to the requirements for resource representations in [[!OSLCCore3]], this section outlines further refinements and restrictions.</p>
 
 <div  class='conformance'>
 <p>For HTTP GET/PUT/POST requests on all OSLC RM and OSLC Core defined resource types,
@@ -570,7 +554,21 @@ Network addressable resource URIs used for 1.0 resources for these types: Requir
   <h2>Acknowledgements</h2>
   <p>The following individuals have participated in the creation of this specification and are gratefully acknowledged:</p>
 
-<p><b>Participants</b>:</p><p style="margin-left: 40px">
+<p><b>Project Governing Board</b>:</p><p style="margin-left: 40px">
+James Amsden, IBM (co-chair)<br>
+Andrii Berezovskyi, KTH (co-chair)<br>
+Bill Chown, Mentor<br>
+Wesley Coelho, Tasktop<br>
+Axel Reichwein, Koneksys<br>
+</p>
+
+<p><b>Techical Steering Committee</b>:</p><p style="margin-left: 40px">
+James Amsden, IBM<br>
+Andrii Berezovskyi, KTH<br>
+Axel Reichwein, Koneksys<br>
+</p>
+
+<p><b>Additional Participants</b>:</p><p style="margin-left: 40px">
 Andy Berner, IBM<br>
 Scott Bosworth, IBM<br>
 Jim Conallen, IBM<br>
