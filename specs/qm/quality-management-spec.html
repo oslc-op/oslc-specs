@@ -1,210 +1,219 @@
 <!DOCTYPE html>
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <meta charset='utf-8' />
+
 <head>
-<title>OSLC Quality Management Specification 2.1</title>
-<meta name="description" content="This specification defines the OSLC Quality Management domain, a RESTful web
+  <title>OSLC Quality Management Specification 2.1</title>
+  <meta name="description"
+    content="This specification defines the OSLC Quality Management domain, a RESTful web
 services interface for the management of product, service or software quality artefacts, activities,
 tasks and relationships between those and related resources such as requirements, defects, change requests or architectural resources.">
 
-<script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.10/builds/respec-oasis-common.min.js' async class='remove'></script>
-<script class='remove'>
-  var wdBase = "https://oslc-op.github.io/oslc-specs/specs/qm/";
-  var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/qm/v2.1/"
+  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.10/builds/respec-oasis-common.min.js' async
+    class='remove'></script>
+  <script class='remove'>
+    var wdBase = "https://oslc-op.github.io/oslc-specs/specs/qm/";
+    var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/qm/v2.1/"
 
-  var thisBase = wdBase;
-  // var thisBase = oasisBase + "psd02/";
+    var thisBase = wdBase;
+    // var thisBase = oasisBase + "psd02/";
 
-  var respecConfig = {
-    shortName : "quality-management-spec",
-    specStatus : "WD",
-    revision: "02",
-    // publishDate:  "2001-01-01",
-    previousPublishDate: "2019-01-18",
-    previousMaturity: "CSD",
-
-
-    thisVersion: thisBase + "quality-management-spec.html",
-    prevVersion: "https://raw.githack.com/oasis-tcs/oslc-domains/master/qm/quality-management-spec.html",
-    latestVersion: oasisBase + "quality-management-spec.html",
-    latestSpecVersion: "https://open-services.net/spec/qm/latest",
-    edDraftURI: "https://open-services.net/spec/qm/latest-draft",
+    var respecConfig = {
+      shortName: "quality-management-spec",
+      specStatus: "WD",
+      revision: "02",
+      // publishDate:  "2001-01-01",
+      previousPublishDate: "2019-01-18",
+      previousMaturity: "CSD",
 
 
-    // Other parts of multi-part spec
-    additionalArtifacts : [
-      { title: "OSLC Quality Management Version 2.1. Part 1: Specification (this document)",
-        href: "quality-management-spec.html" },
-      { title: "OSLC Quality Management Version 2.1. Part 2: Vocabulary",
-        href: "quality-management-vocab.html" }
-    ],
-
-    relatedWork : [
-      { title: "OSLC Quality Management Specification Version 2.0",
-        href: "https://archive.open-services.net/bin/view/Main/QmSpecificationV2.html" }
-    ],
+      thisVersion: thisBase + "quality-management-spec.html",
+      prevVersion: "https://raw.githack.com/oasis-tcs/oslc-domains/master/qm/quality-management-spec.html",
+      latestVersion: oasisBase + "quality-management-spec.html",
+      latestSpecVersion: "https://open-services.net/spec/qm/latest",
+      edDraftURI: "https://open-services.net/spec/qm/latest-draft",
 
 
-        localBiblio : {
-            "OSLCCore2" : {
-                title:    "OSLC Core Specification 2.0",
-                href:     "https://archive.open-services.net/bin/view/Main/OslcCoreSpecification",
-                authors : [ "Dave Johnson", "S. Speicher" ],
-                status:   "Finalized",
-                publisher:  "http://open-services.net",
-            },
-            "OSLCCore3": {
-                title:    "OSLC Core 3.0",
-                href:     "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part1-overview/oslc-core-v3.0-csprd03-part1-overview.html",
-                authors:  ["Jim Amsden", "S. Speicher"],
-                status:   "Committee Specification Public Review Draft",
-                publisher:  "OASIS",
-            },
-            "OSLCPreview": {
-                title:     "OSLC Resource Preview 3.0",
-                href:      "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html",
-                status:    "Committee Specification Public Review Draft",
-                publisher: "OASIS",
-            },
-            "DublinCore" : {
-                title : "Dublin Core Metadata Element Set, Version 1.1",
-                href : "http://dublincore.org/documents/dces/",
-                status:   "DCMI Recommendation",
-                publisher : "Dublin Core Metadata Initiative",
-            },
-            "FOAF": {
-                title:    "Friend of a Friend (FOAF)",
-                href:     "http://xmlns.com/foaf/spec/",
-                authors:  ["Dan Brickley", "Libby Miller"],
-                status:   "Finalized",
-                publisher:  "FOAF project",
-            },
-            "RDF/XML Concepts" : {
-                title:    "RDF/XML Concepts and Abstract Syntax",
-                href:     "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/",
-                authors:  ["Graham Klyne", "Jeremy J. Carroll"],
-                status:   "Superseded Recommendation",
-                publisher:  "www.w3.org",
-            },
-            "RDF/XML Syntax": {
-                title:    "RDF/XML Syntax Specification (Revised)",
-                href:     "http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/",
-                authors:  ["Dave Beckett"],
-                status:   "Revision",
-                publisher:  "www.w3.org",
-            },
-            "URI Syntax" : {
-                title : "URI Generic Syntax",
-                href : "https://tools.ietf.org/html/rfc3986",
-                status : "Working Group Note",
-                },
-            "XML Namespaces": {
-                title : "Namespaces in XML 1.0 (Third Edition)",
-                href : "http://www.w3.org/TR/REC-xml-names/",
-                authors : [ "Tim Bray", "Dave Hollander", "Andrew Layman", "Richard Tobin", "Henry S. Thompson" ],
-                publisher : "www.w3.org",
-            },
-            "XML Base" : {
-                title : "XML Base (Second Edition)",
-                href : "http://www.w3.org/TR/xmlbase/",
-                authors : ["Jonathan Marsh", "Richard Tobin"],
-                status: "Recommendation" ,
-                publisher : "www.w3.org",
-            },
-            "LDPPatch" : {
-                title : "Linked Data Patch Format",
-                href : "http://www.w3.org/TR/ldpatch/",
-                status : "Working Group Note",
-                publisher : "http://www.w3.org/",
-            },
-            "XSD Datatypes": {
-                title:    "XML Schema Part 2: Datatypes Second Edition",
-                href:     "http://www.w3.org/TR/xmlschema-2/",
-                authors:  ["Paul V. Biron", "Ashok Malhotra"],
-                status:   "Final",
-                publisher:  "http://open-services.net",
-                },
-            "OSLCCoreVocab" : {
-                title : "OSLC Core Vocabulary",
-                href : "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part7-core-vocabulary/oslc-core-v3.0-csprd03-part7-core-vocabulary.html",
-                authors : [ "Jim Amsden", "S. Padgett", "S. Speicher" ],
-                status:   "Committee Specification Public Review Draft",
-                publisher : "OASIS",
-            },
-            "OpenIDConnect" : {
-                title : "OpenID Connect",
-                href : "http://openid.net/connect/",
-                publisher : "openid.net",
-            },
-            "OSLCShapes": {
-                title : "OSLC Resource Shape 3.0",
-                href : "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part6-resource-shape/oslc-core-v3.0-csprd03-part6-resource-shape.html",
-                authors : [ "Arthur Ryman", "Jim Amsden" ],
-                status:   "Committee Specification Public Review Draft",
-                publisher : "OASIS",
-            },
-            "OSLCRM20" : {
-                title:    "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
-                href:     "https://archive.open-services.net/bin/view/Main/RmSpecificationV2",
-                authors:  ["Ian Green"],
-                status:   "Finalized",
-                publisher:  "https://open-services.net"
-            },
-            "OSLCCM20" : {
-                title:    "Open Services for Lifecycle Collaboration Change Management Specification Version 2.0",
-                href:     "https://archive.open-services.net/bin/view/Main/CmSpecificationV2",
-                authors:  ["Steve Speicher"],
-                status:   "Finalized",
-                publisher:  "https://open-services.net"
-            },
+      // Other parts of multi-part spec
+      additionalArtifacts: [
+        {
+          title: "OSLC Quality Management Version 2.1. Part 1: Specification (this document)",
+          href: "quality-management-spec.html"
         },
+        {
+          title: "OSLC Quality Management Version 2.1. Part 2: Vocabulary",
+          href: "quality-management-vocab.html"
+        }
+      ],
+
+      relatedWork: [
+        {
+          title: "OSLC Quality Management Specification Version 2.0",
+          href: "https://archive.open-services.net/bin/view/Main/QmSpecificationV2.html"
+        }
+      ],
 
 
-    license : "cc-by-4",
-    additionalLicenses : [{
-       licenseName : "Apache License 2.0",
-       licenseURI : "https://www.apache.org/licenses/LICENSE-2.0",
-     }],
-    citationLabel: "OSLC-QM-2.1-Part1",
-    maxTocLevel: 3,
-    conformanceLabelPrefix: "QM",
-    // noConformanceStyling: 1,
-    // noConformanceTable: 1,
-    // conformanceClauseStrength : 1,
-    namespaces : [
-      { href: "http://open-services.net/ns/core/qm#", prefix: "oslc_qm" }
-     ],
-    editors:  [ {
-        name:        "Jim Amsden",
-        mailto :     "jamsden@us.ibm.com",
-        company :    "IBM",
-        companyURL : "https://www.ibm.com"
-        }, {
-      name : "Gray Bachelor",
-      mailto: "gray_bachelor@uk.ibm.com",
-      company: "IBM",
-      companyURL: "https://www.ibm.com"
+      localBiblio: {
+        "OSLCCore2": {
+          title: "OSLC Core Specification 2.0",
+          href: "https://archive.open-services.net/bin/view/Main/OslcCoreSpecification",
+          authors: ["Dave Johnson", "S. Speicher"],
+          status: "Finalized",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCore3": {
+          title: "OSLC Core 3.0",
+          href: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part1-overview/oslc-core-v3.0-csprd03-part1-overview.html",
+          authors: ["Jim Amsden", "S. Speicher"],
+          status: "Committee Specification Public Review Draft",
+          publisher: "OASIS",
+        },
+        "OSLCPreview": {
+          title: "OSLC Resource Preview 3.0",
+          href: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html",
+          status: "Committee Specification Public Review Draft",
+          publisher: "OASIS",
+        },
+        "DublinCore": {
+          title: "Dublin Core Metadata Element Set, Version 1.1",
+          href: "http://dublincore.org/documents/dces/",
+          status: "DCMI Recommendation",
+          publisher: "Dublin Core Metadata Initiative",
+        },
+        "FOAF": {
+          title: "Friend of a Friend (FOAF)",
+          href: "http://xmlns.com/foaf/spec/",
+          authors: ["Dan Brickley", "Libby Miller"],
+          status: "Finalized",
+          publisher: "FOAF project",
+        },
+        "RDF/XML Concepts": {
+          title: "RDF/XML Concepts and Abstract Syntax",
+          href: "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/",
+          authors: ["Graham Klyne", "Jeremy J. Carroll"],
+          status: "Superseded Recommendation",
+          publisher: "www.w3.org",
+        },
+        "RDF/XML Syntax": {
+          title: "RDF/XML Syntax Specification (Revised)",
+          href: "http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/",
+          authors: ["Dave Beckett"],
+          status: "Revision",
+          publisher: "www.w3.org",
+        },
+        "URI Syntax": {
+          title: "URI Generic Syntax",
+          href: "https://tools.ietf.org/html/rfc3986",
+          status: "Working Group Note",
+        },
+        "XML Namespaces": {
+          title: "Namespaces in XML 1.0 (Third Edition)",
+          href: "http://www.w3.org/TR/REC-xml-names/",
+          authors: ["Tim Bray", "Dave Hollander", "Andrew Layman", "Richard Tobin", "Henry S. Thompson"],
+          publisher: "www.w3.org",
+        },
+        "XML Base": {
+          title: "XML Base (Second Edition)",
+          href: "http://www.w3.org/TR/xmlbase/",
+          authors: ["Jonathan Marsh", "Richard Tobin"],
+          status: "Recommendation",
+          publisher: "www.w3.org",
+        },
+        "LDPPatch": {
+          title: "Linked Data Patch Format",
+          href: "http://www.w3.org/TR/ldpatch/",
+          status: "Working Group Note",
+          publisher: "http://www.w3.org/",
+        },
+        "XSD Datatypes": {
+          title: "XML Schema Part 2: Datatypes Second Edition",
+          href: "http://www.w3.org/TR/xmlschema-2/",
+          authors: ["Paul V. Biron", "Ashok Malhotra"],
+          status: "Final",
+          publisher: "http://open-services.net",
+        },
+        "OSLCCoreVocab": {
+          title: "OSLC Core Vocabulary",
+          href: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part7-core-vocabulary/oslc-core-v3.0-csprd03-part7-core-vocabulary.html",
+          authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+          status: "Committee Specification Public Review Draft",
+          publisher: "OASIS",
+        },
+        "OpenIDConnect": {
+          title: "OpenID Connect",
+          href: "http://openid.net/connect/",
+          publisher: "openid.net",
+        },
+        "OSLCShapes": {
+          title: "OSLC Resource Shape 3.0",
+          href: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part6-resource-shape/oslc-core-v3.0-csprd03-part6-resource-shape.html",
+          authors: ["Arthur Ryman", "Jim Amsden"],
+          status: "Committee Specification Public Review Draft",
+          publisher: "OASIS",
+        },
+        "OSLCRM20": {
+          title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
+          href: "https://archive.open-services.net/bin/view/Main/RmSpecificationV2",
+          authors: ["Ian Green"],
+          status: "Finalized",
+          publisher: "https://open-services.net"
+        },
+        "OSLCCM20": {
+          title: "Open Services for Lifecycle Collaboration Change Management Specification Version 2.0",
+          href: "https://archive.open-services.net/bin/view/Main/CmSpecificationV2",
+          authors: ["Steve Speicher"],
+          status: "Finalized",
+          publisher: "https://open-services.net"
+        },
+      },
+
+
+      license: "cc-by-4",
+      additionalLicenses: [{
+        licenseName: "Apache License 2.0",
+        licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+      }],
+      citationLabel: "OSLC-QM-2.1-Part1",
+      maxTocLevel: 3,
+      conformanceLabelPrefix: "QM",
+      // noConformanceStyling: 1,
+      // noConformanceTable: 1,
+      // conformanceClauseStrength : 1,
+      namespaces: [
+        { href: "http://open-services.net/ns/core/qm#", prefix: "oslc_qm" }
+      ],
+      editors: [{
+        name: "Jim Amsden",
+        mailto: "jamsden@us.ibm.com",
+        company: "IBM",
+        companyURL: "https://www.ibm.com"
+      }, {
+        name: "Gray Bachelor",
+        mailto: "gray_bachelor@uk.ibm.com",
+        company: "IBM",
+        companyURL: "https://www.ibm.com"
       }
-    ],
+      ],
 
-    // name of the OP
-    wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
-    wgShortName:  "oslc-op",
-    chairs : [ {
-      name : "Jim Amsden",
-      mailto : "jamsden@us.ibm.com",
-      company: "IBM",
-      companyURL: "https://www.ibm.com/"
-    }, {
-      name : "Andrii Berezovskyi",
-      mailto: "andriib@kth.se",
-      company: "KTH",
-      companyURL: "https://www.kth.se/en"
-    } ]
+      // name of the OP
+      wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+      wgShortName: "oslc-op",
+      chairs: [{
+        name: "Jim Amsden",
+        mailto: "jamsden@us.ibm.com",
+        company: "IBM",
+        companyURL: "https://www.ibm.com/"
+      }, {
+        name: "Andrii Berezovskyi",
+        mailto: "andriib@kth.se",
+        company: "KTH",
+        companyURL: "https://www.kth.se/en"
+      }]
     };
-</script>
-
+  </script>
 </head>
+
 <body>
 <section id='abstract'>
 <p>This specification defines the OSLC Quality Management domain, a RESTful web
