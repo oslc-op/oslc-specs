@@ -3,6 +3,7 @@ package net.open_services.scheck.shapechecker;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
@@ -242,11 +243,13 @@ public class VocabularyCheck
         NodeCheck node = new NodeCheck(term, httpHandler, vocabModel, modelCopy, resultModel, termResult);
         if (termType.equals(RDFS.Class))
         {
+            checkCase(term, termResult, s->Character.isUpperCase(s.codePointAt(0)));
             node.checkURI(RDFS.subClassOf, Occurrence.ZeroOrOne, null);
             node.checkURI(OWL.sameAs, Occurrence.ZeroOrMany, null);
         }
         else if (termType.equals(RDF.Property))
         {
+            checkCase(term, termResult, s->Character.isLowerCase(s.codePointAt(0)));
             node.checkURI(RDFS.subPropertyOf, Occurrence.ZeroOrOne, null);
             node.checkURI(RDFS.range, Occurrence.ZeroOrOne, null);
             node.checkURI(RDFS.domain, Occurrence.ZeroOrOne, null);
@@ -256,11 +259,22 @@ public class VocabularyCheck
         {
             node.checkLiteral(RDF.value, null, Occurrence.ZeroOrOne, null);
         }
-        else
+        else // probably an enumeration value
         {
             node.checkSuppressibleURI(RDF.type, Occurrence.OneOrMany, true, true,
                 uri -> uri != null ? null : Terms.BadTermType);
             node.checkLiteral(RDF.value, null, Occurrence.ZeroOrOne, null);
+        }
+    }
+
+
+    private void checkCase(Resource term, Resource termResult, Predicate<String> p)
+    {
+        String termName = (term.getURI()+"").replaceAll(".*[/#]", "");
+        if (termName.length() == 0 || !p.test(termName))
+        {
+            resultModel.createIssue(termResult, Terms.BadCase, term,
+                ResourceFactory.createTypedLiteral(termName));
         }
     }
 
