@@ -32,6 +32,7 @@ public class VocabularyCheck
     private static final Property VS_TERM_STATUS = ResourceFactory.createProperty("http://www.w3.org/2003/06/sw-vocab-status/ns#term_status");
 
     private HttpHandler httpHandler;
+    private Resource    docRes;
     private Model       vocabModel;
     private Model       modelCopy;
     private ResultModel resultModel;
@@ -50,12 +51,14 @@ public class VocabularyCheck
     public VocabularyCheck(URI document, HttpHandler httpHandler, ResultModel resultModel)
     {
         String docURI = document.toString();
+        docRes = resultModel.getModel().createResource(docURI);
         vocabModel = ModelFactory.createDefaultModel().read(docURI, "TURTLE");
         modelCopy = ModelFactory.createDefaultModel().add(vocabModel);
         this.httpHandler = httpHandler;
         this.resultModel = resultModel;
         vocabResult = this.resultModel.createOuterResult(Terms.VocabResult);
-        vocabResult.addProperty(DCTerms.source,resultModel.getModel().createResource(docURI));
+        vocabResult.addProperty(Terms.checks, docRes);
+        vocabResult.addProperty(DCTerms.source,docRes);
         vocabResult.addLiteral(DCTerms.extent, vocabModel.size());
         preferredNameSpace = vocabModel.createProperty("http://purl.org/vocab/vann/preferredNamespacePrefix");
     }
@@ -67,6 +70,13 @@ public class VocabularyCheck
     public void checkVocabularies()
     {
         StmtIterator it = vocabModel.listStatements(null, RDF.type, OWL.Ontology);
+
+        if (!it.hasNext())
+        {
+            resultModel.createIssue(vocabResult, Terms.NoVocabsInFile, docRes);
+            return;
+        }
+
         while (it.hasNext())
         {
             Statement st = it.next();

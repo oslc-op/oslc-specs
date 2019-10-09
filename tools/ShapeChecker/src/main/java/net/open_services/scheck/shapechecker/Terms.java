@@ -177,6 +177,10 @@ public final class Terms
     @SCIssue(issueSeverity=Warning,description="This property definition or other subject does not appear to be part of a defined shape.")
     public static final Resource NoShape          = resource("NoShape");
 
+    /** Error class for a shapes file that does not contain any shapes. */
+    @SCIssue(issueSeverity=Error,description="This file does not contain any shapes.")
+    public static final Resource NoShapesInFile   = resource("NoShapesInFile");
+
     /** Error class for an resource not found. */
     @SCIssue(issueSeverity=Warning,description="This resource is not defined in this document.")
     public static final Resource NotDefined       = resource("NotDefined");
@@ -192,6 +196,11 @@ public final class Terms
     /** Error class for a literal property that should be a resource. */
     @SCIssue(issueSeverity=Error,description="A resource value is expected here, not a literal.")
     public static final Resource NotResource      = resource("NotResource");
+
+    /** Error class for a vocabulary file that does not contain any vocabularies. */
+    @SCIssue(issueSeverity=Error,description="This file does not contain any vocabularies.")
+    public static final Resource NoVocabsInFile   = resource("NoVocabsInFile");
+
 
     /** Error class for a redundant (unknown, unexpected) property of some node. */
     @SCIssue(issueSeverity=Warning,description="This property is unexpected.")

@@ -51,7 +51,8 @@ public final class ResultModelProcessor
         while (ri.hasNext())
         {
             Resource vocabResult = ri.next();
-            String vocab = vocabResult.getProperty(Terms.checks).getResource().getURI();
+            Statement checks = vocabResult.getProperty(Terms.checks);
+            String vocab = checks == null ? "-unknown-" : checks.getResource().getURI();
             resultPreProcessor.visit(0,vocab,summary,vocabResult);
             processOuterIssues(1,vocabResult,issueVisitor);
             processInnerIssues(1,vocabResult,vocab,resultPreProcessor,issueVisitor,resultPostProcessor);

@@ -23,6 +23,7 @@ public class ShapesDocCheck
 {
     private HttpHandler httpHandler;
     private URI         document;
+    private Resource    docRes;
     private Model       shapeModel;
     private Model       shapeCopy;
     private ResultModel resultModel;
@@ -43,10 +44,11 @@ public class ShapesDocCheck
         this.resultModel = resultModel;
         this.httpHandler = httpHandler;
         String docURI = document.toString();
+        docRes = resultModel.getModel().createResource(docURI);
         shapeModel = ModelFactory.createDefaultModel().read(docURI, "TURTLE");
         shapeCopy = ModelFactory.createDefaultModel().add(shapeModel);
         shapesResult = resultModel.createOuterResult(Terms.ShapesResult);
-        shapesResult.addProperty(DCTerms.source,resultModel.getModel().createResource(docURI));
+        shapesResult.addProperty(DCTerms.source,docRes);
         shapesResult.addLiteral(DCTerms.extent, shapeModel.size());
     }
 
@@ -57,6 +59,13 @@ public class ShapesDocCheck
     public void checkShapes()
     {
         StmtIterator it = shapeModel.listStatements(null, RDF.type, OSLC.ResourceShape);
+
+        if (!it.hasNext())
+        {
+            resultModel.createIssue(shapesResult, Terms.NoShapesInFile, docRes);
+            return;
+        }
+
         while (it.hasNext())
         {
             Statement st = it.next();
