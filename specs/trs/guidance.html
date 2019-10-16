@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<meta charset='utf-8' />
+<head>
+<title>OSLC Tracked Resource Set Guidance</title>
+<script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.2/builds/respec-oasis-common.js' async class='remove'></script>
+<script class='remove'>
+  var respecConfig = {
+    specStatus :            "CND",
+    shortName :             "oslc-trs-guidance",
+    citationLabel:          "OSLC-TRS-GUIDANCE-v3.0",
+    oslcVersion:            "3.0",
+    revision:               "01",
+    previousPublishDate:    "2015-01-15",
+    previousMaturity:       "WD",
+    maxTocLevel:            2,
+
+    editors:  [ {
+        name:        "Nick Crossley",
+        mailto :     "nick_crossley@us.ibm.com",
+        company :    "IBM",
+        companyURL : "http://www.ibm.com"
+      }],
+
+    chairs : [ {
+      name : "Jim Amsden",
+      mailto : "jamsden@us.ibm.com",
+      company: "IBM",
+      companyURL: "http://www.ibm.com/"
+    }, {
+      name : "Andrii Berezovskyi",
+      mailto: "andriib@kth.se",
+      company: "KTH",
+      companyURL: "https://www.kth.se/en"
+    } ],
+
+    // Namespaces defined by this spec
+    namespaces : [
+      { href: "http://open-services.net/ns/core/acc#", prefix: "acc" },
+     ],
+
+    localBiblio : {
+            "OSLCCore2": {
+                title:     "OSLC Core 2.0",
+                href:      "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+                authors:   ["S. Speicher", "D. Johnson"],
+                status:    "Finalized",
+                publisher: "http://open-services.net"
+            },
+            "OSLCCore3": {
+                title:     "OSLC Core 3.0",
+                href:      "http://tools.oasis-open.org/version-control/svn/oslc-core/specs/oslc-core-v3.html",
+                authors:   [ "Steve Speicher", "Jim Amsden" ],
+                publisher: "OASIS",
+            },
+            "OSLCTRS2": {
+                title:     "Tracked Resource Set Specification Version 2.0",
+                href:      "http://open-services.net/wiki/core/TrackedResourceSet-2.0/",
+                authors:   [ "Steve Speicher", "Frank Budinsky", "Vivek Garg" ],
+                status:    "Finalized Draft",
+                publisher: "http://open-services.net",
+            },
+        },
+    };
+</script>
+</head>
+<body>
+<section id='discovery'>
+  <h2>Discovery</h2>
+  <p> The RDF <code>oslc_acc:accessContextList</code> property declares the
+    whereabouts of an Access Context List resource. The Access Context List
+    resource is the object. </p>
+  <ul>
+    <li>Property Name: accessContextList</li>
+    <li>Description: URI of Access Context List resource</li>
+    <li>Property URI: <code>http://open-services.net/ns/core/acc#accessContextList</code></li>
+  </ul>
+  <p> This allows the existence and location of an Access Context List resource
+    to be declared with an RDF statement like the following (rendered here in
+    Turtle): </p>
+  <pre class='example'>
+@prefix oslc_acc: &lt;http://open-services.net/ns/core/acc#&gt; .
+&lt;&gt; oslc_acc:accessContextList &lt;https://a.example.com/acclist&gt; .
+    </pre>
+  <p>Where such RDF statements might be found is outside the scope of this specification.</p>
+</section>
+<section id='acc-shapes'>
+  <h2>Resource Shapes for Access Contexts</h2>
+  <section id='shape-res' class='shapes'>
+    <h2>Resource</h2>
+    <div title='Resource'
+        data-include='./shapes/Access-Context-shape.ttl#Resource'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+  </section>
+  <section id='shape-acc' class='shapes'>
+    <h2>AccessContext</h2>
+    <div title='AccessContext'
+        data-include='./shapes/Access-Context-shape.ttl#AccessContext'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+  </section>
+  <section id='shape-acl' class='shapes'>
+    <h2>AccessContextList</h2>
+    <div title='AccessContextList'
+        data-include='./shapes/Access-Context-shape.ttl#AccessContextList'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'></div>
+  </section>
+</section>
+<section id='accessContext' class='informative'>
+  <h2>Access Context</h2>
+  <p class='note' title='TO DO'> This entire section has not yet been edited for brevity and to remove duplication. </p>
+  <p> A Client that provides services based on resources fetched from a Tracked
+    Resource Set Server, may want to control access to those Resources.  It is
+    simple enough for a Client to allow some users to
+    access these copies, while denying access to other users. </p>
+  <p> In order to make it feasible for Clients to offer access control that
+    reflects the access control on the Tracked Resource Set Server, a Server can
+    define one or more Access Contexts and associate each of its Resources with an
+    Access Context. When configuring a Client to work with a particular Server,
+    the administrator can query the Server for a list of relevant Access
+    Contexts. This allows the administrator to configure access control at the
+    level of Access Contexts within a Tracked Resource Set. </p>
+  <p> For its part, the Server associates each of its Resources with an Access
+    Context, asserted in the representation of each Resource. This lets the Client
+    connect access control rules expressed in terms of Access Contexts with the
+    resource representations copied from the Server. Adding a resource to an
+    Access Context, or removing one from it, changes the RDF representation of the
+    resource. Like other changes affecting the RDF representation of the resource,
+    this change is reported as a Change Event in the Server's Tracked Resource
+    Set. This supports Clients working with Servers whose resources' Access
+    Contexts vary over time. </p>
+  <p class='note' title='TBD'> <strong>Editor: related to https://issues.oasis-open.org/browse/OSLCCORE-82. (img)</strong> </p>
+  <p> This set of Access Contexts within a Server can also change over time. Adding
+    a new Access Context Client will generally require an administrator to reconfigure
+    the Client against that Server. </p>
+  <section id='accAssociations'>
+    <h2>Associations between Resources and Access Contexts</h2>
+    <p> The RDF <code>oslc_acc:accessContext</code> property is used to indicate that a resource
+      belongs to an Access Context. The resource is the subject; the Access Context
+      is the object. </p>
+    <ul>
+      <li>Property Name: accessContext</li>
+      <li>Description: Access Context of the resource</li>
+      <li>Property URI: http://open-services.net/ns/core/acc#accessContext</li>
+    </ul>
+    <p> For example, the RDF statement (in Turtle): </p>
+    <pre class='example'>
+@prefix oslc_acc: &lt;http://open-services.net/ns/core/acc#&gt; .
+&lt;https://a.example.com/defect/2314&gt; oslc_acc:accessContext &lt;https://a.example.com/acclist#alpha&gt; .
+  </pre>
+    <p> declares the resource <code>https://a.example.com/defect/2314</code> to be in the Access Context <code>https://a.example.com/acclist#alpha</code>. </p>
+    <section id='accessContextPredicate'>
+      <p> A linked data
+        resource that is deemed (by the Server) to be in an Access Context MUST use
+        the <code>oslc_acc:accessContext</code> predicate in its RDF representation to
+        assert a relation between the linked data resource (subject) and an Access
+        Context. </p>
+    </section>
+    <p> For example, the above RDF statement embedded in the representation of
+      resource <code>https://a.example.com/defect/2314</code> asserts that this
+      resource is in Access
+      Context <code>https://a.example.com/acclist#alpha</code>. The RDF
+      representation of a linked data resource in several Access Contexts will have
+      multiple such RDF statements; for a linked data resource not in any Access
+      Context, there will be none. </p>
+  </section>
+  <section id='accList'>
+    <h2>Access Context List Resource</h2>
+    <p> If an Server uses Access Contexts within its resources, the Server MUST
+      provide an Access Context List resource. If a Server has more than one Tracked
+      Resource Set, it MUST designate an Access Context List resource for each
+      Tracked Resource Set; several Tracked Resource Sets MAY share the same Access
+      Context List resource. </p>
+    <p> The Access Context List resource is intended to be accessed by
+      administrator for the purpose of configuring a TRS Client that is working with
+      linked data obtained from that Server's Tracked Resource Set. The
+      representation of the Access Context resource is itself linked data. </p>
+    <section id='ildpGet'>
+      <p> The Server MUST support the use
+        of the HTTP GET method for the Access Context List resource. The Server SHOULD
+        require the use of TLS when making requests to the Access Context List
+        resource. The Server SHOULD require authentication for the Access Context List
+        resource, and SHOULD allow access only to users with administrative
+        privileges. The Server's response MUST support the JSON-LD media type
+        (application/ld+json), and MAY support other linked data representations. The
+        response SHOULD include an ETag header. </p>
+    </section>
+    <p> A client uses an HTTP GET request to retrieve a representation of the
+      Access Context List resource, specifying JSON-LD as an acceptable format. For
+      example: </p>
+    <pre class='example'>
+GET https://a.example.com/acclist HTTP/1.1
+Accept: application/ld+json
+Authorization: Basic [missing - admin user credentials]
+</pre>
+    <section id='accResponce'>
+      <p> The response MUST be a
+        JSON-LD format string with a node for the Access Context List along with a
+        node for each Access Context. The response SHOULD use the simple @graph form
+        with a default graph as shown in the example below. The response SHOULD use
+        the @context value shown below (i.e., as a boilerplate header), and SHOULD NOT
+        use other advanced JSON-LD features, since these can make the response more
+        difficult to understand for human readers who only know JSON, and more
+        difficult to processed programmatically by scripts without the benefit of a
+        full JSON-LD library. The node’s type property gives the type of the node -
+        either <code>oslc_acc:AccessContextList</code> or <code>oslc_acc:AccessContext</code>;
+        the node’s id property gives the Access Context URI; the title and description
+        properties give the title and description, respectively. </p>
+    </section>
+    <p> Example of a response: </p>
+    <pre class='example'>
+HTTP/1.1 200 OK
+Content-Type: application/ld+json;charset=UTF-8
+ETag: 68djsgg82
+{
+  &quot;@context&quot;: {
+    &quot;acc&quot;: &quot;http://open-services.net/ns/core/acc#&quot;,
+    &quot;id&quot;: &quot;@id&quot;,
+    &quot;type&quot;: &quot;@type&quot;,
+    &quot;title&quot;: &quot;http://purl.org/dc/terms/title&quot;,
+    &quot;description&quot;: &quot;http://purl.org/dc/terms/description&quot;
+  },
+  &quot;@graph&quot;: [{
+     &quot;id&quot;: &quot;https://a.example.com/acclist&quot;,
+     &quot;type&quot;: &quot;oslc_acc:AccessContextList&quot;
+    }, {
+     &quot;id&quot;: &quot;https://a.example.com/acclist#alpha&quot;,
+     &quot;type&quot;: &quot;oslc_acc:AccessContext&quot;,
+     &quot;title&quot;: &quot;Alpha&quot;,
+     &quot;description&quot;: &quot;Resources for Alpha project&quot;
+    }, {
+     &quot;id&quot;: &quot;https://a.example.com/acclist#beta&quot;,
+     &quot;type&quot;: &quot;oslc_acc:AccessContext&quot;,
+     &quot;title&quot;: &quot;Beta&quot;,
+     &quot;description&quot;: &quot;Resources for Beta project&quot;
+  }]
+}
+</pre>
+    <section id='uriStability' class='informative'>
+      <h2>URI Stability</h2>
+      <p> Access Context List and Access Context resources should have stable
+        URIs. When Access Context URIs are based on an Access Context List URI with
+        the addition of local id in the fragment (e.g., the Access Context
+        URI <code>https://a.example.com/acclist#alpha</code> is based on the Access
+        Context List URI <code>https://a.example.com/acclist</code>), the Server
+        should ensure that each Access Context has a stable local id that is unique
+        within the Access Context List. </p>
+    </section>
+  </section>
+</section>
+<section id='acc-examples' class='informative'>
+  <h2>Access Context Examples</h2>
+</section>
+</body>
+</html>

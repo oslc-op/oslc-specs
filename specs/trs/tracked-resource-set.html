@@ -2,80 +2,41 @@
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <meta charset='utf-8' />
 <head>
-<title>OSLC Tracked Resource Specification</title>
-<script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async class='remove'></script>
+<title>OSLC Tracked Resource Set Specification</title>
+<script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.2/builds/respec-oasis-common.js' async class='remove'></script>
 <script class='remove'>
   var respecConfig = {
-      // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN).
-    // If in doubt use WD.
-    // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
-    specStatus : "WD",
+    specStatus :            "WD",
+    shortName :             "oslc-trs",
+    citationLabel:          "OSLC-TRS-v3.0",
+    oslcVersion:            "3.0",
+    revision:               "01",
+    previousPublishDate:    "2014-06-11",
+    previousMaturity:       "WD",
+    maxTocLevel:            2,
 
-        // the specification's short name with version but no dots
-        shortName : "oslc-trs",
-
-        // if your specification has a subtitle that goes below the main
-        // formal title, define it here
-        // subtitle   :  "Committee Specification Draft 02",
-
-        // the document's citation label
-        citationLabel: "OSLC-TRS-v3.0",
-
-        // Revision level of the document within its stage
-        revision: "02",
-
-        // if you wish the publication date to be other than the last modification, set this
-        // publishDate:  "2009-08-06",
-
-        // if the specification's copyright date is a range of years, specify the start date here:
-        // copyrightStart: "2005"
-
-        // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-        // and its maturity status
-        // previousPublishDate:  "1977-03-15",
-        // previousMaturity:  "WD",
-
-        // Only include h1 and h2 levels in the table of contents
-        maxTocLevel: 2,
-
-    // if there a publicly available Editor's Draft, this is the link
-    edDraftURI:           "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/tracked-resource-set.html",
-
-    // Chairs and editors, add as many as you like: you must have at least one editor.
-    // Only "name" is required, but the other fields are recommended.
     editors:  [ {
-        name:        "Jim Amsden",
-        mailto :     "jamsden@us.ibm.com",
-        company :    "IBM",
-        companyURL : "http://www.ibm.com"
-      },  {
         name:        "Nick Crossley",
         mailto :     "nick_crossley@us.ibm.com",
         company :    "IBM",
         companyURL : "http://www.ibm.com"
-      },  {
-        name:        "Ian Green",
-        mailto :     "nick_crossley@us.ibm.com",
-        company :    "IBM",
-        companyURL : "http://www.ibm.com"
-      },
-    ],
+      }],
+
     chairs : [ {
       name : "Jim Amsden",
       mailto : "jamsden@us.ibm.com",
       company: "IBM",
       companyURL: "http://www.ibm.com/"
     }, {
-      name : "Martin Sarabura",
-      mailto: "msarabura@ptc.com",
-      company: "PTC",
-      companyURL: "http://www.ptc.com"
+      name : "Andrii Berezovskyi",
+      mailto: "andriib@kth.se",
+      company: "KTH",
+      companyURL: "https://www.kth.se/en"
     } ],
 
     // Namespaces defined by this spec
     namespaces : [
       { href: "http://open-services.net/ns/core/trs#", prefix: "trs" },
-      { href: "http://open-services.net/ns/core/acc#", prefix: "acc" },
       { href: "http://open-services.net/ns/core/trspatch#", prefix: "trspatch" }
      ],
 
@@ -114,7 +75,6 @@
     The protocol is HTTP-based and follows RESTful principles. </p>
 </section>
 <section id='toc'></section>
-<hr />
 <section id='sotd'></section>
 <section id='intro' class='informative'>
   <h2>Introduction</h2>
@@ -129,7 +89,6 @@
     <h3>Still to do</h3>
     <ul>
       <li>Search for and deal with TBDs</li>
-      <li>Why are the code, rfc2119, and dd styles not in a shared style sheet (here and throughout Core specs)?</li>
       <li>Edit to make all uses of RFC2119 words use the rfc2119 style</li>
     </ul>
   </section>
@@ -161,7 +120,7 @@
       <dd>A resource describing a list of Access Contexts.</dd>
     </dl>
   </section>
-  <section id='conventions'>
+  <section id='conventions' class='informative'>
     <p> Sample resource representations are provided in <code>text/turtle</code> format [[TURTLE]]. </p>
     <p>The following common URI prefixes are used throughout this specification:</p>
     <figure>
@@ -198,7 +157,7 @@
 </section>
 <section id='discovery'>
   <h2>Discovery</h2>
-  <p class='note' title='Discovery is a convenience'> Discoverability is a convenience;
+  <p class='note' title='Discovery is a convenience'>Discoverability is a convenience;
     an administrator can configure a Client with a particular Tracked Resource Set
     knowing just the URIs of the Server's Tracked Resource Set and designated
     Access Context List resource. An administrator can retrieve the Access
@@ -206,35 +165,27 @@
     being used with that Server.
     Documentation for an TRS Server can describe its Tracked Resource Sets,
     including the URI of each of the Server's Tracked Resource Set resources and
-    designated Access Context List resources. </p>
-  <p> A Server MAY provide multiple Tracked Resource Sets,
-    and MAY make its Tracked Resource Sets discoverable. </p>
-  <p> The RDF <code>trs:trackedResourceSet</code> property can be used to
+    designated Access Context List resources.</p>
+  <p>A Server MAY provide multiple Tracked Resource Sets,
+    and MAY make its Tracked Resource Sets discoverable.</p>
+  <p>The RDF <code>trs:trackedResourceSet</code> property can be used to
     declare the whereabouts of a Tracked Resource Set resource. The Tracked
-    Resource Set resource is the object. </p>
-  <p> This allows the existence and location of a Tracked Resource Set
+    Resource Set resource is the object.</p>
+  <p>This allows the existence and location of a Tracked Resource Set
     resource to be declared with an RDF statement like the following (rendered
-    here in Turtle): </p>
+    here in Turtle):</p>
   <pre class='example'>
 @prefix trs: &lt;http://open-services.net/ns/core/trs#&gt; .
 &lt;&gt; trs:trackedResourceSet &lt;https://a.example.com/trs1&gt; .
     </pre>
-  <p> The RDF <code>oslc_acc:accessContextList</code> property declares the
-    whereabouts of an Access Context List resource. The Access Context List
-    resource is the object. </p>
-  <ul>
-    <li>Property Name: accessContextList</li>
-    <li>Description: URI of Access Context List resource</li>
-    <li>Property URI: <code>http://open-services.net/ns/core/acc#accessContextList</code></li>
-  </ul>
-  <p> This allows the existence and location of an Access Context List resource
-    to be declared with an RDF statement like the following (rendered here in
-    Turtle): </p>
-  <pre class='example'>
-@prefix oslc_acc: &lt;http://open-services.net/ns/core/acc#&gt; .
-&lt;&gt; oslc_acc:accessContextList &lt;https://a.example.com/acclist&gt; .
-    </pre>
-  <p> Where such RDF statements might be found is outside the scope of this specification.</p>
+  <p>Where such RDF statements might be found is outside the scope of this specification.</p>
+</section>
+<section id='general-behavior'>
+  <h2>General Behavior></h2>
+  <p>The TRS Server MUST support GET requests conformant with [[OSLCCore2]] or [[OSLCCore3]] for tracked resources,
+    and SHOULD support ETags, caching, and conditional GETs.
+    The RDF returned for Tracked Resource Sets, Base resources, Change Logs, and tracked resources
+    MUST conform to the shapes and constraints in the following section.</p>
 </section>
 <section id='resource-shapes'>
   <h2>Resource Shapes for Tracked Resource Sets</h2>
@@ -293,53 +244,13 @@
       data-include-format='html'> </div>
   </section>
 </section>
-<section id='acc-shapes'>
-  <h2>Resource Shapes for Access Contexts</h2>
-  <section id='shape-res' class='shapes'>
-    <h2>Resource</h2>
-    <div title='Resource'
-        data-include='./shapes/Access-Context-shape.ttl#Resource'
-        data-oninclude='shapeToSpec'
-        data-include-sync='true'
-        data-include-replace='true'
-        data-include-format='html'></div>
-  </section>
-  <section id='shape-acc' class='shapes'>
-    <h2>AccessContext</h2>
-    <div title='AccessContext'
-        data-include='./shapes/Access-Context-shape.ttl#AccessContext'
-        data-oninclude='shapeToSpec'
-        data-include-sync='true'
-        data-include-replace='true'
-        data-include-format='html'></div>
-  </section>
-  <section id='shape-acl' class='shapes'>
-    <h2>AccessContextList</h2>
-    <div title='AccessContextList'
-        data-include='./shapes/Access-Context-shape.ttl#AccessContextList'
-        data-oninclude='shapeToSpec'
-        data-include-sync='true'
-        data-include-replace='true'
-        data-include-format='html'></div>
-  </section>
-</section>
-<section id='general-behavior'>
-  <h2>General Behavior></h2>
-  <p> Tracked Resources MUST have a RDF linked data representation,
-    and SHOULD support GET requests conformant with [[OSLCCore2]] or [[OSLCCore3]]. </p>
-  <p>The TRS Server SHOULD support ETags, caching, and conditional GETs for Tracked Resources;
-      <span class='red'>TBD: TRS Servers MAY support ETags, caching, and conditional GETs for Tracked Resource Sets and Base resources</span>.</p>
-  <p>TRS servers MUST support Turtle (<code>text/turtle</code>) representations of the TRS, Base, Change Log and Change Event resources,
-    and MAY support other representations, using standard HTTP content negotiation.
-    If the client does not indicate a preference, <code>text/turtle</code> MUST be returned.</p>
-</section>
 <section id='change-logs'>
   <h2>Change Logs and Change Events</h2>
   <p>A Server MUST refer to a given Tracked Resource using the exact same URI in the Base membership property
     and every Change Event (<code>trs:changed</code> reference) for that resource.</p>
   <p>A Change Log represents a series of changes to the corresponding Tracked Resource Set over some period of time.
     The Change Log MUST contain a sufficient sequence of Change Events such that processing the Base and the Change Log
-    gives a consistent and complete picture of the Tracked Resources at at the end of that period of time;
+    gives a consistent and complete picture of the Tracked Resources at the end of that period of time;
     the Change Log does not necessarily identify <em>every</em> change of internal state before or during that period of time.</p>
   <p>A Server MAY batch up internal changes and add Change Events to the Change Log in a single transaction at some interval.</p>
   <p>A Server MUST eventually report a resource modification event if a GET on that resource would return a semantically different response from previously.</p>
@@ -350,12 +261,12 @@
   <p>Because of the highly dynamic nature of the Resource Set and the difficulty of enumerating an exact set of resources at a precise point in time,
     a Server MAY produce a Base that is only an approximation of the Tracked Resource Set membership.
     A Base might omit mention of a Resource that ought to have been included or include a Resource that ought to have been omitted.
-    For each such inconsistency in the Base, the Server MUST at some point include a corrective Change Event in the Change Log more recent that the base cutoff event.
+    For each such inconsistency in the Base, the Server MUST at some point include a corrective Change Event in the Change Log more recent than the base cutoff event.
     The corrective Change Event corrects the picture for that Resource, allowing a client to compute the correct set of Tracked Resources.</p>
   <p class='note'> A corrective Change Event might not appear in the Change Log that was retrieved when the client dereferenced the Tracked Resource Set URI;
     the client might only see a corrective Change Event when it processes the Change Log resource obtained by dereferencing the Tracked Resource Set URI on later occasions.</p>
   <p>Similarly, a TRS Server MAY report unnecessary Change Events such as a creation event for a Resource that is already a member of the Resource Set,
-    or a deletion or modification event for a Resource that is not a member of the Resource Set.</p>
+    or a deletion event for a Resource that is not a member of the Resource Set.</p>
   <p class='note'>Clients should ignore these redundant events.</p>
 </section>
 <section id='change-log-segments'>
@@ -691,151 +602,6 @@
   trs:order &quot;101&quot;^^xsd:integer .
   </pre>
 </section>
-<section id='accessContext' class='informative'>
-  <h2>Access Context</h2>
-  <p class='note' title='TO DO'> This entire section has not yet been edited for brevity and to remove duplication. </p>
-  <p> A Client that provides services based on resources fetched from a Tracked
-    Resource Set Server, may want to control access to those Resources.  It is
-    simple enough for a Client to allow some users to
-    access these copies, while denying access to other users. </p>
-  <p> In order to make it feasible for Clients to offer access control that
-    reflects the access control on the Tracked Resource Set Server, a Server can
-    define one or more Access Contexts and associate each of its Resources with an
-    Access Context. When configuring a Client to work with a particular Server,
-    the administrator can query the Server for a list of relevant Access
-    Contexts. This allows the administrator to configure access control at the
-    level of Access Contexts within a Tracked Resource Set. </p>
-  <p> For its part, the Server associates each of its Resources with an Access
-    Context, asserted in the representation of each Resource. This lets the Client
-    connect access control rules expressed in terms of Access Contexts with the
-    resource representations copied from the Server. Adding a resource to an
-    Access Context, or removing one from it, changes the RDF representation of the
-    resource. Like other changes affecting the RDF representation of the resource,
-    this change is reported as a Change Event in the Server's Tracked Resource
-    Set. This supports Clients working with Servers whose resources' Access
-    Contexts vary over time. </p>
-  <p class='note' title='TBD'> <strong>Editor: related to https://issues.oasis-open.org/browse/OSLCCORE-82. (img)</strong> </p>
-  <p> This set of Access Contexts within a Server can also change over time. Adding
-    a new Access Context Client will generally require an administrator to reconfigure
-    the Client against that Server. </p>
-  <section id='accAssociations'>
-    <h2>Associations between Resources and Access Contexts</h2>
-    <p> The RDF <code>oslc_acc:accessContext</code> property is used to indicate that a resource
-      belongs to an Access Context. The resource is the subject; the Access Context
-      is the object. </p>
-    <ul>
-      <li>Property Name: accessContext</li>
-      <li>Description: Access Context of the resource</li>
-      <li>Property URI: http://open-services.net/ns/core/acc#accessContext</li>
-    </ul>
-    <p> For example, the RDF statement (in Turtle): </p>
-    <pre class='example'>
-@prefix oslc_acc: &lt;http://open-services.net/ns/core/acc#&gt; .
-&lt;https://a.example.com/defect/2314&gt; oslc_acc:accessContext &lt;https://a.example.com/acclist#alpha&gt; .
-  </pre>
-    <p> declares the resource <code>https://a.example.com/defect/2314</code> to be in the Access Context <code>https://a.example.com/acclist#alpha</code>. </p>
-    <section id='accessContextPredicate'>
-      <p> A linked data
-        resource that is deemed (by the Server) to be in an Access Context MUST use
-        the <code>oslc_acc:accessContext</code> predicate in its RDF representation to
-        assert a relation between the linked data resource (subject) and an Access
-        Context. </p>
-    </section>
-    <p> For example, the above RDF statement embedded in the representation of
-      resource <code>https://a.example.com/defect/2314</code> asserts that this
-      resource is in Access
-      Context <code>https://a.example.com/acclist#alpha</code>. The RDF
-      representation of a linked data resource in several Access Contexts will have
-      multiple such RDF statements; for a linked data resource not in any Access
-      Context, there will be none. </p>
-  </section>
-  <section id='accList'>
-    <h2>Access Context List Resource</h2>
-    <p> If an Server uses Access Contexts within its resources, the Server MUST
-      provide an Access Context List resource. If a Server has more than one Tracked
-      Resource Set, it MUST designate an Access Context List resource for each
-      Tracked Resource Set; several Tracked Resource Sets MAY share the same Access
-      Context List resource. </p>
-    <p> The Access Context List resource is intended to be accessed by
-      administrator for the purpose of configuring a TRS Client that is working with
-      linked data obtained from that Server's Tracked Resource Set. The
-      representation of the Access Context resource is itself linked data. </p>
-    <section id='ildpGet'>
-      <p> The Server MUST support the use
-        of the HTTP GET method for the Access Context List resource. The Server SHOULD
-        require the use of TLS when making requests to the Access Context List
-        resource. The Server SHOULD require authentication for the Access Context List
-        resource, and SHOULD allow access only to users with administrative
-        privileges. The Server's response MUST support the JSON-LD media type
-        (application/ld+json), and MAY support other linked data representations. The
-        response SHOULD include an ETag header. </p>
-    </section>
-    <p> A client uses an HTTP GET request to retrieve a representation of the
-      Access Context List resource, specifying JSON-LD as an acceptable format. For
-      example: </p>
-    <pre class='example'>
-GET https://a.example.com/acclist HTTP/1.1
-Accept: application/ld+json
-Authorization: Basic [missing - admin user credentials]
-</pre>
-    <section id='accResponce'>
-      <p> The response MUST be a
-        JSON-LD format string with a node for the Access Context List along with a
-        node for each Access Context. The response SHOULD use the simple @graph form
-        with a default graph as shown in the example below. The response SHOULD use
-        the @context value shown below (i.e., as a boilerplate header), and SHOULD NOT
-        use other advanced JSON-LD features, since these can make the response more
-        difficult to understand for human readers who only know JSON, and more
-        difficult to processed programmatically by scripts without the benefit of a
-        full JSON-LD library. The node’s type property gives the type of the node -
-        either <code>oslc_acc:AccessContextList</code> or <code>oslc_acc:AccessContext</code>;
-        the node’s id property gives the Access Context URI; the title and description
-        properties give the title and description, respectively. </p>
-    </section>
-    <p> Example of a response: </p>
-    <pre class='example'>
-HTTP/1.1 200 OK
-Content-Type: application/ld+json;charset=UTF-8
-ETag: 68djsgg82
-{
-  &quot;@context&quot;: {
-    &quot;acc&quot;: &quot;http://open-services.net/ns/core/acc#&quot;,
-    &quot;id&quot;: &quot;@id&quot;,
-    &quot;type&quot;: &quot;@type&quot;,
-    &quot;title&quot;: &quot;http://purl.org/dc/terms/title&quot;,
-    &quot;description&quot;: &quot;http://purl.org/dc/terms/description&quot;
-  },
-  &quot;@graph&quot;: [{
-     &quot;id&quot;: &quot;https://a.example.com/acclist&quot;,
-     &quot;type&quot;: &quot;oslc_acc:AccessContextList&quot;
-    }, {
-     &quot;id&quot;: &quot;https://a.example.com/acclist#alpha&quot;,
-     &quot;type&quot;: &quot;oslc_acc:AccessContext&quot;,
-     &quot;title&quot;: &quot;Alpha&quot;,
-     &quot;description&quot;: &quot;Resources for Alpha project&quot;
-    }, {
-     &quot;id&quot;: &quot;https://a.example.com/acclist#beta&quot;,
-     &quot;type&quot;: &quot;oslc_acc:AccessContext&quot;,
-     &quot;title&quot;: &quot;Beta&quot;,
-     &quot;description&quot;: &quot;Resources for Beta project&quot;
-  }]
-}
-</pre>
-    <section id='uriStability' class='informative'>
-      <h2>URI Stability</h2>
-      <p> Access Context List and Access Context resources should have stable
-        URIs. When Access Context URIs are based on an Access Context List URI with
-        the addition of local id in the fragment (e.g., the Access Context
-        URI <code>https://a.example.com/acclist#alpha</code> is based on the Access
-        Context List URI <code>https://a.example.com/acclist</code>), the Server
-        should ensure that each Access Context has a stable local id that is unique
-        within the Access Context List. </p>
-    </section>
-  </section>
-</section>
-<section id='acc-examples' class='informative'>
-  <h2>Access Context Examples</h2>
-</section>
 <section id='vocabularies'>
   <h2>RDF Vocabularies</h2>
   <section id='trs-vocabulary' class='vocabulary'>
@@ -859,8 +625,8 @@ ETag: 68djsgg82
 </section>
 <section class='appendix informative'>
   <h2>Acknowledgements</h2>
-  <p> The following individuals have participated in the creation of this specification and are gratefully acknowledged: </p>
-  <p> <b>Participants</b>: </p>
+  <p>The following individuals have participated in the creation of this specification and are gratefully acknowledged: </p>
+  <p><b>Participants</b>: </p>
   <p style='margin-left: 40px'> James Amsden, IBM (Chair, Editor)<br />
     Frank Budinsky, IBM<br />
     Nick Crossley, IBM<br />
@@ -877,6 +643,12 @@ ETag: 68djsgg82
       <td width='96' valign='top' style='width:1.0in;border:solid windowtext 1.0pt; border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Date</b></td>
       <td width='144' valign='top' style='width:1.5in;border:solid windowtext 1.0pt; border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Editor</b></td>
       <td width='295' valign='top' style='width:221.4pt;border:solid windowtext 1.0pt; border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Changes Made</b></td>
+    </tr>
+    <tr>
+      <td>04</td>
+      <td>7/29/2019</td>
+      <td>Nick Crossley</td>
+      <td>Removed all access control information, and yet more informative guidance..</td>
     </tr>
     <tr>
       <td>03</td>
