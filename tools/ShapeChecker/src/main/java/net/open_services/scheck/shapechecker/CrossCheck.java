@@ -135,7 +135,7 @@ public class CrossCheck
             System.out.println("\nList of vocabulary terms:");
             termsInVocabs.keySet()
                 .stream()
-                .map(r->r.getLocalName())
+                .map(r->r.toString())
                 .sorted()
                 .forEachOrdered(s->System.out.printf("   %s%n",s));
         }
