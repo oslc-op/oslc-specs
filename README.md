@@ -9,7 +9,7 @@ Configuration Management, and all the various OSLC domain specifications.
 
 | Title | Description |Responsible|
 |-------|-------------|------|
-| **[Change Management 3.0 PSD 02](https://oslc-op.github.io/oslc-specs/specs/cm/change-mgt-spec.html)** | TBD | Andrew |
+| **[Change Management 3.0 PSD 02](https://oslc-op.github.io/oslc-specs/specs/cm/change-mgt-spec.html)** | This specification defines the OSLC Change Management domain, a RESTful web services interface for the management of product change requests, activities, tasks and relationships between those and related resources such as requirements, test cases, or architectural resources. To support these scenarios, this specification defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET, POST, PUT and DELETE, HTTP response codes, content type handling and resource formats. | Andrew |
 | **[Requirements Management 2.1 PSD 02](https://oslc-op.github.io/oslc-specs/specs/rm/requirements-management-spec.html)** | TBD | Jad |
 | [Quality Management 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/qm/quality-management-spec.html) | **PSD WIP** | Andrew |
 | [Core 3.0 WD](https://oslc-op.github.io/oslc-specs/specs/core/oslc-core.html) | A collection of specifications that defines the basic patterns, protocols and capabilities of OSLC clients and servers. **PSD WIP** | Jim |
