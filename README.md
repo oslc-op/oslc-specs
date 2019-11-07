@@ -53,6 +53,8 @@ automatically.**
 Read [how to contribute to the OSLC Open
 Project](https://github.com/oslc-op/oslc-admin/blob/master/CONTRIBUTING.md).
 
+**Call details: https://github.com/oslc-op/oslc-admin/blob/master/CONTRIBUTING.md#online-meetings**
+
 For this repository particularly, please ensure that your editor respects the
 [Editorconfig](https://editorconfig.org/#download) settings either by installing
 a plugin or copying the settings manually. Make sure your lines are wrapped!
