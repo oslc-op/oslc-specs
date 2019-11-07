@@ -93,6 +93,10 @@ public final class Terms
     @SCTerm(type=TermType.Class,description="A resource holding the check results for one property of one shape.")
     public static final Resource PropertyResult   = resource("PropertyResult");
 
+    /** Error class for a term with the wrong case. */
+    @SCIssue(issueSeverity=Warning,description="A vocabulary class must start with upper case, and a property with lower case.")
+    public static final Resource BadCase          = resource("BadCase");
+
     /** Error class for an oslc:impactType with an unknown value. */
     @SCIssue(issueSeverity=Error,description="Impact type must be one of oslc:UpstreamImpact, oslc:DownstreamImpact, oslc:SymmetricImpact, or oslc:NoImpact.")
     public static final Resource BadImpactType    = resource("BadImpactType");
@@ -116,6 +120,10 @@ public final class Terms
     /** Error class for a duplicate property value. */
     @SCIssue(issueSeverity=Error,description="This property name, definition, or oslc:describes is not unique.")
     public static final Resource Duplicate        = resource("Duplicate");
+
+    /** Error class for a duplicate property value. */
+    @SCIssue(issueSeverity=Warning,description="This label is not unique.")
+    public static final Resource DuplicateLabel   = resource("DuplicateLabel");
 
     /** Error class for a duplicate language-tagged string. */
     @SCIssue(issueSeverity=Error,description="Duplicate language on string literal.")
