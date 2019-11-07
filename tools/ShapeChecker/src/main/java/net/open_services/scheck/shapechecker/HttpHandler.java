@@ -116,7 +116,7 @@ public class HttpHandler
         {
             // Resource previously found
         }
-        else if (containsMatch(skipURIPatterns,httpUri.toString()))
+        else if (containsMatch(skipURIPatterns,httpUriOrig.toString()))
         {
             // Do not try to read or parse this
             if (debug)
@@ -172,6 +172,17 @@ public class HttpHandler
 
     private void fetchPlainHttpResource(URI httpUri) throws ShapeCheckException, IOException
     {
+        if (containsMatch(skipURIPatterns,httpUri.toString()))
+        {
+            // Do not try to read or parse this
+            if (debug)
+            {
+                System.err.println("Skipping reference check for "+httpUri);
+            }
+            httpResourceIsRDF.put(httpUri, false);
+            return;
+        }
+
         HttpGet get = new HttpGet(httpUri);
         if (debug)
         {
