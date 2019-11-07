@@ -9,17 +9,25 @@ Configuration Management, and all the various OSLC domain specifications.
 
 | Title | Description |Responsible|
 |-------|-------------|------|
-| [Change Management 3.0 WD](https://oslc-op.github.io/oslc-specs/specs/cm/change-mgt-spec.html) | **PSD 02** | Andrew |
-| [Core 3.0 WD](https://oslc-op.github.io/oslc-specs/specs/core/oslc-core.html) | A collection of specifications that defines the basic patterns, protocols and capabilities of OSLC clients and servers. **PSD WIP** | Jim |
+| **[Change Management 3.0 PSD 02](https://oslc-op.github.io/oslc-specs/specs/cm/change-mgt-spec.html)** | TBD | Andrew |
+| **[Requirements Management 2.1 PSD 02](https://oslc-op.github.io/oslc-specs/specs/rm/requirements-management-spec.html)** | TBD | Jad |
 | [Quality Management 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/qm/quality-management-spec.html) | **PSD WIP** | Andrew |
-| [Requirements Management 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/rm/requirements-management-spec.html) | **PSD WIP** | Jad |
+| [Core 3.0 WD](https://oslc-op.github.io/oslc-specs/specs/core/oslc-core.html) | A collection of specifications that defines the basic patterns, protocols and capabilities of OSLC clients and servers. **PSD WIP** | Jim |
+| [Configuration Management 1.0 WD](https://oslc-op.github.io/oslc-specs/specs/config/oslc-config-mgt.html) | Domain spec for managing versions and configurations of linked data resources from multiple domains. **PSD WIP** |Andrew|
 | [Tracked Resource Set 3.0 WD](https://oslc-op.github.io/oslc-specs/specs/trs/tracked-resource-set.html) | Allows servers to expose a set of resources whose state can be tracked by clients. **WD WIP** | Nick |
 | [Query 3.0 WD](https://oslc-op.github.io/oslc-specs/specs/query/oslc-query.html) | Defines a simple, implementation independent selection and projection query capability. | David |
-| [Configuration Management 1.0 WD](https://oslc-op.github.io/oslc-specs/specs/config/oslc-config-mgt.html) | Domain spec for managing versions and configurations of linked data resources from multiple domains. |Nick|
+| [AM 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/am/architecture-management-spec.html) | TBD | NA |
+
+
+Specs that are not actively developed (help needed!):
+
+| Title | Description |Responsible|
+|-------|-------------|------|
 | [Asset Management 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/asset/asset-management-spec.html) | TBD | NA |
 | [Automation 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/auto/automation-spec.html) | Domain spec for automation of sequences of actions on OSLC resources. | NA |
 | [Performance Monitoring 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/perfmon/performance-monitoring-spec.html) | TBD | NA |
 | [Estimation and Measurement Service 1.0 WD](https://oslc-op.github.io/oslc-specs/specs/ems/estimation-measurement-spec.html) | TBD | NA |
+| [Reconcilliation 2.0](https://oslc-op.github.io/oslc-specs/specs/recon/reconciliation-spec.html) | TBD | NA |
 
 ## Getting started
 
