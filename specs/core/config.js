@@ -1,5 +1,5 @@
 var specConfig = {
-  status: "PSD",
+  status: "WD",
   revision: "04",
   publishDate: '2019-12-20',
   previousPublishDate: "2018-05-31",
