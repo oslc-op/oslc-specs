@@ -1,7 +1,7 @@
 var specConfig = {
   status: "WD",
   revision: "04",
-  publishDate: null,
+  publishDate: '2019-12-20',
   previousPublishDate: "2018-05-31",
   previousMaturity: "CSPRD",
 };
