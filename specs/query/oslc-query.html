@@ -3,7 +3,7 @@
 
 <head>
   <title>OSLC Query Version 3.0</title>
-  <script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async
+  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.14/builds/respec-oasis-common.min.js' async
     class='remove'></script>
   <script class='remove'>
     var respecConfig = {
@@ -254,7 +254,7 @@
     </section>
 
 
-    <section id='terms' class='informative'>
+    <section id='terms'>
       <h3>Terminology</h3>
       <p>Terminology is based on OSLC Core Overview [[OSLCCore3]],
         W3C Linked Data Platform [[LDP]],
@@ -335,13 +335,15 @@
   </section>
 
 
-  <section>
+  <section class="informative" id="discovery">
     <h2>Discovering a Query Capability</h2>
-    <p class="conformance">
-      An <code>oslc:Service</code> MAY declare zero, one, or many query capabilities using the
-      <code>oslc:queryCapability</code> property.
-    </p>
-    <p><img src="images/CoreDiscoveryUML.png"></p>
+    Clients may discover query capabilities as described in [OSLC-Discovery-3.0] using the 
+    <code>oslc:queryCapability</code> property of an <code>oslc:Service</code>.
+    The relationship between these resources is shown in <a href="#Figure1">Figure 1</a>.
+    <div style="margin-left: 2em">
+      <img src="./images/CoreDiscoveryUML.png"></img>
+      <h4 id="Figure1">Figure 1 - OSLC discovery resources</h4>
+    </div>
 
     <p class="conformance">A query capability SHOULD specify exactly one <code>oslc:resourceShape</code> and that shape
       SHOULD describe the query result container.</p>
@@ -396,39 +398,39 @@
   <section>
     <h2>Using a Query Capability</h2>
 
-    Executing a query or search is achieved by executing either of the following:
+    Executing a query or search is achieved by performing either of the following:
     <ul>
       <li>a <code>GET</code> on the <i>query base</i> URI of a query capability, with zero, one or
-        more query parameters shown in the table below.
-        <p class="conformance">Servers MUST support a GET on the <i>query base</i> URI of a query capability.</p>
-        This is the simplest usage, but clients must be careful to avoid constructing URIs
-        whose length exceeds server limits.
-        <p class="conformance">If such a GET URI exceeds 1000 characters, clients SHOULD use the POST mechanism
-          described below.</p>
+        more query parameters shown in <a href="Table 1">Table 1</a>.
       </li>
       <li>a <code>POST</code> on the <i>query base</i> URI of a query capability with a
         <code>application/x-www-form-urlencoded</code> body containing zero, one or
-        more query parameters shown in the table below.
-        <p class="conformance">Servers SHOULD support <code>POST</code> on the <i>query base</i> URI of a query
-          capability
-          to avoid clients having to construct URIs that are too long.</p>
+        more query parameters shown in <a href="Table 1">Table 1</a>.
+
       </li>
     </ul>
+   
+    <p class="conformance">Servers MUST support a GET on the <i>query base</i> URI of a query capability.</p>
+        
+    <p class="conformance">Servers SHOULD support POST on the query base URI of a query capability to avoid
+      clients having to construct URIs that are too long for a GET.</p>
+      
+    <p class="conformance">A <code>GET</code> or <code>POST</code> request on a query capability MAY use zero, 
+      one or more of the OSLC query parameters listed in <a href="#table1">Table 1</a>.</p> 
 
+    <p class="conformance">Clients SHOULD use the POST mechanism described above if the URI of a GET
+      would otherwise be too long.</p>
 
     <p class="conformance">For a successful operation, the response status code MUST be <code>200 OK</code> for a
       non-paged result,
       or for an OSLC paged result.</p>
 
     <p class="conformance">For a successful operation, the response body MUST be RDF that includes a query result
-      container whose
-      subject is the query base URI.</p>
+      container whose subject is the query base URI.</p>
 
-    <p class="conformance">The <code>GET</code> or <code>POST</code> request MAY use zero, one or more of the OSLC query
-      parameters
-      listed in the table below.</p>
-    <br><br>
+
     <div style="margin-left: 2em">
+      <h4 id="Table1">Table 1 - OSLC Query Parameters</h4>
       <table class="query">
         <tr>
           <th>Parameter</th>
@@ -644,9 +646,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           <code>https://example.org/jts/users/deb</code>.
           This can be performed using a <code>GET</code> on
           <code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
-          query parameters shown in the table below:
-          <br><br>
+          query parameters shown in <a href="Table2">Table 2</a>:
           <div style="margin-left: 2em">
+            <h4 id="Table2">Table 2 - oslc.where parameter</h4>
             <table class="query">
               <tr>
                 <th>Parameter</th>
@@ -658,6 +660,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               </tr>
             </table>
           </div>
+          <p>
 
 
           <pre class="example" title="Query for all change requests created by Deb">
@@ -711,9 +714,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           <p>Suppose a client now wants to query for all change requests created by Deb that are not fixed.
             This can be performed using a <code>GET</code> on
             <code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
-            query parameters shown in the table below:</p>
-          <br><br>
+            query parameters shown in <a href="#table3">Table 3</a>:</p>
           <div style="margin-left: 2em">
+            <h4 id="Table3">Table 3 - oslc.where parameter</h4>
             <table class="query">
               <tr>
                 <th>Parameter</th>
@@ -726,7 +729,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             </table>
           </div>
 
-
+          <p>
           <pre class="example" title="Query for all change requests created by Deb that are not fixed">
     GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
         ?oslc.where=dcterms%3Acreator%3D%3Chttps%3A%2F%2Fexample.org%2Fjts%2Fusers%2Fdeb%3E%20and%20oslc_cm%3Afixed%3Dfalse
@@ -767,9 +770,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           show a query for change requests created by any user named "Deb". This can be performed using a
           <code>GET</code> on
           <code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
-          query parameters shown in the table below:
-          <br><br>
+          query parameters shown in <a href="Table4">Table 4</a>:
           <div style="margin-left: 2em">
+            <h4 id="Table4">Table 4 - oslc.where parameter</h4>
             <table class="query">
               <tr>
                 <th>Parameter</th>
@@ -781,7 +784,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               </tr>
             </table>
           </div>
-
+          <p>
           <pre class="example" title="Query for all change requests created by any user named 'Deb'">
     GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
         ?oslc.where=dcterms%3Acreator%20%7Bfoaf%3Aname%3D%22Deb%22%7D
@@ -870,8 +873,8 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             property for equality with one of several values can be achieved through the use of the " in " operator.
 
             For example, the following query expression might find change requests with severity "high" or "medium":
-            <br><br>
             <div style="margin-left: 2em">
+              <h4 id="Table5">Table 5 - oslc.where parameter</h4>
               <table class="query">
                 <tr>
                   <th>Parameter</th>
@@ -883,6 +886,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
                 </tr>
               </table>
             </div>
+            <p>
             <pre class="example">
             GET http://example.org/queryBase?oslc.where=oslc_cm%3Aseverity%20in%20%5B%22high%22%2C%22medium%22%5D
                 </pre>
@@ -896,6 +900,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             The <code>comparison_op</code> term represents one of the following binary comparison operators:
             <br><br>
             <div style="margin-left: 2em">
+              <h4 id="Table6">Table 6 - Binary Comparison Operators</h4>
               <table class="query">
                 <tr>
                   <td>=</td>
@@ -1001,6 +1006,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
         The table below shows the forms of <code>value</code> that might be used with a comparison operator, and
         which comparison operators must or may be supported, and their semantics.
         <p>
+          <h4 id="Table7">Table 7 - oslc.where Semantics</h4>
           <table class="query">
             <tr>
               <th>Value type</th>
@@ -1010,15 +1016,16 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             <tr>
               <td><code>rdf:XMLLiteral</code></td>
               <td class="conformance">
-                <p>An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the
+                <p>An <a href="https://www.w3.org/TR/rdf-concepts/#dfn-rdf-XMLLiteral">XMLLiteral</a>, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the
                   literal in the same way as a plain string literal with the data type removed such as
                   <code>"abc"</code>.</p>
                 <p>A plain string literal, such as <code>"abc"</code> MUST be supported. A server MAY treat the literal
                   in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.</p>
-                <p>An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MAY
-                  treat
-                  the literal in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.</p>
-                <p>Servers MAY validate the string for compliance to the XMLLiteral standard.</p>
+                <p>An xsd:string typed literal
+                  (see <a href="https://www.w3.org/TR/rdf11-concepts/#xsd-datatypes">RDF 1.1 Concepts and Abstract Syntax - The XML Schema Built-in Datatypes</a>), such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MAY
+                  treat the literal in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.</p>
+                <p>Servers MAY validate the string for compliance to the <a href="https://www.w3.org/TR/rdf-concepts/#dfn-rdf-XMLLiteral">XMLLiteral</a>
+                   standard.</p>
               </td>
               <td class="conformance">
                 <p>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
@@ -1043,7 +1050,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               <td><code>xsd:boolean</code></td>
               <td class="conformance">
                 <p>The values <code>true</code> and <code>false</code> MUST be supported.</p>
-                <p>The values <code>"true"^^xsd:boolean</code> and <code>"false"^^xsd:boolean</code>
+                <p>The <code>xsd:boolean</code>
+                  (see <a href="https://www.w3.org/TR/rdf11-concepts/#xsd-datatypes">RDF 1.1 Concepts and Abstract Syntax - The XML Schema Built-in Datatypes</a>)
+                  values <code>"true"^^xsd:boolean</code> and <code>"false"^^xsd:boolean</code>
                   MUST be supported and MUST have the same meaning as <code>true</code> and <code>false</code>
                   respectively.</p>
                 <p>The values <code>"true"</code> and <code>"false"</code> MAY be supported, and if so, MUST have the
@@ -1083,7 +1092,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
                 <p>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST
                   be
                   supported if the server supports <code>xsd:decimal</code> property values.</p>
-                <p>An <code>xsd:decimal</code> typed literal, such as <code>"42"^^xsd:decimal</code> or
+                <p>An <code>xsd:decimal</code> typed literal,
+                  (see <a href="https://www.w3.org/TR/rdf11-concepts/#xsd-datatypes">RDF 1.1 Concepts and Abstract Syntax - The XML Schema Built-in Datatypes</a>)
+                  such as <code>"42"^^xsd:decimal</code> or
                   <code>"42.0"^^xsd:decimal</code>, MUST be supported if the server supports <code>xsd:decimal</code>
                   property values.</p>
                 <p>A plain string literal with a decimal value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be
@@ -1104,7 +1115,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
                 <p>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST
                   be
                   supported if the server supports <code>xsd:double</code> property values.</p>
-                <p>An <code>xsd:double</code> typed literal, such as <code>"42"^^xsd:double</code> or
+                <p>An <code>xsd:double</code> typed literal,
+                  (see <a href="https://www.w3.org/TR/rdf11-concepts/#xsd-datatypes">RDF 1.1 Concepts and Abstract Syntax - The XML Schema Built-in Datatypes</a>)
+                  such as <code>"42"^^xsd:double</code> or
                   <code>"42.0"^^xsd:double</code>, MUST be supported if the server supports <code>xsd:double</code>
                   property values.</p>
                 <p>A plain string literal with a double value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be
@@ -1125,7 +1138,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
                 <p>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST
                   be
                   supported if the server supports <code>xsd:float</code> property values.</p>
-                <p>An <code>xsd:float</code> typed literal, such as <code>"42"^^xsd:float</code> or
+                <p>An <code>xsd:float</code> typed literal, 
+                  (see <a href="https://www.w3.org/TR/rdf11-concepts/#xsd-datatypes">RDF 1.1 Concepts and Abstract Syntax - The XML Schema Built-in Datatypes</a>)
+                  such as <code>"42"^^xsd:float</code> or
                   <code>"42.0"^^xsd:float</code>, MUST be supported if the server supports <code>xsd:float</code>
                   property values.</p>
                 <p>A plain string literal with a float value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be
@@ -1144,7 +1159,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               <td><code>xsd:integer</code></td>
               <td class="conformance">
                 <p>Decimal literals without a decimal point, such as <code>42</code>, MUST be supported.</p>
-                <p>An <code>xsd:integer</code> typed literal, such as <code>"42"^^xsd:integer</code>, MUST be supported.
+                <p>An <code>xsd:integer</code> typed literal, 
+                  (see <a href="https://www.w3.org/TR/rdf11-concepts/#xsd-datatypes">RDF 1.1 Concepts and Abstract Syntax - The XML Schema Built-in Datatypes</a>)
+                  such as <code>"42"^^xsd:integer</code>, MUST be supported.
                 </p>
                 <p>An <code>xsd:decimal</code> typed literal without a decimal point, such as
                   <code>"42"^^xsd:decimal</code>,
@@ -1166,11 +1183,13 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               <td><code>xsd:string</code></td>
               <td class="conformance">
                 <p>A plain string literal, such as <code>"abc"</code> MUST be supported.</p>
-                <p>An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MUST
+                <p>An xsd:string typed literal, 
+                  (see <a href="https://www.w3.org/TR/rdf11-concepts/#xsd-datatypes">RDF 1.1 Concepts and Abstract Syntax - The XML Schema Built-in Datatypes</a>)
+                  such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MUST
                   treat
                   the literal in the same way as an plain string literal string such as <code>"abc"</code>.</p>
-                <p>An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the
-                  literal
+                <p>An <a href="https://www.w3.org/TR/rdf-concepts/#dfn-rdf-XMLLiteral">XMLLiteral</a>,
+                  such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the literal
                   in the same way as a plain literal string such as <code>"abc"</code>.</p>
                 <p>A string with a language tag, such as <code>"abc"@en</code>, MAY be supported. The string MAY be
                   treated
@@ -1283,8 +1302,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 
       For example, the following query returns the high severity change requests
       that deal with database performance:
-      <br><br>
+     
       <div style="margin-left: 2em">
+        <h4 id="Table8">Table 8 - query parameters</h4>
         <table class="query">
           <tr>
             <th>Parameter</th>
@@ -1300,7 +1320,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           </tr>
         </table>
       </div>
-
+      <p>
 
       <pre class="example">
     GET http://example.org/queryBase?oslc.where=oslc_cm%3Aseverity%3D%22high%22
@@ -1357,9 +1377,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             where " + " means ascending order and " -" means descending order. The following example sorts the high
             severity change requests by
             the name of the creator, with most recently created first:</p>
-
-          <br><br>
+            
           <div style="margin-left: 2em">
+            <h4 id="Table9">Table 9 - query parameters</h4>
             <table class="query">
               <tr>
                 <th>Parameter</th>
@@ -1377,7 +1397,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           </div>
 
 
-
+          <p>
           <pre class="example"
             title="Sort high severity change requests created by creator name, and created date-time">
     GET http://example.org/queryBase
@@ -1447,8 +1467,8 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
         <p>For example, the following query finds the change requests created by any user named "Deb" and includes the
           <code>dcterms:title</code> and <code>dcterms:creator</code> for each change request found by the query and the
           <code>foaf:name</code>code> of the person that last modified the change request.
-          <br><br>
           <div style="margin-left: 2em">
+            <h4 id="Table10">Table 10 - query parameters</h4>
             <table class="query">
               <tr>
                 <th>Parameter</th>
@@ -1464,7 +1484,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               </tr>
             </table>
           </div>
-
+          <p>
           <pre class="example" title="Query for all change requests created by any user named 'Deb'">
 GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
     ?oslc.where=dcterms%3Acreator%20%7Bfoaf%3Aname%3D%22Deb%22%7D
