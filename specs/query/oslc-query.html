@@ -3,7 +3,7 @@
 
 <head>
   <title>OSLC Query Version 3.0</title>
-  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.14/builds/respec-oasis-common.min.js' async
+  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.15/builds/respec-oasis-common.min.js' async
     class='remove'></script>
   <script class='remove'>
     var wdBase = "https://oslc-op.github.io/oslc-specs/specs/query/";
@@ -50,7 +50,7 @@
 
       // if there a publicly available Editor's Draft, this is the link
       edDraftURI: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-query.html",
-      thisVersion: thisBase + "oslc-query.html",
+      thisVersion: wdBase + "oslc-query.html",
       prevVersion : "http://docs.oasis-open.org/oslc-core/oslc-query/v3.0/csprd01/oslc-query-v3.0-csprd01.html",
       latestVersion: oasisBase + "oslc-query.html",
       latestSpecVersion: "https://open-services.net/spec/query/latest",
@@ -131,29 +131,15 @@
         },
         "OSLC-Core-30-Part1": {
           title: "OSLC Core Version 3.0. Part 1: Overview",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+          href: "https://oslc-op.github.io/oslc-specs/specs/core/oslc-core.html",
           authors: ["Steve Speicher", "Jim Amsden"],
-          publisher: "OASIS",
-        },
-        "OSLC-CoreVocab-30": {
-          title: "OSLC Core Vocabulary",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
-          authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
-          status: "Working Draft",
           publisher: "OASIS",
         },
         "OSLC-Discovery-30": {
           title: "OSLC Core Version 3.0. Part 2: Discovery",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part2-discovery.html",
+          href: "https://oslc-op.github.io/oslc-specs/specs/core/discovery.html",
           authors: ["Jim Amsden", "Martin Sarabura"],
           status: "Working Draft",
-          publisher: "OASIS",
-        },
-        "OSLCResourcePreview": {
-          title: "OSLC Core 3.0 Resource Preview",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part3-resource-preview.html",
-          authors: ["Jim Amsden", "S. Speicher"],
-          status: "Draft",
           publisher: "OASIS",
         },
         "OSLCTRS3": {
@@ -201,9 +187,9 @@
           status: "Final",
           publisher: "http://open-services.net",
         },
-        "EBNF": {
-          title: "Extended Backus–Naur form",
-          href: "https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form",
+        "BNF": {
+          title: "Backus–Naur form",
+          href: "https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form",
           publisher: "https://en.wikipedia.org"
         },
         "FULLTEXT-SEARCH": {
@@ -434,25 +420,25 @@
 
     Executing a query or search is achieved by performing either of the following:
     <ul>
-      <li>a <code>GET</code> on the <i>query base</i> URI of a query capability, with zero, one or
+      <li>a <code>GET</code> on the <code>oslc:queryBase</code> of a query capability, with zero, one or
         more query parameters shown in <a href="#Table1">Table 1</a>.
       </li>
-      <li>a <code>POST</code> on the <i>query base</i> URI of a query capability with a
+      <li>a <code>POST</code> on the <code>oslc:queryBase</code> of a query capability with a
         <code>application/x-www-form-urlencoded</code> body containing zero, one or
         more query parameters shown in <a href="#Table1">Table 1</a>.
 
       </li>
     </ul>
    
-    <p class="conformance">Servers MUST support a GET on the <i>query base</i> URI of a query capability.</p>
+    <p class="conformance">Servers MUST support a GET on the <code>oslc:queryBase</code> of a query capability.</p>
         
-    <p class="conformance">Servers SHOULD support POST on the query base URI of a query capability to avoid
+    <p class="conformance">Servers SHOULD support POST on the <code>oslc:queryBase</code> of a query capability to avoid
       clients having to construct URIs that are too long for a GET.</p>
       
-    <p class="conformance">A <code>GET</code> or <code>POST</code> request on a query capability MAY use zero, 
+    <p class="conformance">A <code>GET</code> or <code>POST</code> request on the <code>oslc:queryBase</code> of a query capability MAY use zero, 
       one or more of the OSLC query parameters listed in <a href="#Table1">Table 1</a>.</p> 
 
-    <p class="conformance">Clients SHOULD use the POST mechanism described above if the URI of a GET
+    <p >Clients should use the POST mechanism described above if the URI of a GET
       would otherwise be too long.</p>
 
     <p class="conformance">For a successful operation, the response status code MUST be <code>200 OK</code> for a
@@ -460,7 +446,7 @@
       or for an OSLC paged result.</p>
 
     <p class="conformance">For a successful operation, the response body MUST be RDF that includes a query result
-      container whose subject is the query base URI.</p>
+      container whose subject is the <code>oslc:queryBase</code>.</p>
 
 
     <div style="margin-left: 2em">
@@ -499,18 +485,18 @@
         <tr>
           <td><code>oslc.paging</code></td>
           <td>Specifies whether a paged result is requested.
-            See <code>Resource paging</code> in [[OSLC-Core-30-Part1]]
+            See <i>Resource paging</i> in [[OSLC-Core-30-Part1]]
             and <a href="#oslc.paging">oslc.paging</a> for details.</td>
         </tr>
         <tr>
           <td><code>oslc.pageSize</code></td>
           <td>Specifies a suggested maximum page size for a paged result.
-            See <code>Resource paging</code> in [[OSLC-Core-30-Part1]]
+            See <i>Resource paging</i> in [[OSLC-Core-30-Part1]]
             and <a href="#oslc.pageSize">oslc.pageSize</a> for details..</td>
         </tr>
       </table>
     </div>
-    <p class="conformance">If a GET or POST on a query base URI neither specifies <code>oslc.where</code> nor
+    <p class="conformance">If a GET or POST on a <code>oslc:queryBase</code> neither specifies <code>oslc.where</code> nor
       <code>oslc.searchTerms</code>,
       the server MUST return a query response describing all the resources that have one or more of the RDF types
       specified by
@@ -524,9 +510,9 @@
   <section>
     <h2>Query Result Containers</h2>
 
-    <p class="conformance">The response body for a successful <code>GET</code> or <code>POST</code> on a query base URI
+    <p class="conformance">The response body for a successful <code>GET</code> or <code>POST</code> on a <code>oslc:queryBase</code>
       MUST
-      include a query result container whose subject is the query base URI.</p>
+      include a query result container whose subject is the <code>oslc:queryBase</code> URI.</p>
 
     <p class="conformance">The container SHOULD be a <i>Linked Data Platform Container</i> (LDPC) referencing each
       member
@@ -626,7 +612,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 
       <p>This specification formally defines the syntax of the <code>oslc.where</code>, <code>oslc.searchTerms</code>,
         and
-        <code>oslc.orderBy</code> parameters using Extended Backus-Naur Form [[EBNF]] and informally illustrates their
+        <code>oslc.orderBy</code> parameters using Backus-Naur Form [[BNF]] and informally illustrates their
         semantics
         with simple examples. See <a href="#oslc.where.syntax">oslc.where syntax</a>, <a
           href="#oslc.searchTerms.syntax">oslc.searchTerms syntax</a>,
@@ -665,7 +651,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           matching the query expression. It is serves a similar purpose to the <code>WHERE</code> clause of a SQL
           statement.</p>
 
-        <p>For example, suppose that a change management system provides a query capability with a query base of
+        <p>For example, suppose that a change management system provides a query capability with a <code>oslc:queryBase</code> of
           <code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code>,
           and a client wants to query for all change requests created by the user
           <code>https://example.org/jts/users/deb</code>.
@@ -1748,7 +1734,7 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
   <section id="ErrorHandling">
     <h2>Error Handling</h2>
 
-    <p class="conformance">If a <code>GET</code> or <code>POST</code> of a query base URI cannot be executed, the
+    <p class="conformance">If a <code>GET</code> or <code>POST</code> of a <code>oslc:queryBase</code> cannot be executed, the
       response MUST include a response
       body whose RDF contains at least one <code>oslc:Error</code> describing the cause of the error.</p>
 
