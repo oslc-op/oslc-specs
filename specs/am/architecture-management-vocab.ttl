@@ -1,4 +1,16 @@
-# Template Vocabulary document for OSLC Specifications
+# Copyright 2019 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 @prefix dcterms:     <http://purl.org/dc/terms/> .
 @prefix owl:         <http://www.w3.org/2002/07/owl#> .
@@ -10,6 +22,7 @@
 @prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
 
 @prefix oslc_am:    <http://open-services.net/ns/am#> .
+@prefix jazz_am:    <http://jazz.net/ns/dm/linktypes#> .
 
 # The ontology
 
@@ -19,14 +32,9 @@ oslc_am:
     dcterms:description  "All vocabulary URIs defined in the OSLC Architecture Management (AM) namespace."^^rdf:XMLLiteral ;
     dcterms:title        "The OSLC Architecture Management(AM) Vocabulary" ;
     vann:preferredNamespacePrefix  "oslc_am" ;
-
     # This needs to refer to the published source of the vocabulary, in the OASIS document library
-    dcterms:source                 <http://docs.oasis-open.org/am/am.ttl> ;
-
-    # TBD - what should the license and copyright info be here?
-    dcterms:license                "TBD" ;
-    dcterms:dateCopyrighted        "2012-2016" ;
-    rdfs:seeAlso                   <http://docs.oasis-open.org/oslc-domains/> .
+    dcterms:source        <https://github.com/oslc-op/oslc-specs/blob/master/specs/am/architecture-management-vocab.ttl> ;
+    rdfs:seeAlso          <https://github.com/oslc-op/oslc-specs/tree/master/specs/am> .
 
 
 oslc_am:Resource
@@ -41,3 +49,40 @@ oslc_am:LinkType
         rdfs:isDefinedBy  oslc_am: ;
         rdfs:label        "Link Type" .
 
+# Link properties that are in common use. 
+
+jazz_am:trace
+      a       rdf:Property ;
+      rdfs:comment "The model element has a trace to the requirement (e.g. An attribute or its value are traced to a requirement)." ;
+      rdfs:isDefinedBy jazz_am: ;
+      rdfs:label "trace" .
+
+jazz_am:satisfy
+      a       rdf:Property ;
+      rdfs:comment "The model element satisfies the requirement (e.g. The use case satisfies a functional requirement)." ;
+      rdfs:isDefinedBy jazz_am: ;
+      rdfs:label "satisfy" .
+
+jazz_am:derives
+      a       rdf:Property ;
+      rdfs:comment "The resource that derives from another resource originated from or is significantly influenced by the referenced resource. For example a model element derives from a requirement." ;
+      rdfs:isDefinedBy jazz_am: ;
+      rdfs:label "derives" .
+
+jazz_am:refine
+      a       rdf:Property ;
+      rdfs:comment "The target is a refinement of the source. (e.g. a use case scenario might be a refinement of a textual requirement that describes the interaction)." ;
+      rdfs:isDefinedBy jazz_am: ;
+      rdfs:label "refine" .
+
+jazz_am:elaborates
+      a       rdf:Property ;
+      rdfs:comment "This resource elaborates the referenced resource." ;
+      rdfs:isDefinedBy jazz_am: ;
+      rdfs:label "elaborates" .
+
+jazz_am:external
+      a       rdf:Property ;
+      rdfs:comment "A generic link from a resource to an external web page." ;
+      rdfs:isDefinedBy jazz_am: ;
+      rdfs:label "external" .
