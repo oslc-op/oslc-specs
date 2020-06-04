@@ -1,0 +1,250 @@
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix oslc_acc: <http://open-services.net/ns/core/acc#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix oslc_config: <http://open-services.net/ns/config#> .
+@prefix oslc_rm: <http://open-services.net/ns/rm#> .
+@prefix acp:   <http://jazz.net/ns/acp#> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
+@prefix oslc_qm: <http://open-services.net/ns/qm#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml:   <http://www.w3.org/XML/1998/namespace> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix qm_shapes: <https://open-services.net/ns/qm/shapes/ps01#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix oslc_cm: <http://open-services.net/ns/cm#> .
+
+qm_shapes:TestPlan  a           oslc:ResourceShape ;
+        oslc:describes          oslc_qm:TestPlan ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              false ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "created" ;
+                                  oslc:occurs              oslc:Zero-or-one ;
+                                  oslc:propertyDefinition  dcterms:created ;
+                                  oslc:readOnly            true ;
+                                  oslc:valueType           xsd:dateTime ;
+                                  dcterms:description      "Timestamp of resource creation (reference: Dublin Core)." ;
+                                  dcterms:title            "Created"@en , "Created"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              true ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "serviceProvider" ;
+                                  oslc:occurs              oslc:Zero-or-many ;
+                                  oslc:propertyDefinition  oslc:serviceProvider ;
+                                  oslc:range               oslc:ServiceProvider ;
+                                  oslc:readOnly            true ;
+                                  oslc:representation      oslc:Reference ;
+                                  oslc:valueShape          oslc:ServiceProvider ;
+                                  oslc:valueType           oslc:Resource ;
+                                  dcterms:description      "The scope of a resource is a link to the resource's OSLC Service Provider." ;
+                                  dcterms:title            "Service Provider"@en , "Service Provider"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              true ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "type" ;
+                                  oslc:occurs              oslc:Zero-or-many ;
+                                  oslc:propertyDefinition  rdf:type ;
+                                  oslc:range               oslc_qm:TestPlan ;
+                                  oslc:readOnly            true ;
+                                  oslc:representation      oslc:Reference ;
+                                  oslc:valueType           oslc:Resource ;
+                                  dcterms:description      "The resource type URIs." ;
+                                  dcterms:title            "Type"@en , "Type"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              true ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "instanceShape" ;
+                                  oslc:occurs              oslc:Zero-or-one ;
+                                  oslc:propertyDefinition  oslc:instanceShape ;
+                                  oslc:range               oslc:ResourceShape ;
+                                  oslc:readOnly            true ;
+                                  oslc:representation      oslc:Reference ;
+                                  oslc:valueShape          oslc:ResourceShape ;
+                                  oslc:valueType           oslc:Resource ;
+                                  dcterms:description      "Resource Shape that provides hints as to resource property value-types and allowed values." ;
+                                  dcterms:title            "Instance Shape"@en , "Instance Shape"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              true ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "shortId" ;
+                                  oslc:occurs              oslc:Exactly-one ;
+                                  oslc:propertyDefinition  oslc:shortId ;
+                                  oslc:readOnly            true ;
+                                  oslc:valueType           xsd:integer ;
+                                  dcterms:description      "A short identifier for the resource.  Typically the integer shown in the web UI." ;
+                                  dcterms:title            "Short id"@en , "Short id"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              false ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "usesTestCase" ;
+                                  oslc:occurs              oslc:Zero-or-many ;
+                                  oslc:propertyDefinition  oslc_qm:usesTestCase ;
+                                  oslc:range               oslc_qm:TestCase ;
+                                  oslc:readOnly            false ;
+                                  oslc:representation      oslc:Either ;
+                                  oslc:valueShape          <https://localhost:9443/jazz/oslc_qm/contexts/_stJVgGfqEd24KMoDcFLfcQ/shape/resource/com.ibm.rqm.planning.VersionedTestCase> ;
+                                  oslc:valueType           oslc:Resource ;
+                                  dcterms:description      "Test Case used by the Test Plan. It is likely that the target resource will be an oslc_qm:TestCase but that is not necessarily the case." ;
+                                  dcterms:title            "Uses Test Case"@en , "Uses Test Case"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              false ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "title" ;
+                                  oslc:occurs              oslc:Exactly-one ;
+                                  oslc:propertyDefinition  dcterms:title ;
+                                  oslc:readOnly            false ;
+                                  oslc:valueType           rdf:XMLLiteral ;
+                                  dcterms:description      "Title (reference: Dublin Core) of the resource represented as rich text in XHTML content. SHOULD include only content that is valid inside an XHTML <span> element." ;
+                                  dcterms:title            "Title"@en , "Title"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              true ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "relation" ;
+                                  oslc:occurs              oslc:Zero-or-many ;
+                                  oslc:propertyDefinition  dcterms:relation ;
+                                  oslc:readOnly            true ;
+                                  oslc:representation      oslc:Reference ;
+                                  oslc:valueType           oslc:Resource ;
+                                  dcterms:description      "Related resource or resources to the resource." ;
+                                  dcterms:title            "Relation"@en , "Relation"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              false ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "contributor" ;
+                                  oslc:occurs              oslc:Zero-or-many ;
+                                  oslc:propertyDefinition  dcterms:contributor ;
+                                  oslc:range               foaf:Person ;
+                                  oslc:readOnly            false ;
+                                  oslc:representation      oslc:Either ;
+                                  oslc:valueShape          foaf:Person ;
+                                  oslc:valueType           oslc:AnyResource ;
+                                  dcterms:description      "Contributor or contributors to resource (reference: Dublin Core). It is likely that the target resource will be an foaf:Person but that is not necessarily the case." ;
+                                  dcterms:title            "Contributor"@en , "Contributor"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              false ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "modified" ;
+                                  oslc:occurs              oslc:Zero-or-one ;
+                                  oslc:propertyDefinition  dcterms:modified ;
+                                  oslc:readOnly            true ;
+                                  oslc:valueType           xsd:dateTime ;
+                                  dcterms:description      "Timestamp of latest resource modification (reference: Dublin Core)." ;
+                                  dcterms:title            "Modified"@en , "Modified"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              true ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "accessControl" ;
+                                  oslc:occurs              oslc:Zero-or-one ;
+                                  oslc:propertyDefinition  acp:accessControl ;
+                                  oslc:readOnly            true ;
+                                  oslc:representation      oslc:Reference ;
+                                  oslc:valueType           oslc:Resource ;
+                                  dcterms:description      "The Access Control point resource for the test artifact." ;
+                                  dcterms:title            "Access Control"@en , "Access Control"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              false ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "runsOnTestEnvironment" ;
+                                  oslc:occurs              oslc:Zero-or-many ;
+                                  oslc:propertyDefinition  oslc_qm:runsOnTestEnvironment ;
+                                  oslc:range               oslc_qm:TestExecutionRecord ;
+                                  oslc:readOnly            false ;
+                                  oslc:representation      oslc:Reference ;
+                                  oslc:valueShape          <https://localhost:9443/jazz/oslc_qm/contexts/_stJVgGfqEd24KMoDcFLfcQ/shape/resource/com.ibm.rational.test.lm.AssetConfiguration> ;
+                                  oslc:valueType           oslc:Resource ;
+                                  dcterms:description      "The test environment that the Test Plan will be run on." ;
+                                  dcterms:title            "Runs on Test Environment"@en , "Runs on Test Environment"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              true ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "accessContext" ;
+                                  oslc:occurs              oslc:Zero-or-one ;
+                                  oslc:propertyDefinition  oslc_acc:accessContext ;
+                                  oslc:readOnly            true ;
+                                  oslc:representation      oslc:Reference ;
+                                  oslc:valueType           oslc:Resource ;
+                                  dcterms:description      "The Project level Access Context resource for the test artifact." ;
+                                  dcterms:title            "Access Context"@en , "Access Context"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              false ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "validatesRequirementCollection" ;
+                                  oslc:occurs              oslc:Zero-or-many ;
+                                  oslc:propertyDefinition  oslc_qm:validatesRequirementCollection ;
+                                  oslc:range               oslc_rm:RequirementCollection ;
+                                  oslc:readOnly            false ;
+                                  oslc:representation      oslc:Reference ;
+                                  oslc:valueShape          oslc_rm:RequirementCollection ;
+                                  oslc:valueType           oslc:Resource ;
+                                  dcterms:description      "Requirement Collection that is validated by the Test Plan. It is likely that the target resource will be an oslc_rm:RequirementCollection but that is not necessarily the case." ;
+                                  dcterms:title            "Validates Requirement Collection"@en , "Validates Requirement Collection"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              false ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "creator" ;
+                                  oslc:occurs              oslc:Zero-or-many ;
+                                  oslc:propertyDefinition  dcterms:creator ;
+                                  oslc:range               foaf:Person ;
+                                  oslc:readOnly            true ;
+                                  oslc:representation      oslc:Either ;
+                                  oslc:valueShape          foaf:Person ;
+                                  oslc:valueType           oslc:AnyResource ;
+                                  dcterms:description      "Creator or creators of resource (reference: Dublin Core). It is likely that the target resource will be an foaf:Person but that is not necessarily the case." ;
+                                  dcterms:title            "Creator"@en , "Creator"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              true ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "identifier" ;
+                                  oslc:occurs              oslc:Exactly-one ;
+                                  oslc:propertyDefinition  dcterms:identifier ;
+                                  oslc:readOnly            true ;
+                                  oslc:valueType           xsd:string ;
+                                  dcterms:description      "A unique identifier for a resource. Assigned by the service provider when a resource is created. Not intended for end-user display." ;
+                                  dcterms:title            "Identifier"@en , "Identifier"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              false ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "description" ;
+                                  oslc:occurs              oslc:Zero-or-one ;
+                                  oslc:propertyDefinition  dcterms:description ;
+                                  oslc:readOnly            false ;
+                                  oslc:valueType           rdf:XMLLiteral ;
+                                  dcterms:description      "Descriptive text (reference: Dublin Core) about resource represented as rich text in XHTML content. SHOULD include only content that is valid and suitable inside an XHTML <div> element." ;
+                                  dcterms:title            "Description"@en , "Description"
+                                ] ;
+        oslc:property           [ a                        oslc:Property ;
+                                  oslc:hidden              false ;
+                                  oslc:isMemberProperty    false ;
+                                  oslc:name                "relatedChangeRequest" ;
+                                  oslc:occurs              oslc:Zero-or-many ;
+                                  oslc:propertyDefinition  oslc_qm:relatedChangeRequest ;
+                                  oslc:range               oslc_cm:ChangeRequest ;
+                                  oslc:readOnly            false ;
+                                  oslc:representation      oslc:Reference ;
+                                  oslc:valueShape          oslc_cm:ChangeRequest ;
+                                  oslc:valueType           oslc:Resource ;
+                                  dcterms:description      "A related change request. It is likely that the target resource will be an oslc_cm:ChangeRequest but that is not necessarily the case." ;
+                                  dcterms:title            "Related Change Request"@en , "Related Change Request"
+                                ] ;
+        oslc:serviceProvider    <https://localhost:9443/jazz/oslc_qm/contexts/_stJVgGfqEd24KMoDcFLfcQ/services.xml> ;
+        oslc_acc:accessContext  <https://localhost:9443/jazz/acclist#_stJVgGfqEd24KMoDcFLfcQ> ;
+        dcterms:description     "Defines the overall process and strategy for testing a system." ;
+        dcterms:title           "QM Test Plan" , "QM Test Plan"@en .
