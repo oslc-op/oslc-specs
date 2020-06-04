@@ -15,12 +15,19 @@ import java.util.stream.Collectors;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.RedirectStrategy;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.HttpEntityWrapper;
+import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicHeader;
@@ -63,17 +70,80 @@ public class HttpHandler
                 .setDefaultHeaders(Collections.singletonList(header))
                 .build();
 
+        // Seems like Jena has a bug of ignoring the RDFParserBuilder Accept header,
+        // and Dublin Core uses an arcane set of redirects including 308, not handled by Apache by default,
+        // so we need to configure our HttpClient very carefully!
         Header rdfHeader = new BasicHeader(HttpHeaders.ACCEPT, RDF_CONTENT_TYPES);
         rdfClient = HttpClientBuilder
             .create()
-            .setRedirectStrategy(new LaxRedirectStrategy())
+            .setRedirectStrategy(redirect308())
             .setDefaultHeaders(Collections.singletonList(rdfHeader))
-            // seems like Jena has a bug of ignoring the RDFParserBuilder Accept header
             .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> request.addHeader(HttpHeaders.ACCEPT, RDF_CONTENT_TYPES))
             // for debugging redirects
-            .addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.out.println(response.toString()))
-            .addInterceptorLast(this::responseInterceptor)
+            //.addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.out.println(response.toString()))
+            //.addInterceptorLast(this::responseInterceptor)
             .build();
+    }
+
+
+    //CSOFF AnonInnerLength
+    private static RedirectStrategy redirect308()
+    {
+        return new DefaultRedirectStrategy()
+            {
+                @Override
+                public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context)
+                {
+                    int statusCode = response.getStatusLine().getStatusCode();
+                    switch (statusCode)
+                    {
+                    case 301:
+                    case 302:
+                    case 303:
+                    case 307:
+                    case 308:
+                        return true;
+                    case 304:
+                    case 305:
+                    case 306:
+                    default:
+                        return false;
+                    }
+                }
+
+
+                @Override
+                public HttpUriRequest getRedirect(HttpRequest request, HttpResponse response, HttpContext context)
+                        throws ProtocolException
+                {
+                    URI uri = this.getLocationURI(request, response, context);
+                    String method = request.getRequestLine().getMethod();
+                    if (method.equalsIgnoreCase("HEAD"))
+                    {
+                        return new HttpHead(uri);
+                    }
+                    else if (method.equalsIgnoreCase("GET"))
+                    {
+                        return new HttpGet(uri);
+                    }
+                    else
+                    {
+                        int status = response.getStatusLine().getStatusCode();
+                        HttpUriRequest toReturn = null;
+                        if (status == 307 || status == 308)
+                        {
+                            toReturn = RequestBuilder.copy(request).setUri(uri).build();
+                            // Workaround for an apparent bug in HttpClient
+                            toReturn.removeHeaders("Content-Length");
+                        }
+                        else
+                        {
+                            toReturn = new HttpGet(uri);
+                        }
+                        return toReturn;
+                    }
+                }
+            };
     }
 
 
@@ -81,6 +151,17 @@ public class HttpHandler
     {
         HttpEntityWrapper wrapper = new BufferedHttpEntity(response.getEntity());
         response.setEntity(wrapper);
+
+        // Print response code
+        System.out.println(response.getStatusLine());
+
+        // Print http response headers
+        for (Header hdr : response.getAllHeaders())
+        {
+            System.out.printf("%s: %s%n", hdr.getName(), hdr.getValue());
+        }
+
+        // Print http response content
         try (BufferedReader rdr = new BufferedReader(new InputStreamReader(wrapper.getContent())))
         {
             System.out.println(rdr.lines().collect(Collectors.joining("\n")));
