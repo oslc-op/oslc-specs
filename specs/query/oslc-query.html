@@ -3,7 +3,7 @@
 
 <head>
   <title>OSLC Query Version 3.0</title>
-  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.14/builds/respec-oasis-common.min.js' async
+  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.15/builds/respec-oasis-common.min.js' async
     class='remove'></script>
   <script class='remove'>
     var wdBase = "https://oslc-op.github.io/oslc-specs/specs/query/";
@@ -50,7 +50,7 @@
 
       // if there a publicly available Editor's Draft, this is the link
       edDraftURI: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/oslc-query.html",
-      thisVersion: thisBase + "oslc-query.html",
+      thisVersion: wdBase + "oslc-query.html",
       prevVersion : "http://docs.oasis-open.org/oslc-core/oslc-query/v3.0/csprd01/oslc-query-v3.0-csprd01.html",
       latestVersion: oasisBase + "oslc-query.html",
       latestSpecVersion: "https://open-services.net/spec/query/latest",
@@ -129,24 +129,17 @@
           status: "Finalized",
           publisher: "http://open-services.net",
         },
-        "OSLCCore3": {
-          title: "OSLC Core 3.0",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+        "OSLC-Core-30-Part1": {
+          title: "OSLC Core Version 3.0. Part 1: Overview",
+          href: "https://oslc-op.github.io/oslc-specs/specs/core/oslc-core.html",
           authors: ["Steve Speicher", "Jim Amsden"],
           publisher: "OASIS",
         },
-        "OSLCCoreVocab": {
-          title: "OSLC Core Vocabulary",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
-          authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+        "OSLC-Discovery-30": {
+          title: "OSLC Core Version 3.0. Part 2: Discovery",
+          href: "https://oslc-op.github.io/oslc-specs/specs/core/discovery.html",
+          authors: ["Jim Amsden", "Martin Sarabura"],
           status: "Working Draft",
-          publisher: "OASIS",
-        },
-        "OSLCResourcePreview": {
-          title: "OSLC Core 3.0 Resource Preview",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part3-resource-preview.html",
-          authors: ["Jim Amsden", "S. Speicher"],
-          status: "Draft",
           publisher: "OASIS",
         },
         "OSLCTRS3": {
@@ -194,9 +187,9 @@
           status: "Final",
           publisher: "http://open-services.net",
         },
-        "EBNF": {
-          title: "Extended Backus–Naur form",
-          href: "https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form",
+        "BNF": {
+          title: "Backus–Naur form",
+          href: "https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form",
           publisher: "https://en.wikipedia.org"
         },
         "FULLTEXT-SEARCH": {
@@ -209,6 +202,21 @@
           href: "http://en.wikipedia.org/wiki/ISO_8601",
           publisher: "https://en.wikipedia.org"
         },
+        "XMLLiteral": {
+          title: "Resource Description Framework (RDF): Concepts and Abstract Syntax",
+          href: "https://www.w3.org/TR/rdf-concepts/#dfn-rdf-XMLLiteral",
+          publisher: "https://www.w3.org"
+        },
+        "xsdDatatypes": {
+          title: "RDF 1.1 Concepts and Abstract Syntax - The XML Schema Built-in Datatypes",
+          href: "https://www.w3.org/TR/rdf11-concepts/#xsd-datatypes",
+          publisher: "https://www.w3.org"
+        },
+        "xsdDateTime": {
+          title: "XML Schema Part 2: Datatypes Second Edition - dateTime",
+          href: "https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#dt-dateTime",
+          publisher: "https://www.w3.org"
+        }
       },
     };
   </script>
@@ -231,7 +239,7 @@
   <section id='intro' class='informative'>
     <h2>Introduction</h2>
     OSLC Query provides a mechanism for a client to query or search for RDF resources by performing a <code>GET</code>
-    or <code>POST</code> on a <code>oslc_core:queryBase</code> URI.
+    or <code>POST</code> on a <code>oslc:queryBase</code> URI.
     Clients may discover such query base URIs from a <code>oslc:queryCapability</code> declared in an OSLC service.
     The response to a successful query is a response body that includes the RDF of a <i>query result container</i> that
     references the member
@@ -267,9 +275,9 @@
     </section>
 
 
-    <section id='terms' class='informative'>
+    <section id='terms'>
       <h3>Terminology</h3>
-      <p>Terminology is based on OSLC Core Overview [[OSLCCore3]],
+      <p>Terminology is based on OSLC Core Overview [[OSLC-Core-30-Part1]],
         W3C Linked Data Platform [[LDP]],
         W3C's Architecture of the World Wide Web [[WEBARCH]],
         and Hyper-text Transfer Protocol [[HTTP11]].</p>
@@ -295,8 +303,7 @@
 
         <dt><dfn>Sort key</dfn></dt>
         <dd>A property to be used to sort the results of the query based on the value of the property for each member of
-          the
-          query result container.</dd>
+          the query result container.</dd>
       </dl>
     </section>
 
@@ -309,7 +316,7 @@
 
       In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>, <code>rdfs</code>,
       <code>dcterms</code>,
-      <code>ldp</code> and <code>foaf</code> defined in the [[OSLCCore3]], this specification also uses the following
+      <code>ldp</code> and <code>foaf</code> defined in the [[OSLC-Core-30-Part1]], this specification also uses the following
       namespace prefix definitions:
       <ul>
         <li>oslc_cm : <code>http://open-services.net/ns/cm#</code> [[OSLCCM]]</li>
@@ -330,7 +337,7 @@
     However, the reality is that many OSLC servers are adapters built on existing data management capabilities that are
     not
     built on an RDF foundation and do not provide SPARQL endpoints for query.
-    In order to address the need for standard query capability to enable integration, [[OSLCCore3]]
+    In order to address the need for standard query capability to enable integration, [[OSLC-Core-30-Part1]]
     defines a Query Capability and a Query Syntax that are intended to be simple enough that they can be implemented on
     a
     wide range of existing server architectures and persistence technologies.
@@ -348,13 +355,15 @@
   </section>
 
 
-  <section>
+  <section class="informative" id="discovery">
     <h2>Discovering a Query Capability</h2>
-    <p class="conformance">
-      An <code>oslc:Service</code> MAY declare zero, one, or many query capabilities using the
-      <code>oslc:queryCapability</code> property.
-    </p>
-    <p><img src="images/CoreDiscoveryUML.png"></p>
+    Clients may discover query capabilities as described in [[OSLC-Discovery-30]] using the 
+    <code>oslc:queryCapability</code> property of an <code>oslc:Service</code>.
+    The relationship between these resources is shown in <a href="#Figure1">Figure 1</a>.
+    <div style="margin-left: 2em">
+      <img src="./images/CoreDiscoveryUML.png"></img>
+      <h4 id="Figure1">Figure 1 - OSLC discovery resources</h4>
+    </div>
 
     <p class="conformance">A query capability SHOULD specify exactly one <code>oslc:resourceShape</code> and that shape
       SHOULD describe the query result container.</p>
@@ -409,39 +418,39 @@
   <section>
     <h2>Using a Query Capability</h2>
 
-    Executing a query or search is achieved by executing either of the following:
+    Executing a query or search is achieved by performing either of the following:
     <ul>
-      <li>a <code>GET</code> on the <i>query base</i> URI of a query capability, with zero, one or
-        more query parameters shown in the table below.
-        <p class="conformance">Servers MUST support a GET on the <i>query base</i> URI of a query capability.</p>
-        This is the simplest usage, but clients must be careful to avoid constructing URIs
-        whose length exceeds server limits.
-        <p class="conformance">If such a GET URI exceeds 1000 characters, clients SHOULD use the POST mechanism
-          described below.</p>
+      <li>a <code>GET</code> on the <code>oslc:queryBase</code> of a query capability, with zero, one or
+        more query parameters shown in <a href="#Table1">Table 1</a>.
       </li>
-      <li>a <code>POST</code> on the <i>query base</i> URI of a query capability with a
+      <li>a <code>POST</code> on the <code>oslc:queryBase</code> of a query capability with a
         <code>application/x-www-form-urlencoded</code> body containing zero, one or
-        more query parameters shown in the table below.
-        <p class="conformance">Servers SHOULD support <code>POST</code> on the <i>query base</i> URI of a query
-          capability
-          to avoid clients having to construct URIs that are too long.</p>
+        more query parameters shown in <a href="#Table1">Table 1</a>.
+
       </li>
     </ul>
+   
+    <p class="conformance">Servers MUST support a GET on the <code>oslc:queryBase</code> of a query capability.</p>
+        
+    <p class="conformance">Servers SHOULD support POST on the <code>oslc:queryBase</code> of a query capability to avoid
+      clients having to construct URIs that are too long for a GET.</p>
+      
+    <p class="conformance">A <code>GET</code> or <code>POST</code> request on the <code>oslc:queryBase</code> of a query capability MAY use zero, 
+      one or more of the OSLC query parameters listed in <a href="#Table1">Table 1</a>.</p> 
 
+    <p >Clients should use the POST mechanism described above if the URI of a GET
+      would otherwise be too long.</p>
 
     <p class="conformance">For a successful operation, the response status code MUST be <code>200 OK</code> for a
       non-paged result,
       or for an OSLC paged result.</p>
 
     <p class="conformance">For a successful operation, the response body MUST be RDF that includes a query result
-      container whose
-      subject is the query base URI.</p>
+      container whose subject is the <code>oslc:queryBase</code>.</p>
 
-    <p class="conformance">The <code>GET</code> or <code>POST</code> request MAY use zero, one or more of the OSLC query
-      parameters
-      listed in the table below.</p>
-    <br><br>
+
     <div style="margin-left: 2em">
+      <h4 id="Table1">Table 1 - OSLC Query Parameters</h4>
       <table class="query">
         <tr>
           <th>Parameter</th>
@@ -471,30 +480,23 @@
         <tr>
           <td><code>oslc.prefix</code></td>
           <td>Specify a namespace prefix that may be used in <code>oslc.where</code>, <code>oslc.orderBy</code>, and
-            <code>oslc.select</code>. See <code>oslc.prefix</code> in
-            <a
-              href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html#selectiveProperties">Core
-              3.0 Selective Properties</a> for details.</td>
+            <code>oslc.select</code>. See <code>oslc.prefix</code> in [[OSLC-Core-30-Part1]] for details.</td>
         </tr>
         <tr>
           <td><code>oslc.paging</code></td>
           <td>Specifies whether a paged result is requested.
-            See <a
-              href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html#resourcePaging">Resource
-              paging</a>
+            See <i>Resource paging</i> in [[OSLC-Core-30-Part1]]
             and <a href="#oslc.paging">oslc.paging</a> for details.</td>
         </tr>
         <tr>
           <td><code>oslc.pageSize</code></td>
           <td>Specifies a suggested maximum page size for a paged result.
-            See <a
-              href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html#resourcePaging">Resource
-              paging</a>
+            See <i>Resource paging</i> in [[OSLC-Core-30-Part1]]
             and <a href="#oslc.pageSize">oslc.pageSize</a> for details..</td>
         </tr>
       </table>
     </div>
-    <p class="conformance">If a GET or POST on a query base URI neither specifies <code>oslc.where</code> nor
+    <p class="conformance">If a GET or POST on a <code>oslc:queryBase</code> neither specifies <code>oslc.where</code> nor
       <code>oslc.searchTerms</code>,
       the server MUST return a query response describing all the resources that have one or more of the RDF types
       specified by
@@ -508,9 +510,9 @@
   <section>
     <h2>Query Result Containers</h2>
 
-    <p class="conformance">The response body for a successful <code>GET</code> or <code>POST</code> on a query base URI
+    <p class="conformance">The response body for a successful <code>GET</code> or <code>POST</code> on a <code>oslc:queryBase</code>
       MUST
-      include a query result container whose subject is the query base URI.</p>
+      include a query result container whose subject is the <code>oslc:queryBase</code> URI.</p>
 
     <p class="conformance">The container SHOULD be a <i>Linked Data Platform Container</i> (LDPC) referencing each
       member
@@ -586,9 +588,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
   <section id="QueryResultPaging">
     <h2>Query Result Paging</h2>
 
-    <p class="conformance">A query capability MAY support
-      <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html#resourcePaging"
-        target="_blank">OSLC Core Resource Paging</a>.</p>
+    <p class="conformance">A query capability MAY support <i>Resource paging</i> as described in [[OSLC-Core-30-Part1]].</p>
 
     <p class="conformance">A paged response MAY occur if paging is supported and the request includes a
       <code>oslc.paging=true</code> query parameter, or automatically if the server determines that the total query
@@ -612,7 +612,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 
       <p>This specification formally defines the syntax of the <code>oslc.where</code>, <code>oslc.searchTerms</code>,
         and
-        <code>oslc.orderBy</code> parameters using Extended Backus-Naur Form [[EBNF]] and informally illustrates their
+        <code>oslc.orderBy</code> parameters using Backus-Naur Form [[BNF]] and informally illustrates their
         semantics
         with simple examples. See <a href="#oslc.where.syntax">oslc.where syntax</a>, <a
           href="#oslc.searchTerms.syntax">oslc.searchTerms syntax</a>,
@@ -651,15 +651,15 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           matching the query expression. It is serves a similar purpose to the <code>WHERE</code> clause of a SQL
           statement.</p>
 
-        <p>For example, suppose that a change management system provides a query capability with a query base of
+        <p>For example, suppose that a change management system provides a query capability with a <code>oslc:queryBase</code> of
           <code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code>,
           and a client wants to query for all change requests created by the user
           <code>https://example.org/jts/users/deb</code>.
           This can be performed using a <code>GET</code> on
           <code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
-          query parameters shown in the table below:
-          <br><br>
+          query parameters shown in <a href="#Table2">Table 2</a>:
           <div style="margin-left: 2em">
+            <h4 id="Table2">Table 2 - oslc.where parameter</h4>
             <table class="query">
               <tr>
                 <th>Parameter</th>
@@ -671,6 +671,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               </tr>
             </table>
           </div>
+          <p>
 
 
           <pre class="example" title="Query for all change requests created by Deb">
@@ -724,9 +725,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           <p>Suppose a client now wants to query for all change requests created by Deb that are not fixed.
             This can be performed using a <code>GET</code> on
             <code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
-            query parameters shown in the table below:</p>
-          <br><br>
+            query parameters shown in <a href="#Table3">Table 3</a>:</p>
           <div style="margin-left: 2em">
+            <h4 id="Table3">Table 3 - oslc.where parameter</h4>
             <table class="query">
               <tr>
                 <th>Parameter</th>
@@ -739,7 +740,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             </table>
           </div>
 
-
+          <p>
           <pre class="example" title="Query for all change requests created by Deb that are not fixed">
     GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
         ?oslc.where=dcterms%3Acreator%3D%3Chttps%3A%2F%2Fexample.org%2Fjts%2Fusers%2Fdeb%3E%20and%20oslc_cm%3Afixed%3Dfalse
@@ -780,9 +781,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           show a query for change requests created by any user named "Deb". This can be performed using a
           <code>GET</code> on
           <code>https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems</code> using the
-          query parameters shown in the table below:
-          <br><br>
+          query parameters shown in <a href="#Table4">Table 4</a>:
           <div style="margin-left: 2em">
+            <h4 id="Table4">Table 4 - oslc.where parameter</h4>
             <table class="query">
               <tr>
                 <th>Parameter</th>
@@ -794,7 +795,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               </tr>
             </table>
           </div>
-
+          <p>
           <pre class="example" title="Query for all change requests created by any user named 'Deb'">
     GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
         ?oslc.where=dcterms%3Acreator%20%7Bfoaf%3Aname%3D%22Deb%22%7D
@@ -883,8 +884,8 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             property for equality with one of several values can be achieved through the use of the " in " operator.
 
             For example, the following query expression might find change requests with severity "high" or "medium":
-            <br><br>
             <div style="margin-left: 2em">
+              <h4 id="Table5">Table 5 - oslc.where parameter</h4>
               <table class="query">
                 <tr>
                   <th>Parameter</th>
@@ -896,6 +897,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
                 </tr>
               </table>
             </div>
+            <p>
             <pre class="example">
             GET http://example.org/queryBase?oslc.where=oslc_cm%3Aseverity%20in%20%5B%22high%22%2C%22medium%22%5D
                 </pre>
@@ -909,6 +911,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             The <code>comparison_op</code> term represents one of the following binary comparison operators:
             <br><br>
             <div style="margin-left: 2em">
+              <h4 id="Table6">Table 6 - Binary Comparison Operators</h4>
               <table class="query">
                 <tr>
                   <td>=</td>
@@ -1014,6 +1017,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
         The table below shows the forms of <code>value</code> that might be used with a comparison operator, and
         which comparison operators must or may be supported, and their semantics.
         <p>
+          <h4 id="Table7">Table 7 - oslc.where Semantics</h4>
           <table class="query">
             <tr>
               <th>Value type</th>
@@ -1023,15 +1027,14 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             <tr>
               <td><code>rdf:XMLLiteral</code></td>
               <td class="conformance">
-                <p>An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the
+                <p>An [[XMLLiteral]], such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the
                   literal in the same way as a plain string literal with the data type removed such as
                   <code>"abc"</code>.</p>
                 <p>A plain string literal, such as <code>"abc"</code> MUST be supported. A server MAY treat the literal
                   in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.</p>
-                <p>An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MAY
-                  treat
-                  the literal in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.</p>
-                <p>Servers MAY validate the string for compliance to the XMLLiteral standard.</p>
+                <p>An xsd:string typed literal [[xsdDatatypes]], such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MAY
+                  treat the literal in the same way as an XML literal string such as <code>"abc"^^rdf:XMLLiteral</code>.</p>
+                <p>Servers MAY validate the string for compliance to an [[XMLLiteral]].</p>
               </td>
               <td class="conformance">
                 <p>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
@@ -1044,8 +1047,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
                 </ul>
 
                 <p>A server MAY choose which of the above to apply based on whether the string contains a <code>%</code>
-                  or
-                  <code>_</code> character, and/or the property being compared. A server SHOULD document if this is the
+                   or <code>_</code> character, and/or the property being compared. A server SHOULD document if this is the
                   case.</p>
 
                 <p>Other operators MAY be supported and MAY have implementation-dependent semantics.
@@ -1056,7 +1058,8 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               <td><code>xsd:boolean</code></td>
               <td class="conformance">
                 <p>The values <code>true</code> and <code>false</code> MUST be supported.</p>
-                <p>The values <code>"true"^^xsd:boolean</code> and <code>"false"^^xsd:boolean</code>
+                <p>The <code>xsd:boolean</code> [[xsdDatatypes]]
+                  values <code>"true"^^xsd:boolean</code> and <code>"false"^^xsd:boolean</code>
                   MUST be supported and MUST have the same meaning as <code>true</code> and <code>false</code>
                   respectively.</p>
                 <p>The values <code>"true"</code> and <code>"false"</code> MAY be supported, and if so, MUST have the
@@ -1073,9 +1076,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             <tr>
               <td><code>xsd:dateTime</code></td>
               <td class="conformance">
-                <p>Values that are conformant with an <code>xsd:dateTime</code>, as described in
-                  <a href="https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#dt-dateTime">
-                    https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#dt-dateTime</a>,
+                <p>Values that are conformant with an <code>xsd:dateTime</code> [[xsdDatatypes]]  [[xsdDateTime]],
                   such as <code>"2018-01-30T12:25:00"^^xsd:dateTime</code>, MUST be supported.</p>
                 <p>Plain string literals whose string value conforms to an <code>xsd:dateTime</code>, such as
                   <code>"2018-01-30T12:25:00"</code>, MAY be supported, and if so, MUST have the same meaning as
@@ -1094,9 +1095,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               <td><code>xsd:decimal</code></td>
               <td class="conformance">
                 <p>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST
-                  be
-                  supported if the server supports <code>xsd:decimal</code> property values.</p>
-                <p>An <code>xsd:decimal</code> typed literal, such as <code>"42"^^xsd:decimal</code> or
+                  be supported if the server supports <code>xsd:decimal</code> property values.</p>
+                <p>An <code>xsd:decimal</code> typed literal [[xsdDatatypes]],
+                  such as <code>"42"^^xsd:decimal</code> or
                   <code>"42.0"^^xsd:decimal</code>, MUST be supported if the server supports <code>xsd:decimal</code>
                   property values.</p>
                 <p>A plain string literal with a decimal value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be
@@ -1115,11 +1116,10 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               <td><code>xsd:double</code></td>
               <td class="conformance">
                 <p>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST
-                  be
-                  supported if the server supports <code>xsd:double</code> property values.</p>
-                <p>An <code>xsd:double</code> typed literal, such as <code>"42"^^xsd:double</code> or
-                  <code>"42.0"^^xsd:double</code>, MUST be supported if the server supports <code>xsd:double</code>
-                  property values.</p>
+                  be supported if the server supports <code>xsd:double</code> property values.</p>
+                <p>An <code>xsd:double</code> typed literal [[xsdDatatypes]],
+                  such as <code>"42"^^xsd:double</code> or <code>"42.0"^^xsd:double</code>, MUST be supported if 
+                  the server supports <code>xsd:double</code> property values.</p>
                 <p>A plain string literal with a double value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be
                   supported,
                   and if so, MUST have the same meaning as the <code>xsd:double</code> typed literal.</p>
@@ -1136,9 +1136,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               <td><code>xsd:float</code></td>
               <td class="conformance">
                 <p>Decimal literals with or without a decimal point, such as <code>42</code> and <code>42.0</code>, MUST
-                  be
-                  supported if the server supports <code>xsd:float</code> property values.</p>
-                <p>An <code>xsd:float</code> typed literal, such as <code>"42"^^xsd:float</code> or
+                  be supported if the server supports <code>xsd:float</code> property values.</p>
+                <p>An <code>xsd:float</code> typed literal [[xsdDatatypes]], 
+                  such as <code>"42"^^xsd:float</code> or
                   <code>"42.0"^^xsd:float</code>, MUST be supported if the server supports <code>xsd:float</code>
                   property values.</p>
                 <p>A plain string literal with a float value, such as <code>"42"</code> or <code>"42.0"</code>, MAY be
@@ -1157,14 +1157,14 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               <td><code>xsd:integer</code></td>
               <td class="conformance">
                 <p>Decimal literals without a decimal point, such as <code>42</code>, MUST be supported.</p>
-                <p>An <code>xsd:integer</code> typed literal, such as <code>"42"^^xsd:integer</code>, MUST be supported.
+                <p>An <code>xsd:integer</code> typed literal [[xsdDatatypes]], 
+                  such as <code>"42"^^xsd:integer</code>, MUST be supported.
                 </p>
-                <p>An <code>xsd:decimal</code> typed literal without a decimal point, such as
+                <p>An <code>xsd:decimal</code> typed literal [[xsdDatatypes]] without a decimal point, such as
                   <code>"42"^^xsd:decimal</code>,
                   MAY be supported, and if so, MUST have the same meaning as an <code>xsd:integer</code> typed literal.
                 </p>
-                <p>A plain string literal with a decimal value, such as <code>"42"</code>, or a language tag string with
-                  a decimal
+                <p>A plain string literal with a decimal value, such as <code>"42"</code>, or a language tag string with a decimal
                   value, such as <code>"42"@en</code>, MAY be supported, and if so, MUST have the same meaning as a
                   decimal value.</p>
               </td>
@@ -1179,17 +1179,14 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               <td><code>xsd:string</code></td>
               <td class="conformance">
                 <p>A plain string literal, such as <code>"abc"</code> MUST be supported.</p>
-                <p>An xsd:string typed literal, such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MUST
-                  treat
-                  the literal in the same way as an plain string literal string such as <code>"abc"</code>.</p>
-                <p>An XMLLiteral, such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the
-                  literal
+                <p>An xsd:string typed literal [[xsdDatatypes]], 
+                  such as <code>"abc"^^xsd:string</code>, MUST be supported. A server MUST
+                  treat the literal in the same way as an plain string literal string such as <code>"abc"</code>.</p>
+                <p>An [[XMLLiteral]], such as <code>"abc"^^rdf:XMLLiteral</code>, MUST be supported. A server MAY treat the literal
                   in the same way as a plain literal string such as <code>"abc"</code>.</p>
                 <p>A string with a language tag, such as <code>"abc"@en</code>, MAY be supported. The string MAY be
-                  treated
-                  as a plain string literal, or it MAY be treated as a language specific string that only matches a
-                  string
-                  with an identical value and language tag.</p>
+                  treated as a plain string literal, or it MAY be treated as a language specific string that only matches a
+                  string with an identical value and language tag.</p>
               </td>
               <td class="conformance">
                 <p>The operators <code>=</code>, <code>!=</code>, and <code>in</code> MUST be supported.</p>
@@ -1296,8 +1293,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 
       For example, the following query returns the high severity change requests
       that deal with database performance:
-      <br><br>
+     
       <div style="margin-left: 2em">
+        <h4 id="Table8">Table 8 - query parameters</h4>
         <table class="query">
           <tr>
             <th>Parameter</th>
@@ -1313,7 +1311,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           </tr>
         </table>
       </div>
-
+      <p>
 
       <pre class="example">
     GET http://example.org/queryBase?oslc.where=oslc_cm%3Aseverity%3D%22high%22
@@ -1370,9 +1368,9 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
             where " + " means ascending order and " -" means descending order. The following example sorts the high
             severity change requests by
             the name of the creator, with most recently created first:</p>
-
-          <br><br>
+            
           <div style="margin-left: 2em">
+            <h4 id="Table9">Table 9 - query parameters</h4>
             <table class="query">
               <tr>
                 <th>Parameter</th>
@@ -1390,7 +1388,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
           </div>
 
 
-
+          <p>
           <pre class="example"
             title="Sort high severity change requests created by creator name, and created date-time">
     GET http://example.org/queryBase
@@ -1431,6 +1429,17 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 
       <p>Clients should specify <code>oslc.select</code> if they require particular properties to be returned in the
         query response.</p>
+        
+      <div class="conformance">
+         <p>If <code>oslc.where</code> specifies a property that has a defined namespace prefix but the property is
+           not known, an implementation MAY either:</p>
+         <ol>
+           <li>Respond with a <code>400 Bad Request</code> as described in <a href="#ErrorHandling">Error
+               Handling</a>.
+           </li>
+           <li>Execute the query and return a normal query response.</li>
+         </ol>
+      </div>
 
       <p class="conformance">Servers SHOULD accept the value <code>rdf:nil</code>. If specified as the only property,
         servers SHOULD omit all properties
@@ -1441,11 +1450,16 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
         behavior.</p>
 
       <p>The syntax of the <code>oslc.select</code> query parameter is the same as that of the
-        <code>oslc.properties</code> query parameter.
-        See <a
-          href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html#selectiveProperties">Core
-          3.0 Selective Properties</a> for the syntax.
-
+        <code>oslc.properties</code> query parameter. See [[OSLC-Core-30-Part1]] for the syntax.</p>
+        The difference between <code>oslc.select</code> and <code>oslc.properties</code> is that:
+        <ul>
+          <li><code>oslc.select</code> specifies properties against the subject URI of each resource found by the
+            query (the members of the query result container).</li>
+          <li><code>oslc.properties</code> specifies properties of the resource whose subject is the request URI.
+            For a query result, this is the query result container, not the resources returned by the query.
+            This query parameter is therefore of limited use for query capabilities.</li>
+        </ul>
+        </p>
         <p>As in the case of <code>oslc.properties</code>, the wildcard is equivalent to the list of all properties of
           the member resources.</p>
         <p class="conformance">Implementations MAY support the use of the wildcard for immediate and/or nested
@@ -1454,14 +1468,14 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
 
         <p><span class="conformance">A server MAY include additional member properties in the response to those
             specified in the
-            <code>oslc.select</code> query parameter.</span> Clients should not assume that only the specified
+            <code>oslc.select</code> query parameter</span>. Clients should not assume that only the specified
           properties will be included.</p>
 
         <p>For example, the following query finds the change requests created by any user named "Deb" and includes the
           <code>dcterms:title</code> and <code>dcterms:creator</code> for each change request found by the query and the
-          <code>foaf:name</code>code> of the person that last modified the change request.
-          <br><br>
+          <code>foaf:name</code> of the person that last modified the change request.</p>
           <div style="margin-left: 2em">
+            <h4 id="Table10">Table 10 - query parameters</h4>
             <table class="query">
               <tr>
                 <th>Parameter</th>
@@ -1477,7 +1491,7 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type",
               </tr>
             </table>
           </div>
-
+          <p>
           <pre class="example" title="Query for all change requests created by any user named 'Deb'">
 GET https://example.org/ccm/oslc/contexts/_by884MNWEeekg_dNxwf1pg/workitems
     ?oslc.where=dcterms%3Acreator%20%7Bfoaf%3Aname%3D%22Deb%22%7D
@@ -1611,8 +1625,8 @@ Link: &lt;http://www.w3.org/ns/ldp#BasicContainer>; rel="type", &lt;http://www.w
       <p class="conformance">Servers that support paging of query results SHOULD use a paged response when
         <code>oslc.paging=true</code>
         is specified.</p>
-      <p class="conformance">Servers MAY also provide a paged response if the parameter is not specified and the query
-        result includes a large number of members or a large number of RDF statements.</p>
+      <p class="conformance">Servers MAY also provide a paged response if the <code>oslc.paging</code> parameter
+        is not specified and the query result includes a large number of members or a large number of RDF statements.</p>
 
       <pre class="example" title="Query for all change requests with paging">
         GET https://example.org/jazz/oslc/contexts/_Q2fMII8EEd2Q-OW8dr3S5w/workitems&amp;oslc.paging=true
@@ -1720,7 +1734,7 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
   <section id="ErrorHandling">
     <h2>Error Handling</h2>
 
-    <p class="conformance">If a <code>GET</code> or <code>POST</code> of a query base URI cannot be executed, the
+    <p class="conformance">If a <code>GET</code> or <code>POST</code> of a <code>oslc:queryBase</code> cannot be executed, the
       response MUST include a response
       body whose RDF contains at least one <code>oslc:Error</code> describing the cause of the error.</p>
 
@@ -1755,7 +1769,7 @@ Strict-Transport-Security:  max-age=31536000; includeSubDomains
 
   <section id="versioning">
     <h2 id="specificationversioningspec_versioning">Version Compatibility</h2>
-    <p>This specification follows the specification version guidelines given in [[OSLCCore3]].</p>
+    <p>This specification follows the specification version guidelines given in [[OSLC-Core-30-Part1]].</p>
   </section>
 
   <section id="conformance"></section>

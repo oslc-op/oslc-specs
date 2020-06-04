@@ -7,6 +7,8 @@ This repository is for managing the development of OSLC Open Project
 specifications including Core 3.0, OSLC Query, Tracked Resource Sets,
 Configuration Management, and all the various OSLC domain specifications.
 
+## Quick links
+
 | Title | Description |Responsible|
 |-------|-------------|------|
 | **[Quality Management v2.1 PSD02](https://oslc-op.github.io/oslc-specs/specs/qm/quality-management-spec.html)** | This specification defines the OSLC Quality Management domain, a RESTful web services interface for the management of product, service or software quality artefacts, activities, tasks and relationships between those and related resources such as requirements, defects, change requests or architectural resources. To support these scenarios, this specification defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET, POST, PUT and DELETE, HTTP response codes, content type handling and resource formats. | Andrew |
