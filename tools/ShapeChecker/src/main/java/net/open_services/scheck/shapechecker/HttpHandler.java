@@ -1,6 +1,8 @@
 package net.open_services.scheck.shapechecker;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -8,8 +10,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -17,15 +19,17 @@ import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 
 
@@ -35,6 +39,10 @@ import org.apache.jena.riot.RDFParserBuilder;
  */
 public class HttpHandler
 {
+    private static final String TEXT_CONTENT_TYPES = "text/html;text/*;*/*";
+    private static final String RDF_CONTENT_TYPES  = "text/turtle;application/n-triples;application/rdf+xml;application/ld+json;text/*";
+
+
     private Map<URI, Boolean> httpResourceIsRDF = new HashMap<>();
     private Set<String>       foundRDFResources = new HashSet<>();
     private Set<Pattern>      skipURIPatterns   = new HashSet<>();
@@ -48,31 +56,46 @@ public class HttpHandler
      */
     public HttpHandler()
     {
-        Header header = new BasicHeader(HttpHeaders.ACCEPT, "text/html;text/*;*/*");
+        Header header = new BasicHeader(HttpHeaders.ACCEPT, TEXT_CONTENT_TYPES);
         httpClient = HttpClientBuilder
                 .create()
                 .setRedirectStrategy(new LaxRedirectStrategy())
                 .setDefaultHeaders(Collections.singletonList(header))
                 .build();
 
-        Header rdfHeader = new BasicHeader(HttpHeaders.ACCEPT, "text/turtle;application/n-triples;application/rdf+xml;application/ld+json");
+        Header rdfHeader = new BasicHeader(HttpHeaders.ACCEPT, RDF_CONTENT_TYPES);
         rdfClient = HttpClientBuilder
             .create()
             .setRedirectStrategy(new LaxRedirectStrategy())
             .setDefaultHeaders(Collections.singletonList(rdfHeader))
             // seems like Jena has a bug of ignoring the RDFParserBuilder Accept header
-            .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> request.addHeader(HttpHeaders.ACCEPT, "text/turtle;application/n-triples;application/rdf+xml;application/ld+json"))
+            .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> request.addHeader(HttpHeaders.ACCEPT, RDF_CONTENT_TYPES))
             // for debugging redirects
-            // .addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.out.println(response.toString()))
+            .addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.out.println(response.toString()))
+            .addInterceptorLast(this::responseInterceptor)
             .build();
     }
 
-    private RDFParserBuilder builderFactory() {
+
+    private void responseInterceptor(HttpResponse response, @SuppressWarnings("unused") HttpContext context) throws IOException
+    {
+        HttpEntityWrapper wrapper = new BufferedHttpEntity(response.getEntity());
+        response.setEntity(wrapper);
+        try (BufferedReader rdr = new BufferedReader(new InputStreamReader(wrapper.getContent())))
+        {
+            System.out.println(rdr.lines().collect(Collectors.joining("\n")));
+        }
+    }
+
+
+    private RDFParserBuilder builderFactory()
+    {
         return RDFParserBuilder.create()
             .httpClient(rdfClient)
-            .httpAccept("text/turtle;application/n-triples;application/rdf+xml;application/ld+json")
+            .httpAccept(RDF_CONTENT_TYPES)
             .lang(Lang.TURTLE); // *default* lang
     }
+
 
     /**
      * Sets the debug option.
