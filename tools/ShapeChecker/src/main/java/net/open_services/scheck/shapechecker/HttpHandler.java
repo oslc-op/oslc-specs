@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -23,6 +24,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RDFParserBuilder;
 
 
 /**
@@ -36,6 +40,7 @@ public class HttpHandler
     private Set<Pattern>      skipURIPatterns   = new HashSet<>();
     private boolean           debug             = false;
     private HttpClient        httpClient;
+    private final HttpClient rdfClient;
 
 
     /**
@@ -49,6 +54,24 @@ public class HttpHandler
                 .setRedirectStrategy(new LaxRedirectStrategy())
                 .setDefaultHeaders(Collections.singletonList(header))
                 .build();
+
+        Header rdfHeader = new BasicHeader(HttpHeaders.ACCEPT, "text/turtle;application/n-triples;application/rdf+xml;application/ld+json");
+        rdfClient = HttpClientBuilder
+            .create()
+            .setRedirectStrategy(new LaxRedirectStrategy())
+            .setDefaultHeaders(Collections.singletonList(rdfHeader))
+            // seems like Jena has a bug of ignoring the RDFParserBuilder Accept header
+            .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> request.addHeader(HttpHeaders.ACCEPT, "text/turtle;application/n-triples;application/rdf+xml;application/ld+json"))
+            // for debugging redirects
+            // .addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.out.println(response.toString()))
+            .build();
+    }
+
+    private RDFParserBuilder builderFactory() {
+        return RDFParserBuilder.create()
+            .httpClient(rdfClient)
+            .httpAccept("text/turtle;application/n-triples;application/rdf+xml;application/ld+json")
+            .lang(Lang.TURTLE); // *default* lang
     }
 
     /**
@@ -110,7 +133,7 @@ public class HttpHandler
 
     private void fetchRdfHttpResource(URI httpUriOrig)
     {
-        URI httpUri = dctermsRedirectWorkaround(httpUriOrig);
+        URI httpUri = httpUriOrig;
 
         if (httpResourceIsRDF.containsKey(httpUri))
         {
@@ -135,7 +158,11 @@ public class HttpHandler
             {
                 System.err.println("Parsing "+httpUri);
             }
-            Model foundModel = ModelFactory.createDefaultModel().read(httpUri.toString());
+            Model foundModel = ModelFactory.createDefaultModel();
+
+            RDFParserBuilder rdfParserBuilder = builderFactory();
+            rdfParserBuilder.source(httpUri.toString()).build().parse(foundModel);
+
             ResIterator ri = foundModel.listSubjects();
             while (ri.hasNext())
             {
@@ -147,26 +174,6 @@ public class HttpHandler
                 }
             }
         }
-    }
-
-
-    /**
-     * Hack to work around <a href="https://github.com/oslc-op/oslc-specs/issues/88">issue88</a>
-     * with Jena handling of Dublin Core redirects.
-     * @param httpUriOrig a URI
-     * @return if the input was a DCTerms URI, return a modified URI reflecting the several redirects
-     */
-    private static URI dctermsRedirectWorkaround(URI httpUriOrig)
-    {
-        Pattern dcterms = Pattern.compile("^http://purl\\.org/dc/terms/(.*)$");
-        URI httpUri = httpUriOrig;
-        Matcher m = dcterms.matcher(httpUri.toString());
-
-        if (m.matches())
-        {
-            httpUri = URI.create("https://www.dublincore.org/2012/06/14/dcterms.rdf#" + m.group(1));
-        }
-        return httpUri;
     }
 
 
