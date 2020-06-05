@@ -1,8 +1,21 @@
+# Copyright 2019 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 @prefix dcterms: <http://purl.org/dc/terms/>.
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix vann: <http://purl.org/vocab/vann/> .
 @prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#>.
 @prefix oslc: <http://open-services.net/ns/core#> .
@@ -11,7 +24,9 @@ oslc:
   a owl:Ontology ;
   dcterms:title "The OSLC Core Vocabulary" ;
   dcterms:description "All vocabulary URIs defined in the OSLC Core namespace."^^rdf:XMLLiteral ;
-  dcterms:source <https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/vocab/core-vocab.ttl> ;
+  dcterms:modified "2020-06-04"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  dcterms:publisher <https://open-services.net/about/> ;
+  dcterms:source <https://github.com/oslc-op/oslc-specs/blob/master/specs/core/vocab/core-vocab.ttl> ;
   vann:preferredNamespacePrefix "oslc" ;
   rdfs:label "Core" .
 
@@ -479,6 +494,21 @@ In the context of other resources, the value SHOULD be the total number of prope
 values (i.e. RDF triples) of the resource. Unless Stable Paging is in effect, the
 total count MAY vary as a client retrieves subsequent pages.""" .
 
+oslc:score
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc: ;
+  rdfs:label "score" ;
+  rdfs:comment """A computed property for each member resource of a full text search query indicating the quality of the
+  match, and sort them in descending order of score.""" .
+
+oslc:order
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc: ;
+  rdfs:label "order" ;
+  rdfs:comment """A computed property for each member resource of a query with an orderBy clause
+  supporting sorting of the RDF results.""" .
+
+
 oslc:nextPage
   a rdf:Property ;
   rdfs:isDefinedBy oslc: ;
@@ -745,3 +775,14 @@ oslc:executes
   rdfs:isDefinedBy oslc: ;
   rdfs:label "executes" ;
   rdfs:comment "Link from a currently available action to the future action it realizes." .
+
+oslc:publisher
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc: ;
+  rdfs:label "publisher" ;
+  rdfs:comment "An entity responsible for making the resource available. Servers should use dcterms:publisher." ;
+  vs:term_status "archaic" .
+
+
+
+

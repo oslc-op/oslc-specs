@@ -4,7 +4,8 @@
   <meta charset='utf-8' />
   <title>OSLC Core Version 3.0. Part 1: Overview</title>
   <script src='./config.js' class='remove'></script>
-  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.6/builds/respec-oasis-common.min.js' async
+  <meta name="description" content="Defines the overall approach to Open Services for Lifecycle Collaboration (OSLC) based specifications and capabilities that extend and complement W3C Linked Data Platform. OSLC Core 3.0 constitutes the approach outlined in this document and capabilities referenced in other documents.">
+  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.14/builds/respec-oasis-common.min.js' async
     class='remove'></script>
   <!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
   <script class='remove'>
@@ -27,13 +28,13 @@
       edDraftURI: "https://open-services.net/spec/core/latest-draft",
 
       additionalArtifacts: [
-        { title: "OSLC Core Version 3.0. Part 1: Overview (this document)", href: thisBase + "oslc-core.html" },
-        { title: "OSLC Core Version 3.0. Part 2: Discovery", href: thisBase + "discovery.html" },
-        { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: thisBase + "resource-preview.html" },
-        { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: thisBase + "dialogs.html" },
-        { title: "OSLC Core Version 3.0. Part 5: Attachments", href: thisBase + "attachments.html" },
-        { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: thisBase + "resource-shape.html" },
-        { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: thisBase + "core-vocab.html" }
+        { title: "OSLC Core Version 3.0. Part 1: Overview (this document)", href:"oslc-core.html" },
+        { title: "OSLC Core Version 3.0. Part 2: Discovery", href:"discovery.html" },
+        { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href:"resource-preview.html" },
+        { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href:"dialogs.html" },
+        { title: "OSLC Core Version 3.0. Part 5: Attachments", href:"attachments.html" },
+        { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href:"resource-shape.html" },
+        { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href:"core-vocab.html" }
       ],
 
       relatedWork: [
@@ -455,6 +456,9 @@ simpler, built on layered capabilities and easier to adopt.</p>
 
       <p class='conformance'>
         OSLC Services MAY provide and accept existing standard or emerging standard formats such as XML, HTML, and the Atom Syndication Format.</p>
+
+      <p class='conformance'>
+        OSLC servers SHOULD support the Accept header and whenever possible, respond with one of the content types requested by the client. When the Accept header requests an unsupported RDF serialization, the OSLC server SHOULD return an RDF serialization format that it does support, indicating what it is in the Content-Type header. If the server gets an Accept header for some non-RDF content type, say ATOM, that it does not support, then it SHOULD return 406 Unacceptable.</p>
     </section>
 
     <section id="commonVocabulary">
@@ -571,19 +575,15 @@ uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are
     <section id="checkingResponseSize">
       <h2>Checking Response Size</h2>
 
-    <p class="conformance">Clients that do not wish to load large resources MAY use the HTTP HEAD method to determine the size of a resource.</p>
+    <p>Clients that do not wish to load large resources may use the HTTP HEAD method to determine the size of a resource.</p>
     <p class="conformance">When responding to an HTTP HEAD request, according to [[!HTTP11]] the server SHOULD include an HTTP Content-Length header that indicates the size of the resource as the "decimal number of octets."</p>
 
     </section>
 
-    <section id="UnstablePaging">
-    <h3>Unstable Paging</h3>
+    <section id="pagingStatility">
+    <h3>Paging Stability</h3>
 
-      <p>Because HTTP is a stateless protocol and OSLC Services manage resources that can change frequently, OSLC clients should assume that the resources returned on a given page may change over time.</p>
-    </section>
-
-    <section id="StablePaging">
-    <h3>Stable Paging</h3>
+      <p>Because HTTP is a stateless protocol and OSLC Services manage resources that can change frequently, OSLC clients should assume that the resources returned on a given page are unstable and may change over time.</p>
 
       <p>Some OSLC Servers might wish to guarantee stable paging, meaning that the sequence of pages returned from the server represent a snapshot in time and will not change as the client pages through them. OSLC specifications that require stable paging should state this requirement and specify to which resources it applies.</p>
 
@@ -595,14 +595,17 @@ uri_ref_esc ::= /* an angle bracket-delimited URI reference in which > and \ are
 
       <p>A response info resource representation describes information about a paged HTTP response body in which it appears.</p>
 
-      <p class='conformance'>Resource representations returned via Resource Paging MUST include a resource of type oslc:ResponseInfo, as defined in part 7 of this multi-part specification: Vocabulary.</p>
+      <p class='conformance'>Resource representations returned via Resource Paging MUST include a resource of type <code>oslc:ResponseInfo</code>, as defined in part 7 of this multi-part specification: Vocabulary.</p>
 
-      <p class='conformance'>The subject resource URI of the oslc:ResponseInfo resource representation MUST be the HTTP request URI or the URI from subsequent redirects. The response representation MAY also include properties from subject resources different from the one identified by the request URI.</p>
+      <p class='conformance'>The subject resource URI of the <code>oslc:ResponseInfo</code> resource representation MUST be the HTTP request URI or the URI from subsequent redirects. The response representation MAY also include properties from subject resources different from the one identified by the request URI.</p>
 
-      <p>Below is an example using the OSLC Core RDF/XML representation guidance, that illustrates how the oslc:ResponseInfo resource representation is included in addition to the blog entry resource representation.</p>
+      <p class='conformance'>When responding to a request that includes <code>oslc.pageSize</code> in the URI, a server MAY divide the response into a number of pages and use the value as a hint about the maximum number of RDF statements to be included in each page. Servers MAY return pages containing more or fewer RDF statements than specified.</p> 
+
+      <p>Below is an example using the OSLC Core RDF/XML representation guidance, that illustrates how the <code>oslc:ResponseInfo</code> resource representation is included in addition to the blog entry resource representation.</p>
+      <p>By adding <code>oslc.pageSize</code> to the query component of the resource URI, the client requests that the server break each response into pages using the specified value as a hint for maximum number of RDF statements in each page. Clients should make no assumptions about the maximum number of RDF statements returned in a page.</p>
 
       <pre class="example" title="Resource Paging, partial response with response info resource representation">
-GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageno=2
+GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;amp;pageno=2
 
 &lt;rdf:RDF
    xmlns:oslc_blog=&quot;http://open-services.net/ns/bogus/blogs#&quot;
@@ -615,8 +618,8 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageno=2
       &amp;lt;!-- partial property values of of the blog entry --&amp;gt;
    &lt;/oslc_blog:Entry&gt;
 
-   &lt;oslc:ResponseInfo rdf:about=&quot;http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageno=2&quot;&gt;
-      &lt;oslc:nextPage rdf:resource=&quot;http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageno=3&quot; /&gt;
+   &lt;oslc:ResponseInfo rdf:about=&quot;http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;amp;pageno=2&quot;&gt;
+      &lt;oslc:nextPage rdf:resource=&quot;http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;amp;pageno=3&quot; /&gt;
    &lt;/oslc:ResponseInfo&gt;
 
 &lt;/rdf:RDF&gt;
@@ -628,9 +631,12 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageno=2
     <section id="usingResourcePaging">
     <h3>Using Resource Paging</h3>
       <p class='conformance'>
-        OSLC Services SHOULD support [[!LDPPaging]] to enable clients to retrieve large LDP resources (LDPRs) a page at a time.
+        OSLC Services MAY support [[!LDPPaging]] to enable clients to retrieve large LDP resources (LDPRs) a page at a time.
       </p>
 
+      <p class='conformance'>
+        OSLC Services SHOULD support OSLC paging as described in this section to ensure compatibility with OSLC 2.0 server implementations.
+      </p>
     <p class='conformance'>To request a paged version of a resource, a client MUST add at least one "key=value" pair to the query component of the resource URI: Either oslc.paging=true, or oslc.pageSize, or both.</p>
     <p class='conformance'> When responding to a request that includes oslc.paging=true in the URI, a server MAY return a representation that contains a subset of the resource's property values.</p>
     <p>By adding oslc.pageSize to the query component of the resource URI, the client requests that the server respond with a specific number of property values. For example, oslc.pageSize=20 indicates to the server that the client would like 20 values per page.</p>
@@ -718,17 +724,17 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageno=2
 
   <p class='conformance'>OSLC Servers MAY implement any of the capabilities described in this specification, and if a capability is supported, all of the mandatory requirements specified in the normative sections of the multi-part specification elaborating the capability MUST be implemented.</p>
 
-  <p class='conformance'>OSLC Servers MUST implement the OSLC Core vocabulary as defined in <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part7-core-vocabulary/oslc-core-v3.0-csprd03-part7-core-vocabulary.html">OSLC Core Version 3.0. Part 7: Vocabulary</a>.</p>
+  <p class='conformance'>OSLC Servers MUST implement the OSLC Core vocabulary as defined in <a href="core-vocab.html">OSLC Core Version 3.0. Part 7: Vocabulary</a>.</p>
 
-  <p class='conformance'><a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part2-discovery/oslc-core-v3.0-csprd03-part2-discovery.html">Part 2</a> of this document defines the mandatory requirements for the OSLC discovery capability. OSLC Servers SHOULD provide the discovery capability in order for clients to determine what services are supported by the server and how to access them. OSLC Servers that implement discovery MUST implement all of the mandatory requirements specified in the normative sections of part 2 of this multi-part specification.</p>
+  <p class='conformance'><a href="discovery.html">Part 2</a> of this document defines the mandatory requirements for the OSLC discovery capability. OSLC Servers SHOULD provide the discovery capability in order for clients to determine what services are supported by the server and how to access them. OSLC Servers that implement discovery MUST implement all of the mandatory requirements specified in the normative sections of part 2 of this multi-part specification.</p>
 
-  <p class='conformance'><a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html">Part 3</a> of this document defines the mandatory requirements for the OSLC resource preview capability. OSLC Servers that implement resource preview MUST implement all of the mandatory requirements specified in the normative sections of part 3 of this multi-part specification.</p>
+  <p class='conformance'><a href="resource-preview.html">Part 3</a> of this document defines the mandatory requirements for the OSLC resource preview capability. OSLC Servers that implement resource preview MUST implement all of the mandatory requirements specified in the normative sections of part 3 of this multi-part specification.</p>
 
-  <p class='conformance'><a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part4-delegated-dialogs/oslc-core-v3.0-csprd03-part4-delegated-dialogs.html">Part 4</a> of this document defines the mandatory requirements for the OSLC delegated creation and selection dialog capability. OSLC Servers that implement delegated dialogs MUST implement all of the mandatory requirements specified in the normative sections of part 4 of this multi-part specification.</p>
+  <p class='conformance'><a href="dialogs.html">Part 4</a> of this document defines the mandatory requirements for the OSLC delegated creation and selection dialog capability. OSLC Servers that implement delegated dialogs MUST implement all of the mandatory requirements specified in the normative sections of part 4 of this multi-part specification.</p>
 
-  <p class='conformance'><a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part5-attachments/oslc-core-v3.0-csprd03-part5-attachments.html">Part 5</a> of this document defines the mandatory requirements for the OSLC attachents capability. OSLC Servers that implement attachments MUST implement all of the mandatory requirements specified in the normative sections of part 5 of this multi-part specification.</p>
+  <p class='conformance'><a href="attachments.html">Part 5</a> of this document defines the mandatory requirements for the OSLC attachents capability. OSLC Servers that implement attachments MUST implement all of the mandatory requirements specified in the normative sections of part 5 of this multi-part specification.</p>
 
-  <p class='conformance'><a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part6-resource-shape/oslc-core-v3.0-csprd03-part6-resource-shape.html">Part 6</a> of this document defines the mandatory requirements for the OSLC resource shape constraints capability. OSLC Servers SHOULD support resource shapes in order to describe OSLC server managed resources, and validate creation and update requests. OSLC Servers that implement resources shapes MUST implement all of the mandatory requirements specified in the normative sections of part 6 of this multi-part specification.</p>
+  <p class='conformance'><a href="resource-shape.html">Part 6</a> of this document defines the mandatory requirements for the OSLC resource shape constraints capability. OSLC Servers SHOULD support resource shapes in order to describe OSLC server managed resources, and validate creation and update requests. OSLC Servers that implement resources shapes MUST implement all of the mandatory requirements specified in the normative sections of part 6 of this multi-part specification.</p>
 
   <p>All conformance clauses are summarized in the following table.</p>
 </section>
