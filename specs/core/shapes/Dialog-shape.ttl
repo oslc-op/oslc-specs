@@ -18,61 +18,51 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-@prefix oslc_s: <https://open-services.net/ns/core/3.0/shapes/ps01/#> .
-@base <https://open-services.net/ns/core/3.0/shapes/ps01/> .
+@prefix : <http://open-services.net/ns/core/shapes/3.0/#> .
+@base <http://open-services.net/ns/core/shapes/3.0/#> .
 
 <#Dialog>
 	a oslc:ResourceShape ;
 	dcterms:title "Describes information about a dialog such as its title and dimensions." ;
 	oslc:describes oslc:Dialog ;
-	oslc:property
-            <#dcterms-title>,
-            <#oslc-label>,
-            <#oslc-dialog>,
-            <#oslc-hintWidth>,
-            <#oslc-hintHeight>,
-	    	<#oslc-resourceType>,
-            <#oslc-resourceShape>,
-            <#oslc-usage>.
-
-<#dcterms-title> a oslc:Property ;
+	oslc:property [ a oslc:Property ;
 	oslc:name "title" ;
 	oslc:propertyDefinition dcterms:title ;
 	oslc:occurs oslc:Exactly-one;
 	dcterms:description "Title string that could be used for display."^^rdf:XMLLiteral ;
 	oslc:valueType rdf:XMLLiteral ;
-	oslc:readOnly true .
-
-<#oslc-label> a oslc:Property ;
+	oslc:readOnly true
+],
+[a oslc:Property ;
 	oslc:name "label" ;
 	oslc:propertyDefinition oslc:label ;
 	oslc:occurs oslc:Zero-or-one;
 	dcterms:description "Very short label for use in menu items."^^rdf:XMLLiteral ;
 	oslc:valueType xsd:string ;
-	oslc:readOnly true .
-
-<#oslc-dialog> a oslc:Property ;
+	oslc:readOnly true
+],
+[a oslc:Property ;
 	oslc:name "dialog" ;
 	oslc:propertyDefinition oslc:dialog ;
 	oslc:occurs oslc:Exactly-one;
 	oslc:readOnly true;
-	dcterms:description "The URI of the dialog."^^rdf:XMLLiteral .
-
-<#oslc-hintWidth> a oslc:Property ;
+	dcterms:description "The URI of the dialog."^^rdf:XMLLiteral
+],
+[a oslc:Property ;
 	oslc:name "hintWidth" ;
 	oslc:propertyDefinition oslc:hintWidth ;
 	oslc:occurs oslc:Zero-or-one;
 	oslc:readOnly true;
-    dcterms:description      "Recommended width of the dialog. Values are expressed using length units as specified in [[CSS21]]."^^rdf:XMLLiteral .
-
-<#oslc-hintHeight> a oslc:Property ;
+    dcterms:description      "Recommended width of the dialog. Values are expressed using length units as specified in [[CSS21]]."^^rdf:XMLLiteral
+],
+[a oslc:Property ;
 	oslc:name "hintHeight" ;
 	oslc:propertyDefinition oslc:hintHeight ;
 	oslc:occurs oslc:Zero-or-one;
 	oslc:readOnly true;
-    dcterms:description      "Recommended height of the dialog. Values are expressed using length units as specified in [[CSS21]]."^^rdf:XMLLiteral .
-
-<#oslc-resourceType> a oslc:Property;
+    dcterms:description      "Recommended height of the dialog. Values are expressed using length units as specified in [[CSS21]]."^^rdf:XMLLiteral
+],
+[ a oslc:Property;
 	oslc:name "resourceType";
 	oslc:propertyDefinition oslc:resourceType;
 	oslc:range rdfs:Class ;
@@ -80,9 +70,9 @@
 	oslc:readOnly true;
 	dcterms:description "The expected resource type URI for the resources that will be returned when using this dialog. These would be the URIs found in the result resource's <code>rdf:type</code> property."^^rdf:XMLLiteral ;
 	oslc:valueType oslc:Resource ;
-	oslc:representation oslc:Reference .
-
-<#oslc-resourceShape> a oslc:Property;
+	oslc:representation oslc:Reference
+],
+[ a oslc:Property;
 	oslc:name "resourceShape";
 	oslc:propertyDefinition oslc:resourceShape;
 	oslc:range oslc:ResourceShape ;
@@ -90,9 +80,9 @@
 	oslc:readOnly true;
 	dcterms:description "Describes constraints on dialog prefill requests."^^rdf:XMLLiteral ;
 	oslc:valueType oslc:Resource ;
-	oslc:representation oslc:Reference.
-
-<#oslc-usage> a oslc:Property ;
+	oslc:representation oslc:Reference
+],
+[a oslc:Property ;
 	oslc:name "usage" ;
 	oslc:propertyDefinition oslc:usage ;
 	oslc:occurs oslc:Zero-or-many;
@@ -101,6 +91,5 @@
 	oslc:valueType oslc:Resource ;
 	oslc:representation oslc:Reference ;
 	oslc:readOnly true
-.
-
+] .
 

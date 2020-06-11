@@ -18,8 +18,8 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-@prefix oslc_s: <https://open-services.net/ns/core/3.0/shapes/ps01/#> .
-@base <https://open-services.net/ns/core/3.0/shapes/ps01/> .
+@prefix : <http://open-services.net/ns/core/shapes/3.0/#> .
+@base <http://open-services.net/ns/core/shapes/3.0/#> .
 
 <#Error>
       a               oslc:ResourceShape ;
@@ -50,30 +50,28 @@
                           oslc:valueType           oslc:AnyResource ;
                           oslc:representation      oslc:Either
                         ] ;
-        oslc:property <#created> ;
-        oslc:property <#references> ;
-        oslc:property <#identifier> ;
+        oslc:property [a                 oslc:Property ;
+            oslc:name                "created" ;
+            oslc:occurs              oslc:Zero-or-one ;
+            oslc:propertyDefinition  dcterms:created ;
+            oslc:valueType           xsd:dateTime ;
+            dcterms:description      """Optional indication of when the error was detected."""^^rdf:XMLLiteral] ;
+        oslc:property [
+            a oslc:Property ;
+            oslc:name "references" ;
+            oslc:propertyDefinition dcterms:references   ;
+            oslc:occurs oslc:Zero-or-many;
+            dcterms:description """A reference to any resources that are the subject of this error."""^^rdf:XMLLiteral ;
+            oslc:valueType oslc:AnyResource ;
+            oslc:representation oslc:Either
+        ] ;
+        oslc:property [
+            a oslc:Property ;
+            oslc:name "identifier" ;
+            oslc:propertyDefinition dcterms:identifier ;
+            oslc:occurs oslc:Zero-or-many;
+            dcterms:description """A unique human-readable string identifier for this resource, such as an error number or code."""^^rdf:XMLLiteral ;
+            oslc:valueType xsd:string
+        ];
         dcterms:title   "OSLC Core Error Shape" .
-
-<#created>  a                 oslc:Property ;
-        oslc:name                "created" ;
-        oslc:occurs              oslc:Zero-or-one ;
-        oslc:propertyDefinition  dcterms:created ;
-        oslc:valueType           xsd:dateTime ;
-        dcterms:description      """Optional indication of when the error was detected."""^^rdf:XMLLiteral .
-
-<#references> a oslc:Property ;
-    oslc:name "references" ;
-    oslc:propertyDefinition dcterms:references   ;
-    oslc:occurs oslc:Zero-or-many;
-    dcterms:description """A reference to any resources that are the subject of this error."""^^rdf:XMLLiteral ;
-    oslc:valueType oslc:AnyResource ;
-    oslc:representation oslc:Either .
-
-<#identifier> a oslc:Property ;
-    oslc:name "identifier" ;
-    oslc:propertyDefinition dcterms:identifier ;
-    oslc:occurs oslc:Zero-or-many;
-    dcterms:description """A unique human-readable string identifier for this resource, such as an error number or code."""^^rdf:XMLLiteral ;
-    oslc:valueType xsd:string .
 
