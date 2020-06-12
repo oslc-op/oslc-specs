@@ -3,33 +3,35 @@
 <meta charset='utf-8' />
 
 <head>
-  <title>OSLC Quality Management Specification 2.1</title>
+  <title>OSLC Quality Management 2.1. Part 1: Specification</title>
   <meta name="description"
     content="This specification defines the OSLC Quality Management domain, a RESTful web
 services interface for the management of product, service or software quality artefacts, activities,
 tasks and relationships between those and related resources such as requirements, defects, change requests or architectural resources.">
 
-  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.11/builds/respec-oasis-common.min.js' async
-    class='remove'></script>
-  <!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
+  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.15/builds/respec-oasis-common.min.js' async class='remove'></script>
+  <!-- <script src='http://127.0.0.1:8081/respec-oasis-common.js' async class='remove'></script> -->
   <script class='remove'>
+    var status = "WD";
+    var revision = 3;
+
     var wdBase = "https://oslc-op.github.io/oslc-specs/specs/qm/";
     var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/qm/v2.1/"
-
     var thisBase = wdBase;
-    // var thisBase = oasisBase + "psd02/";
+    if ("WD" !== status) {
+      var thisBase = oasisBase + status.toLowerCase() + revision.toString().padStart(2, "0") + "/";
+    }
 
     var respecConfig = {
       shortName: "quality-management-spec",
-      specStatus: "WD",
-      revision: "02",
-      publishDate:  "2019-09-19",
-      previousPublishDate: "2019-01-18",
-      previousMaturity: "WD",
-
+      specStatus: status,
+      revision: revision.toString().padStart(2, "0"),
+      // publishDate:  "2019-11-14",
+      previousPublishDate: "2019-11-14",
+      previousMaturity: "PSD",
 
       thisVersion: thisBase + "quality-management-spec.html",
-      prevVersion: "https://raw.githack.com/oasis-tcs/oslc-domains/master/qm/quality-management-spec.html",
+      prevVersion: null,
       latestVersion: oasisBase + "quality-management-spec.html",
       latestSpecVersion: "https://open-services.net/spec/qm/latest",
       edDraftURI: "https://open-services.net/spec/qm/latest-draft",
@@ -38,11 +40,11 @@ tasks and relationships between those and related resources such as requirements
       // Other parts of multi-part spec
       additionalArtifacts: [
         {
-          title: "OSLC Quality Management Version 2.1. Part 1: Specification (this document)",
+          title: "OSLC Quality Management 2.1. Part 1: Specification (this document)",
           href: "quality-management-spec.html"
         },
         {
-          title: "OSLC Quality Management Version 2.1. Part 2: Vocabulary",
+          title: "OSLC Quality Management 2.1. Part 2: Vocabulary",
           href: "quality-management-vocab.html"
         }
       ],
@@ -52,19 +54,26 @@ tasks and relationships between those and related resources such as requirements
 
 
       localBiblio: {
+        "OSLCQM1": {
+          title: "OSLC Quality Management 1.0 Specification",
+          href: "https://archive.open-services.net/bin/view/Main/QmSpecificationV1.html",
+          authors: ["Paul McMahan"],
+          status: "Finalized",
+          publisher: "https://open-services.net",
+        },
         "OSLCQM2": {
           title: "OSLC Quality Management Specification Version 2.0",
           href: "https://archive.open-services.net/bin/view/Main/QmSpecificationV2.html",
           authors: ["Paul McMahan"],
           status: "Finalized",
-          publisher: "http://open-services.net",
+          publisher: "https://open-services.net/",
         },
         "OSLCCore2": {
           title: "OSLC Core Specification 2.0",
           href: "https://archive.open-services.net/bin/view/Main/OslcCoreSpecification",
           authors: ["Dave Johnson", "S. Speicher"],
           status: "Finalized",
-          publisher: "http://open-services.net",
+          publisher: "https://open-services.net/",
         },
         "OSLCCore3": {
           title: "OSLC Core 3.0",
@@ -75,8 +84,8 @@ tasks and relationships between those and related resources such as requirements
         },
         "OSLCPreview": {
           title: "OSLC Resource Preview 3.0",
-          href: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html",
-          status: "Committee Specification Public Review Draft",
+          href: "https://oslc-op.github.io/oslc-specs/specs/core/resource-preview.html",
+          status: "Working Draft",
           publisher: "OASIS",
         },
         "DublinCore": {
@@ -135,7 +144,7 @@ tasks and relationships between those and related resources such as requirements
           href: "http://www.w3.org/TR/xmlschema-2/",
           authors: ["Paul V. Biron", "Ashok Malhotra"],
           status: "Final",
-          publisher: "http://open-services.net",
+          publisher: "https://open-services.net/",
         },
         "OSLCCoreVocab": {
           title: "OSLC Core Vocabulary",
@@ -230,7 +239,7 @@ formats.</p>
 
 <section id='toc'></section>
 
-<section id='sotd'></section>
+<!-- <section id='sotd'></section> -->
 
 <section id='intro'>
   <h1>Introduction</h1>
@@ -392,6 +401,11 @@ requirements.</p>
   <td>HTML Representations</td>
   <td class='conformance'>OSLC services SHOULD provide HTML representations for HTTP GET requests</td>
 </tr>
+<tr>
+  <td>QM 1.0 response compatibility</td>
+  <td class='conformance'>OSLC QM servers MAY use <code>application/x-oslc-qm-*</code>
+     media types in responses for compatibility with [[!OSLCQM1]]</td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -450,8 +464,14 @@ requirements.</p>
 <li class='conformance'><code>application/ld+json</code> QM servers MUST respond with JSON-LD representation.</li>
 <li class='conformance'><code>application/rdf+xml</code> QM servers SHOULD respond with RDF/XML representation without restrictions.</li>
 <li class='conformance'><code>application/xml</code> QM servers SHOULD respond with OSLC-defined abbreviated XML representation as defined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations Guidance</a></li>
-<li class='conformance'><code>application/atom+xml</code> QM servers SHOULD respond with Atom Syndication Format XML representation as defined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations Guidance</a></li>
-<li>The Atom Syndication Format XML representation SHOULD use RDF/XML representation without restrictions for the atom:content entries representing the resource representations.</li>
+<li class='conformance'>
+     <code>application/atom+xml</code> QM servers MAY support Atom Syndication Format XML representation
+     as defined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC
+      Core Representations Guidance</a> to maintain integrations with the
+      legacy applications.
+</li>
+<li>The Atom Syndication Format XML representation SHOULD use RDF/XML representation without restrictions for
+  the <code>atom:content</code> entries representing the resource representations.</li>
 </ul>
 
 <p>See Query Capabilities for additional information when Resource Shapes affect representation.</p>
