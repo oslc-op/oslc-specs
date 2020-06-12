@@ -14,13 +14,44 @@
     dcterms:title           """The shape of a versioned resource: all versioned resources MUST match this shape.
 Versioned resources SHOULD match other shapes appropriate for their types - that is, they MAY have additional
 properties and property constraints beyond those defined here.""" ;
+
     oslc:property
 
 # Properties with the version resource URI as the subject
 
-        <#vtype> ,
-        <#isVersionOf> ,
-        <#accessContext> ,
+        [
+            #type
+            a                        oslc:Property ;
+            oslc:name                "type" ;
+            oslc:occurs              oslc:One-or-many ;
+            oslc:propertyDefinition  rdf:type ;
+            oslc:representation      oslc:Reference ;
+            oslc:valueType           oslc:Resource ;
+            oslc:range               rdfs:Class ;
+            dcterms:description      """A resource type URI. One of the type properties MUST have the version resource URI as the subject,
+and MUST have a resource type of <code>oslc_config:VersionResource</code>.
+Other types for the concept resource of which this is a version SHOULD use the concept resource URI as the subject."""^^rdf:XMLLiteral
+        ] ,
+        [
+            #isVersionOf
+            a                        oslc:Property ;
+            oslc:name                "isVersionOf" ;
+            oslc:occurs              oslc:Exactly-one ;
+            oslc:propertyDefinition  dcterms:isVersionOf ;
+            oslc:representation      oslc:Reference ;
+            oslc:valueType           oslc:Resource ;
+            dcterms:description      "The concept resource of which this resource is a version. The subject of this property MUST be the version resource URI."^^rdf:XMLLiteral
+        ] ,
+        [
+            #accessContext ,
+            a                        oslc:Property ;
+            oslc:name                "accessContext" ;
+            oslc:occurs              oslc:Zero-or-one ;
+            oslc:propertyDefinition  acc:accessContext ;
+            oslc:representation      oslc:Either ;
+            oslc:valueType           oslc:Resource ;
+            dcterms:description      "Indicates that this resource belongs to the specified Access Context. The subject of this property MUST be the version resource URI."^^rdf:XMLLiteral
+        ] ,
 
 # Properties with the concept resource URI as the subject
 
@@ -45,37 +76,6 @@ properties and property constraints beyond those defined here.""" ;
         <#wasRevisionOf> .
 
 
-# Properties of a VersionResource shape with the version resource URI as the subject
-
-<#vtype>
-    a                        oslc:Property ;
-    oslc:name                "type" ;
-    oslc:occurs              oslc:One-or-many ;
-    oslc:propertyDefinition  rdf:type ;
-    oslc:representation      oslc:Reference ;
-    oslc:valueType           oslc:Resource ;
-    oslc:range               rdfs:Class ;
-    dcterms:description      """A resource type URI. One of the type properties MUST have the version resource URI as the subject,
-and MUST have a resource type of <code>oslc_config:VersionResource</code>.
-Other types for the concept resource of which this is a version SHOULD use the concept resource URI as the subject."""^^rdf:XMLLiteral .
-
-<#isVersionOf>
-    a                        oslc:Property ;
-    oslc:name                "isVersionOf" ;
-    oslc:occurs              oslc:Exactly-one ;
-    oslc:propertyDefinition  dcterms:isVersionOf ;
-    oslc:representation      oslc:Reference ;
-    oslc:valueType           oslc:Resource ;
-    dcterms:description      "The concept resource of which this resource is a version. The subject of this property MUST be the version resource URI."^^rdf:XMLLiteral .
-
-<#accessContext>
-    a                        oslc:Property ;
-    oslc:name                "accessContext" ;
-    oslc:occurs              oslc:Zero-or-one ;
-    oslc:propertyDefinition  acc:accessContext ;
-    oslc:representation      oslc:Either ;
-    oslc:valueType           oslc:Resource ;
-    dcterms:description      "Indicates that this resource belongs to the specified Access Context. The subject of this property MUST be the version resource URI."^^rdf:XMLLiteral .
 
 # Properties of a VersionResource shape with the concept resource URI as the subject
 
@@ -97,7 +97,7 @@ Other types for the concept resource of which this is a version SHOULD use the c
     oslc:valueType           oslc:AnyResource ;
     oslc:range               foaf:Person, foaf:Agent ;
     oslc:readOnly            true ;
-    dcterms:description      """The entity that checked in this version."""^^rdf:XMLLiteral .
+    dcterms:description      "The entity that checked in this version."^^rdf:XMLLiteral .
 
 <#component>
     a                        oslc:Property ;
@@ -119,7 +119,7 @@ or using the membership relationship from the component LDPC."""^^rdf:XMLLiteral
     oslc:representation      oslc:Either ;
     oslc:valueType           oslc:AnyResource ;
     oslc:range               foaf:Person, foaf:Agent ;
-    dcterms:description      """Contributor or contributors to resource."""^^rdf:XMLLiteral .
+    dcterms:description      "Contributor or contributors to resource."^^rdf:XMLLiteral .
 
 <#created>
     a                        oslc:Property ;
@@ -128,7 +128,7 @@ or using the membership relationship from the component LDPC."""^^rdf:XMLLiteral
     oslc:propertyDefinition  dcterms:created ;
     oslc:valueType           xsd:dateTime ;
     oslc:readOnly            true ;
-    dcterms:description      """Timestamp of resource creation. Each resource SHOULD have one instance of this property."""^^rdf:XMLLiteral .
+    dcterms:description      "Timestamp of resource creation. Each resource SHOULD have one instance of this property."^^rdf:XMLLiteral .
 
 <#creator>
     a                        oslc:Property ;
@@ -139,7 +139,7 @@ or using the membership relationship from the component LDPC."""^^rdf:XMLLiteral
     oslc:valueType           oslc:AnyResource ;
     oslc:range               foaf:Person, foaf:Agent ;
     oslc:readOnly            true ;
-    dcterms:description      """Creator or creators of resource."""^^rdf:XMLLiteral .
+    dcterms:description      "Creator or creators of resource."^^rdf:XMLLiteral .
 
 <#description>
     a                        oslc:Property ;
@@ -192,7 +192,7 @@ Each resource SHOULD have one instance of this property."""^^rdf:XMLLiteral .
     oslc:valueType           oslc:AnyResource ;
     oslc:range               foaf:Person, foaf:Agent ;
     oslc:readOnly            true ;
-    dcterms:description      """The entity that most recently modified the subject resource."""^^rdf:XMLLiteral .
+    dcterms:description      "The entity that most recently modified the subject resource."^^rdf:XMLLiteral .
 
 <#serviceProvider>
     a                        oslc:Property ;
@@ -240,7 +240,7 @@ Tags on versioned resources SHOULD be modifiable even if the resource is otherwi
     oslc:occurs              oslc:Zero-or-one ;
     oslc:propertyDefinition  dcterms:title ;
     oslc:valueType           rdf:XMLLiteral ;
-    dcterms:description      """Title of the resource represented as rich text in XHTML content."""^^rdf:XMLLiteral .
+    dcterms:description      "Title of the resource represented as rich text in XHTML content."^^rdf:XMLLiteral .
 
 <#versionId>
     a                        oslc:Property ;
