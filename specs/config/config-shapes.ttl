@@ -168,7 +168,7 @@ the current state of the resource and other factors and thus SHOULD NOT be cache
     oslc:occurs              oslc:Zero-or-one ;
     oslc:valueType           xsd:dateTime ;
     oslc:readOnly            true ;
-    dcterms:description      """Timestamp of latest resource modification."""^^rdf:XMLLiteral .
+    dcterms:description      "Timestamp of latest resource modification."^^rdf:XMLLiteral .
 
 <#modifiedBy>
     a                        oslc:Property ;
@@ -770,7 +770,7 @@ Servers MAY treat this property as read-only."""^^rdf:XMLLiteral .
     oslc:representation      oslc:Reference ;
     oslc:valueType           oslc:Resource ;
     oslc:range               oslc_config:Configuration ;
-    dcterms:description      """A reference to a configuration modified by a change set configuration."""^^rdf:XMLLiteral .
+    dcterms:description      "A reference to a configuration modified by a change set configuration."^^rdf:XMLLiteral .
 
 <#CSelections>
     a                        oslc:ResourceShape ;
@@ -819,4 +819,152 @@ and adds additional selections for concept resources that are not mentioned in t
 Since selections properties are not ordered, there is no defined meaning to a selection that appears in two or more different selections properties of any types,
 or to a change set that include both a <code>oslc_config:RemoveAll</code> and a <code>oslc_config:Removals</code> selection;
 servers MAY treat occurrences of potentially conflicting selections as an error."""^^rdf:XMLLiteral .
+
+
+# ============================ Activity shape ============================
+
+<#Activity>
+    a                       oslc:ResourceShape ;
+    oslc:describes          oslc_config:Activity ;
+    dcterms:title           "The shape of an activity." ;
+    dcterms:description     "An activity is a read-only resource representing a long-running operation, such as recursive baseline or stream creation."^^rdf:XMLLiteral ;
+    oslc:property
+        <#acttype> ,
+        <#actcreated> ,
+        <#creator> ,
+        <#modified> ,
+        <#progress> ,
+        <#progressMessage> ,
+        <#actreferences> ,
+        <#error> ,
+        <#state> ,
+        <#title> ,
+        <#verdict> .
+
+<#acttype>
+    a                        oslc:Property ;
+    oslc:name                "type" ;
+    oslc:propertyDefinition  rdf:type ;
+    oslc:occurs              oslc:One-or-many ;
+    oslc:readOnly            true ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:range               rdfs:Class ;
+    dcterms:description      "A resource type URI. An Activity MUST have a resource type of <code>oslc_config:Activity</code>,
+and MAY have other types."^^rdf:XMLLiteral .
+
+<#actcreated>
+    a                        oslc:Property ;
+    oslc:name                "created" ;
+    oslc:propertyDefinition  dcterms:created ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:readOnly            true ;
+    oslc:valueType           xsd:dateTime ;
+    dcterms:description      "Timestamp of resource creation. Each resource SHOULD have one instance of this property."^^rdf:XMLLiteral .
+
+<#creator>
+    a                        oslc:Property ;
+    oslc:name                "creator" ;
+    oslc:propertyDefinition  dcterms:creator ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:readOnly            true ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               foaf:Person, foaf:Agent ;
+    dcterms:description      "Creator of resource. The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>, but could be any type."^^rdf:XMLLiteral .
+
+<#modified>
+    a                        oslc:Property ;
+    oslc:name                "modified" ;
+    oslc:propertyDefinition  dcterms:modified ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:readOnly            true ;
+    oslc:valueType           xsd:dateTime ;
+    dcterms:description      "Timestamp of the last change of status."^^rdf:XMLLiteral .
+
+<#progress>
+    a                        oslc:Property ;
+    oslc:name                "progress" ;
+    oslc:propertyDefinition  oslc_auto:progress ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:readOnly            true ;
+    oslc:valueType           xsd:integer ;
+    dcterms:description      "The percentage (0-100) of completion, if known."^^rdf:XMLLiteral .
+
+<#progressMessage>
+    a                        oslc:Property ;
+    oslc:name                "progressMessage" ;
+    oslc:propertyDefinition  oslc_config:progressMessage ; # should really be in the Automation namespace
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:readOnly            true ;
+    oslc:valueType           rdf:XMLLiteral ;
+    dcterms:description      """Descriptive text about the progress of the activity represented as rich text in XHTML content.
+SHOULD include only content that is valid and suitable inside an XHTML <code>&lt;div&gt;</code> element."""^^rdf:XMLLiteral .
+
+<#actreferences>
+    a                        oslc:Property ;
+    oslc:name                "references" ;
+    oslc:propertyDefinition  dcterms:references ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:readOnly            true ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:representation      oslc:Either ;
+    dcterms:description      """A reference to a resource providing more details about the progress or result of the activity.
+For successful or partially successful operations, this property MUST be present, providing a link to the primary resource created or affected by the operation.
+For completely unsuccessful activities, this property may be missing.
+For activities still in progress, this MAY be a reference to a resource providing further information; which MAY be provided inline."""^^rdf:XMLLiteral .
+
+<#state>
+    a                        oslc:Property ;
+    oslc:name                "state" ;
+    oslc:propertyDefinition  oslc_auto:state ;
+    oslc:occurs              oslc:Exactly-one ;
+    oslc:readOnly            true ;
+    oslc:valueType           oslc:Resource ;
+    oslc:representation      oslc:Reference ;
+    oslc:allowedValue
+        oslc_auto:canceled ,
+        oslc_auto:canceling ,
+        oslc_auto:complete ,
+        oslc_auto:inProgress ,
+        oslc_auto:new ,
+        oslc_auto:queued ;
+    dcterms:description      "The state of the activity, as defined by OSLC Automation states."^^rdf:XMLLiteral .
+
+<#title>
+    a                        oslc:Property ;
+    oslc:name                "title" ;
+    oslc:propertyDefinition  dcterms:title ;
+    oslc:occurs              oslc:Exactly-one ;
+    oslc:readOnly            true ;
+    oslc:valueType           rdf:XMLLiteral ;
+    dcterms:description      "A name for the activity, or current phase of the activity."^^rdf:XMLLiteral .
+
+<#verdict>
+    a                        oslc:Property ;
+    oslc:name                "verdict" ;
+    oslc:propertyDefinition  oslc_auto:verdict ;
+    oslc:occurs              oslc:Exactly-one ;
+    oslc:readOnly            true ;
+    oslc:valueType           oslc:Resource ;
+    oslc:representation      oslc:Reference ;
+    oslc:allowedValue
+        oslc_auto:error ,
+        oslc_auto:fail ,
+        oslc_auto:passed ,
+        oslc_auto:unavailable ,
+        oslc_auto:warning ;
+    dcterms:description      "The result of the activity, as defined by OSLC Automation verdicts."^^rdf:XMLLiteral .
+
+<#error>
+    a                        oslc:Property ;
+    oslc:name                "error" ;
+    oslc:propertyDefinition  oslc:error ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:readOnly            true ;
+    oslc:valueType           oslc:AnyResource ;
+    oslc:range               oslc:Error ;
+    oslc:representation      oslc:Either ;
+    dcterms:description      """A warning or error issued by the activity.
+Instances of this property MAY appear at any time during the execution of the activity, or MAY be returned only after the activity is complete."""^^rdf:XMLLiteral .
 
