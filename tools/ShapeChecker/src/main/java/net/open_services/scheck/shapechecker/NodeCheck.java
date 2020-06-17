@@ -355,15 +355,19 @@ public class NodeCheck
 
 
     /**
-     * Check to see if a string ends with a period (full stop).
+     * Check to see if a string ends with a period (full stop),
+     * and contains no embedded newlines followed by white space (likely misuse of triple quotes in Turtle).
      * @param str the string to be checked
      * @return true iff the string ends with a period.
      */
-    public static Resource checkPeriod(String str)
+    public static Resource checkSentence(String str)
     {
         // If you want to allow trailing white space, use this:
         // return (str.matches(".*\\.\\s*$") ? null : Terms.MissingPeriod);
+        //CSOFF NeedBraces
 
-        return str.endsWith(".") ? null : Terms.MissingPeriod;
+        if (str.endsWith("."))          return Terms.MissingPeriod;
+        if (str.matches("[\n\r]\\s+"))  return Terms.EmbeddedWhitespace;
+        return null;
     }
 }

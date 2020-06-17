@@ -129,7 +129,11 @@ public final class Terms
     @SCIssue(issueSeverity=Error,description="Duplicate language on string literal.")
     public static final Resource DuplicateLangString = resource("DuplicateLangString");
 
-    /** Error class for inappropriate use of the oslc:maxSize property. */
+    /** Error class for embedded whitespace after newline in comment or description. */
+    @SCIssue(issueSeverity=Warning,description="White space after embedded newline - misuse of triple quotes?")
+    public static final Resource EmbeddedWhitespace = resource("EmbeddedWhitespace");
+
+   /** Error class for inappropriate use of the oslc:maxSize property. */
     @SCIssue(issueSeverity=Error,description="The property oslc:maxSize appplies only to string or XMLLiteral value types.")
     public static final Resource InappropriateMaxSize = resource("InappropriateMaxSize");
 

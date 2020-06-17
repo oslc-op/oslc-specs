@@ -139,7 +139,7 @@ public class VocabularyCheck
         // Check the optional properties of the ontology
         node.checkNode(DCTerms.license, Occurrence.ZeroOrOne);
         node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne,
-            desc -> NodeCheck.checkPeriod(desc));
+            desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
         node.checkLiteral(preferredNameSpace, null, Occurrence.ZeroOrOne, null);
 
@@ -177,7 +177,7 @@ public class VocabularyCheck
         NodeCheck node = new NodeCheck(term, httpHandler, vocabModel, modelCopy, resultModel, termResult);
         node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, label -> checkUniqueLabel(labels,label));
         node.checkLiteral(RDFS.comment, null, Occurrence.ExactlyOne,
-            comment -> NodeCheck.checkPeriod(comment));
+            comment -> NodeCheck.checkSentence(comment));
         node.checkURI(RDFS.isDefinedBy, Occurrence.ExactlyOne,
             uri -> uri.equals(vocab.getURI()) ? null : Terms.TermNotInVocab);
 
