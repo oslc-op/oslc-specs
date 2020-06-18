@@ -65,6 +65,7 @@ a plugin or copying the settings manually. Make sure your lines are wrapped!
 > Editorconfig for it. Highly recommended. It works even better in a setup with
 > Browsersync described in the section above.
 
+<!-- -->
 
 > **Warning!** Eclipse, VS Code do not support the wrapping configuration
 > setting from Editorconfig. You should manually configure your editor and ensure
