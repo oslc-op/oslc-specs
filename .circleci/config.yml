@@ -24,3 +24,18 @@ jobs:
       - run:
           name: Check OSLC AM spec shapes & vocabs
           command: cd tools/ShapeChecker && ./check-am.sh
+  prettier:
+    # working_directory: ~/
+    docker:
+      - image: node:lts
+    steps:
+      - checkout
+      - run:
+          name: Install prettier
+          command: npm install --global prettier
+      - run:
+          name: Check QM spec formatting
+          command: prettier --check specs/qm/
+      - run:
+          name: Check all spec formatting
+          command: prettier --check specs/
