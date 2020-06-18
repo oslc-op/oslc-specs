@@ -366,8 +366,8 @@ public class NodeCheck
         // return (str.matches(".*\\.\\s*$") ? null : Terms.MissingPeriod);
         //CSOFF NeedBraces
 
-        if (str.endsWith("."))          return Terms.MissingPeriod;
-        if (str.matches("[\n\r]\\s+"))  return Terms.EmbeddedWhitespace;
+        if (!str.endsWith("."))                    return Terms.MissingPeriod;
+        if (str.matches("(?s).*[\\n\\r]+\\s+.*"))  return Terms.EmbeddedWhitespace;
         return null;
     }
 }

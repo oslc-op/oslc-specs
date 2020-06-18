@@ -9,9 +9,11 @@
     <property name="source" value="1.8"/>
     <property name="cmshapes" location="../../specs/cm/change-mgt-shapes.ttl"/>
     <property name="cmvocab" location="../../specs/cm/change-mgt-vocab.ttl"/>
+    <property name="assetshapes" location="../../specs/asset/asset-management-shapes.ttl"/>
+    <property name="assetvocab" location="../../specs/asset/asset-management-vocab.ttl"/>
 
     <path id="scapt.classpath">
-        <pathelement location="${scapt.location}/bin"/>
+        <pathelement location="${scapt.location}/lib/scapt.jar"/>
         <pathelement location="${scapt.location}/lib/velocity-1.7-dep.jar"/>
     </path>
 
@@ -28,7 +30,7 @@
     </path>
 
     <path id="sc.run.classpath">
-        <pathelement location="${lib}/shapechecker.jar"/>
+        <pathelement location="bin"/>
         <path refid="sc.depends.classpath"/>
     </path>
 
@@ -81,7 +83,9 @@
     </target>
 
     <target depends="init" name="build" description="Compile ShapeChecker">
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}" >
+            <compilerarg value="-s"/>
+            <compilerarg value="src"/>
             <src path="src/main/java"/>
             <src path="src/test/java"/>
             <src path="src/main/resources"/>
@@ -115,6 +119,19 @@
         <java classpathref="sc.run.classpath" classname="net.open_services.scheck.shapechecker.Main" failonerror="true" fork="yes">
                 <arg value="-v"/>     <arg value="${cmvocab}" />
                 <arg value="-s"/>     <arg value="${cmshapes}" />
+                <arg value="-x"/>     <arg value="http://open-services.net/ns/core" />
+                <arg value="-x"/>     <arg value="http://open-services.net/ns/config" />
+                <arg value="-x"/>     <arg value="http://open-services.net/ns/cm" />
+                <arg value="-x"/>     <arg value="http://open-services.net/ns/rm" />
+            <arg value="-V"/>
+        </java>
+    </target>
+
+    <target depends="makejar" name="OSLC AM Check" description="Run ShapeChecker on OSLC Asset Management">
+        <echo message="Checking ${assetvocab} and ${assetshapes}"/>
+        <java classpathref="sc.run.classpath" classname="net.open_services.scheck.shapechecker.Main" failonerror="true" fork="yes">
+                <arg value="-v"/>     <arg value="${assetvocab}" />
+                <arg value="-s"/>     <arg value="${assetshapes}" />
                 <arg value="-x"/>     <arg value="http://open-services.net/ns/core" />
                 <arg value="-x"/>     <arg value="http://open-services.net/ns/config" />
                 <arg value="-x"/>     <arg value="http://open-services.net/ns/cm" />

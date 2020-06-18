@@ -33,7 +33,6 @@ public final class Terms
 
     private static Map<String, Resource> issueMap  = new HashMap<>();
 
-
     /**
      * No instantiation.
      */
