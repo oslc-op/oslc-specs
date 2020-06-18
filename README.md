@@ -40,14 +40,14 @@ running AJAX requests on local filesystem). With Python 3 installed:
     cd docs/
     python3 -m http.server 8000 --bind 127.0.0.1
 
-Now you can browse all specs via `http://localhost:8000/`. For an even better
+Now you can browse all specs via <http://localhost:8000/>. For an even better
 experience, install Browsersync (`npm i -g browser-sync`) and run it the
 following way:
 
     browser-sync start --config bs-config.js
 
-Now you can browse all specs via `http://localhost:8000/`. **Anytime you save a spec
-file, every browser tab where this file is opened will be reloaded
+Now you can browse all specs via <http://localhost:8000/>. **Anytime you save a
+spec file, every browser tab where this file is opened will be reloaded
 automatically.**
 
 ## Contributions
@@ -64,6 +64,7 @@ a plugin or copying the settings manually. Make sure your lines are wrapped!
 > Pro tip: Atom editor does all of this automatically when you install an
 > Editorconfig for it. Highly recommended. It works even better in a setup with
 > Browsersync described in the section above.
+
 
 > **Warning!** Eclipse, VS Code do not support the wrapping configuration
 > setting from Editorconfig. You should manually configure your editor and ensure
