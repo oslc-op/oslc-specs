@@ -37,7 +37,7 @@ import net.open_services.scheck.annotations.*;
     "net.open_services.scheck.annotations.SCTerm",
     "net.open_services.scheck.annotations.SCIssue",
     "net.open_services.scheck.annotations.SCXCheck"})
-@SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class SCResultProcessor extends AbstractProcessor
 {
     private SCVocabModel            vocabulary = null;
@@ -244,7 +244,7 @@ public class SCResultProcessor extends AbstractProcessor
 
             FileObject vocabFile =
                     processingEnv.getFiler()
-                        .createResource(StandardLocation.SOURCE_OUTPUT, "", "../src/main/resources/SCVocabulary.ttl");
+                        .createResource(StandardLocation.SOURCE_OUTPUT, "", "main/resources/SCVocabulary.ttl");
 
             processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
                 "creating vocabulary file " + vocabFile.toUri() + " using  template " + vt.getName());
