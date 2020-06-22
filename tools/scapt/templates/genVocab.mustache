@@ -1,0 +1,119 @@
+# RDF Vocabulary document for {{vocabulary.domain}}
+
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix oslc:     <http://open-services.net/ns/core#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann:     <http://purl.org/vocab/vann/> .
+@prefix vs:       <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+@base <{{vocabulary.uri}}> .
+@prefix {{vocabulary.prefix}}:  <{{vocabulary.uri}}> .
+
+
+# The ontology resource
+
+{{vocabulary.prefix}}:
+    a owl:Ontology ;
+    dcterms:title "{{vocabulary.domain}}" ;
+    dcterms:description "{{vocabulary.description}}" ;
+    rdfs:label "{{vocabulary.domain}}" ;
+    vann:preferredNamespacePrefix "{{vocabulary.prefix}}" .
+{{#classesOrIssues}}
+
+
+# Classes
+{{#classes}}
+
+{{vocabulary.prefix}}:{{name}}
+    a rdfs:Class ;
+    rdfs:isDefinedBy {{vocabulary.prefix}}: ;
+    rdfs:label "{{name}}" ;
+    rdfs:comment "{{description}}" .
+{{/classes}}
+{{#issues.size}}
+
+{{vocabulary.prefix}}:Issue
+    a rdfs:Class ;
+    rdfs:isDefinedBy {{vocabulary.prefix}}: ;
+    rdfs:label "Issue" ;
+    rdfs:comment "A class for the issues enumeration." .
+{{/issues.size}}
+{{/classesOrIssues}}
+{{#properties.size}}
+
+
+# Properties
+{{#properties}}
+
+{{vocabulary.prefix}}:{{name}}
+    a rdf:Property ;
+    rdfs:isDefinedBy {{vocabulary.prefix}}: ;
+    rdfs:label "{{name}}" ;
+    rdfs:comment "{{description}}" .
+{{/properties}}
+{{/properties.size}}
+{{#resources.size}}
+
+
+# Individuals
+{{#resources}}
+
+{{vocabulary.prefix}}:{{name}}
+    a rdfs:Resource ;
+    rdfs:isDefinedBy {{vocabulary.prefix}}: ;
+    rdfs:label "{{name}}" ;
+    rdfs:comment "{{description}}" .
+{{/resources}}
+{{/resources.size}}
+{{#issues.size}}
+
+
+# Issues
+{{#issues}}
+
+{{vocabulary.prefix}}:{{name}}
+    a {{vocabulary.prefix}}:Issue ;
+    rdfs:isDefinedBy {{vocabulary.prefix}}: ;
+    rdfs:label "{{name}}" ;
+    rdfs:comment "{{description}}" ;
+    {{vocabulary.prefix}}:severity {{vocabulary.prefix}}:{{severity}} .
+{{/issues}}
+{{/issues.size}}
+{{#xchecks.size}}
+
+
+# Cross-check issues
+{{#xchecks}}
+
+{{vocabulary.prefix}}:{{name}}
+    a rdf:Property ;
+    rdfs:isDefinedBy {{vocabulary.prefix}}: ;
+    rdfs:label "{{name}}" ;
+    rdfs:comment "{{description}}" ;
+    {{vocabulary.prefix}}:singular "{{singular}}" ;
+    {{vocabulary.prefix}}:plural "{{plural}}" ;
+    {{vocabulary.prefix}}:severity {{vocabulary.prefix}}:{{severity}} .
+{{/xchecks}}
+{{/xchecks.size}}
+{{#severities.size}}
+
+
+# The severity enumeration
+
+{{vocabulary.prefix}}:Severity
+    a rdfs:Class ;
+    rdfs:isDefinedBy {{vocabulary.prefix}}: ;
+    rdfs:label "Severity" ;
+    rdfs:comment "A class for the severity enumeration." .
+{{#severities}}
+
+{{vocabulary.prefix}}:{{name}}
+    a {{vocabulary.prefix}}:Severity ;
+    rdfs:isDefinedBy {{vocabulary.prefix}}: ;
+    rdfs:label "{{name}}" ;
+    rdfs:comment "{{description}}" .
+{{/severities}}
+{{/severities.size}}

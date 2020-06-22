@@ -1,31 +1,37 @@
 package net.open_services.scapt.test;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
-import java.util.TreeMap;
+import java.util.Set;
 
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.reflect.ReflectionObjectHandler;
 
 import net.open_services.scapt.SCTermModel;
 import net.open_services.scapt.SCVocabModel;
+import net.open_services.scheck.annotations.IssueSeverity;
 
 
 /**
  * Simple test for use of Velocity in this annotation processor
  */
+@SuppressWarnings("javadoc")
 public class Tester
 {
-    private SCVocabModel vocabulary = null;
-    private Map<String,SCTermModel> classes = new TreeMap<>();
-    private Map<String,SCTermModel> properties = new TreeMap<>();
-    private Map<String,SCTermModel> resources = new TreeMap<>();
-    private Map<String,SCTermModel> issues = new TreeMap<>();
+	public SCVocabModel		vocab			= null;
+	public boolean			classesOrIssues	= false;
+	public Set<SCTermModel>	classes			= new HashSet<>();
+	public Set<SCTermModel>	properties		= new HashSet<>();
+	public Set<SCTermModel>	resources		= new HashSet<>();
+	public Set<SCTermModel>	issues			= new HashSet<>();
+	public Set<SCTermModel> xchecks    		= new HashSet<>();
+	public Set<SCTermModel> severities 		= new HashSet<>();
+
 
     /**
      * Main entry point to test program.
@@ -38,73 +44,55 @@ public class Tester
 
     private void run()
     {
-        vocabulary = new SCVocabModel(
+        vocab = new SCVocabModel(
             "http://open-services.net/ns/scheck",
             "scheck",
             "ShapeChecker vocabulary.",
             "A vocabulary for terms used in the result model of the OSLC Shape and Vocabulary checker.");
 
-        classes.put("Class21", new SCTermModel("Class21","third class"));
-        classes.put("Class2", new SCTermModel("Class2","second class"));
-        classes.put("Class211", new SCTermModel("Class211","fourth class"));
-        classes.put("Class1", new SCTermModel("Class1","first class"));
-        classes.put("Class3a", new SCTermModel("Class3a","sixth class"));
-        classes.put("Class3", new SCTermModel("Class3","fifth class"));
-        properties.put("prop1", new SCTermModel("prop1","first property"));
-        properties.put("prop2", new SCTermModel("prop2","second property"));
-        properties.put("prop3", new SCTermModel("prop3","third property"));
-        resources.put("res1", new SCTermModel("res1","one and only individual"));
-        issues.put("issue1",new SCTermModel("issue1","issue #1"));
-        issues.put("issue2",new SCTermModel("issue2","issue #2"));
-        issues.put("issue3",new SCTermModel("issue3","issue #3"));
-        issues.put("issue4",new SCTermModel("issue4","issue #4"));
+        classes.add(new SCTermModel("Class21","third class"));
+        classes.add(new SCTermModel("Class2","second class"));
+        classes.add(new SCTermModel("Class211","fourth class"));
+        classes.add(new SCTermModel("Class1","first class"));
+        classes.add(new SCTermModel("Class3a","sixth class"));
+        classes.add(new SCTermModel("Class3","fifth class"));
+        properties.add(new SCTermModel("prop1","first property"));
+        properties.add(new SCTermModel("prop2","second property"));
+        properties.add(new SCTermModel("prop3","third property"));
+        resources.add(new SCTermModel("res1","one and only individual"));
+        issues.add(new SCTermModel("issue1","issue #1"));
+        issues.add(new SCTermModel("issue2","issue #2"));
+        issues.add(new SCTermModel("issue3","issue #3"));
+        issues.add(new SCTermModel("issue4","issue #4"));
+        severities.add(new SCTermModel("sev1","Severity 1",IssueSeverity.Warning));
+        xchecks.add(new SCTermModel("xcheck1","Cross Check 1",IssueSeverity.Info,"check","checks"));
         writeVocab();
     }
 
 
     private void writeVocab()
     {
-        Properties props = new Properties();
-        URL url = this.getClass().getClassLoader().getResource("velocity.properties");
-        try
-        {
-            props.load(url.openStream());
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        VelocityEngine ve = new VelocityEngine();
-        ve.init();
-        VelocityContext vc = new VelocityContext();
-        Template vt = ve.getTemplate("templates/genVocab.vm");
+        DefaultMustacheFactory mf = new DefaultMustacheFactory();
+        mf.setObjectHandler(new ReflectionObjectHandler() {
+        	  @Override
+        	  protected boolean areMethodsAccessible(Map<?, ?> map)
+        	  {
+        	    return true;
+        	  }
+        	});
+        Mustache mustache = mf.compile("templates/genVocab.mustache");
 
-        vc.put("vocab", vocabulary);
-        if (!classes.isEmpty())
-        {
-            vc.put("classes", classes);
-        }
-        if (!properties.isEmpty())
-        {
-            vc.put("properties", properties);
-        }
-        if (!resources.isEmpty())
-        {
-            vc.put("resources", resources);
-        }
-        if (!issues.isEmpty())
-        {
-            vc.put("issues", issues);
-        }
+        classesOrIssues = !(classes.isEmpty() || issues.isEmpty());
 
-        System.out.println("Generating output from template " + vt.getName());
-        try (Writer writer = new PrintWriter(System.out))
-        {
-            vt.merge(vc, writer);
-        }
-        catch (IOException ioe)
-        {
-            ioe.printStackTrace();
-        }
+        System.out.println("Generating output from template " + "templates/genVocab.mustache");
+        try (Writer writer = new OutputStreamWriter(System.out,StandardCharsets.UTF_8))
+		{
+			mustache.execute(writer, this).flush();
+		}
+		catch (IOException e)
+		{
+			System.err.println("Failed to generate output");
+			e.printStackTrace();
+		}
     }
 }
