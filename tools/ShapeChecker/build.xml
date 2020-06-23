@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE project>
 <project basedir="." default="build" name="ShapeChecker">
     <property environment="env"/>
 
@@ -13,7 +14,7 @@
     <property name="assetvocab" location="../../specs/asset/asset-management-vocab.ttl"/>
 
     <path id="scapt.classpath">
-        <pathelement location="${scapt.location}/lib/scapt.jar"/>
+        <pathelement location="${scapt.location}/bin"/>
         <pathelement location="${scapt.location}/lib/velocity-1.7-dep.jar"/>
     </path>
 
@@ -35,33 +36,9 @@
     </path>
 
     <path id="sc.depends.classpath">
-        <pathelement location="${lib}/jena-arq-3.12.0.jar"/>
-        <pathelement location="${lib}/jena-core-3.12.0.jar"/>
-        <pathelement location="${lib}/annotations-3.0.1.jar"/>
-        <pathelement location="${lib}/slf4j-simple-1.7.26.jar"/>
-        <pathelement location="${lib}/jena-iri-3.12.0.jar"/>
-        <pathelement location="${lib}/jena-base-3.12.0.jar"/>
-        <pathelement location="${lib}/jena-shaded-guava-3.12.0.jar"/>
-        <pathelement location="${lib}/libthrift-0.12.0.jar"/>
-        <pathelement location="${lib}/jsonld-java-0.12.3.jar"/>
-        <pathelement location="${lib}/jcl-over-slf4j-1.7.26.jar"/>
-        <pathelement location="${lib}/slf4j-api-1.7.26.jar"/>
-        <pathelement location="${lib}/commons-cli-1.4.jar"/>
-        <pathelement location="${lib}/httpclient-cache-4.5.5.jar"/>
-        <pathelement location="${lib}/httpclient-4.5.6.jar"/>
-        <pathelement location="${lib}/commons-codec-1.11.jar"/>
-        <pathelement location="${lib}/jackson-databind-2.9.9.jar"/>
-        <pathelement location="${lib}/jackson-core-2.9.9.jar"/>
-        <pathelement location="${lib}/commons-lang3-3.4.jar"/>
-        <pathelement location="${lib}/jcip-annotations-1.0.jar"/>
-        <pathelement location="${lib}/jsr305-3.0.1.jar"/>
-        <pathelement location="${lib}/commons-csv-1.5.jar"/>
-        <pathelement location="${lib}/commons-io-2.6.jar"/>
-        <pathelement location="${lib}/commons-compress-1.18.jar"/>
-        <pathelement location="${lib}/collection-0.7.jar"/>
-        <pathelement location="${lib}/httpcore-4.4.10.jar"/>
-        <pathelement location="${lib}/jackson-annotations-2.9.0.jar"/>
-        <pathelement location="${lib}/commons-logging-1.2.jar"/>
+        <fileset dir="${lib}">
+            <include name="**/*.jar"/>
+        </fileset>
     </path>
 
     <target name="init">
@@ -85,7 +62,7 @@
     <target depends="init" name="build" description="Compile ShapeChecker">
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}" >
             <compilerarg value="-s"/>
-            <compilerarg value="src"/>
+            <compilerarg value="src/main/generated"/>
             <src path="src/main/java"/>
             <src path="src/test/java"/>
             <src path="src/main/resources"/>

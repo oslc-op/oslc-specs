@@ -1,0 +1,436 @@
+# RDF Vocabulary document for ShapeChecker Result Vocabulary.
+
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix oslc:     <http://open-services.net/ns/core#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann:     <http://purl.org/vocab/vann/> .
+@prefix vs:       <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+@base <http://open-services.net/ns/scheck#> .
+@prefix scheck:  <http://open-services.net/ns/scheck#> .
+
+
+# The ontology resource
+
+scheck:
+    a owl:Ontology ;
+    dcterms:title "ShapeChecker Result Vocabulary." ;
+    dcterms:description "A vocabulary for terms used in the result model of the OSLC Shape and Vocabulary checker." ;
+    rdfs:label "ShapeChecker Result Vocabulary." ;
+    vann:preferredNamespacePrefix "scheck" .
+
+
+# Classes
+
+scheck:VocabResult
+    a rdfs:Class ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "VocabResult" ;
+    rdfs:comment "A resource holding the check results for one vocabulary." .
+
+scheck:TermResult
+    a rdfs:Class ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "TermResult" ;
+    rdfs:comment "A resource holding the check results for one term of one vocabulary." .
+
+scheck:PropertyResult
+    a rdfs:Class ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "PropertyResult" ;
+    rdfs:comment "A resource holding the check results for one property of one shape." .
+
+scheck:ShapeResult
+    a rdfs:Class ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "ShapeResult" ;
+    rdfs:comment "A resource holding the check results for a single shape." .
+
+scheck:ShapesResult
+    a rdfs:Class ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "ShapesResult" ;
+    rdfs:comment "A resource holding the check results for the shapes from one source." .
+
+scheck:Summary
+    a rdfs:Class ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Summary" ;
+    rdfs:comment "The summary of the results of a check." .
+
+scheck:OntologyResult
+    a rdfs:Class ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "OntologyResult" ;
+    rdfs:comment "A resource holding the check results for the ontology resource for one vocabulary." .
+
+scheck:Issue
+    a rdfs:Class ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Issue" ;
+    rdfs:comment "A class for the issues enumeration." .
+
+
+# Properties
+
+scheck:result
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "result" ;
+    rdfs:comment "The check results for a set of resources within the current scope." .
+
+scheck:subject
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "subject" ;
+    rdfs:comment "The subject of an issue." .
+
+scheck:value
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "value" ;
+    rdfs:comment "The value concerning which an issue is being reported." .
+
+scheck:plural
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "plural" ;
+    rdfs:comment "The plural for a cross-check artifact." .
+
+scheck:issue
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "issue" ;
+    rdfs:comment "An issue reported by the checker." .
+
+scheck:infoCount
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "infoCount" ;
+    rdfs:comment "The number of info issues reported by the checker within the current scope." .
+
+scheck:warnCount
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "warnCount" ;
+    rdfs:comment "The number of warning issues reported by the checker within the current scope." .
+
+scheck:issueCounts
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "issueCounts" ;
+    rdfs:comment "The overall number of issues reported by the checker within the current scope." .
+
+scheck:severity
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "severity" ;
+    rdfs:comment "The severity of an issue." .
+
+scheck:errorCount
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "errorCount" ;
+    rdfs:comment "The number of error issues reported by the checker within the current scope." .
+
+scheck:checks
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "checks" ;
+    rdfs:comment "The subject of a check." .
+
+scheck:singular
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "singular" ;
+    rdfs:comment "The singular for a cross-check artifact." .
+
+
+# Individuals
+
+
+# Issues
+
+scheck:Duplicate
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Duplicate" ;
+    rdfs:comment "This property name, definition, or oslc:describes is not unique." ;
+    scheck:severity scheck:Error .
+
+scheck:MoreThanOne
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "MoreThanOne" ;
+    rdfs:comment "This property should appear at most once." ;
+    scheck:severity scheck:Error .
+
+scheck:SourceNotTurtle
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "SourceNotTurtle" ;
+    rdfs:comment "The vocabulary or shape source does not appear to be in Turtle." ;
+    scheck:severity scheck:Error .
+
+scheck:NotResource
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "NotResource" ;
+    rdfs:comment "A resource value is expected here, not a literal." ;
+    scheck:severity scheck:Error .
+
+scheck:DuplicateLabel
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "DuplicateLabel" ;
+    rdfs:comment "This label is not unique." ;
+    scheck:severity scheck:Warning .
+
+scheck:MismatchingRepresentation
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "MismatchingRepresentation" ;
+    rdfs:comment "Mismatching values of oslc:ValueType and oslc:Representation." ;
+    scheck:severity scheck:Error .
+
+scheck:InvalidUri
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "InvalidUri" ;
+    rdfs:comment "The URI of the target is invalid." ;
+    scheck:severity scheck:Error .
+
+scheck:BadImpactType
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "BadImpactType" ;
+    rdfs:comment "Impact type must be one of oslc:UpstreamImpact, oslc:DownstreamImpact, oslc:SymmetricImpact, or oslc:NoImpact." ;
+    scheck:severity scheck:Error .
+
+scheck:LocalResourceDeprecated
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "LocalResourceDeprecated" ;
+    rdfs:comment "Use of oslc:LocalResource should be replaced by oslc:AnyResource with oslc:representation&#61;oslc:Inline." ;
+    scheck:severity scheck:Warning .
+
+scheck:NoShape
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "NoShape" ;
+    rdfs:comment "This property definition or other subject does not appear to be part of a defined shape." ;
+    scheck:severity scheck:Warning .
+
+scheck:NotLiteral
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "NotLiteral" ;
+    rdfs:comment "A literal value is expected here, not a resource." ;
+    scheck:severity scheck:Error .
+
+scheck:EmbeddedWhitespace
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "EmbeddedWhitespace" ;
+    rdfs:comment "White space after embedded newline - misuse of triple quotes?" ;
+    scheck:severity scheck:Warning .
+
+scheck:MissingPeriod
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "MissingPeriod" ;
+    rdfs:comment "The description or comment should end with a period (full stop)." ;
+    scheck:severity scheck:Warning .
+
+scheck:InvalidRdfWarn
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "InvalidRdfWarn" ;
+    rdfs:comment "The target resource cannot be fetched or parsed as RDF." ;
+    scheck:severity scheck:Warning .
+
+scheck:UndefinedTerm
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "UndefinedTerm" ;
+    rdfs:comment "This resource is not defined in its parent vocabulary." ;
+    scheck:severity scheck:Warning .
+
+scheck:BadTermStatus
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "BadTermStatus" ;
+    rdfs:comment "The vs:term_status property must be either &quot;stable&quot; or &quot;archaic&quot;; &quot;unstable&quot; or &quot;testing&quot; are bad practice in published vocabularies." ;
+    scheck:severity scheck:Error .
+
+scheck:MissingWarn
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "MissingWarn" ;
+    rdfs:comment "The named property should be specified for this resource." ;
+    scheck:severity scheck:Warning .
+
+scheck:MissingError
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "MissingError" ;
+    rdfs:comment "The named property should be specified for this resource." ;
+    scheck:severity scheck:Error .
+
+scheck:Redundant
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Redundant" ;
+    rdfs:comment "This property is unexpected." ;
+    scheck:severity scheck:Warning .
+
+scheck:NotHash
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "NotHash" ;
+    rdfs:comment "The term or property should use a hash URI, relative to its ontology or shape, respectively." ;
+    scheck:severity scheck:Info .
+
+scheck:NoOntology
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "NoOntology" ;
+    rdfs:comment "This subject does not appear to be part of an ontology or one of its terms." ;
+    scheck:severity scheck:Warning .
+
+scheck:InvalidRdfError
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "InvalidRdfError" ;
+    rdfs:comment "The target resource cannot be fetched or parsed as RDF." ;
+    scheck:severity scheck:Error .
+
+scheck:WrongType
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "WrongType" ;
+    rdfs:comment "Wrong type for oslc:valueType, or for a property definition, or for a literal." ;
+    scheck:severity scheck:Error .
+
+scheck:DuplicateLangString
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "DuplicateLangString" ;
+    rdfs:comment "Duplicate language on string literal." ;
+    scheck:severity scheck:Error .
+
+scheck:InappropriateMaxSize
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "InappropriateMaxSize" ;
+    rdfs:comment "The property oslc:maxSize appplies only to string or XMLLiteral value types." ;
+    scheck:severity scheck:Error .
+
+scheck:BadXMLLiteral
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "BadXMLLiteral" ;
+    rdfs:comment "The XML literal is not well-formed." ;
+    scheck:severity scheck:Warning .
+
+scheck:NotDefined
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "NotDefined" ;
+    rdfs:comment "This resource is not defined in this document." ;
+    scheck:severity scheck:Warning .
+
+scheck:BadTermType
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "BadTermType" ;
+    rdfs:comment "A vocabulary term must be of type rdfs:Class, rdf:Property, rdfs:Resource, or some other valid URI." ;
+    scheck:severity scheck:Error .
+
+scheck:BadCase
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "BadCase" ;
+    rdfs:comment "A vocabulary class must start with upper case, and a property with lower case." ;
+    scheck:severity scheck:Warning .
+
+scheck:TermNotInVocab
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "TermNotInVocab" ;
+    rdfs:comment "This term does not have rdfs:isDefinedBy its parent ontology." ;
+    scheck:severity scheck:Error .
+
+scheck:Unreachable
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Unreachable" ;
+    rdfs:comment "This resource is not fetchable." ;
+    scheck:severity scheck:Warning .
+
+scheck:BadOccurs
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "BadOccurs" ;
+    rdfs:comment "The oslc:occurs property must be one of oslc:Exactly-one, oslc:One-or-many, oslc:Zero-or-one, or oslc:Zero-or-many." ;
+    scheck:severity scheck:Error .
+
+
+# Cross-check issues
+
+scheck:unusedVocabulary
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "unusedVocabulary" ;
+    rdfs:comment "given, but not referenced in the given shapes:" ;
+    scheck:singular "vocabulary" ;
+    scheck:plural "vocabularies" ;
+    scheck:severity scheck:Warning .
+
+scheck:undefinedTerm
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "undefinedTerm" ;
+    rdfs:comment "referenced in the given shapes, but not defined in the expected vocabulary:" ;
+    scheck:singular "term" ;
+    scheck:plural "terms" ;
+    scheck:severity scheck:Error .
+
+scheck:unusedTerm
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "unusedTerm" ;
+    rdfs:comment "defined in the given vocabularies, but not referenced in the given shapes:" ;
+    scheck:singular "term" ;
+    scheck:plural "terms" ;
+    scheck:severity scheck:Info .
+
+
+# The severity enumeration
+
+scheck:Severity
+    a rdfs:Class ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Severity" ;
+    rdfs:comment "A class for the severity enumeration." .
+
+scheck:Error
+    a scheck:Severity ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Error" ;
+    rdfs:comment "Error severity." .
+
+scheck:Info
+    a scheck:Severity ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Info" ;
+    rdfs:comment "Info severity." .
+
+scheck:Warning
+    a scheck:Severity ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "Warning" ;
+    rdfs:comment "Warning severity." .

@@ -7,18 +7,23 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.DCTerms;
+import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.SKOS;
 
 import net.open_services.scheck.shapechecker.OSLC;
+
 
 /**
  * Print a canonical representation of a set of OSLC resource shapes.
@@ -29,14 +34,17 @@ import net.open_services.scheck.shapechecker.OSLC;
  *
  * @author Nick Crossley. Released to public domain 2020.
  */
-public final class PrintShapes
+public final class PrintVocabs
 {
-    private Model       shapeModel;
+    private static final Property VS_TERM_STATUS = ResourceFactory.createProperty("http://www.w3.org/2003/06/sw-vocab-status/ns#term_status");
+    private static final Property PREF_NS        = ResourceFactory.createProperty("http://purl.org/vocab/vann/preferredNamespacePrefix");
+
+    private Model       vocabModel;
 
 
-    private PrintShapes()
+    private PrintVocabs()
     {
-        shapeModel = ModelFactory.createDefaultModel();
+        vocabModel = ModelFactory.createDefaultModel();
     }
 
 
@@ -46,17 +54,17 @@ public final class PrintShapes
      */
     public static void main(String... args)
     {
-        new PrintShapes().run(args);
+        new PrintVocabs().run(args);
     }
 
     private void run(String...args)
     {
-        readShapeDocuments(args);
-        printShapes();
+        readVocabDocuments(args);
+        printVocabs();
     }
 
 
-    private void readShapeDocuments(String... args)
+    private void readVocabDocuments(String... args)
     {
         for (String arg : args)
         {
@@ -64,7 +72,7 @@ public final class PrintShapes
             {
                 GlobExpander.checkFileOrURI(arg)
                     .stream()
-                    .forEach(uri -> shapeModel.read(uri.toString(), "TURTLE"));
+                    .forEach(uri -> vocabModel.read(uri.toString(), "TURTLE"));
             }
             catch (URISyntaxException e)
             {
@@ -74,12 +82,12 @@ public final class PrintShapes
     }
 
 
-    private void printShapes()
+    private void printVocabs()
     {
-        stmtStream(shapeModel.listStatements(null, RDF.type, OSLC.ResourceShape))
+        stmtStream(vocabModel.listStatements(null, RDF.type, OWL.Ontology))
             .map(Statement::getSubject)
             .sorted((a,b)->a.getURI().compareTo(b.getURI()))
-            .forEachOrdered(this::printShape);
+            .forEachOrdered(this::printVocab);
     }
 
 
@@ -90,57 +98,59 @@ public final class PrintShapes
     }
 
 
-    private void printShape(Resource shape)
+    private void printVocab(Resource vocab)
     {
-        System.out.printf("<%s>%n\ta <%s>",shape.getURI(),"http://open-services.net/ns/core#ResourceShape");
+        System.out.printf("<%s>%n\ta %s",vocab.getURI(),"owl:Ontology");
         System.out.print(Stream.of(
-                printString(shape,DCTerms.title),
-                printString(shape,DCTerms.description),
-                printURI(shape,OSLC.describes),
-                printURI(shape,RDFS.seeAlso),
-                printBoolean(shape,OSLC.hidden))
+            	printString(vocab,RDFS.label),
+            	printString(vocab,DCTerms.title),
+                printString(vocab,DCTerms.description),
+                printString(vocab,DCTerms.dateCopyrighted),
+                printString(vocab,PREF_NS),
+                printURI(vocab,DCTerms.license),
+                printURI(vocab,DCTerms.source),
+                printURI(vocab,RDFS.seeAlso))
             .filter(s->!s.isEmpty())
             .map(s->"\t"+s)
-            .collect(turtleCollector(" ;\n"," ;\n","")));
+            .collect(turtleCollector(" ;\n"," ;\n"," .\n")));
 
-        System.out.print(
-            stmtStream(shapeModel.listStatements(shape, OSLC.property, (RDFNode)null))
-            .map(Statement::getResource)
-            .sorted((a,b)->a.getRequiredProperty(OSLC.name).getString().compareTo(b.getRequiredProperty(OSLC.name).getString()))
-            .map(this::printPropertyDef)
-            .filter(s->!s.isEmpty())
-            .collect(turtleCollector(" ;\n\t<oslc:property>\n\t\t[\n","\n\t\t] ,\n\t\t[\n","\n\t\t]")));
-        System.out.println(" .\n");
+        stmtStream(vocabModel.listStatements((Resource)null, RDFS.isDefinedBy, vocab))
+            .map(Statement::getSubject)
+            .sorted(Comparator.comparing(Resource::getURI))
+            .forEachOrdered(this::printVocabTerm);
     }
 
 
-    private String printPropertyDef(Resource propDef)
+    private void printVocabTerm(Resource term)
     {
-        return Stream.of(
-                printString(propDef,OSLC.name),
-                printString(propDef,DCTerms.title),
-                printString(propDef,DCTerms.description),
-                printURI(propDef,OSLC.propertyDefinition),
-                printURI(propDef,OSLC.valueType),
-                printURI(propDef,OSLC.representation),
-                printURI(propDef,OSLC.occurs),
-                printURI(propDef,OSLC.range),
-                printURI(propDef,OSLC.allowedValue),
-                printURI(propDef,OSLC.allowedValues),
-                printURI(propDef,OSLC.defaultValue),
-                printURI(propDef,OSLC.valueShape),
-                printBoolean(propDef,OSLC.readOnly),
-                printBoolean(propDef,OSLC.hidden),
-                printBoolean(propDef,OSLC.isMemberProperty))
+    	System.out.printf("%n<%s>",term.getURI());
+        System.out.println(Stream.of(
+                printURI(term,RDF.type),
+                printURI(term,OWL.sameAs),
+                printURI(term,RDFS.subClassOf),
+                printURI(term,RDFS.subPropertyOf),
+                printURI(term,RDFS.range),
+                printURI(term,RDFS.domain),
+                printURI(term,RDFS.isDefinedBy),
+            	printString(term,RDFS.label),
+                printString(term,OSLC.inverseLabel),
+            	printString(term,RDFS.comment),
+                printString(term,VS_TERM_STATUS),
+                printBoolean(term,OSLC.hidden),
+                printString(term,RDF.value),
+                printURI(term,OSLC.impactType),
+                printURI(term,SKOS.narrower),
+                printURI(term,SKOS.broader),
+        		printURI(term,RDFS.seeAlso))
             .filter(s->!s.isEmpty())
-            .map(s->"\t\t\t"+s)
-            .collect(turtleCollector(""," ;\n",""));
+            .map(s->"\t"+s)
+            .collect(turtleCollector("\n"," ;\n"," .")));
     }
 
 
     private String printBoolean(Resource subject, Property predicate)
     {
-        return stmtStream(shapeModel.listStatements(subject,predicate,(RDFNode)null))
+        return stmtStream(vocabModel.listStatements(subject,predicate,(RDFNode)null))
             .map(Statement::getBoolean)
             .sorted(Comparator.naturalOrder())
             .map(b->b.toString())
@@ -150,7 +160,7 @@ public final class PrintShapes
 
     private String printURI(Resource subject, Property predicate)
     {
-        return stmtStream(shapeModel.listStatements(subject,predicate,(RDFNode)null))
+        return stmtStream(vocabModel.listStatements(subject,predicate,(RDFNode)null))
             .map(a->a.getResource().getURI())
             .sorted(Comparator.naturalOrder())
             .map(uri->"<"+uri+">")
@@ -160,8 +170,9 @@ public final class PrintShapes
 
     private String printString(Resource subject, Property predicate)
     {
-        return stmtStream(shapeModel.listStatements(subject,predicate,(RDFNode)null))
-            .map(Statement::getString)
+        return stmtStream(vocabModel.listStatements(subject,predicate,(RDFNode)null))
+            .map(Statement::getLiteral)
+            .map(Literal::getLexicalForm)
             .sorted(Comparator.naturalOrder())
             .map(s->"\"\"\""+s.replace("\\", "\\\\")+"\"\"\"")
             .collect(multivaluedPredicateCollector(predicate));

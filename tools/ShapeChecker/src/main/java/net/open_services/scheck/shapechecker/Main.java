@@ -21,7 +21,7 @@ public class Main
 {
     private List<URI>  vocabularies = new ArrayList<>();
     private List<URI>  shapes       = new ArrayList<>();
-    private boolean    debug        = false;
+    private int		   debug        = 0;
     private boolean    verbose      = false;
     private boolean    crossCheck   = true;
     private CrossCheck crossChecker;
@@ -36,7 +36,7 @@ public class Main
      * <li>Each -x/--exclude argument specifies a regular expression for URIs not to be read</li>
      * <li>-N/--nocrosscheck turns off the cross-checking of vocabularies and shapes</li>
      * <li>-V/--verbose turns out more progress information</li>
-     * <li>-D/--debug turns on debugging output</li>
+     * <li>-D/--debug turns on debugging output; multiple -D flags increase the debug level</li>
      * </ul>
      * The arguments may be repeated to check multiple vocabulary and shape documents.
      * The vocabulary and shape arguments can use shell-style globs (*.ttl, etc.),
@@ -134,7 +134,7 @@ public class Main
             }
         }
 
-        if (debug && verbose)
+        if (debug > 2)
         {
             System.err.println("\nResult model before summarizing:");
             Models.write(resultModel.getModel(), System.err);
@@ -143,7 +143,7 @@ public class Main
         // Scan the result model, adding issue counts
         int errors = resultModel.summarizeIssues();
 
-        if (debug && verbose)
+        if (debug > 2)
         {
             System.err.println("\nResult model after summarizing:");
             Models.write(resultModel.getModel(), System.err);
@@ -183,7 +183,7 @@ public class Main
                 if (args[index].equals("-D") || args[index].equals("--debug"))
                 {
                     index++;
-                    debug = true;
+                    debug++;
                     httpHandler.setDebug(debug);
                     System.err.println("Arguments: "+String.join(" ",args));
                 }

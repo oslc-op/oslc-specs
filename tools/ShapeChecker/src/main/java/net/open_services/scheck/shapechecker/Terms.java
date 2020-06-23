@@ -105,7 +105,7 @@ public final class Terms
     public static final Resource BadOccurs        = resource("BadOccurs");
 
     /** Error class for a vs:term_status with an unknown value. */
-    @SCIssue(issueSeverity=Error,description="The vs:term_status property must be either \\\"stable\\\" or \\\"archaic\\\"; \\\"unstable\\\" or \\\"testing\\\" are bad practice in published vocabularies.")
+    @SCIssue(issueSeverity=Error,description="The vs:term_status property must be either \"stable\" or \"archaic\"; \"unstable\" or \"testing\" are bad practice in published vocabularies.")
     public static final Resource BadTermStatus    = resource("BadTermStatus");
 
     /** Error class for an unknown vocabulary term type. */
@@ -132,7 +132,7 @@ public final class Terms
     @SCIssue(issueSeverity=Warning,description="White space after embedded newline - misuse of triple quotes?")
     public static final Resource EmbeddedWhitespace = resource("EmbeddedWhitespace");
 
-   /** Error class for inappropriate use of the oslc:maxSize property. */
+    /** Error class for inappropriate use of the oslc:maxSize property. */
     @SCIssue(issueSeverity=Error,description="The property oslc:maxSize appplies only to string or XMLLiteral value types.")
     public static final Resource InappropriateMaxSize = resource("InappropriateMaxSize");
 
