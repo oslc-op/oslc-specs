@@ -1,1236 +1,1475 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <title>OSLC Estimation and Measurement Service Version 1.0: Specification</title>
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.14/builds/respec-oasis-common.min.js"
+      async
+      class="remove"
+    ></script>
+    <script type="text/javascript" class="remove">
+      var respecConfig = {
+        // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN). If in doubt use WD.
+        // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
+        specStatus: "WD",
+        thisVersion: "https://oslc-op.github.io/oslc-specs/specs/ems/estimation-measurement-spec.html",
+        latestVersion:
+          "http://docs.oasis-open.org/oslc-domains/ems/v1.0/estimation-measurement-v1.0-part1-estimation-measurement.html",
+        prevVersion: "",
 
-<head>
-  <meta charset='utf-8' />
-  <title>OSLC Estimation and Measurement Service Version 1.0: Specification</title>
-  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.14/builds/respec-oasis-common.min.js' async
-    class='remove'></script>
-  <script type="text/javascript" class='remove'>
-    var respecConfig = {
-      // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN). If in doubt use WD.
-      // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
-      specStatus: "WD",
-      thisVersion: "https://oslc-op.github.io/oslc-specs/specs/ems/estimation-measurement-spec.html",
-      latestVersion: "http://docs.oasis-open.org/oslc-domains/ems/v1.0/estimation-measurement-v1.0-part1-estimation-measurement.html",
-      prevVersion: "",
+        // the specification's short name, as in http://www.w3.org/TR/short-name/
+        shortName: "oslc-ems",
 
-      // the specification's short name, as in http://www.w3.org/TR/short-name/
-      shortName: "oslc-ems",
+        // the document's citation label
+        citationLabel: "OSLC-EMS-1.0-Part1",
 
-      // the document's citation label
-      citationLabel: "OSLC-EMS-1.0-Part1",
+        label: "WD01",
 
-      label: 'WD01',
+        // The revision level of the document within its stage
+        revision: "01",
 
-      // The revision level of the document within its stage
-      revision: "01",
+        // if your specification has a subtitle that goes below the main
+        // formal title, define it here
+        // subtitle   :  "an excellent document",
 
-      // if your specification has a subtitle that goes below the main
-      // formal title, define it here
-      // subtitle   :  "an excellent document",
+        // if you wish the publication date to be other than the last modification, set this
+        // publishDate:  "2018-06-08",
 
-      // if you wish the publication date to be other than the last modification, set this
-      // publishDate:  "2018-06-08",
+        // if the specification's copyright date is a range of years, specify
+        // the start date here:
+        // copyrightStart: "2005"
 
-      // if the specification's copyright date is a range of years, specify
-      // the start date here:
-      // copyrightStart: "2005"
+        // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+        // and its maturity status
+        // previousPublishDate:  "1977-03-15",
+        // previousMaturity:  "WD",
 
-      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-      // and its maturity status
-      // previousPublishDate:  "1977-03-15",
-      // previousMaturity:  "WD",
+        // if there a publicly available Editor's Draft, this is the link
+        // edDraftURI:           "http://berjon.com/",
 
-      // if there a publicly available Editor's Draft, this is the link
-      // edDraftURI:           "http://berjon.com/",
+        // if this is a LCWD, uncomment and set the end of its review period
+        // lcEnd: "2009-08-05",
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Andrew Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se",
+          },
+        ],
 
-      // if this is a LCWD, uncomment and set the end of its review period
-      // lcEnd: "2009-08-05",
-      chairs: [{
-        name: "Jim Amsden",
-        mailto: "jamsden@us.ibm.com",
-        company: "IBM",
-        companyURL: "http://www.ibm.com/"
-      }, {
-        name: "Andrew Berezovskyi",
-        mailto: "andriib@kth.se",
-        company: "KTH",
-        companyURL: "https://www.kth.se"
-      }],
+        // editors, add as many as you like
+        // only "name" is required
+        editors: [
+          {
+            name: "Fabio Ribeiro",
+            mailto: "fabio.ribeiro@koneksys.com",
+            company: "Koneksys",
+            companyURL: "https://www.koneksys.com",
+          },
+        ],
 
-      // editors, add as many as you like
-      // only "name" is required
-      editors: [
-        {
-          name: "Fabio Ribeiro",
-          mailto: "fabio.ribeiro@koneksys.com",
-          company: "Koneksys",
-          companyURL: "https://www.koneksys.com"
-        }
-      ],
+        // name of the WG
+        wg: "OASIS OSLC Open Project",
+        wgShortName: "oslc-domains",
 
-      // name of the WG
-      wg: "OASIS OSLC Open Project",
-      wgShortName: "oslc-domains",
+        // URI of the public WG page
+        wgURI: "https://www.oasis-open.org/committees/oslc-domains/",
 
-      // URI of the public WG page
-      wgURI: "https://www.oasis-open.org/committees/oslc-domains/",
+        // name (without the @w3c.org) of the public mailing to which comments are due
+        wgPublicList: "oslc-domains-comment",
 
-      // name (without the @w3c.org) of the public mailing to which comments are due
-      wgPublicList: "oslc-domains-comment",
+        // URI of the patent status for this WG, for Rec-track documents
+        // !!!! IMPORTANT !!!!
+        // This is important for Rec-track documents, do not copy a patent URI from a random
+        // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+        // Team Contact.
+        wgPatentURI: "",
+        // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
 
-      // URI of the patent status for this WG, for Rec-track documents
-      // !!!! IMPORTANT !!!!
-      // This is important for Rec-track documents, do not copy a patent URI from a random
-      // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
-      // Team Contact.
-      wgPatentURI: "",
-      // !!!! IMPORTANT !!!! MAKE THE ABOVE BLINK IN YOUR HEAD
+        namespaces: [
+          {
+            href: "http://open-services.net/ns/ems#",
+            prefix: "oslc_ems",
+          },
+        ],
 
-      namespaces: [{
-        href: "http://open-services.net/ns/ems#",
-        prefix: "oslc_ems"
-      }],
+        // Other parts of multi-part spec
+        additionalArtifacts: [
+          {
+            title: "OSLC Estimation and Measurement Service Version 1.0. Part 1: Specification (this document)",
+            href:
+              "http://docs.oasis-open.org/oslc-domains/ems/v1.0/cs01/part1-estimation-measurement/ems-v1.0-cs01-part1-estimation-measurement.html",
+          },
+          {
+            title: "OSLC Estimation and Measurement Service Version 1.0. Part 2: Vocabulary",
+            href:
+              "http://docs.oasis-open.org/oslc-domains/ems/v1.0/cs01/part2-estimation-measurement-vocab/ems-v1.0-cs01-part2-estimation-measurement-vocab.html",
+          },
+        ],
 
-      // Other parts of multi-part spec
-      additionalArtifacts: [
-        { title: "OSLC Estimation and Measurement Service Version 1.0. Part 1: Specification (this document)", href: "http://docs.oasis-open.org/oslc-domains/ems/v1.0/cs01/part1-estimation-measurement/ems-v1.0-cs01-part1-estimation-measurement.html" },
-        { title: "OSLC Estimation and Measurement Service Version 1.0. Part 2: Vocabulary", href: "http://docs.oasis-open.org/oslc-domains/ems/v1.0/cs01/part2-estimation-measurement-vocab/ems-v1.0-cs01-part2-estimation-measurement-vocab.html" },
-      ],
+        relatedWork: [
+          {
+            title: "Open Services for Lifecycle Collaboration Estimation and Measurement Service Version 1.0.",
+            href:
+              "https://archive.open-services.net/wiki/estimation-and-measurement/Estimation-and-Measurement-Service-Version-1.0_-REST-API/",
+          },
+        ],
 
-      relatedWork: [
-        { title: "Open Services for Lifecycle Collaboration Estimation and Measurement Service Version 1.0.", href: "https://archive.open-services.net/wiki/estimation-and-measurement/Estimation-and-Measurement-Service-Version-1.0_-REST-API/" }
-      ],
-
-      localBiblio: {
-        "OSLCCore2": {
-          title: "OSLC Core 2.0",
-          href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
-          authors: ["S. Speicher", "D. Johnson"],
-          status: "Finalized",
-          publisher: "http://open-services.net",
+        localBiblio: {
+          OSLCCore2: {
+            title: "OSLC Core 2.0",
+            href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCCore3: {
+            title: "OSLC Core 3.0",
+            href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Committee Specification",
+            publisher: "OASIS",
+          },
+          OSLCResourcePreview: {
+            title: "OSLC Core 3.0 Resource Preview",
+            href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part3-resource-preview.html",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Draft",
+            publisher: "OASIS",
+          },
+          OSLCShapes: {
+            title: "OSLC Resource Shape 3.0",
+            href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part6-resource-shape.html",
+            authors: ["Arthur Ryman", "Jim Amsden"],
+            publisher: "OASIS",
+          },
+          OSLCCM20: {
+            title: "Open Services for Lifecycle Collaboration Change Management Specification Version 2.0",
+            href: "http://open-services.net/bin/view/Main/CmSpecificationV2",
+            authors: ["S. Speicher"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCActions: {
+            title: "Open Services for Lifecycle Collaboration Actions Specification Version 2.0",
+            href: "http://open-services.net/wiki/core/Actions-2.0/",
+            authors: ["Martin Pain", "Steve Speicher"],
+            status: "Finalization",
+            publisher: "http://open-services.net",
+          },
+          OSLCRM: {
+            title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
+            href: "http://open-services.net/bin/view/Main/RmSpecificationV2",
+            authors: ["Ian Green"],
+            status: "Final",
+            publisher: "http://open-services.net",
+          },
+          OSLCQM: {
+            title: "Open Services for Lifecycle Collaboration Quality Management Specification Version 2.0",
+            href: "http://open-services.net/bin/view/Main/QmSpecificationV2",
+            authors: ["Paul McMahan"],
+            status: "Final",
+            publisher: "http://open-services.net",
+          },
+          OpenIDConnect: {
+            title: "OpenID Connect",
+            href: "http://openid.net/connect/",
+            publisher: "openid.net",
+          },
+          LDPPatch: {
+            title: "Linked Data Patch Format",
+            href: "http://www.w3.org/TR/ldpatch/",
+            status: "Working Group Note",
+            publisher: "http://www.w3.org/",
+          },
+          N3: {
+            title: "Notation 3 Logic",
+            href: "https://www.w3.org/DesignIssues/Notation3",
+            status: "An early draft of a semi-formal semantics of the N3 logical properties",
+            publisher: "http://www.w3.org/",
+          },
+          Turtle: {
+            title: "Terse RDF Triple Languaget",
+            href: "https://www.w3.org/TeamSubmission/turtle/",
+            status: "Published",
+            publisher: "http://www.w3.org/",
+          },
+          RDF: {
+            title: "Resource Description Framework",
+            href: "https://www.w3.org/RDF/",
+            publisher: "http://www.w3.org/",
+          },
+          XHTML: {
+            title: "XHTML™ 1.0 The Extensible HyperText Markup Language",
+            href: "https://www.w3.org/TR/xhtml1/",
+            publisher: "http://www.w3.org/",
+          },
+          OAuth: {
+            title: "OAuth 2.0 authorizarion framework",
+            href: "https://oauth.net/",
+            publisher: "https://oauth.net/",
+          },
+          OSLCCoreVocab: {
+            title: "OSLC Core Vocabulary",
+            href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
+            authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+            status: "Working Draft",
+            publisher: "OASIS",
+          },
         },
-        "OSLCCore3": {
-          title: "OSLC Core 3.0",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
-          authors: ["Jim Amsden", "S. Speicher"],
-          status: "Committee Specification",
-          publisher: "OASIS",
-        },
-        "OSLCResourcePreview": {
-          title: "OSLC Core 3.0 Resource Preview",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part3-resource-preview.html",
-          authors: ["Jim Amsden", "S. Speicher"],
-          status: "Draft",
-          publisher: "OASIS",
-        },
-        "OSLCShapes": {
-          title: "OSLC Resource Shape 3.0",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part6-resource-shape.html",
-          authors: ["Arthur Ryman", "Jim Amsden"],
-          publisher: "OASIS",
-        },
-        "OSLCCM20": {
-          title: "Open Services for Lifecycle Collaboration Change Management Specification Version 2.0",
-          href: "http://open-services.net/bin/view/Main/CmSpecificationV2",
-          authors: ["S. Speicher"],
-          status: "Finalized",
-          publisher: "http://open-services.net"
-        },
-        "OSLCActions": {
-          title: "Open Services for Lifecycle Collaboration Actions Specification Version 2.0",
-          href: "http://open-services.net/wiki/core/Actions-2.0/",
-          authors: ["Martin Pain", "Steve Speicher"],
-          status: "Finalization",
-          publisher: "http://open-services.net"
-        },
-        "OSLCRM": {
-          title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
-          href: "http://open-services.net/bin/view/Main/RmSpecificationV2",
-          authors: ["Ian Green"],
-          status: "Final",
-          publisher: "http://open-services.net",
-        },
-        "OSLCQM": {
-          title: "Open Services for Lifecycle Collaboration Quality Management Specification Version 2.0",
-          href: "http://open-services.net/bin/view/Main/QmSpecificationV2",
-          authors: ["Paul McMahan"],
-          status: "Final",
-          publisher: "http://open-services.net",
-        },
-        "OpenIDConnect": {
-          title: "OpenID Connect",
-          href: "http://openid.net/connect/",
-          publisher: "openid.net",
-        },
-        "LDPPatch": {
-          title: "Linked Data Patch Format",
-          href: "http://www.w3.org/TR/ldpatch/",
-          status: "Working Group Note",
-          publisher: "http://www.w3.org/",
-        },
-        "N3": {
-          title: "Notation 3 Logic",
-          href: "https://www.w3.org/DesignIssues/Notation3",
-          status: "An early draft of a semi-formal semantics of the N3 logical properties",
-          publisher: "http://www.w3.org/",
-        },
-        "Turtle": {
-          title: "Terse RDF Triple Languaget",
-          href: "https://www.w3.org/TeamSubmission/turtle/",
-          status: "Published",
-          publisher: "http://www.w3.org/",
-        },
-        "RDF": {
-          title: "Resource Description Framework",
-          href: "https://www.w3.org/RDF/",
-          publisher: "http://www.w3.org/",
-        },
-        "XHTML": {
-          title: "XHTML™ 1.0 The Extensible HyperText Markup Language",
-          href: "https://www.w3.org/TR/xhtml1/",
-          publisher: "http://www.w3.org/",
-        },
-        "OAuth": {
-          title: "OAuth 2.0 authorizarion framework",
-          href: "https://oauth.net/",
-          publisher: "https://oauth.net/",
-        },
-        "OSLCCoreVocab": {
-          title: "OSLC Core Vocabulary",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
-          authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
-          status: "Working Draft",
-          publisher: "OASIS",
-        }
-      }
-    };
-  </script>
+      };
+    </script>
+  </head>
 
-</head>
+  <body>
+    <section id="abstract"></section>
 
-<body>
-  <section id="abstract">
+    <section id="toc"></section>
+    <hr />
+    <section id="sotd"></section>
 
-  </section>
+    <section id="introduction" class="informative">
+      <h2>Introduction</h2>
+      <p>(this section is informative)</p>
 
-  <section id='toc'></section>
-  <hr />
-  <section id='sotd'></section>
-
-
-  <section id="introduction" class="informative">
-    <h2>Introduction</h2>
-    <p>(this section is informative)</p>
-
-    <p>The Estimation and Measurement Service Version 1.0 (EMS 1.0) specification defines a REST API that is intended to
-      facilitate the collaboration of PPM and software estimation tools across the development lifecycle. The scope of
-      this specification is defined in <a
-        href="https://archive.open-services.net/wiki/estimation-and-measurement/Software-Estimation-Use-Cases/index.html"
-        title="Software-Estimation-Use-Cases">Use Cases</a>. This document is the normative definition of EMS 1.0. Refer
-      to <a href="https://archive.open-services.net/wiki/estimation-and-measurement/EMS-1.0-Primer/index.html"
-        title="EMS-1.0-Primer">EMS 1.0 Primer</a> for an
-      easy-to-read, informal description.</p>
-
-    <section id="iprPolicy">
-      <h2>IPR Policy</h2>
       <p>
-        This Committee Specification Public Review Draft is being developed under the <a
-          href="https://www.oasis-open.org/policies-guidelines/ipr#RF-on-Limited-Mode">RF on Limited Terms</a> Mode of
-        the <a href="https://www.oasis-open.org/policies-guidelines/ipr">OASIS IPR Policy</a>, the mode chosen when the
-        Technical Committee was established. For information on whether any patents have been disclosed that may be
-        essential to implementing this specification,
-        and any offers of patent licensing terms, please refer to the Intellectual Property Rights section of the TC’s
-        web page
-        (<a
-          href='https://www.oasis-open.org/committees/oslc-domains/ipr.php'>https://www.oasis-open.org/committees/oslc-domains/ipr.php</a>).
-      </p>
-    </section>
-
-    <section id='references'>
-      <h3>References</h3>
-    </section>
-    <section id="conventions"></section>
-  </section>
-
-
-  <section id="What-is-an-OSLC-Service">
-    <h2>What is an OSLC Service?</h2>
-
-    <p>At OSLC we use the term <em>service</em> in an informal way, on the assumption that members of this community
-      have a general understanding of the term and that no confusion will arise in the absence of a formal. However, the
-      EMS 1.0 uses service in a specific way so it is useful to define it here. The !W3C definition of a <a
-        href="http://www.w3.org/TR/ws-arch/#whatis">Web service</a> gives us a starting point, but we need to modify
-      that to incorporate the OSLC choice of REST as the architectural style and software development lifecycle
-      collaboration as the domain. We therefore use the following working definition of service within the context of
-      the EMS 1.0 specification:</p>
-
-    <blockquote>
-      <p>An OSLC service is a <a
-          href="http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services">RESTful</a> software
-        system designed to support interoperable lifecycle tool collaboration over the Web.</p>
-    </blockquote>
-
-    <p>Since this definition states that an OSLC service is RESTful, we know that it must manage a set of resources that
-      can be accessed via standard HTTP methods such as GET, POST, PUT, and DELETE. Sound software design principles
-      tell us that a service should have good internal cohesion in the sense that the resources it manages should be
-      closely related to each other and together serve some useful purpose. For example, if there are certain relations
-      or data integrity constraints that must hold among resources, then it may make sense to manage those resources
-      together in a single service. The scope of EMS 1.0 is restricted to resources that describe the estimation and
-      measurement aspects of software projects.</p>
-
-    <p>On the other hand, if resources are fairly decoupled, then they should be managed by distinct services. For
-      example, we would expect there to be distinct services for each domain of software development projects, e.g.
-      portfolio management, project management, performance management, requirements management, change management,
-      quality management, etc. In general a service may collaborate with many other services and applications. The REST
-      API of each service defines the collaboration contract. This leads us to a view of larger systems being composed
-      from webs of related OSLC services.</p>
-
-  </section>
-
-  <section id='termsAndConstraints'>
-    <h2>Vocabulary Terms and Constraints</h2>
-    <p><a
-        href="http://docs.oasis-open.org/oslc-domains/recon/v2.0/cs01/part2-reconciliation-vocab/recon-v2.0-cs01-part2-reconciliation-vocab.html">OSLC
-        Reconciliation Version 2.0. Part 2: Vocabulary</a>
-      Defines the vocabulary terms and constraints for OSLC Reconciliation resources.
-      These terms and constraints are specified according to [[!OSLCCoreVocab]].</p>
-  </section>
-
-  <section id="REST-API-Architecture">
-    <h2>EMS 1.0 REST API Architecture</h2>
-
-    <section id="REST-API-Architecture-Introduction">
-      <h3>Introduction</h3>
-
-      <p>This specification defines a REST API that provides estimation and measurement capabilities. Web applications
-        may either implement or use these interfaces. We refer to an implementation of these interfaces as a <em>service
-          provider</em> and user of these interfaces as a <em>service consumer</em>.</p>
-
-      <p>In practice, PPM and software estimation tools may be either service consumers or providers. That decision is
-        up to the tool architect. For example, a desktop-based tool may be a consumer while a server-based tool may be
-        either a consumer or a provider.</p>
-
-    </section>
-
-    <section id="The-EM-Service">
-      <h3>The EM Service</h3>
-
-      <p>In order to separate tool architecture concerns from the specification of the EMS 1.0 REST API, it is useful to
-        imagine that a standalone Web application is the service provider. We will refer to such an application simply
-        as an <em>EM service</em>. The following diagram illustrates the context of an EM service:</p>
-
-      <figure id="EM-Service-Context-Diagram">
-        <img src="images/estimation-and-measurement-service-context-diagram.png">
-        <figcaption>Fig. <span class="figno">1</span> <span class="fig-title">EM Service Context Diagram</span>
-        </figcaption>
-      </figure>
-
-    </section>
-
-    <section id="Packaging-the-EM-Service-with-Products">
-      <h3>Packaging the EM Service with Products</h3>
-
-      <p>The above diagram treats all collaboratoring tools on an equal footing with respect to the EM service and the
-        EMS 1.0 REST API is described from the point of view of the EM service. However, as noted above, it is likely
-        that the EM service would be included as part of a more comprehensive product, either integrated with a single
-        tool or shared among a suite of related tools. For example, the following context diagram illustrates a software
-        estimation product that includes an EM service:</p>
-
-      <figure id="Software-Estimation-Product-Context-Diagram">
-        <img src="images/software-estimation-product-context-diagram.png">
-        <figcaption>Fig. <span class="figno">2</span> <span class="fig-title">Software Estimation Product Context
-            Diagram</span>
-        </figcaption>
-      </figure>
-
-    </section>
-
-    <section id="Tool-Collaborations">
-      <h3>Tool Collaborations</h3>
-
-      <p>The following discussion briefly illustartes how PPM and software estimation tools might use an EM service to
-        collaborate.</p>
-
-      <p>The portfolio management tool initiates projects. A portfolio manager creates the project proposal, which
-        includes all relevant project contraints such as size, duration, or peak staffing, sends them to the EM service,
-        and requests an estimate. The software estimator receives this request, launches the software estimation tool,
-        produces an estimate, sends it back to the EM service, and notifies the portfolio manager. The portfolio manager
-        then gets estimate from the EM service, completes the project business case, and submits the project proposal to
-        the approval process. The EM service maintains a persistent record of the project proposal and estimates for
-        future use. If the project gets approved, the portfolio management system hands off the project to the project
-        management system.</p>
-
-      <p>The project management tool plans, monitors, and controls projects. As the project executes, measurements are
-        collected by the performance management tool. The project manager runs reports from the performance management
-        tool that show the measurements relative to the estimates. If the measurements vary too much from the estimates,
-        the project manager takes corrective action. Periodically, the project manager sends revised project constraints
-        to the EM service and requests the software estimator to reestimate the project to completion, taking into
-        account the measurements to date. The new estimates become part of the project baseline and the project manager
-        continues on to the next phase of the project.</p>
-
-      <p>The performance management tool collects measurements from the software development and PPM tools, and provides
-        a business intelligence user interface for managers and other team members to view and explore the data, e.g. to
-        diagnose problems. The performance management tool also collects estimates from the EM service so that the
-        measurements can be compared to the estimates. The performance management system can display dashboards,
-        scorecards, control charts, and other presentations of the data to allow team members to track the performance
-        of the project. The performance management tool also provides measurements to the EM service to enable both
-        reestimation of project plans and calibration of software estimation models based on past completed projects.
-      </p>
-
-      <p>The software estimation tools get project contraints and measurements from the EM service, and send it
-        estimates. Software estimation tools are used for calibrating models, providing initial cost estimates and
-        plans, and reestimating project plans.</p>
-
-      <p>In practice, performance management tools use Extract-Transform-Load (ETL) processes to collect data. A REST
-        API can act as a source of data for ETL, and the EM service will provide a REST API that is suitable for use by
-        ETL processes, mainly so that the performance management tool can load the estimates and make them available for
-        use in reports. Performance management tools provide reporting mechanisms for accessing data. In principle, any
-        application could access measurement data directly from the performance management tool through its reporting
-        interface, however that approach would result in a replication of business logic. A better approach is to use
-        the EM service as a proxy to the performance management tool.</p>
-
-      <p>Given the above considerations, software estimation, portfolio management, and project management tools will be
-        read-write consumers of the EM service, but the performance management tool will be a read-only consumer. The EM
-        system will be a consumer of the performance management tool’s native reporting interface in order to access
-        measurements.</p>
-
-    </section>
-
-  </section>
-
-  <section id="REST-API-Design">
-    <h2>EMS 1.0 REST API Design</h2>
-
-    <section id="REST-API-Design-Introduction">
-      <h3>Introduction</h3>
-
-      <p>The following sections discuss the general design principles used in this specification.</p>
-
-    </section>
-
-    <section id="Implementation-Dependent-Features">
-      <h3>Implementation-Dependent Features</h3>
-
-      <p>Before discussing the design further, it is appropriate to define the scope of this specification by listing
-        those general features of a service that are not specified here.</p>
-
-      <h4 id="Authentication">Authentication</h4>
-
-      <p>This specification does not define an authentification mechanism. Service providers SHOULD support some
-        authentication mechansim but are free to support a variety of authentication mechanisms. However, in order to
-        ensure interoperability with a broad set of other applications, some standard mechanism such as [[!OAuth]]
-        SHOULD be supported.</p>
-
-      <h4 id="Authorization-and-Access-Control">Authorization and Access Control</h4>
-
-      <p>This specification does not define an authorization mechanism. Service providers SHOULD support some
-        authorization mechanism to control access to resources and the operations that service consumers may perform on
-        them.</p>
-
-      <h4 id="Work-Flow-and-Policy-Enforcement">Work Flow and Policy Enforcement</h4>
-
-      <p>This specification does not define a work flow or policy enforcement mechanism. Service providers SHOULD
-        support some mechanism to enforce work flow and policy.</p>
-
-      <h4 id="Revision-History-and-Auditing">Revision History and Auditing</h4>
-
-      <p>This specification does not define a revision history or auditing mechanism. Service providers SHOULD provide
-        support for recording the revision history of all resources including their states, the timestamp of the change,
-        and the identity of the entity making the change.</p>
-
-      <h4 id="Events-and-Notification">Events and Notification</h4>
-
-      <p>This specification does not define an event or notification mechanism. Service providers SHOULD support Atom
-        format as a resource representation to enable change monitoring by feed readers.</p>
-
-    </section>
-
-    <section id="The-Role-of-RDF">
-      <h3>The Role of RDF</h3>
-
-      <p>This specification describes the EMS 1.0 resource data model using [[!RDF]].
-        Briefly, the RDF data model describes information as statements of the form (subject, predicate, object) which
-        are often referred to as triples. The predicate of a statement either describes a relation between the subject
-        and object resources or an attribute of the subject resource whose value is the object.</p>
-
-      <p>The choice of RDF for this purpose, instead of other equally valid approaches such as UML or
-        Entity-Relationship, is motivated by the goal of aligning the data model with Web architectural principles. This
-        use of RDF in no way implies any restriction on how EM services or clients are implemented. We expect tool
-        developers to be able to add support for the EMS 1.0 REST API to existing tools without any need to rewrite
-        those tools using RDF-based techologies.</p>
-
-      <p>This specification also defines RDF/XML representations for resources. In general, there are many equivalent
-        ways to serialize a set of RDF triples as RDF/XML. This specification prescribes the way to serialize resources
-        as RDF/XML so that these representations are well-formed XML and may be processed with any of the many available
-        XML processing technologies (e.g. DOM, SAX, !StAX, XSLT, XQuery, etc.). There is no requirement to use a general
-        RDF/XML parser.</p>
-
-      <p>The RDF/XML representation is used in examples. However, EM services should support other important formats
-        such as JSON and HTML, as may support other RDF formats, e.g. [[!N3]] and [[!Turtle]].</p>
-
-      <p>An EM client SHOULD use standard HTTP content negotiation to indicate a preference for specific formats.</p>
-
-    </section>
-
-    <section id="Resource-Types">
-      <h3>Resource Types</h3>
-
-      <p>An EM service manages access to resources that support the estimation and measurement <a
+        The Estimation and Measurement Service Version 1.0 (EMS 1.0) specification defines a REST API that is intended
+        to facilitate the collaboration of PPM and software estimation tools across the development lifecycle. The scope
+        of this specification is defined in
+        <a
           href="https://archive.open-services.net/wiki/estimation-and-measurement/Software-Estimation-Use-Cases/index.html"
-          title="Software-Estimation-Use-Cases">uses cases</a>. The
-        EM service manages the creation, retrieval, update, and deletion of these resources, and maintains their mutual
-        data integrity constraints in the process of doing so.</p>
-
-      <p>The EMS 1.0 data model defines several resource types. The data model for each resource type and the data
-        integrity constraints that hold among resources are defined in detail later in this specification. Each EMS 1.0
-        resource type is identified by a URI that begins with the following URI:</p>
-
-      <pre><code>http://open-services.net/ns/ems# 
-      </code></pre>
-
-      <p>Througout this specification, we use the prefix ems: to abbreviate this URI. For example, ems:Service is an
-        abbreviation for the following URI:</p>
-
-      <pre><code>http://open-services.net/ns/ems#Service
-      </code></pre>
-
-      <p>EMS 1.0 defines three kinds of resource type, namely domain entities, domain entity lists, and the service
-        root. The domain entity resource types are ems:Project, ems:Scenario, ems:Estimate, ems:Baseline, and
-        ems:Measurement. For each domain entity type, there is an associated list type, i.e. ems:ProjectList,
-        ems:ScenarioList, ems:EstimateList, ems:BaselineList, and ems:MeasurementList. Finally, the ems:Service resource
-        type represents the EM service as a whole.</p>
-
-      <p>An EM service contains information about a set of resources of the above types. We will use RDF to describe
-        this information. In RDF terms, the information forms a graph. Each resource is a node in this graph and each
-        triple is an arc in it.</p>
-
-      <p>The EM service graph may contain zero or more instances of each domain entity resource type. EM clients may
-        create and delete instances using the REST API. The graph also contains exactly one instance of each associate
-        entity list type and exactly one instance of the service root type. The list and service resources are built-in
-        to the EM service. EM clients may not create or delete the list or service root resources.</p>
-
-    </section>
-
-    <section id="Resource-Properties">
-      <h3>Resource Properties</h3>
-
-      <p>Each resource type has a set of properties which will be described in detail later in this specification. Some
-        of these properties are automatically maintained by the EM service and may not be modified by EM clients. We
-        refer to these as read-only properties. Some read-only properties such as creation date, creator, etc. are
-        system properties that apply to all resources. Other read-only properties, such as list membership, are specific
-        to a given resource type. For example, when a new domain entity resource is created, a membership property that
-        references it is added to its associated list resource.</p>
-
-      <p>We refer to properties that may be directly set or modified by EM clients as read-write properties.</p>
-
-    </section>
-
-    <section id="HTTP-Methods">
-      <h3>HTTP Methods</h3>
-
-      <p>The REST API supports the usual HTTP methods: GET, PUT, POST, DELETE. In addition, query parameters MAY be
-        appended to resource URLs in order to modify the response of a GET request. The syntax of these query parameters
-        is specified in <a href="https://archive.open-services.net/bin/view/Main/OslcSimpleQuerySyntaxV1.html">OSLC
-          Simple Query Syntax V1</a>.
+          title="Software-Estimation-Use-Cases"
+          >Use Cases</a
+        >. This document is the normative definition of EMS 1.0. Refer to
+        <a
+          href="https://archive.open-services.net/wiki/estimation-and-measurement/EMS-1.0-Primer/index.html"
+          title="EMS-1.0-Primer"
+          >EMS 1.0 Primer</a
+        >
+        for an easy-to-read, informal description.
       </p>
 
-      <p>An EM client may retrieve a representation any resource using GET and may modify its read-write properties
-        using PUT. A representation of information about any resource, possibly including information about related
-        resources, may be retrieved using GET with query parameters that specify the properties to include.</p>
+      <section id="iprPolicy">
+        <h2>IPR Policy</h2>
+        <p>
+          This Committee Specification Public Review Draft is being developed under the
+          <a href="https://www.oasis-open.org/policies-guidelines/ipr#RF-on-Limited-Mode">RF on Limited Terms</a> Mode
+          of the <a href="https://www.oasis-open.org/policies-guidelines/ipr">OASIS IPR Policy</a>, the mode chosen when
+          the Technical Committee was established. For information on whether any patents have been disclosed that may
+          be essential to implementing this specification, and any offers of patent licensing terms, please refer to the
+          Intellectual Property Rights section of the TC’s web page (<a
+            href="https://www.oasis-open.org/committees/oslc-domains/ipr.php"
+            >https://www.oasis-open.org/committees/oslc-domains/ipr.php</a
+          >).
+        </p>
+      </section>
 
-      <p>An EM client may create a new domain entity resource by POSTing a representation of it to its associated list
-        resource. Any domain entity resource may be deleted using DELETE.</p>
-
-      <p>A domain entity list resource contains membership links to each of its associated domain entity resources. An
-        EM client may retrieve a representation that contains a subset of these membership links, and specified
-        properties of the referenced domain entity resources via GET with query parameters. We refer to this as “GET
-        sublist” in the table below.</p>
-
-      <p>The following table summarizes the HTTP methods used in the REST API:</p>
-
-      <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-          <tr>
-            <th><strong>Resource Type</strong></th>
-            <th><strong>GET</strong></th>
-            <th><strong>GET sublist</strong></th>
-            <th><strong>PUT</strong></th>
-            <th><strong>POST</strong></th>
-            <th><strong>DELETE</strong></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>service root</td>
-            <td>yes</td>
-            <td>no</td>
-            <td>yes</td>
-            <td>no</td>
-            <td>no</td>
-          </tr>
-          <tr>
-            <td>domain entity list</td>
-            <td>yes</td>
-            <td>yes</td>
-            <td>yes</td>
-            <td>yes</td>
-            <td>no</td>
-          </tr>
-          <tr>
-            <td>domain entity</td>
-            <td>yes</td>
-            <td>no</td>
-            <td>yes</td>
-            <td>no</td>
-            <td>yes</td>
-          </tr>
-        </tbody>
-      </table>
-
+      <section id="references">
+        <h3>References</h3>
+      </section>
+      <section id="conventions"></section>
     </section>
 
-    <section id="Resource-Representation-Formats">
-      <h3>Resource Representation Formats</h3>
+    <section id="What-is-an-OSLC-Service">
+      <h2>What is an OSLC Service?</h2>
 
-      <p>This specification defines RDF/XML representations for all resource types. An EM service MUST support RDF/XML
-        representations. An EM service MAY support other representation formats such as JSON, XHTML, Atom, etc. An EM
-        client SHOULD indicate a preference for specific formats using standard HTTP content negotiation.</p>
-
-      <p>This specification defines RDF/XML representations for all resource types. An EM service MUST support RDF/XML
-        representations. An EM service MAY support other representation formats such as JSON, XHTML, Atom, etc. An EM
-        client SHOULD indicate a preference for specific formats using standard HTTP content negotiation.</p>
-
-    </section>
-
-    <section id="Distributed-Computing">
-      <h3>Distributed Computing</h3>
-
-      <p>Any domain entity resource is either an ems:Project resource or is related to a unique ems:Project resource.
-        For example, each ems:Scenario resource has exactly one ems:project property that links it to a unique
-        ems:Project resource, and each ems:Estimate resource has exactly one ems:scenario property that links it to a
-        unique ems:Scenario resource, therefore each ems:Estimate resource is related to a unique ems:Project resource.
-        Similarly, ems:Baseline and ems:Measurement resources are related to unique ems:Project resources.</p>
-
-      <p>This specification defines behavior in the simple case where all domain entity resources that are related to a
-        given ems:Project resource are managed by the same service. This is a simplifying assumption and affects how
-        resources are discovered and baselined. For example, to find all the estimates for a given project, a query is
-        run on the ems:EstimateList resource that is linked to the same ems:Service resource that is linked to the
-        ems:ProjectList resource that contains the ems:Project resource. Also, when an ems:Baseline resource is created,
-        the service automatically updates the ems:currentBaseline property of the related ems:Project resource.</p>
-
-      <p>While it is certainly possible to define a fully distributed REST API for coordinating queries and updates
-        across a group of collaborating EMS service providers, doing so for a 1.0 specification would add a premature
-        level of complexity and cost for implementers.</p>
-
-      <p>As more products add support for the EMS 1.0 REST API, it is anticipated that there may be more than EMS 1.0
-        service provider in a given deployment. An EMS 1.0 service consumer may interact with multiple EMS 1.0 service
-        providers. This causes no difficulty as long as all the resources related to a project are created in the same
-        service provider instance.</p>
-
-      <p>In order to build in an evolution path towards a fully distributed REST API, this specification will adopt that
-        policy of specifying that resources related to a given project or intermediate resource SHOULD be created in the
-        same service. If the project or intermediate resource is in a different service then the behavior is undefined.
-        If there is sufficient demand for a fully distributed REST API, then a future EMS specification will define this
-        behavior.</p>
-
-    </section>
-
-  </section>
-
-  <section id="REST-API-Data-Model">
-    <h2>EMS 1.0 REST API Data Model</h2>
-
-    <section id="REST-API-Design-Introduction">
-      <h3>Introduction</h3>
-
-      <p>The data model consists of a set of resource types and literal XML datatypes. Each resource type is described
-        by listing and describing its properties. Each resource type and literal XML datatype is described in detail
-        below.</p>
-
-    </section>
-
-    <section id="Properties">
-      <h3>Properties</h3>
-
-      <p>Each property is described by specifying its range, its occurrence, and its edit type.</p>
-
-      <h4 id="Range">Range</h4>
-
-      <p>The range of a property is the set of objects that may appear in statements (triples) that have the given
-        property as their predicate. In this specification, the range of each property is either a set of resources of
-        some RDF type, or a set of literal values that belong to some XML datatype, e.g. strings, numbers, XHTML
-        fragments.</p>
-
-      <p>When the range is a resource, the value of the property is frequently a URI that is a link to the resource. In
-        RDF/XML, the URI value is given using the rdf:resource attribute on the property element.</p>
-
-      <p>However, some resources do not have document URIs and are represented inline in some parent resource
-        representation. Within an RDF/XML representation, an inline resource MAY be identified using the rdf:ID
-        attribute on its node element, and be the object of other properties using the rdf:resource attribute on the
-        property element. The value of the rdf:ID attribute MUST be unique within the RDF/XML representation. If the
-        resource is local, then it does not have any URI, i.e. it is a blank node in the RDF data model. Within an
-        RDF/XML representation, a blank node may be identified and referenced using the rdf:nodeID attribute.</p>
-
-      <p>The following table summarizes how resources are represented in RDF/XML:</p>
-
-      <h6 id="Table-of-Resource-Ranges">Table of Resource Ranges</h6>
-
-      <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-          <tr>
-            <th><strong>Range</strong></th>
-            <th><strong>RDF/XML Representation</strong></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>resource</td>
-            <td>The property element has an rdf:resource attribute that contains the URI of the resource.</td>
-          </tr>
-          <tr>
-            <td>inline resource</td>
-            <td>The property element contains a node element for the resource. The node element has an rdf:about or
-              rdf:ID attribute that contains the URI of the resource.</td>
-          </tr>
-          <tr>
-            <td>local resource</td>
-            <td>The property element has an rdf:nodeID attribute that contains the local identifier of the resource. The
-              local identifer MUST be defined on some node element within the representation.</td>
-          </tr>
-          <tr>
-            <td>local inline resource</td>
-            <td>The property element contains a node element for the resource. The node element MAY have an rdf:nodeID
-              attribute that defines its local identifier.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h5 id="XHTML">XHTML</h5>
-
-      <p>We use [[!XHTML]] to describe formatted textual literal XML datatypes. In
-        this specification, the prefix xhtml: is associated with the XHTML namespace URI:</p>
+      <p>
+        At OSLC we use the term <em>service</em> in an informal way, on the assumption that members of this community
+        have a general understanding of the term and that no confusion will arise in the absence of a formal. However,
+        the EMS 1.0 uses service in a specific way so it is useful to define it here. The !W3C definition of a
+        <a href="http://www.w3.org/TR/ws-arch/#whatis">Web service</a> gives us a starting point, but we need to modify
+        that to incorporate the OSLC choice of REST as the architectural style and software development lifecycle
+        collaboration as the domain. We therefore use the following working definition of service within the context of
+        the EMS 1.0 specification:
+      </p>
 
       <blockquote>
-        <p><code>http://www.w3.org/1999/xhtml</code></p>
+        <p>
+          An OSLC service is a
+          <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer#RESTful_web_services">RESTful</a>
+          software system designed to support interoperable lifecycle tool collaboration over the Web.
+        </p>
       </blockquote>
 
-      <p>For example, the datatype xhtml:span means the XHTML content that may appear in an xhtml:span element.</p>
+      <p>
+        Since this definition states that an OSLC service is RESTful, we know that it must manage a set of resources
+        that can be accessed via standard HTTP methods such as GET, POST, PUT, and DELETE. Sound software design
+        principles tell us that a service should have good internal cohesion in the sense that the resources it manages
+        should be closely related to each other and together serve some useful purpose. For example, if there are
+        certain relations or data integrity constraints that must hold among resources, then it may make sense to manage
+        those resources together in a single service. The scope of EMS 1.0 is restricted to resources that describe the
+        estimation and measurement aspects of software projects.
+      </p>
 
-      <h5 id="XML-Schema">XML Schema</h5>
+      <p>
+        On the other hand, if resources are fairly decoupled, then they should be managed by distinct services. For
+        example, we would expect there to be distinct services for each domain of software development projects, e.g.
+        portfolio management, project management, performance management, requirements management, change management,
+        quality management, etc. In general a service may collaborate with many other services and applications. The
+        REST API of each service defines the collaboration contract. This leads us to a view of larger systems being
+        composed from webs of related OSLC services.
+      </p>
+    </section>
 
-      <p>We use <a href="http://www.w3.org/TR/xmlschema-2/">XML Schema Datatypes</a> to describe some literal XML
-        datatypes. In this specification, the prefix xsd: is associated with the XML Schema namespace URI:</p>
+    <section id="termsAndConstraints">
+      <h2>Vocabulary Terms and Constraints</h2>
+      <p>
+        <a
+          href="http://docs.oasis-open.org/oslc-domains/recon/v2.0/cs01/part2-reconciliation-vocab/recon-v2.0-cs01-part2-reconciliation-vocab.html"
+          >OSLC Reconciliation Version 2.0. Part 2: Vocabulary</a
+        >
+        Defines the vocabulary terms and constraints for OSLC Reconciliation resources. These terms and constraints are
+        specified according to [[!OSLCCoreVocab]].
+      </p>
+    </section>
 
-      <blockquote>
-        <p><code>http://www.w3.org/2001/XMLSchema</code></p>
-      </blockquote>
+    <section id="REST-API-Architecture">
+      <h2>EMS 1.0 REST API Architecture</h2>
 
-      <h4 id="Occurrence">Occurrence</h4>
+      <section id="REST-API-Architecture-Introduction">
+        <h3>Introduction</h3>
 
-      <p>The occurrence of a property is the number of triples that may exist for a given subject with the given
-        property as the predicate. Properties may be either optional (may not occur) or mandatory (must occur), and may
-        be either single-valued (at most once) or multi-valued (an unbounded number of times). We use the following
-        terms to describe the most common occurrence constraints:</p>
+        <p>
+          This specification defines a REST API that provides estimation and measurement capabilities. Web applications
+          may either implement or use these interfaces. We refer to an implementation of these interfaces as a
+          <em>service provider</em> and user of these interfaces as a <em>service consumer</em>.
+        </p>
 
-      <h6 id="Table-of-Occurrence-Names">Table of Occurrence Names</h6>
+        <p>
+          In practice, PPM and software estimation tools may be either service consumers or providers. That decision is
+          up to the tool architect. For example, a desktop-based tool may be a consumer while a server-based tool may be
+          either a consumer or a provider.
+        </p>
+      </section>
 
-      <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-          <tr>
-            <th></th>
-            <th><strong>Optional</strong></th>
-            <th><strong>Mandatory</strong></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Single-valued</strong></td>
-            <td>zero-or-one</td>
-            <td>exactly-one</td>
-          </tr>
-          <tr>
-            <td><strong>Multi-valued</strong></td>
-            <td>zero-or-more</td>
-            <td>one-or-more</td>
-          </tr>
-        </tbody>
+      <section id="The-EM-Service">
+        <h3>The EM Service</h3>
+
+        <p>
+          In order to separate tool architecture concerns from the specification of the EMS 1.0 REST API, it is useful
+          to imagine that a standalone Web application is the service provider. We will refer to such an application
+          simply as an <em>EM service</em>. The following diagram illustrates the context of an EM service:
+        </p>
+
+        <figure id="EM-Service-Context-Diagram">
+          <img src="images/estimation-and-measurement-service-context-diagram.png" />
+          <figcaption>
+            Fig. <span class="figno">1</span> <span class="fig-title">EM Service Context Diagram</span>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="Packaging-the-EM-Service-with-Products">
+        <h3>Packaging the EM Service with Products</h3>
+
+        <p>
+          The above diagram treats all collaboratoring tools on an equal footing with respect to the EM service and the
+          EMS 1.0 REST API is described from the point of view of the EM service. However, as noted above, it is likely
+          that the EM service would be included as part of a more comprehensive product, either integrated with a single
+          tool or shared among a suite of related tools. For example, the following context diagram illustrates a
+          software estimation product that includes an EM service:
+        </p>
+
+        <figure id="Software-Estimation-Product-Context-Diagram">
+          <img src="images/software-estimation-product-context-diagram.png" />
+          <figcaption>
+            Fig. <span class="figno">2</span> <span class="fig-title">Software Estimation Product Context Diagram</span>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="Tool-Collaborations">
+        <h3>Tool Collaborations</h3>
+
+        <p>
+          The following discussion briefly illustartes how PPM and software estimation tools might use an EM service to
+          collaborate.
+        </p>
+
+        <p>
+          The portfolio management tool initiates projects. A portfolio manager creates the project proposal, which
+          includes all relevant project contraints such as size, duration, or peak staffing, sends them to the EM
+          service, and requests an estimate. The software estimator receives this request, launches the software
+          estimation tool, produces an estimate, sends it back to the EM service, and notifies the portfolio manager.
+          The portfolio manager then gets estimate from the EM service, completes the project business case, and submits
+          the project proposal to the approval process. The EM service maintains a persistent record of the project
+          proposal and estimates for future use. If the project gets approved, the portfolio management system hands off
+          the project to the project management system.
+        </p>
+
+        <p>
+          The project management tool plans, monitors, and controls projects. As the project executes, measurements are
+          collected by the performance management tool. The project manager runs reports from the performance management
+          tool that show the measurements relative to the estimates. If the measurements vary too much from the
+          estimates, the project manager takes corrective action. Periodically, the project manager sends revised
+          project constraints to the EM service and requests the software estimator to reestimate the project to
+          completion, taking into account the measurements to date. The new estimates become part of the project
+          baseline and the project manager continues on to the next phase of the project.
+        </p>
+
+        <p>
+          The performance management tool collects measurements from the software development and PPM tools, and
+          provides a business intelligence user interface for managers and other team members to view and explore the
+          data, e.g. to diagnose problems. The performance management tool also collects estimates from the EM service
+          so that the measurements can be compared to the estimates. The performance management system can display
+          dashboards, scorecards, control charts, and other presentations of the data to allow team members to track the
+          performance of the project. The performance management tool also provides measurements to the EM service to
+          enable both reestimation of project plans and calibration of software estimation models based on past
+          completed projects.
+        </p>
+
+        <p>
+          The software estimation tools get project contraints and measurements from the EM service, and send it
+          estimates. Software estimation tools are used for calibrating models, providing initial cost estimates and
+          plans, and reestimating project plans.
+        </p>
+
+        <p>
+          In practice, performance management tools use Extract-Transform-Load (ETL) processes to collect data. A REST
+          API can act as a source of data for ETL, and the EM service will provide a REST API that is suitable for use
+          by ETL processes, mainly so that the performance management tool can load the estimates and make them
+          available for use in reports. Performance management tools provide reporting mechanisms for accessing data. In
+          principle, any application could access measurement data directly from the performance management tool through
+          its reporting interface, however that approach would result in a replication of business logic. A better
+          approach is to use the EM service as a proxy to the performance management tool.
+        </p>
+
+        <p>
+          Given the above considerations, software estimation, portfolio management, and project management tools will
+          be read-write consumers of the EM service, but the performance management tool will be a read-only consumer.
+          The EM system will be a consumer of the performance management tool’s native reporting interface in order to
+          access measurements.
+        </p>
+      </section>
+    </section>
+
+    <section id="REST-API-Design">
+      <h2>EMS 1.0 REST API Design</h2>
+
+      <section id="REST-API-Design-Introduction">
+        <h3>Introduction</h3>
+
+        <p>The following sections discuss the general design principles used in this specification.</p>
+      </section>
+
+      <section id="Implementation-Dependent-Features">
+        <h3>Implementation-Dependent Features</h3>
+
+        <p>
+          Before discussing the design further, it is appropriate to define the scope of this specification by listing
+          those general features of a service that are not specified here.
+        </p>
+
+        <h4 id="Authentication">Authentication</h4>
+
+        <p>
+          This specification does not define an authentification mechanism. Service providers SHOULD support some
+          authentication mechansim but are free to support a variety of authentication mechanisms. However, in order to
+          ensure interoperability with a broad set of other applications, some standard mechanism such as [[!OAuth]]
+          SHOULD be supported.
+        </p>
+
+        <h4 id="Authorization-and-Access-Control">Authorization and Access Control</h4>
+
+        <p>
+          This specification does not define an authorization mechanism. Service providers SHOULD support some
+          authorization mechanism to control access to resources and the operations that service consumers may perform
+          on them.
+        </p>
+
+        <h4 id="Work-Flow-and-Policy-Enforcement">Work Flow and Policy Enforcement</h4>
+
+        <p>
+          This specification does not define a work flow or policy enforcement mechanism. Service providers SHOULD
+          support some mechanism to enforce work flow and policy.
+        </p>
+
+        <h4 id="Revision-History-and-Auditing">Revision History and Auditing</h4>
+
+        <p>
+          This specification does not define a revision history or auditing mechanism. Service providers SHOULD provide
+          support for recording the revision history of all resources including their states, the timestamp of the
+          change, and the identity of the entity making the change.
+        </p>
+
+        <h4 id="Events-and-Notification">Events and Notification</h4>
+
+        <p>
+          This specification does not define an event or notification mechanism. Service providers SHOULD support Atom
+          format as a resource representation to enable change monitoring by feed readers.
+        </p>
+      </section>
+
+      <section id="The-Role-of-RDF">
+        <h3>The Role of RDF</h3>
+
+        <p>
+          This specification describes the EMS 1.0 resource data model using [[!RDF]]. Briefly, the RDF data model
+          describes information as statements of the form (subject, predicate, object) which are often referred to as
+          triples. The predicate of a statement either describes a relation between the subject and object resources or
+          an attribute of the subject resource whose value is the object.
+        </p>
+
+        <p>
+          The choice of RDF for this purpose, instead of other equally valid approaches such as UML or
+          Entity-Relationship, is motivated by the goal of aligning the data model with Web architectural principles.
+          This use of RDF in no way implies any restriction on how EM services or clients are implemented. We expect
+          tool developers to be able to add support for the EMS 1.0 REST API to existing tools without any need to
+          rewrite those tools using RDF-based techologies.
+        </p>
+
+        <p>
+          This specification also defines RDF/XML representations for resources. In general, there are many equivalent
+          ways to serialize a set of RDF triples as RDF/XML. This specification prescribes the way to serialize
+          resources as RDF/XML so that these representations are well-formed XML and may be processed with any of the
+          many available XML processing technologies (e.g. DOM, SAX, !StAX, XSLT, XQuery, etc.). There is no requirement
+          to use a general RDF/XML parser.
+        </p>
+
+        <p>
+          The RDF/XML representation is used in examples. However, EM services should support other important formats
+          such as JSON and HTML, as may support other RDF formats, e.g. [[!N3]] and [[!Turtle]].
+        </p>
+
+        <p>An EM client SHOULD use standard HTTP content negotiation to indicate a preference for specific formats.</p>
+      </section>
+
+      <section id="Resource-Types">
+        <h3>Resource Types</h3>
+
+        <p>
+          An EM service manages access to resources that support the estimation and measurement
+          <a
+            href="https://archive.open-services.net/wiki/estimation-and-measurement/Software-Estimation-Use-Cases/index.html"
+            title="Software-Estimation-Use-Cases"
+            >uses cases</a
+          >. The EM service manages the creation, retrieval, update, and deletion of these resources, and maintains
+          their mutual data integrity constraints in the process of doing so.
+        </p>
+
+        <p>
+          The EMS 1.0 data model defines several resource types. The data model for each resource type and the data
+          integrity constraints that hold among resources are defined in detail later in this specification. Each EMS
+          1.0 resource type is identified by a URI that begins with the following URI:
+        </p>
+
+        <pre><code>http://open-services.net/ns/ems# 
+      </code></pre>
+
+        <p>
+          Througout this specification, we use the prefix ems: to abbreviate this URI. For example, ems:Service is an
+          abbreviation for the following URI:
+        </p>
+
+        <pre><code>http://open-services.net/ns/ems#Service
+      </code></pre>
+
+        <p>
+          EMS 1.0 defines three kinds of resource type, namely domain entities, domain entity lists, and the service
+          root. The domain entity resource types are ems:Project, ems:Scenario, ems:Estimate, ems:Baseline, and
+          ems:Measurement. For each domain entity type, there is an associated list type, i.e. ems:ProjectList,
+          ems:ScenarioList, ems:EstimateList, ems:BaselineList, and ems:MeasurementList. Finally, the ems:Service
+          resource type represents the EM service as a whole.
+        </p>
+
+        <p>
+          An EM service contains information about a set of resources of the above types. We will use RDF to describe
+          this information. In RDF terms, the information forms a graph. Each resource is a node in this graph and each
+          triple is an arc in it.
+        </p>
+
+        <p>
+          The EM service graph may contain zero or more instances of each domain entity resource type. EM clients may
+          create and delete instances using the REST API. The graph also contains exactly one instance of each associate
+          entity list type and exactly one instance of the service root type. The list and service resources are
+          built-in to the EM service. EM clients may not create or delete the list or service root resources.
+        </p>
+      </section>
+
+      <section id="Resource-Properties">
+        <h3>Resource Properties</h3>
+
+        <p>
+          Each resource type has a set of properties which will be described in detail later in this specification. Some
+          of these properties are automatically maintained by the EM service and may not be modified by EM clients. We
+          refer to these as read-only properties. Some read-only properties such as creation date, creator, etc. are
+          system properties that apply to all resources. Other read-only properties, such as list membership, are
+          specific to a given resource type. For example, when a new domain entity resource is created, a membership
+          property that references it is added to its associated list resource.
+        </p>
+
+        <p>We refer to properties that may be directly set or modified by EM clients as read-write properties.</p>
+      </section>
+
+      <section id="HTTP-Methods">
+        <h3>HTTP Methods</h3>
+
+        <p>
+          The REST API supports the usual HTTP methods: GET, PUT, POST, DELETE. In addition, query parameters MAY be
+          appended to resource URLs in order to modify the response of a GET request. The syntax of these query
+          parameters is specified in
+          <a href="https://archive.open-services.net/bin/view/Main/OslcSimpleQuerySyntaxV1.html"
+            >OSLC Simple Query Syntax V1</a
+          >.
+        </p>
+
+        <p>
+          An EM client may retrieve a representation any resource using GET and may modify its read-write properties
+          using PUT. A representation of information about any resource, possibly including information about related
+          resources, may be retrieved using GET with query parameters that specify the properties to include.
+        </p>
+
+        <p>
+          An EM client may create a new domain entity resource by POSTing a representation of it to its associated list
+          resource. Any domain entity resource may be deleted using DELETE.
+        </p>
+
+        <p>
+          A domain entity list resource contains membership links to each of its associated domain entity resources. An
+          EM client may retrieve a representation that contains a subset of these membership links, and specified
+          properties of the referenced domain entity resources via GET with query parameters. We refer to this as “GET
+          sublist” in the table below.
+        </p>
+
+        <p>The following table summarizes the HTTP methods used in the REST API:</p>
+
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th><strong>Resource Type</strong></th>
+              <th><strong>GET</strong></th>
+              <th><strong>GET sublist</strong></th>
+              <th><strong>PUT</strong></th>
+              <th><strong>POST</strong></th>
+              <th><strong>DELETE</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>service root</td>
+              <td>yes</td>
+              <td>no</td>
+              <td>yes</td>
+              <td>no</td>
+              <td>no</td>
+            </tr>
+            <tr>
+              <td>domain entity list</td>
+              <td>yes</td>
+              <td>yes</td>
+              <td>yes</td>
+              <td>yes</td>
+              <td>no</td>
+            </tr>
+            <tr>
+              <td>domain entity</td>
+              <td>yes</td>
+              <td>no</td>
+              <td>yes</td>
+              <td>no</td>
+              <td>yes</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="Resource-Representation-Formats">
+        <h3>Resource Representation Formats</h3>
+
+        <p>
+          This specification defines RDF/XML representations for all resource types. An EM service MUST support RDF/XML
+          representations. An EM service MAY support other representation formats such as JSON, XHTML, Atom, etc. An EM
+          client SHOULD indicate a preference for specific formats using standard HTTP content negotiation.
+        </p>
+
+        <p>
+          This specification defines RDF/XML representations for all resource types. An EM service MUST support RDF/XML
+          representations. An EM service MAY support other representation formats such as JSON, XHTML, Atom, etc. An EM
+          client SHOULD indicate a preference for specific formats using standard HTTP content negotiation.
+        </p>
+      </section>
+
+      <section id="Distributed-Computing">
+        <h3>Distributed Computing</h3>
+
+        <p>
+          Any domain entity resource is either an ems:Project resource or is related to a unique ems:Project resource.
+          For example, each ems:Scenario resource has exactly one ems:project property that links it to a unique
+          ems:Project resource, and each ems:Estimate resource has exactly one ems:scenario property that links it to a
+          unique ems:Scenario resource, therefore each ems:Estimate resource is related to a unique ems:Project
+          resource. Similarly, ems:Baseline and ems:Measurement resources are related to unique ems:Project resources.
+        </p>
+
+        <p>
+          This specification defines behavior in the simple case where all domain entity resources that are related to a
+          given ems:Project resource are managed by the same service. This is a simplifying assumption and affects how
+          resources are discovered and baselined. For example, to find all the estimates for a given project, a query is
+          run on the ems:EstimateList resource that is linked to the same ems:Service resource that is linked to the
+          ems:ProjectList resource that contains the ems:Project resource. Also, when an ems:Baseline resource is
+          created, the service automatically updates the ems:currentBaseline property of the related ems:Project
+          resource.
+        </p>
+
+        <p>
+          While it is certainly possible to define a fully distributed REST API for coordinating queries and updates
+          across a group of collaborating EMS service providers, doing so for a 1.0 specification would add a premature
+          level of complexity and cost for implementers.
+        </p>
+
+        <p>
+          As more products add support for the EMS 1.0 REST API, it is anticipated that there may be more than EMS 1.0
+          service provider in a given deployment. An EMS 1.0 service consumer may interact with multiple EMS 1.0 service
+          providers. This causes no difficulty as long as all the resources related to a project are created in the same
+          service provider instance.
+        </p>
+
+        <p>
+          In order to build in an evolution path towards a fully distributed REST API, this specification will adopt
+          that policy of specifying that resources related to a given project or intermediate resource SHOULD be created
+          in the same service. If the project or intermediate resource is in a different service then the behavior is
+          undefined. If there is sufficient demand for a fully distributed REST API, then a future EMS specification
+          will define this behavior.
+        </p>
+      </section>
+    </section>
+
+    <section id="REST-API-Data-Model">
+      <h2>EMS 1.0 REST API Data Model</h2>
+
+      <section id="REST-API-Design-Introduction">
+        <h3>Introduction</h3>
+
+        <p>
+          The data model consists of a set of resource types and literal XML datatypes. Each resource type is described
+          by listing and describing its properties. Each resource type and literal XML datatype is described in detail
+          below.
+        </p>
+      </section>
+
+      <section id="Properties">
+        <h3>Properties</h3>
+
+        <p>Each property is described by specifying its range, its occurrence, and its edit type.</p>
+
+        <h4 id="Range">Range</h4>
+
+        <p>
+          The range of a property is the set of objects that may appear in statements (triples) that have the given
+          property as their predicate. In this specification, the range of each property is either a set of resources of
+          some RDF type, or a set of literal values that belong to some XML datatype, e.g. strings, numbers, XHTML
+          fragments.
+        </p>
+
+        <p>
+          When the range is a resource, the value of the property is frequently a URI that is a link to the resource. In
+          RDF/XML, the URI value is given using the rdf:resource attribute on the property element.
+        </p>
+
+        <p>
+          However, some resources do not have document URIs and are represented inline in some parent resource
+          representation. Within an RDF/XML representation, an inline resource MAY be identified using the rdf:ID
+          attribute on its node element, and be the object of other properties using the rdf:resource attribute on the
+          property element. The value of the rdf:ID attribute MUST be unique within the RDF/XML representation. If the
+          resource is local, then it does not have any URI, i.e. it is a blank node in the RDF data model. Within an
+          RDF/XML representation, a blank node may be identified and referenced using the rdf:nodeID attribute.
+        </p>
+
+        <p>The following table summarizes how resources are represented in RDF/XML:</p>
+
+        <h6 id="Table-of-Resource-Ranges">Table of Resource Ranges</h6>
+
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th><strong>Range</strong></th>
+              <th><strong>RDF/XML Representation</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>resource</td>
+              <td>The property element has an rdf:resource attribute that contains the URI of the resource.</td>
+            </tr>
+            <tr>
+              <td>inline resource</td>
+              <td>
+                The property element contains a node element for the resource. The node element has an rdf:about or
+                rdf:ID attribute that contains the URI of the resource.
+              </td>
+            </tr>
+            <tr>
+              <td>local resource</td>
+              <td>
+                The property element has an rdf:nodeID attribute that contains the local identifier of the resource. The
+                local identifer MUST be defined on some node element within the representation.
+              </td>
+            </tr>
+            <tr>
+              <td>local inline resource</td>
+              <td>
+                The property element contains a node element for the resource. The node element MAY have an rdf:nodeID
+                attribute that defines its local identifier.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h5 id="XHTML">XHTML</h5>
+
+        <p>
+          We use [[!XHTML]] to describe formatted textual literal XML datatypes. In this specification, the prefix
+          xhtml: is associated with the XHTML namespace URI:
+        </p>
+
+        <blockquote>
+          <p><code>http://www.w3.org/1999/xhtml</code></p>
+        </blockquote>
+
+        <p>For example, the datatype xhtml:span means the XHTML content that may appear in an xhtml:span element.</p>
+
+        <h5 id="XML-Schema">XML Schema</h5>
+
+        <p>
+          We use <a href="http://www.w3.org/TR/xmlschema-2/">XML Schema Datatypes</a> to describe some literal XML
+          datatypes. In this specification, the prefix xsd: is associated with the XML Schema namespace URI:
+        </p>
+
+        <blockquote>
+          <p><code>http://www.w3.org/2001/XMLSchema</code></p>
+        </blockquote>
+
+        <h4 id="Occurrence">Occurrence</h4>
+
+        <p>
+          The occurrence of a property is the number of triples that may exist for a given subject with the given
+          property as the predicate. Properties may be either optional (may not occur) or mandatory (must occur), and
+          may be either single-valued (at most once) or multi-valued (an unbounded number of times). We use the
+          following terms to describe the most common occurrence constraints:
+        </p>
+
+        <h6 id="Table-of-Occurrence-Names">Table of Occurrence Names</h6>
+
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th></th>
+              <th><strong>Optional</strong></th>
+              <th><strong>Mandatory</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Single-valued</strong></td>
+              <td>zero-or-one</td>
+              <td>exactly-one</td>
+            </tr>
+            <tr>
+              <td><strong>Multi-valued</strong></td>
+              <td>zero-or-more</td>
+              <td>one-or-more</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4 id="Edit-Type">Edit Type</h4>
+
+        <p>The edit type of a property specifies how it may be directly modified by a service consumer.</p>
+
+        <p>Some properties may be freely modified. These are called read-write properties.</p>
+
+        <p>
+          Some properties may only be modified once, e.g. at resource creation time. These are called write-once
+          properties.
+        </p>
+
+        <p>
+          Finally, some properties may not be modified driectly because they are either generated or maintained by the
+          EM service. These are called read-only properties. For example, creation date is a read-only property.
+        </p>
+
+        <p>The following table summarizes the edit types:</p>
+
+        <h6 id="Table-of-Edit-Types">Table of Edit Types</h6>
+
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th><strong>Edit Type</strong></th>
+              <th><strong>Description</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>read-write</td>
+              <td>Consumer may change value many times.</td>
+            </tr>
+            <tr>
+              <td>write-once</td>
+              <td>Consumer may set initial value.</td>
+            </tr>
+            <tr>
+              <td>read-only</td>
+              <td>Consumer may never directly change value.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="Standard-Properties">
+        <h3>Standard Properties</h3>
+
+        <p>Some properties are used by all resources. We refer to these as standard properties and define them here.</p>
+
+        <p>
+          In the specification, the prefix rdf: stands for the
+          <a href="http://www.w3.org/TR/rdf-concepts/">Resource Description Framework (RDF) Vocabulary</a>, which has
+          the following namespace URI:
+        </p>
+
+        <blockquote>
+          <p><code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code></p>
+        </blockquote>
+
+        <p>
+          In the specification, the prefix rdfs: stands for the
+          <a href="http://www.w3.org/TR/rdf-schema/">RDF Vocabulary Description Language 1.0</a>, which has the
+          following namespace URI:
+        </p>
+
+        <blockquote>
+          <p><code>http://www.w3.org/2000/01/rdf-schema#</code></p>
+        </blockquote>
+
+        <p>
+          In this specification, the prefix dcterms: stands for the
+          <a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core Metadata Initiative (DCMI) Metadata Terms</a
+          >, which has the following namespace URI:
+        </p>
+
+        <blockquote>
+          <p><code>http://purl.org/dc/terms/</code></p>
+        </blockquote>
+
+        <p>
+          In this specification, the prefix foaf: stands for the
+          <a href="http://xmlns.com/foaf/spec/">Friend of a Friend (FOAF) Vocabulary</a>, which has the following
+          namespace URI:
+        </p>
+
+        <blockquote>
+          <p><code>http://xmlns.com/foaf/0.1/</code></p>
+        </blockquote>
+
+        <h6 id="Table-of-Standard-Properties">Table of Standard Properties</h6>
+
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th><strong>Property</strong></th>
+              <th><strong>Range</strong></th>
+              <th><strong>Type</strong></th>
+              <th><strong>Occurrence</strong></th>
+              <th><strong>Edits</strong></th>
+              <th><strong>Description</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>dcterms:title</td>
+              <td>datatype</td>
+              <td>rdf:XMLLiteral</td>
+              <td>exactly-one</td>
+              <td>read-write</td>
+              <td>A short title for the resource. Valid XHTML &lt;span&gt; element content.</td>
+            </tr>
+            <tr>
+              <td>dcterms:description</td>
+              <td>datatype</td>
+              <td>rdf:XMLLiteral</td>
+              <td>zero-or-one</td>
+              <td>read-write</td>
+              <td>A detailed description of the resource. Valid XHTML &lt;div&gt; element content.</td>
+            </tr>
+            <tr>
+              <td>dcterms:creator</td>
+              <td>resource</td>
+              <td>foaf:Person</td>
+              <td>exactly-one</td>
+              <td>read-only</td>
+              <td>The person who created the resource.</td>
+            </tr>
+            <tr>
+              <td>dcterms:created</td>
+              <td>datatype</td>
+              <td>xsd:dateTime</td>
+              <td>exactly-one</td>
+              <td>read-only</td>
+              <td>The timestamp of when the resource was created.</td>
+            </tr>
+            <tr>
+              <td>dcterms:modifed</td>
+              <td>datatype</td>
+              <td>xsd:dateTime</td>
+              <td>exactly-one</td>
+              <td>read-only</td>
+              <td>The timestamp of when the resource was last modified.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="Entity-and-entity-Naming-Convention">
+        <h3>{Entity} and {entity} Naming Convention</h3>
+
+        <p>
+          This specification uses a uniform naming convention for several resource types and properties. When the string
+          {Entity} appears in a name it stands for one of the domain entity names, i.e. Project, Scenario, Estimate,
+          etc. For example, ems:{Entity}List stands for ems:ProjectList, ems:ScenarioList, etc.
+        </p>
+
+        <p>
+          The string {entity} stands for a domain entity name with an initial lowercase letter. For example,
+          ems:{entity}List stands for ems:projectList, ems:scenarioList, etc.
+        </p>
+      </section>
+
+      <section id="The-Service-Root">
+        <h3>The Service Root</h3>
+
+        <p>
+          Every EMS 1.0 service has a service root resource that provides links to the domain entity list resources and
+          some descriptive information. The service root can be neither created nor deleted. Only its descriptive
+          properties, e.g. dcterms:title, dcterms:description, may be modified via PUT.
+        </p>
+
+        <h4 id="Service-Data-Model">Service Data Model</h4>
+
+        <p>The following topic describes the service data model:</p>
+
+        <ul>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsService.html">ems:Service</a> - the
+            service root
+          </li>
+        </ul>
+      </section>
+
+      <section id="Domain-Entity-Lists">
+        <h3>Domain Entity Lists</h3>
+
+        <p>
+          A domain entity list resource is associated with each domain entity type. The list resource serves two main
+          purposes. First, it provides a way to create new domain entity resources via POST. Second, it provides a way
+          to search for domain entity resources via GET with query parameters.
+        </p>
+
+        <p>
+          All list resources have a similar structure. In addition to the standard properties, they have the following
+          properties:
+        </p>
+
+        <h6 id="Table-of-Standard-ems.3AEntityList-Properties">Table of Standard ems:{Entity}List Properties</h6>
+
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th><strong>Property</strong></th>
+              <th><strong>Range</strong></th>
+              <th><strong>Type</strong></th>
+              <th><strong>Occurrence</strong></th>
+              <th><strong>Edits</strong></th>
+              <th><strong>Description</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ems:service</td>
+              <td>resource</td>
+              <td><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsService.html">ems:Service</a></td>
+              <td>exactly-one</td>
+              <td>read-only</td>
+              <td>The service root that manages this list.</td>
+            </tr>
+            <tr>
+              <td>ems:member{Entity}</td>
+              <td>resource</td>
+              <td>ems:{Entity}</td>
+              <td>zero-or-more</td>
+              <td>read-only</td>
+              <td>A domain entity that belongs to this list.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4 id="ems.3Aservice">ems:service</h4>
+
+        <p>
+          The ems:service property links each domain entity list to its service root. The service root contains links to
+          all of its domain entity lists. Therefore, given any domain entity list URL, a consumer can navigate from it
+          to the service root, and from there to all the other domain entity lists.
+        </p>
+
+        <p>This read-only property is automatically maintained by the service. It cannot be modified.</p>
+
+        <h4 id="ems.3AmemberEntity">ems:member{Entity}</h4>
+
+        <p>
+          The ems:member{Entity} property is a membership property that links each domain entity list to all of its
+          member domain entities. Each domain entities has a link back to its domain entity list. Therefore, given any
+          domain entity URL a consumer can navigate from it to its domain entity list, and from there to all the other
+          domain entities in the list.
+        </p>
+
+        <p>
+          This read-only property is automatically maintained by the service. When a new domain entity is POSTed to a
+          domain entity list, the service automatically adds an ems:member{Entity} property that links to it. When the
+          domain entity is DELETEd, the service removes the link to it.
+        </p>
+
+        <h4 id="Domain-Entity-List-Data-Models">Domain Entity List Data Models</h4>
+
+        <p>The following topics describe the domain entity list data models:</p>
+
+        <ul>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsProjectList.html">ems:ProjectList</a> -
+            project list
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsScenarioList.html">ems:ScenarioList</a> -
+            scenario list
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsEstimateList.html">ems:EstimateList</a> -
+            estimate list
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsBaselineList.html">ems:BaselineList</a>
+            -baseline list
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsMeasurementList.html"
+              >ems:MeasurementList</a
+            >
+            - measurement list
+          </li>
+        </ul>
+      </section>
+
+      <section id="Domain-Entities">
+        <h3>Domain Entities</h3>
+
+        <p>A domain entity resource describes a specific project, scenario, estimate, etc.</p>
+
+        <p>All domain entities have the following properties:</p>
+
+        <h6 id="Table-of-Standard-ems.3AEntity-Properties">Table of Standard ems:{Entity} Properties</h6>
+
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th><strong>Property</strong></th>
+              <th><strong>Range</strong></th>
+              <th><strong>Type</strong></th>
+              <th><strong>Occurrence</strong></th>
+              <th><strong>Edits</strong></th>
+              <th><strong>Description</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>dcterms:identifier</td>
+              <td>datatype</td>
+              <td>xsd:string</td>
+              <td>exactly-one</td>
+              <td>read-only</td>
+              <td>The short identifier for this entity within its list.</td>
+            </tr>
+            <tr>
+              <td>ems:{entity}List</td>
+              <td>resource</td>
+              <td>ems:{Entity}List</td>
+              <td>exactly-one</td>
+              <td>read-only</td>
+              <td>The domain entity list that this domain entity belongs to.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4 id="dcterms.3Aidentifier">dcterms:identifier</h4>
+
+        <p>The dcterms:identifier property provides a short, human-friendly, identifer for the resource.</p>
+
+        <p>This identifier uniquely identifies the resource within its list.</p>
+
+        <p>
+          This read-only property is automatically maintained by the service. When a new domain entity is POSTed to its
+          list, the service assigns it a unique identifier.
+        </p>
+
+        <h4 id="ems.3AentityList">ems:{entity}List</h4>
+
+        <p>The ems:{entity}List property links each domain entity to its list.</p>
+
+        <p>
+          This read-only property is automatically maintained by the service. When a new domain entity is POSTed to its
+          list, the service adds this property to the resource.
+        </p>
+
+        <h4 id="Domain-Entity-Data-Models">Domain Entity Data Models</h4>
+
+        <p>The following topics describe the domain entity data models:</p>
+
+        <ul>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsProject.html">ems:Project</a> - project
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsScenario.html">ems:Scenario</a> -scenario
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsEstimate.html">ems:Estimate</a> -estimate
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsBaseline.html">ems:Baseline</a> -
+            baseline
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsMeasurement.html">ems:Measurement</a>
+            -measurement
+          </li>
+        </ul>
+      </section>
+
+      <section id="Metric-Entities">
+        <h3>Metric Entities</h3>
+
+        <p>
+          A metric entity is a resource that represents some aspect of a project that can be measured or estimated.
+          Metric entities are assumed in scenarios, predicted in estimates, and observed in measurements.
+        </p>
+
+        <p>A measure is a simple metric entity that consists of a single value such as the total cost of a project.</p>
+
+        <p>
+          Measures may be organized into <a href="http://en.wikipedia.org/wiki/Fact_table">fact tables</a> that analyze
+          the composition of the measures along dimensions such as time and role.
+        </p>
+
+        <p>
+          Some dimension values, such as role, may have standard values. A map resource lets you describe how custom
+          dimension values have been mapped to standard values.
+        </p>
+
+        <p>
+          Measures and fact tables may be either definite values that result from observations, or
+          <a href="http://en.wikipedia.org/wiki/Probability_distribution">probability distributions</a> that occur in
+          assumptions or predictions.
+        </p>
+
+        <p>
+          <a href="http://en.wikipedia.org/wiki/Work_breakdown_structure">Work breakdown structures</a> are a common
+          project management tool to describe the work to be performed on a project, including their effort, duration,
+          and schedule.
+        </p>
+
+        <h4 id="Metric-Entity-Data-Models">Metric Entity Data Models</h4>
+
+        <p>The following topics describes the metric entity data models:</p>
+
+        <ul>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsMeasure.html">ems:Measure</a> - measure
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsMeasureDistribution.html"
+              >ems:MeasureDistribution</a
+            >
+            - measure distribution
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsFactTable.html">ems:FactTable</a> -
+            <a href="http://en.wikipedia.org/wiki/Fact_table">fact table</a>
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsFactDistributionTable.html"
+              >ems:FactDistributionTable</a
+            >
+            -fact distribution table
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsMap.html">ems:Map</a> - dimension value
+            map
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsWorkBreakdownStructure.html"
+              >ems:WorkBreakdownStructure</a
+            >
+            - <a href="http://en.wikipedia.org/wiki/Work_breakdown_structure">work breakdown structure</a>
+          </li>
+        </ul>
+      </section>
+
+      <section id="Probability-Distributions">
+        <h3>Probability Distributions</h3>
+
+        <p>
+          A <a href="http://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a> is a resource
+          that defines the likelihood that a measurement of some value (a random variable) will fall within some given
+          range. Probability distributions are used in scenario assumptions and estimate predictions.
+        </p>
+
+        <p>
+          The use of probability distributions to describe measurements of individual metrics (i,e. univariate
+          probability distributions) is a simplification that discards information about how the individual metrics are
+          correlated with each other. A software development project is a single, complex, entity and therefore
+          measurements of different metrics are not in general independent.
+        </p>
+
+        <p>
+          For example, consider effort broken down by labor role. An estimate would give probability distributions for
+          the amounts of coding and testing effort. A high measurement of coding effort and a low measurement of testing
+          effort might both be within acceptable control limits. However, in practice we expect more code to require
+          more testing, i.e. the coding and testing effort measurements should be correlated. Correlation information
+          can be represented by multivariate probability distributions, however they are not currently included in the
+          EMS 1.0 specification. If an estimate gave a multivariate probability distribution for effort by role, then a
+          high measurement for coding combined with a low measurement for testing might fall outside the control limits
+          and alert the project manager to a potential problem. Multivariate probability distributions therefore have
+          potential value and should be considered in
+        </p>
+
+        <p>
+          There are several commonly occuring probability distributions, such as the triangular and normal
+          distributions. Any probablility distribution may be approximated by its quantile function for a sufficiently
+          large number of quantiles.
+        </p>
+
+        <h4 id="ems.3AProbabilityDistribution">ems:ProbabilityDistribution</h4>
+
+        <p>
+          ems:ProbabilityDistribution denotes the abstract class of all probability distribution resources. This
+          specification defines several concrete subclasses of probability distribution resources.
+        </p>
+
+        <h4 id="Probability-Distribution-Data-Models">Probability Distribution Data Models</h4>
+
+        <p>The following topics describe the probability distribution data models:</p>
+
+        <ul>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsPointEstimate.html">ems:PointEstimate</a>
+            - point estimate
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsUniformDistribution.html"
+              >ems:UniformDistribution</a
+            >
+            - <a href="http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">uniform distribution</a>
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsTriangularDistribution.html"
+              >ems:TriangularDistribution</a
+            >
+            - <a href="http://en.wikipedia.org/wiki/Triangular_distribution">triangular distribution</a>
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsNormalDistribution.html"
+              >ems:NormalDistribution</a
+            >
+            - <a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a>
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsPoissonDistribution.html"
+              >ems:PoissonDistribution</a
+            >
+            - <a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsQuantileFunction.html"
+              >ems:QuantileFunction</a
+            >
+            - <a href="http://en.wikipedia.org/wiki/Quantile_function">quantile function</a>
+          </li>
+          <li>
+            <a href="https://archive.open-services.net/bin/view/Main/MetricsEmsCumulativeDistributionFunction.html"
+              >ems:CumulativeDistributionFunction</a
+            >
+            -<a href="http://en.wikipedia.org/wiki/Cumulative_distribution_function"
+              >cumulative distribution function</a
+            >
+          </li>
+        </ul>
+      </section>
+    </section>
+
+    <section id="conformance"></section>
+
+    <section class="appendix informative">
+      <h2>Acknowledgements</h2>
+      <p>
+        The following individuals have participated in the creation of this specification and are gratefully
+        acknowledged:
+      </p>
+
+      <p><b>Participants</b>:</p>
+      <p style="margin-left: 40px;">
+        Fabio Ribeiro, Koneksys (Editor)<br />
+        James Amsden, IBM (Chair)<br />
+        Andrew Berezovskyi, KTH (Chair)<br />
+        Gray Bachelor, IBM<br />
+      </p>
+    </section>
+
+    <section class="appendix informative" id="history">
+      <h2>Change History</h2>
+      <table border="1" cellspacing="0" cellpadding="0">
+        <tr>
+          <td
+            width="103"
+            valign="top"
+            style="width: 77.4pt; border: solid windowtext 1pt; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Revision</b>
+          </td>
+          <td
+            width="96"
+            valign="top"
+            style="width: 1in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Date</b>
+          </td>
+          <td
+            width="144"
+            valign="top"
+            style="width: 1.5in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Editor</b>
+          </td>
+          <td
+            width="295"
+            valign="top"
+            style="width: 221.4pt; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Changes Made</b>
+          </td>
+        </tr>
+        <tr>
+          <td>01</td>
+          <td>2019-06-26</td>
+          <td>Fabio Ribeiro</td>
+          <td>Draft OASIS format version created</td>
+        </tr>
+
+        <tr></tr>
       </table>
-
-      <h4 id="Edit-Type">Edit Type</h4>
-
-      <p>The edit type of a property specifies how it may be directly modified by a service consumer.</p>
-
-      <p>Some properties may be freely modified. These are called read-write properties.</p>
-
-      <p>Some properties may only be modified once, e.g. at resource creation time. These are called write-once
-        properties.</p>
-
-      <p>Finally, some properties may not be modified driectly because they are either generated or maintained by the EM
-        service. These are called read-only properties. For example, creation date is a read-only property.</p>
-
-      <p>The following table summarizes the edit types:</p>
-
-      <h6 id="Table-of-Edit-Types">Table of Edit Types</h6>
-
-      <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-          <tr>
-            <th><strong>Edit Type</strong></th>
-            <th><strong>Description</strong></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>read-write</td>
-            <td>Consumer may change value many times.</td>
-          </tr>
-          <tr>
-            <td>write-once</td>
-            <td>Consumer may set initial value.</td>
-          </tr>
-          <tr>
-            <td>read-only</td>
-            <td>Consumer may never directly change value.</td>
-          </tr>
-        </tbody>
-      </table>
-
     </section>
-
-    <section id="Standard-Properties">
-      <h3>Standard Properties</h3>
-
-      <p>Some properties are used by all resources. We refer to these as standard properties and define them here.</p>
-
-      <p>In the specification, the prefix rdf: stands for the <a href="http://www.w3.org/TR/rdf-concepts/">Resource
-          Description Framework (RDF) Vocabulary</a>, which has the following namespace URI:</p>
-
-      <blockquote>
-        <p><code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code></p>
-      </blockquote>
-
-      <p>In the specification, the prefix rdfs: stands for the <a href="http://www.w3.org/TR/rdf-schema/">RDF Vocabulary
-          Description Language 1.0</a>, which has the following namespace URI:</p>
-
-      <blockquote>
-        <p><code>http://www.w3.org/2000/01/rdf-schema#</code></p>
-      </blockquote>
-
-      <p>In this specification, the prefix dcterms: stands for the <a
-          href="http://dublincore.org/documents/dcmi-terms/">Dublin Core Metadata Initiative (DCMI) Metadata Terms</a>,
-        which has the following namespace URI:</p>
-
-      <blockquote>
-        <p><code>http://purl.org/dc/terms/</code></p>
-      </blockquote>
-
-      <p>In this specification, the prefix foaf: stands for the <a href="http://xmlns.com/foaf/spec/">Friend of a Friend
-          (FOAF) Vocabulary</a>, which has the following namespace URI:</p>
-
-      <blockquote>
-        <p><code>http://xmlns.com/foaf/0.1/</code></p>
-      </blockquote>
-
-      <h6 id="Table-of-Standard-Properties">Table of Standard Properties</h6>
-
-      <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-          <tr>
-            <th><strong>Property</strong></th>
-            <th><strong>Range</strong></th>
-            <th><strong>Type</strong></th>
-            <th><strong>Occurrence</strong></th>
-            <th><strong>Edits</strong></th>
-            <th><strong>Description</strong></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>dcterms:title</td>
-            <td>datatype</td>
-            <td>rdf:XMLLiteral</td>
-            <td>exactly-one</td>
-            <td>read-write</td>
-            <td>A short title for the resource. Valid XHTML &lt;span&gt; element content.</td>
-          </tr>
-          <tr>
-            <td>dcterms:description</td>
-            <td>datatype</td>
-            <td>rdf:XMLLiteral</td>
-            <td>zero-or-one</td>
-            <td>read-write</td>
-            <td>A detailed description of the resource. Valid XHTML &lt;div&gt; element content.</td>
-          </tr>
-          <tr>
-            <td>dcterms:creator</td>
-            <td>resource</td>
-            <td>foaf:Person</td>
-            <td>exactly-one</td>
-            <td>read-only</td>
-            <td>The person who created the resource.</td>
-          </tr>
-          <tr>
-            <td>dcterms:created</td>
-            <td>datatype</td>
-            <td>xsd:dateTime</td>
-            <td>exactly-one</td>
-            <td>read-only</td>
-            <td>The timestamp of when the resource was created.</td>
-          </tr>
-          <tr>
-            <td>dcterms:modifed</td>
-            <td>datatype</td>
-            <td>xsd:dateTime</td>
-            <td>exactly-one</td>
-            <td>read-only</td>
-            <td>The timestamp of when the resource was last modified.</td>
-          </tr>
-        </tbody>
-      </table>
-
-    </section>
-
-
-    <section id="Entity-and-entity-Naming-Convention">
-      <h3>{Entity} and {entity} Naming Convention</h3>
-
-      <p>This specification uses a uniform naming convention for several resource types and properties. When the string
-        {Entity} appears in a name it stands for one of the domain entity names, i.e. Project, Scenario, Estimate, etc.
-        For example, ems:{Entity}List stands for ems:ProjectList, ems:ScenarioList, etc.</p>
-
-      <p>The string {entity} stands for a domain entity name with an initial lowercase letter. For example,
-        ems:{entity}List stands for ems:projectList, ems:scenarioList, etc.</p>
-
-    </section>
-
-    <section id="The-Service-Root">
-      <h3>The Service Root</h3>
-
-      <p>Every EMS 1.0 service has a service root resource that provides links to the domain entity list resources and
-        some descriptive information. The service root can be neither created nor deleted. Only its descriptive
-        properties, e.g. dcterms:title, dcterms:description, may be modified via PUT.</p>
-
-      <h4 id="Service-Data-Model">Service Data Model</h4>
-
-      <p>The following topic describes the service data model:</p>
-
-      <ul>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsService.html">ems:Service</a>
-          - the service root</li>
-      </ul>
-
-    </section>
-
-    <section id="Domain-Entity-Lists">
-      <h3>Domain Entity Lists</h3>
-
-      <p>A domain entity list resource is associated with each domain entity type. The list resource serves two main
-        purposes. First, it provides a way to create new domain entity resources via POST. Second, it provides a way to
-        search for domain entity resources via GET with query parameters.</p>
-
-      <p>All list resources have a similar structure. In addition to the standard properties, they have the following
-        properties:</p>
-
-      <h6 id="Table-of-Standard-ems.3AEntityList-Properties">Table of Standard ems:{Entity}List Properties</h6>
-
-      <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-          <tr>
-            <th><strong>Property</strong></th>
-            <th><strong>Range</strong></th>
-            <th><strong>Type</strong></th>
-            <th><strong>Occurrence</strong></th>
-            <th><strong>Edits</strong></th>
-            <th><strong>Description</strong></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>ems:service</td>
-            <td>resource</td>
-            <td><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsService.html">ems:Service</a></td>
-            <td>exactly-one</td>
-            <td>read-only</td>
-            <td>The service root that manages this list.</td>
-          </tr>
-          <tr>
-            <td>ems:member{Entity}</td>
-            <td>resource</td>
-            <td>ems:{Entity}</td>
-            <td>zero-or-more</td>
-            <td>read-only</td>
-            <td>A domain entity that belongs to this list.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h4 id="ems.3Aservice">ems:service</h4>
-
-      <p>The ems:service property links each domain entity list to its service root. The service root contains links to
-        all of its domain entity lists. Therefore, given any domain entity list URL, a consumer can navigate from it to
-        the service root, and from there to all the other domain entity lists.</p>
-
-      <p>This read-only property is automatically maintained by the service. It cannot be modified.</p>
-
-      <h4 id="ems.3AmemberEntity">ems:member{Entity}</h4>
-
-      <p>The ems:member{Entity} property is a membership property that links each domain entity list to all of its
-        member domain entities. Each domain entities has a link back to its domain entity list. Therefore, given any
-        domain entity URL a consumer can navigate from it to its domain entity list, and from there to all the other
-        domain entities in the list.</p>
-
-      <p>This read-only property is automatically maintained by the service. When a new domain entity is POSTed to a
-        domain entity list, the service automatically adds an ems:member{Entity} property that links to it. When the
-        domain entity is DELETEd, the service removes the link to it.</p>
-
-      <h4 id="Domain-Entity-List-Data-Models">Domain Entity List Data Models</h4>
-
-      <p>The following topics describe the domain entity list data models:</p>
-
-      <ul>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsProjectList.html">ems:ProjectList</a> -
-          project list</li>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsScenarioList.html">ems:ScenarioList</a> -
-          scenario list</li>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsEstimateList.html">ems:EstimateList</a> -
-          estimate list</li>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsBaselineList.html">ems:BaselineList</a>
-          -baseline list</li>
-        <li><a
-            href="https://archive.open-services.net/bin/view/Main/MetricsEmsMeasurementList.html">ems:MeasurementList</a>
-          - measurement list
-        </li>
-      </ul>
-
-    </section>
-
-    <section id="Domain-Entities">
-      <h3>Domain Entities</h3>
-
-      <p>A domain entity resource describes a specific project, scenario, estimate, etc.</p>
-
-      <p>All domain entities have the following properties:</p>
-
-      <h6 id="Table-of-Standard-ems.3AEntity-Properties">Table of Standard ems:{Entity} Properties</h6>
-
-      <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-          <tr>
-            <th><strong>Property</strong></th>
-            <th><strong>Range</strong></th>
-            <th><strong>Type</strong></th>
-            <th><strong>Occurrence</strong></th>
-            <th><strong>Edits</strong></th>
-            <th><strong>Description</strong></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>dcterms:identifier</td>
-            <td>datatype</td>
-            <td>xsd:string</td>
-            <td>exactly-one</td>
-            <td>read-only</td>
-            <td>The short identifier for this entity within its list.</td>
-          </tr>
-          <tr>
-            <td>ems:{entity}List</td>
-            <td>resource</td>
-            <td>ems:{Entity}List</td>
-            <td>exactly-one</td>
-            <td>read-only</td>
-            <td>The domain entity list that this domain entity belongs to.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h4 id="dcterms.3Aidentifier">dcterms:identifier</h4>
-
-      <p>The dcterms:identifier property provides a short, human-friendly, identifer for the resource.</p>
-
-      <p>This identifier uniquely identifies the resource within its list.</p>
-
-      <p>This read-only property is automatically maintained by the service. When a new domain entity is POSTed to its
-        list, the service assigns it a unique identifier.</p>
-
-      <h4 id="ems.3AentityList">ems:{entity}List</h4>
-
-      <p>The ems:{entity}List property links each domain entity to its list.</p>
-
-      <p>This read-only property is automatically maintained by the service. When a new domain entity is POSTed to its
-        list, the service adds this property to the resource.</p>
-
-      <h4 id="Domain-Entity-Data-Models">Domain Entity Data Models</h4>
-
-      <p>The following topics describe the domain entity data models:</p>
-
-      <ul>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsProject.html">ems:Project</a> - project
-        </li>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsScenario.html">ems:Scenario</a> -scenario
-        </li>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsEstimate.html">ems:Estimate</a> -estimate
-        </li>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsBaseline.html">ems:Baseline</a> -
-          baseline</li>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsMeasurement.html">ems:Measurement</a>
-          -measurement</li>
-      </ul>
-
-    </section>
-
-    <section id="Metric-Entities">
-      <h3>Metric Entities</h3>
-
-      <p>A metric entity is a resource that represents some aspect of a project that can be measured or estimated.
-        Metric entities are assumed in scenarios, predicted in estimates, and observed in measurements.</p>
-
-      <p>A measure is a simple metric entity that consists of a single value such as the total cost of a project.</p>
-
-      <p>Measures may be organized into <a href="http://en.wikipedia.org/wiki/Fact_table">fact tables</a> that analyze
-        the composition of the measures along dimensions such as time and role.</p>
-
-      <p>Some dimension values, such as role, may have standard values. A map resource lets you describe how custom
-        dimension values have been mapped to standard values.</p>
-
-      <p>Measures and fact tables may be either definite values that result from observations, or <a
-          href="http://en.wikipedia.org/wiki/Probability_distribution">probability distributions</a> that occur in
-        assumptions or predictions.</p>
-
-      <p><a href="http://en.wikipedia.org/wiki/Work_breakdown_structure">Work breakdown structures</a> are a common
-        project management tool to describe the work to be performed on a project, including their effort, duration, and
-        schedule.</p>
-
-      <h4 id="Metric-Entity-Data-Models">Metric Entity Data Models</h4>
-
-      <p>The following topics describes the metric entity data models:</p>
-
-      <ul>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsMeasure.html">ems:Measure</a> - measure
-        </li>
-        <li><a
-            href="https://archive.open-services.net/bin/view/Main/MetricsEmsMeasureDistribution.html">ems:MeasureDistribution</a>
-          - measure
-          distribution</li>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsFactTable.html">ems:FactTable</a> - <a
-            href="http://en.wikipedia.org/wiki/Fact_table">fact table</a></li>
-        <li><a
-            href="https://archive.open-services.net/bin/view/Main/MetricsEmsFactDistributionTable.html">ems:FactDistributionTable</a>
-          -fact
-          distribution table</li>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsMap.html">ems:Map</a> - dimension value
-          map</li>
-        <li><a
-            href="https://archive.open-services.net/bin/view/Main/MetricsEmsWorkBreakdownStructure.html">ems:WorkBreakdownStructure</a>
-          - <a href="http://en.wikipedia.org/wiki/Work_breakdown_structure">work breakdown structure</a></li>
-      </ul>
-
-    </section>
-
-    <section id="Probability-Distributions">
-      <h3>Probability Distributions</h3>
-
-      <p>A <a href="http://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a> is a resource
-        that defines the likelihood that a measurement of some value (a random variable) will fall within some given
-        range. Probability distributions are used in scenario assumptions and estimate predictions.</p>
-
-      <p>The use of probability distributions to describe measurements of individual metrics (i,e. univariate
-        probability distributions) is a simplification that discards information about how the individual metrics are
-        correlated with each other. A software development project is a single, complex, entity and therefore
-        measurements of different metrics are not in general independent.</p>
-
-      <p>For example, consider effort broken down by labor role. An estimate would give probability distributions for
-        the amounts of coding and testing effort. A high measurement of coding effort and a low measurement of testing
-        effort might both be within acceptable control limits. However, in practice we expect more code to require more
-        testing, i.e. the coding and testing effort measurements should be correlated. Correlation information can be
-        represented by multivariate probability distributions, however they are not currently included in the EMS 1.0
-        specification. If an estimate gave a multivariate probability distribution for effort by role, then a high
-        measurement for coding combined with a low measurement for testing might fall outside the control limits and
-        alert the project manager to a potential problem. Multivariate probability distributions therefore have
-        potential value and should be considered in</p>
-
-      <p>There are several commonly occuring probability distributions, such as the triangular and normal distributions.
-        Any probablility distribution may be approximated by its quantile function for a sufficiently large number of
-        quantiles.</p>
-
-      <h4 id="ems.3AProbabilityDistribution">ems:ProbabilityDistribution</h4>
-
-      <p>ems:ProbabilityDistribution denotes the abstract class of all probability distribution resources. This
-        specification defines several concrete subclasses of probability distribution resources.</p>
-
-      <h4 id="Probability-Distribution-Data-Models">Probability Distribution Data Models</h4>
-
-      <p>The following topics describe the probability distribution data models:</p>
-
-      <ul>
-        <li><a href="https://archive.open-services.net/bin/view/Main/MetricsEmsPointEstimate.html">ems:PointEstimate</a>
-          - point estimate</li>
-        <li><a
-            href="https://archive.open-services.net/bin/view/Main/MetricsEmsUniformDistribution.html">ems:UniformDistribution</a>
-          - <a href="http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">uniform distribution</a></li>
-        <li><a
-            href="https://archive.open-services.net/bin/view/Main/MetricsEmsTriangularDistribution.html">ems:TriangularDistribution</a>
-          - <a href="http://en.wikipedia.org/wiki/Triangular_distribution">triangular distribution</a></li>
-        <li><a
-            href="https://archive.open-services.net/bin/view/Main/MetricsEmsNormalDistribution.html">ems:NormalDistribution</a>
-          - <a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a></li>
-        <li><a
-            href="https://archive.open-services.net/bin/view/Main/MetricsEmsPoissonDistribution.html">ems:PoissonDistribution</a>
-          - <a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a></li>
-        <li><a
-            href="https://archive.open-services.net/bin/view/Main/MetricsEmsQuantileFunction.html">ems:QuantileFunction</a>
-          - <a href="http://en.wikipedia.org/wiki/Quantile_function">quantile function</a></li>
-        <li><a
-            href="https://archive.open-services.net/bin/view/Main/MetricsEmsCumulativeDistributionFunction.html">ems:CumulativeDistributionFunction</a>
-          -<a href="http://en.wikipedia.org/wiki/Cumulative_distribution_function">cumulative distribution function</a>
-        </li>
-      </ul>
-
-    </section>
-
-  </section>
-
-  <section id="conformance">
-
-  </section>
-
-  <section class='appendix informative'>
-    <h2>Acknowledgements</h2>
-    <p>The following individuals have participated in the creation of this specification and are gratefully
-      acknowledged:</p>
-
-    <p><b>Participants</b>:</p>
-    <p style="margin-left: 40px">
-      Fabio Ribeiro, Koneksys (Editor)<br>
-      James Amsden, IBM (Chair)<br>
-      Andrew Berezovskyi, KTH (Chair)<br>
-      Gray Bachelor, IBM<br>
-  </section>
-
-
-  <section class="appendix informative" id="history">
-    <h2>Change History</h2>
-    <table border=1 cellspacing=0 cellpadding=0>
-      <tr>
-        <td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;
-  padding:0in 5.4pt 0in 5.4pt'><b>Revision</b></td>
-        <td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Date</b></td>
-        <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Editor</b></td>
-        <td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Changes Made</b></td>
-      </tr>
-      <tr>
-        <td>01</td>
-        <td>2019-06-26</td>
-        <td>Fabio Ribeiro</td>
-        <td>Draft OASIS format version created</td>
-      <tr>
-    </table>
-  </section>
-</body>
-
+  </body>
 </html>
