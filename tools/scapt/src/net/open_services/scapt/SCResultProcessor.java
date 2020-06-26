@@ -124,7 +124,8 @@ public class SCResultProcessor extends AbstractProcessor
                     + ". The SCVocab annotation may only be applied once.");
         }
         SCVocab annotation = element.getAnnotation(SCVocab.class);
-        vocabulary = new SCVocabModel(annotation.uri(),annotation.prefix(),annotation.domain(),annotation.description());
+        vocabulary = new SCVocabModel(annotation.uri(),annotation.prefix(),
+        	annotation.domain(),annotation.description(),annotation.additionalStatements());
     }
 
 
@@ -241,4 +242,23 @@ public class SCResultProcessor extends AbstractProcessor
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ioe.getLocalizedMessage());
         }
     }
+
+
+    /**
+     * Escape characters in strings.
+     * @param s the string to be escaped
+     * @return the escaped string
+     */
+	public static String enquote(String s)
+	{
+		return s == null ? null :
+			s.replace("\\", "\\\\")
+	         .replace("\t", "\\t")
+	         .replace("\b", "\\b")
+	         .replace("\n", "\\n")
+	         .replace("\r", "\\r")
+	         .replace("\f", "\\f")
+	         .replace("\"", "\\\"");
+	}
+
 }
