@@ -77,6 +77,7 @@ public final class PrintShapes
 
     private void printShapes()
     {
+    	System.out.println("@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n");
         stmtStream(shapeModel.listStatements(null, RDF.type, OSLC.ResourceShape))
             .map(Statement::getSubject)
             .sorted((a,b)->a.getURI().compareTo(b.getURI()))
