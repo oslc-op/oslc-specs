@@ -1,12 +1,12 @@
 package net.open_services.scheck.util;
 
+import static net.open_services.scheck.util.PrintUtils.printObject;
+import static net.open_services.scheck.util.PrintUtils.stmtStream;
+import static net.open_services.scheck.util.PrintUtils.turtleCollector;
+
 import java.net.URISyntaxException;
-import java.util.Comparator;
-import java.util.StringJoiner;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -14,12 +14,12 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import net.open_services.scheck.shapechecker.OSLC;
+
 
 /**
  * Print a canonical representation of a set of OSLC resource shapes.
@@ -85,13 +85,6 @@ public final class PrintShapes
     }
 
 
-    private static Stream<Statement> stmtStream(StmtIterator iterator)
-    {
-        Iterable<Statement> iterable = () -> iterator;
-        return StreamSupport.stream(iterable.spliterator(), false);
-    }
-
-
     private void printShape(Resource shape)
     {
         System.out.printf("<%s>%n\ta <%s>",shape.getURI(),"http://open-services.net/ns/core#ResourceShape");
@@ -101,7 +94,7 @@ public final class PrintShapes
                 OSLC.describes,
                 RDFS.seeAlso,
                 OSLC.hidden)
-            .map(pred->printObject(shape,pred))
+            .map(pred->printObject(shapeModel,shape,pred))
             .filter(s->!s.isEmpty())
             .map(s->"\t"+s)
             .collect(turtleCollector(" ;\n"," ;\n","")));
@@ -136,7 +129,7 @@ public final class PrintShapes
 		                OSLC.hidden,
 		                OSLC.maxSize,
 		                OSLC.isMemberProperty)
-					.map(pred->printObject(propDef,pred)),
+					.map(pred->printObject(shapeModel,propDef,pred)),
 				Stream.of(OSLC.allowedValues)
 					.map(pred->printNestedObject(propDef,pred,OSLC.allowedValue)))
     		.flatMap(Function.identity())
@@ -145,40 +138,12 @@ public final class PrintShapes
             .collect(turtleCollector(""," ;\n",""));
     }
 
+
     private String printNestedObject(Resource subject, Property predicate, Property subpred)
     {
         return stmtStream(shapeModel.listStatements(subject,predicate,(RDFNode)null))
-        		.map(a->printObject(a.getResource(),subpred))
+        		.map(a->printObject(shapeModel,a.getResource(),subpred))
                 .filter(s->!s.isEmpty())
         		.collect(turtleCollector(String.format("%s [ ",predicate.getURI())," ;\n"," ]"));
-    }
-
-
-    private String printObject(Resource subject, Property predicate)
-    {
-        return stmtStream(shapeModel.listStatements(subject,predicate,(RDFNode)null))
-            .map(a->a.getObject().visitWith(new TurtlePrintVisitor()).toString())
-            .sorted(Comparator.naturalOrder())
-            .collect(multivaluedPredicateCollector(predicate));
-    }
-
-
-    private static Collector<CharSequence, ?, String> multivaluedPredicateCollector(Property predicate)
-    {
-        return Collector.of(
-            () -> new StringJoiner(" , ", String.format("<%s> ", predicate.getURI()), "").setEmptyValue(""),
-            StringJoiner::add,
-            StringJoiner::merge,
-            StringJoiner::toString);
-    }
-
-
-    private static Collector<CharSequence, ?, String> turtleCollector(String prefix,String middle,String suffix)
-    {
-        return Collector.of(
-            () -> new StringJoiner(middle, prefix, suffix).setEmptyValue(""),
-            StringJoiner::add,
-            StringJoiner::merge,
-            StringJoiner::toString);
     }
 }

@@ -26,7 +26,12 @@ import static net.open_services.scheck.annotations.IssueSeverity.*;
     uri="http://open-services.net/ns/scheck#",
     prefix="scheck",
     domain="ShapeChecker Result Vocabulary.",
-    description="A vocabulary for terms used in the result model of the OSLC Shape and Vocabulary checker.")
+    description="A vocabulary for terms used in the result model of the OSLC Shape and Vocabulary checker.",
+    additionalStatements=
+		{
+				"scheck:additionalProperty scheck:severity, scheck:singular, scheck:plural",
+			    "dcterms:source <https://oslc-op.github.io/oslc-specs/tools/ShapeChecker/src/main/java/net/open_services/scheck/shapechecker/Terms.java>"
+		})
 public final class Terms
 {
     private static final String checkerNS          = "http://open-services.net/ns/scheck#";
@@ -283,4 +288,9 @@ public final class Terms
     @SCXCheck(severity=IssueSeverity.Warning,singular="vocabulary",plural="vocabularies",
             description="given, but not referenced in the given shapes:")
     public static final Property unusedVocabulary = property("unusedVocabulary");
+
+
+    /** Predicate for additional property allowed on vocabulary terms. */
+    @SCTerm(type=TermType.Property,description="An additional property allowed on terms in this vocabulary")
+    public static final Property additionalProperty = property("additionalProperty");
 }

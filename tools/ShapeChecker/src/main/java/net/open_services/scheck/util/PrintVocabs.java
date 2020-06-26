@@ -1,17 +1,16 @@
 package net.open_services.scheck.util;
 
+import static net.open_services.scheck.util.PrintUtils.printObject;
+import static net.open_services.scheck.util.PrintUtils.turtleCollector;
+
 import java.net.URISyntaxException;
 import java.util.Comparator;
-import java.util.StringJoiner;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Statement;
@@ -102,14 +101,15 @@ public final class PrintVocabs
     {
         System.out.printf("<%s>%n\ta %s",vocab.getURI(),"owl:Ontology");
         System.out.print(Stream.of(
-            	printString(vocab,RDFS.label),
-            	printString(vocab,DCTerms.title),
-                printString(vocab,DCTerms.description),
-                printString(vocab,DCTerms.dateCopyrighted),
-                printString(vocab,PREF_NS),
-                printURI(vocab,DCTerms.license),
-                printURI(vocab,DCTerms.source),
-                printURI(vocab,RDFS.seeAlso))
+            	RDFS.label,
+            	DCTerms.title,
+                DCTerms.description,
+                DCTerms.dateCopyrighted,
+                DCTerms.license,
+                DCTerms.source,
+                PREF_NS,
+                RDFS.seeAlso)
+            .map(pred->printObject(vocabModel,vocab,pred))
             .filter(s->!s.isEmpty())
             .map(s->"\t"+s)
             .collect(turtleCollector(" ;\n"," ;\n"," .\n")));
@@ -125,76 +125,26 @@ public final class PrintVocabs
     {
     	System.out.printf("%n<%s>",term.getURI());
         System.out.println(Stream.of(
-                printURI(term,RDF.type),
-                printURI(term,OWL.sameAs),
-                printURI(term,RDFS.subClassOf),
-                printURI(term,RDFS.subPropertyOf),
-                printURI(term,RDFS.range),
-                printURI(term,RDFS.domain),
-                printURI(term,RDFS.isDefinedBy),
-            	printString(term,RDFS.label),
-                printString(term,OSLC.inverseLabel),
-            	printString(term,RDFS.comment),
-                printString(term,VS_TERM_STATUS),
-                printBoolean(term,OSLC.hidden),
-                printString(term,RDF.value),
-                printURI(term,OSLC.impactType),
-                printURI(term,SKOS.narrower),
-                printURI(term,SKOS.broader),
-        		printURI(term,RDFS.seeAlso))
+                RDF.type,
+                OWL.sameAs,
+                RDFS.subClassOf,
+                RDFS.subPropertyOf,
+                RDFS.range,
+                RDFS.domain,
+                RDFS.isDefinedBy,
+            	RDFS.label,
+                OSLC.inverseLabel,
+            	RDFS.comment,
+                VS_TERM_STATUS,
+                OSLC.hidden,
+                RDF.value,
+                OSLC.impactType,
+                SKOS.narrower,
+                SKOS.broader,
+        		RDFS.seeAlso)
+            .map(pred->printObject(vocabModel,term,pred))
             .filter(s->!s.isEmpty())
             .map(s->"\t"+s)
             .collect(turtleCollector("\n"," ;\n"," .")));
-    }
-
-
-    private String printBoolean(Resource subject, Property predicate)
-    {
-        return stmtStream(vocabModel.listStatements(subject,predicate,(RDFNode)null))
-            .map(Statement::getBoolean)
-            .sorted(Comparator.naturalOrder())
-            .map(b->b.toString())
-            .collect(multivaluedPredicateCollector(predicate));
-    }
-
-
-    private String printURI(Resource subject, Property predicate)
-    {
-        return stmtStream(vocabModel.listStatements(subject,predicate,(RDFNode)null))
-            .map(a->a.getResource().getURI())
-            .sorted(Comparator.naturalOrder())
-            .map(uri->"<"+uri+">")
-            .collect(multivaluedPredicateCollector(predicate));
-    }
-
-
-    private String printString(Resource subject, Property predicate)
-    {
-        return stmtStream(vocabModel.listStatements(subject,predicate,(RDFNode)null))
-            .map(Statement::getLiteral)
-            .map(Literal::getLexicalForm)
-            .sorted(Comparator.naturalOrder())
-            .map(s->"\"\"\""+s.replace("\\", "\\\\")+"\"\"\"")
-            .collect(multivaluedPredicateCollector(predicate));
-    }
-
-
-    private static Collector<CharSequence, ?, String> multivaluedPredicateCollector(Property predicate)
-    {
-        return Collector.of(
-            () -> new StringJoiner(" , ", String.format("<%s> ", predicate.getURI()), "").setEmptyValue(""),
-            StringJoiner::add,
-            StringJoiner::merge,
-            StringJoiner::toString);
-    }
-
-
-    private static Collector<CharSequence, ?, String> turtleCollector(String prefix,String middle,String suffix)
-    {
-        return Collector.of(
-            () -> new StringJoiner(middle, prefix, suffix).setEmptyValue("WRONG"),
-            StringJoiner::add,
-            StringJoiner::merge,
-            StringJoiner::toString);
     }
 }

@@ -141,7 +141,7 @@ public class Main
         }
 
         // Scan the result model, adding issue counts
-        int errors = resultModel.summarizeIssues();
+        int errors = resultModel.summarizeIssues(debug);
 
         if (debug > 2)
         {
@@ -185,7 +185,10 @@ public class Main
                     index++;
                     debug++;
                     httpHandler.setDebug(debug);
-                    System.err.println("Arguments: "+String.join(" ",args));
+                    if (debug==1)
+                	{
+                    	System.err.println("Arguments: "+String.join(" ",args));
+                	}
                 }
                 else if (args[index].equals("-V") || args[index].equals("--verbose"))
                 {
