@@ -65,25 +65,6 @@ that is, it can only be a leaf in a configuration hierarchy."""^^rdf:XMLLiteral 
     dcterms:description      """The component of which this is a configuration, and from which the configuration selects versions of resources in the component.
 The component is an invariant relating the different configurations of the same 'thing'."""^^rdf:XMLLiteral .
 
-:contribution
-    a                        oslc:Property ;
-    oslc:name                "contribution" ;
-    oslc:propertyDefinition  oslc_config:contribution ;
-    oslc:occurs              oslc:Zero-or-many ;
-    oslc:readOnly            false ;
-    oslc:representation      oslc:Inline ;
-    oslc:valueType           oslc:AnyResource ;
-    oslc:valueShape          :Contribution ;
-    oslc:range               oslc_config:Contribution ;
-    dcterms:description      """A contribution to this configuration.
-The set of resource versions identified by this configuration is the union of the set determined by the
-<code>oslc_config:selections</code> resources and each of the sets of resource versions identified by the contributed configurations.
-A user can request an update to a configuration to change the set of contributions;
-servers MUST deny such requests if any added contributions do not <a href="config-resources.html#matching_contribs">match</a> this configuration.
-The target MUST be of type <code>oslc_config:Contribution</code>.
-Contribution resources MUST be returned inline with the configuration resource.
-In the set of Contribution resources for a single parent configuration,
-there MUST be only one Contribution resource for a given contributed configuration."""^^rdf:XMLLiteral .
 
 :contributor
     a                        oslc:Property ;
@@ -123,9 +104,8 @@ The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>
     oslc:propertyDefinition  dcterms:description ;
     oslc:occurs              oslc:Zero-or-one ;
     oslc:valueType           rdf:XMLLiteral ;
-    oslc:readOnly            false;
-    dcterms:description      """Descriptive text about the resource represented as rich text in XHTML content.
-SHOULD include only content that is valid and suitable inside an XHTML <code>&lt;div&gt;</code> element."""^^rdf:XMLLiteral .
+    oslc:readOnly			 false ;
+    dcterms:description      """Descriptive text about the resource, represented as rich text in XHTML content."""^^rdf:XMLLiteral .
 
 :identifier
     a                        oslc:Property ;
@@ -181,8 +161,7 @@ The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>
     oslc:range               oslc:ServiceProvider ;
     oslc:readOnly            true ;
     dcterms:description      """A link to the resource's OSLC Service Provider.
-If the subject resource is available from an application that implements multiple domain specifications,
-there can be multiple values for this property."""^^rdf:XMLLiteral .
+If the subject resource is available from an application that implements multiple domain specifications, there can be multiple values for this property."""^^rdf:XMLLiteral .
 
 :shortId
     a                        oslc:Property ;
@@ -190,7 +169,7 @@ there can be multiple values for this property."""^^rdf:XMLLiteral .
     oslc:propertyDefinition  oslc:shortId ;
     oslc:occurs              oslc:Zero-or-one ;
     oslc:valueType           xsd:string ;
-    dcterms:description      "A short and human-readable identifier for the resource."^^rdf:XMLLiteral .
+    dcterms:description      "A short and human-readable identifier for the resource, such as a number."^^rdf:XMLLiteral .
 
 :shortTitle
     a                        oslc:Property ;
@@ -198,8 +177,7 @@ there can be multiple values for this property."""^^rdf:XMLLiteral .
     oslc:propertyDefinition  oslc:shortTitle ;
     oslc:occurs              oslc:Zero-or-one ;
     oslc:valueType           rdf:XMLLiteral ;
-    dcterms:description      """A shorter title for the resource, represented as rich text in XHTML content.
-SHOULD include only content that is valid inside an XHTML <code>&lt;span&gt;</code> element."""^^rdf:XMLLiteral .
+    dcterms:description      """A short title for the resource, represented as rich text in XHTML content."""^^rdf:XMLLiteral .
 
 :subject
     a                        oslc:Property ;
@@ -217,8 +195,8 @@ Each occurrence of a <code>dcterms:subject</code> property denotes an additional
     oslc:propertyDefinition  dcterms:title ;
     oslc:occurs              oslc:Zero-or-one ;
     oslc:valueType           rdf:XMLLiteral ;
-    oslc:readOnly            false;
-    dcterms:description      "Title of the resource represented as rich text in XHTML content."^^rdf:XMLLiteral .
+    oslc:readOnly			 false ;
+    dcterms:description      "Title of the resource, represented as rich text in XHTML content."^^rdf:XMLLiteral .
 
 :wasDerivedFrom
     a                        oslc:Property ;
@@ -241,7 +219,7 @@ Servers SHOULD treat this property as read-only after intial creation."""^^rdf:X
 # ============================ Component shape ============================
 
 
-:Component
+:ComponentShape
     a                       oslc:ResourceShape ;
     oslc:describes          oslc_config:Component ;
     dcterms:title           "The shape of a component." ;
@@ -311,7 +289,7 @@ If it is not read-only, the container MAY have <code>oslc:resourceShape</code> p
 # ============================ Baseline shape ============================
 
 
-:Baseline
+:BaselineShape
     a                        oslc:ResourceShape ;
     oslc:describes           oslc_config:Baseline ;
     dcterms:title            "The shape of a baseline. Properties of a baseline defined in this specification MUST be read-only unless stated otherwise." ;
@@ -393,7 +371,7 @@ The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>
             oslc:readOnly            true ;
             oslc:representation      oslc:Inline ;
             oslc:valueType           oslc:AnyResource ;
-            oslc:valueShape          :Contribution ;
+            oslc:valueShape          :ContributionShape ;
             oslc:range               oslc_config:Contribution ;
             dcterms:description      """A contribution to this baseline.
 The set of resource versions identified by this baseline is the union of the set determined by the
@@ -423,8 +401,7 @@ The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>
             oslc:propertyDefinition  dcterms:description ;
             oslc:occurs              oslc:Zero-or-one ;
             oslc:valueType           rdf:XMLLiteral ;
-            dcterms:description      """Descriptive text about the resource represented as rich text in XHTML content.
-SHOULD include only content that is valid and suitable inside an XHTML <code>&lt;div&gt;</code> element.
+            dcterms:description      """Descriptive text about the resource, represented as rich text in XHTML content.
 The description of a baseline MAY be modifiable."""^^rdf:XMLLiteral
         ] ,
         [
@@ -494,7 +471,7 @@ Tags on baselines MUST be modifiable."""^^rdf:XMLLiteral
             oslc:occurs              oslc:Zero-or-one ;
             oslc:readOnly            false;
             oslc:valueType           rdf:XMLLiteral ;
-            dcterms:description      """Title of the resource represented as rich text in XHTML content.
+            dcterms:description      """Title of the resource, represented as rich text in XHTML content.
 The title of a baseline SHOULD be modifiable."""^^rdf:XMLLiteral
         ] ,
 
@@ -517,7 +494,7 @@ The title of a baseline SHOULD be modifiable."""^^rdf:XMLLiteral
 # ============================ Stream shape ============================
 
 
-:Stream
+:StreamShape
     a                        oslc:ResourceShape ;
     oslc:describes           oslc_config:Stream ;
     dcterms:title            "The shape of a stream." ;
@@ -589,6 +566,27 @@ Since selections properties are not ordered, there is no defined meaning to a se
 servers MAY treat such multiple occurrences of selections as an error.
 Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
         ] ,
+        [
+			#contribution
+		    a                        oslc:Property ;
+		    oslc:name                "contribution" ;
+		    oslc:propertyDefinition  oslc_config:contribution ;
+		    oslc:occurs              oslc:Zero-or-many ;
+		    oslc:readOnly			 false ;
+		    oslc:representation      oslc:Inline ;
+		    oslc:valueType           oslc:AnyResource ;
+		    oslc:valueShape          :ContributionShape ;
+		    oslc:range               oslc_config:Contribution ;
+		    dcterms:description      """A contribution to this configuration.
+The set of resource versions identified by this configuration is the union of the set determined by the
+<code>oslc_config:selections</code> resources and each of the sets of resource versions identified by the contributed configurations.
+A user can request an update to a configuration to change the set of contributions;
+servers MUST deny such requests if any added contributions do not <a href="config-resources.html#matching_contribs">match</a> this configuration.
+The target MUST be of type <code>oslc_config:Contribution</code>.
+Contribution resources MUST be returned inline with the configuration resource.
+In the set of Contribution resources for a single parent configuration,
+there MUST be only one Contribution resource for a given contributed configuration."""^^rdf:XMLLiteral
+		] ,
 
         # Properties shared with other shapes
 
@@ -596,7 +594,6 @@ Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
         :accepts ,
         :branch ,
         :component ,
-        :contribution ,
         :contributor ,
         :created ,
         :creator ,
@@ -615,7 +612,7 @@ Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
 
 # ============================ Contribution shape ============================
 
-:Contribution
+:ContributionShape
     a                        oslc:ResourceShape ;
     oslc:describes           oslc_config:Contribution ;
     dcterms:title            "A contribution to a configuration." ;
@@ -681,7 +678,7 @@ This property is read-only for contributions to a baseline, and modifiable for c
 # ============================ Selections shape ============================
 
 
-:Selections
+:SelectionsShape
     a                        oslc:ResourceShape ;
     oslc:describes           oslc_config:Selections ;
     dcterms:title            "The resources selected by a configuration." ;
@@ -728,7 +725,7 @@ This property is read-only for selections of a baseline, but MAY be modifiable f
 # ============================ ChangeSet shape ============================
 
 
-:ChangeSet
+:ChangeSetShape
     a                        oslc:ResourceShape ;
     oslc:describes           oslc_config:ChangeSet ;
     dcterms:title            "The shape of a ChangeSet." ;
@@ -784,12 +781,24 @@ Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
             oslc:range               oslc_config:Configuration ;
             dcterms:description      "A reference to a configuration modified or overridden by this change set configuration."^^rdf:XMLLiteral
         ] ,
+		[
+			#contribution
+		    a                        oslc:Property ;
+		    oslc:name                "contribution" ;
+		    oslc:propertyDefinition  oslc_config:contribution ;
+		    oslc:occurs              oslc:Zero-or-many ;
+		    oslc:representation      oslc:Inline ;
+		    oslc:valueType           oslc:AnyResource ;
+		    oslc:valueShape          :ContributionShape ;
+		    oslc:range               oslc_config:Contribution ;
+		    dcterms:description      """A contribution to this change set configuration.
+Servers MAY support contributions to change sets, and if so, this property behaves just as that for streams."""^^rdf:XMLLiteral
+		] ,
 
         :acceptedBy ,
         :accepts ,
         :branch ,
         :component ,
-        :contribution ,
         :contributor ,
         :created ,
         :creator ,
@@ -805,7 +814,7 @@ Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
         :title .
 
 
-:CSelections
+:CSelectionsShape
     a                        oslc:ResourceShape ;
     oslc:describes           oslc_config:ChangeSetSelections ;
     dcterms:title            "The resources selected by a change set." ;
@@ -859,7 +868,7 @@ servers MAY treat occurrences of potentially conflicting selections as an error.
 
 # ============================ Activity shape ============================
 
-:Activity
+:ActivityShape
     a                       oslc:ResourceShape ;
     oslc:describes          oslc_config:Activity ;
     dcterms:title           "The shape of an activity." ;
@@ -888,7 +897,8 @@ servers MAY treat occurrences of potentially conflicting selections as an error.
             oslc:occurs              oslc:Zero-or-one ;
             oslc:readOnly            true ;
             oslc:valueType           xsd:dateTime ;
-            dcterms:description      "Timestamp of the last change of status."^^rdf:XMLLiteral
+    		dcterms:description      """Timestamp of the last change of status.
+If this property is missing, the time of creation can be taken to be the same as the last change of status."""^^rdf:XMLLiteral
         ] ,
         [
             #progress
@@ -908,7 +918,7 @@ servers MAY treat occurrences of potentially conflicting selections as an error.
             oslc:occurs              oslc:Zero-or-one ;
             oslc:readOnly            true ;
             oslc:valueType           rdf:XMLLiteral ;
-            dcterms:description      "Descriptive text about the progress of the activity represented as rich text in XHTML content. SHOULD include only content that is valid and suitable inside an XHTML <code>&lt;div&gt;</code> element."^^rdf:XMLLiteral
+            dcterms:description      """Descriptive text about the progress of the activity, represented as rich text in XHTML content."""^^rdf:XMLLiteral
         ] ,
         [
             #references
@@ -990,7 +1000,7 @@ Instances of this property MAY appear at any time during the execution of the ac
 # ============================ Version Resource shapes ============================
 
 
-:VersionResource
+:VersionResourceShape
     a                       oslc:ResourceShape ;
     oslc:describes          oslc_config:VersionResource ;
     dcterms:title           """The shape of a versioned resource: all versioned resources MUST match this shape.
