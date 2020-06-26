@@ -94,8 +94,6 @@ public class GlobExpander extends SimpleFileVisitor<Path>
 
     static PathParts splitGlobRoot(String path)
     {
-        String prefix;
-        String glob;
         Matcher matcher = GLOB_CHARS.matcher(path);
         if (!matcher.find())
         {
@@ -103,7 +101,9 @@ public class GlobExpander extends SimpleFileVisitor<Path>
         }
         else
         {
-            int divider = path.substring(0, matcher.start()).lastIndexOf('/');
+            String prefix;
+            String glob;
+            int    divider = path.substring(0, matcher.start()).lastIndexOf('/');
             if (divider < 0)
             {
                 prefix = ".";

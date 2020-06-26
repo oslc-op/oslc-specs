@@ -3,6 +3,7 @@ package net.open_services.scheck.util;
 import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -94,11 +95,12 @@ public final class PrintShapes
     {
         System.out.printf("<%s>%n\ta <%s>",shape.getURI(),"http://open-services.net/ns/core#ResourceShape");
         System.out.print(Stream.of(
-                printString(shape,DCTerms.title),
-                printString(shape,DCTerms.description),
-                printURI(shape,OSLC.describes),
-                printURI(shape,RDFS.seeAlso),
-                printBoolean(shape,OSLC.hidden))
+                DCTerms.title,
+                DCTerms.description,
+                OSLC.describes,
+                RDFS.seeAlso,
+                OSLC.hidden)
+            .map(pred->printObject(shape,pred))
             .filter(s->!s.isEmpty())
             .map(s->"\t"+s)
             .collect(turtleCollector(" ;\n"," ;\n","")));
@@ -117,53 +119,45 @@ public final class PrintShapes
     private String printPropertyDef(Resource propDef)
     {
         return Stream.of(
-                printString(propDef,OSLC.name),
-                printString(propDef,DCTerms.title),
-                printString(propDef,DCTerms.description),
-                printURI(propDef,OSLC.propertyDefinition),
-                printURI(propDef,OSLC.valueType),
-                printURI(propDef,OSLC.representation),
-                printURI(propDef,OSLC.occurs),
-                printURI(propDef,OSLC.range),
-                printURI(propDef,OSLC.allowedValue),
-                printURI(propDef,OSLC.allowedValues),
-                printURI(propDef,OSLC.defaultValue),
-                printURI(propDef,OSLC.valueShape),
-                printBoolean(propDef,OSLC.readOnly),
-                printBoolean(propDef,OSLC.hidden),
-                printBoolean(propDef,OSLC.isMemberProperty))
+        		Stream.of(
+		        		OSLC.name,
+		        		DCTerms.title,
+		        		DCTerms.description,
+		        		OSLC.propertyDefinition,
+		        		OSLC.valueType,
+		                OSLC.representation,
+		                OSLC.occurs,
+		                OSLC.range,
+		                OSLC.allowedValue,
+		                OSLC.defaultValue,
+		                OSLC.valueShape,
+		                OSLC.readOnly,
+		                OSLC.hidden,
+		                OSLC.maxSize,
+		                OSLC.isMemberProperty)
+					.map(pred->printObject(propDef,pred)),
+				Stream.of(OSLC.allowedValues)
+					.map(pred->printNestedObject(propDef,pred,OSLC.allowedValue)))
+    		.flatMap(Function.identity())
             .filter(s->!s.isEmpty())
             .map(s->"\t\t\t"+s)
             .collect(turtleCollector(""," ;\n",""));
     }
 
-
-    private String printBoolean(Resource subject, Property predicate)
+    private String printNestedObject(Resource subject, Property predicate, Property subpred)
     {
         return stmtStream(shapeModel.listStatements(subject,predicate,(RDFNode)null))
-            .map(Statement::getBoolean)
-            .sorted(Comparator.naturalOrder())
-            .map(b->b.toString())
-            .collect(multivaluedPredicateCollector(predicate));
+        		.map(a->printObject(a.getResource(),subpred))
+                .filter(s->!s.isEmpty())
+        		.collect(turtleCollector(String.format("%s [ ",predicate.getURI())," ;\n"," ]"));
     }
 
 
-    private String printURI(Resource subject, Property predicate)
+    private String printObject(Resource subject, Property predicate)
     {
         return stmtStream(shapeModel.listStatements(subject,predicate,(RDFNode)null))
-            .map(a->a.getResource().getURI())
+            .map(a->a.getObject().visitWith(new TurtlePrintVisitor()).toString())
             .sorted(Comparator.naturalOrder())
-            .map(uri->"<"+uri+">")
-            .collect(multivaluedPredicateCollector(predicate));
-    }
-
-
-    private String printString(Resource subject, Property predicate)
-    {
-        return stmtStream(shapeModel.listStatements(subject,predicate,(RDFNode)null))
-            .map(Statement::getString)
-            .sorted(Comparator.naturalOrder())
-            .map(s->"\"\"\""+s.replace("\\", "\\\\")+"\"\"\"")
             .collect(multivaluedPredicateCollector(predicate));
     }
 
@@ -181,7 +175,7 @@ public final class PrintShapes
     private static Collector<CharSequence, ?, String> turtleCollector(String prefix,String middle,String suffix)
     {
         return Collector.of(
-            () -> new StringJoiner(middle, prefix, suffix).setEmptyValue("WRONG"),
+            () -> new StringJoiner(middle, prefix, suffix).setEmptyValue(""),
             StringJoiner::add,
             StringJoiner::merge,
             StringJoiner::toString);

@@ -141,7 +141,7 @@ public class ShapeCheck
         node.checkLangString(DCTerms.description, Occurrence.ExactlyOne,
             desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(OSLC.name, null, Occurrence.ExactlyOne,
-            literal -> checkUnique(names,literal));
+            literal -> {setChecksName(propDefNode,propResult,literal); return checkUnique(names,literal); });
         node.checkURI(OSLC.occurs, Occurrence.ExactlyOne,
             uri -> Occurrence.isValidURI(uri) ? null : Terms.BadOccurs);
         node.checkURI(OSLC.propertyDefinition, Occurrence.ExactlyOne,
@@ -187,6 +187,25 @@ public class ShapeCheck
 
 
     /**
+     * Change the sc:checks reference to use the name of this property,
+     * if this property is defined by a blank node. Otherwise we leave
+     * the check reference to be the URI of the non-blank property.
+     *
+     * @param propDefNode the property definition node
+     * @param propResult the sc:InnerResult node for this property
+     * @param literal the name for this property
+     */
+    private static void setChecksName(RDFNode propDefNode, Resource propResult, String literal)
+	{
+    	if (propDefNode.isAnon())
+    	{
+    		propResult.removeAll(Terms.checks);
+            propResult.addProperty(Terms.checks, literal);
+    	}
+	}
+
+
+	/**
      * Add a dcterms:reference to the given check result;
      * this is used to record references to types and properties so
      * their occurrences in vocabularies can be cross-checked, and

@@ -2,7 +2,8 @@ package net.open_services.scapt;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashSet;
+import java.util.TreeSet;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,12 +45,13 @@ import net.open_services.scheck.annotations.SCXCheck;
 public class SCResultProcessor extends AbstractProcessor
 {
     public SCVocabModel     vocabulary = null;
-    public Set<SCTermModel> classes    = new HashSet<>();
-    public Set<SCTermModel> properties = new HashSet<>();
-    public Set<SCTermModel> resources  = new HashSet<>();
-    public Set<SCTermModel> issues     = new HashSet<>();
-    public Set<SCTermModel> xchecks    = new HashSet<>();
-    public Set<SCTermModel> severities = new HashSet<>();
+    Comparator<SCTermModel> comparator = Comparator.comparing(SCTermModel::getName);
+    public Set<SCTermModel> classes    = new TreeSet<>(comparator);
+    public Set<SCTermModel> properties = new TreeSet<>(comparator);
+    public Set<SCTermModel> resources  = new TreeSet<>(comparator);
+    public Set<SCTermModel> issues     = new TreeSet<>(comparator);
+    public Set<SCTermModel> xchecks    = new TreeSet<>(comparator);
+    public Set<SCTermModel> severities = new TreeSet<>(comparator);
 	public boolean 			classesOrIssues;
 
 

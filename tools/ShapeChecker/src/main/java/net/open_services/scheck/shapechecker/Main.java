@@ -124,7 +124,7 @@ public class Main
         }
 
         // Check that terms and defined and used
-        if (!vocabularies.isEmpty() && (verbose || crossCheck))
+        if ((verbose || crossCheck) && !vocabularies.isEmpty())
         {
             crossChecker = new CrossCheck(resultModel);
             crossChecker.buildMaps();
