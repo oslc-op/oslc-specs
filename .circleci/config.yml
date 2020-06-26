@@ -1,6 +1,6 @@
-version: 2.0
+version: 2.1
 jobs:
-  build:
+  shapecheck:
     working_directory: ~/oslc-specs
     docker:
       - image: circleci/openjdk:8-jdk-browsers
@@ -10,14 +10,40 @@ jobs:
           name: ShapeChecker Gradle build
           command: cd tools/ShapeChecker && ./gradlew --console=plain installDist
       - run:
-          name: Check OSLC CM shapes & vocabs
-          command: cd tools/ShapeChecker && ./check-cm.sh
-      - run:
           name: Check OSLC Core shapes & vocabs
           command: cd tools/ShapeChecker && ./check-core.sh
       - run:
           name: Check OSLC RM spec shapes & vocabs
           command: cd tools/ShapeChecker && ./check-rm.sh
       - run:
+          name: Check OSLC QM spec shapes & vocabs
+          command: cd tools/ShapeChecker && ./check-qm.sh
+      - run:
+          name: Check OSLC CM shapes & vocabs
+          command: cd tools/ShapeChecker && ./check-cm.sh
+      - run:
           name: Check OSLC AM spec shapes & vocabs
           command: cd tools/ShapeChecker && ./check-am.sh
+  prettier:
+    working_directory: ~/oslc-specs
+    docker:
+      - image: node:lts
+    steps:
+      - checkout
+      - run:
+          name: Install prettier
+          command: npm install --global prettier
+      - run:
+          name: Check QM spec formatting
+          command: prettier --check specs/qm/
+      - run:
+          name: Check RM spec formatting
+          command: prettier --check specs/rm/
+        # - run:
+      #     name: Check all spec formatting
+      #     command: prettier --check specs/
+workflows:
+  spec-check:
+    jobs:
+      - shapecheck
+      - prettier

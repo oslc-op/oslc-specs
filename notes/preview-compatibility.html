@@ -1,113 +1,119 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8" />
-<script src='https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
-<script class='remove'>
-  var respecConfig = {
-      specStatus:           "PND",
-      edDraftURI:           "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/preview-compatibility.html",
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js" async class="remove"></script>
+    <script class="remove">
+      var respecConfig = {
+        specStatus: "PND",
+        edDraftURI:
+          "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/preview-compatibility.html",
 
-      // editors, add as many as you like
-      // only "name" is required
-      editors:  [
+        // editors, add as many as you like
+        // only "name" is required
+        editors: [
           {
-              name:       "Samuel Padgett"
-          ,   mailto:     "spadgett@us.ibm.com"
-          ,   company:    "IBM"
-          ,   companyURL: "http://ibm.com/"
+            name: "Samuel Padgett",
+            mailto: "spadgett@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://ibm.com/",
           },
           {
-              name:       "Steve Speicher"
-          ,   url:        "http://stevespeicher.me/"
-          ,   mailto:     "sspeiche@us.ibm.com"
-          ,   company:    "IBM"
-          ,   companyURL: "http://ibm.com/"
-          }
-      ],
-
-      // previousURI: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
-      // prevED: "http://open-services.net/wiki/core/User-Interface-Previews-3.0/",
-
-      localBiblio:  {
-          "OSLCUIPreview20": {
-              title:    "OSLC Core 2.0 - UI Preview",
-              href:     "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
-              authors:  [
-                  "S. Bosworth"
-                        ],
-                        status:   "Finalized",
-                        publisher:  "http://open-services.net"
+            name: "Steve Speicher",
+            url: "http://stevespeicher.me/",
+            mailto: "sspeiche@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://ibm.com/",
           },
-          "OSLCPreview30": {
-              title:    "OSLC Resource Preview Specification 3.0",
-              href:     "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-preview.html",
-              authors: [
-                  "S. Padgett", "S. Speicher"
-              ],
-              status:   "Working Draft",
-              publisher: "https://www.oasis-open.org/"
-          }
-      },
+        ],
 
-      otherLinks: [{
-              key: "Supporting Documents",
-              data: [{
-                      value:  "Implementation Guidance",
-                      href: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/preview-guidance.html"
-              }]
-      }]
-  };
-</script>
-<title>OSLC Resource Preview: Changes and Backwards Compatibility</title>
-</head>
+        // previousURI: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+        // prevED: "http://open-services.net/wiki/core/User-Interface-Previews-3.0/",
 
-<body>
+        localBiblio: {
+          OSLCUIPreview20: {
+            title: "OSLC Core 2.0 - UI Preview",
+            href: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+            authors: ["S. Bosworth"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCPreview30: {
+            title: "OSLC Resource Preview Specification 3.0",
+            href: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/specs/resource-preview.html",
+            authors: ["S. Padgett", "S. Speicher"],
+            status: "Working Draft",
+            publisher: "https://www.oasis-open.org/",
+          },
+        },
 
-<section id="abstract">
-    <p>This document discusses the changes in OSLC Resource Preview for OSLC
-        3.0 and backwards compatibility with previous versions.</p>
-</section>
+        otherLinks: [
+          {
+            key: "Supporting Documents",
+            data: [
+              {
+                value: "Implementation Guidance",
+                href:
+                  "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/preview-guidance.html",
+              },
+            ],
+          },
+        ],
+      };
+    </script>
+    <title>OSLC Resource Preview: Changes and Backwards Compatibility</title>
+  </head>
 
-<section id="sotd"></section>
+  <body>
+    <section id="abstract">
+      <p>
+        This document discusses the changes in OSLC Resource Preview for OSLC 3.0 and backwards compatibility with
+        previous versions.
+      </p>
+    </section>
 
-<section id="differences">
-<h2>Changes in Resource Preview for OSLC 3.0</h2>
-<p>There are key differences between resource preview in OSLC 2.0
-    [[OSLCUIPreview20]] and OSLC 3.0 [[OSLCPreview30]]. How Consumers request
-    previews and their media types have changed. OSLC 3.0 changes some aspects
-    of preview sizing as well.</p>
+    <section id="sotd"></section>
 
-<section id="discovery">
-<h2>Discovery and Resource Representation</h2>
-<p>The <code>application/x-oslc-compact+xml</code> media type is no longer
-    used. Previews are instead discovered using HTTP <code>Link</code> headers
-    or by making GET requests for the target resource with an HTTP
-    <code>Prefer</code> header. Additionally, the response is no longer XML.
-    Instead Compact resources have JSON or Turtle [[turtle]]
-    representations.</p>
+    <section id="differences">
+      <h2>Changes in Resource Preview for OSLC 3.0</h2>
+      <p>
+        There are key differences between resource preview in OSLC 2.0 [[OSLCUIPreview20]] and OSLC 3.0
+        [[OSLCPreview30]]. How Consumers request previews and their media types have changed. OSLC 3.0 changes some
+        aspects of preview sizing as well.
+      </p>
 
-<p>Below are OSLC 2.0 and OSLC 3.0 examples for comparison.</p>
+      <section id="discovery">
+        <h2>Discovery and Resource Representation</h2>
+        <p>
+          The <code>application/x-oslc-compact+xml</code> media type is no longer used. Previews are instead discovered
+          using HTTP <code>Link</code> headers or by making GET requests for the target resource with an HTTP
+          <code>Prefer</code> header. Additionally, the response is no longer XML. Instead Compact resources have JSON
+          or Turtle [[turtle]] representations.
+        </p>
 
-<section>
-<h2>Discovery in OSLC 2.0</h2>
+        <p>Below are OSLC 2.0 and OSLC 3.0 examples for comparison.</p>
 
-<p>OSLC 2.0 defined a special media type for its XML Compact representation.
-    Even though it appears to be RDF/XML, only a specific XML format is
-    allowed.</p>
+        <section>
+          <h2>Discovery in OSLC 2.0</h2>
 
-<p><strong>Request:</strong></p>
+          <p>
+            OSLC 2.0 defined a special media type for its XML Compact representation. Even though it appears to be
+            RDF/XML, only a specific XML format is allowed.
+          </p>
 
-<pre class="example">
+          <p><strong>Request:</strong></p>
+
+          <pre class="example">
 GET /bugs/12345 HTTP/1.1
 Host: example.com
 Accept: application/x-oslc-compact+xml
 OSLC-Core-Version: 2.0
-</pre>
+</pre
+          >
 
-<p><strong>Response:</strong></p>
+          <p><strong>Response:</strong></p>
 
-<pre class="example">
+          <pre class="example">
 HTTP/1.1 200 OK
 Content-Length: 527
 Content-Type: application/x-oslc-compact+xml
@@ -125,29 +131,32 @@ Vary: Accept
 &lt;/oslc:smallPreview&gt;
 &lt;/oslc:Compact&gt;
 &lt;/rdf:RDF&gt;
-</pre>
-</section>
+</pre
+          >
+        </section>
 
-<section>
-<h2>Discovery in OSLC 3.0</h2>
+        <section>
+          <h2>Discovery in OSLC 3.0</h2>
 
-<p>OSLC 3.0 treats Compact as a distinct resource, rather than a
-    representation. You can request it in one HTTP request using a
-    <code>Prefer</code> header. The response can be JSON or an RDF format like
-    Turtle, depending on the <code>Accept</code> header.</p>
+          <p>
+            OSLC 3.0 treats Compact as a distinct resource, rather than a representation. You can request it in one HTTP
+            request using a <code>Prefer</code> header. The response can be JSON or an RDF format like Turtle, depending
+            on the <code>Accept</code> header.
+          </p>
 
-<p><strong>Request:</strong></p>
+          <p><strong>Request:</strong></p>
 
-<pre class="example" id="preferExample">
+          <pre class="example" id="preferExample">
 GET /bugs/324 HTTP/1.1
 Host: example.com
 Accept: application/json
 Prefer: return=representation; include="http://open-services.net/ns/core#PreferCompact"
-</pre>
+</pre
+          >
 
-<p><strong>Response:</strong></p>
+          <p><strong>Response:</strong></p>
 
-<pre class="example" id="preferenceAppliedExample">
+          <pre class="example" id="preferenceAppliedExample">
 HTTP/1.1 200 OK
 Content-Length: 315
 Content-Type: application/json; charset=UTF-8
@@ -166,41 +175,47 @@ Vary: Accept,Accept-Language,Prefer
         }
     }
 }
-</pre>
+</pre
+          >
 
-<p>Another way to discover the Compact resource is by looking for a
-    <code>Link</code> header, which is required in OSLC 3.0.</p>
+          <p>
+            Another way to discover the Compact resource is by looking for a <code>Link</code> header, which is required
+            in OSLC 3.0.
+          </p>
 
-<strong>Request:</strong>
+          <strong>Request:</strong>
 
-<pre class="example" id="linkHeaderRequest">
+          <pre class="example" id="linkHeaderRequest">
 HEAD /bugs/324/screenshot HTTP/1.1
 Host: example.com
-</pre>
+</pre
+          >
 
-<strong>Response:</strong>
+          <strong>Response:</strong>
 
-<pre class="example" id="linkHeaderResponse">
+          <pre class="example" id="linkHeaderResponse">
 HTTP/1.1 200 OK
 Content-Length: 45789
 Content-Type: image/png
 ETag: "678609cdee68e0fb8aea5f252b84a511"
 Link: &lt;http://example.com/bugs/324/screenshot?compact&gt;; rel="http://open-services.net/ns/core#Compact"
-</pre>
+</pre
+          >
 
-<p>The consumer then requests the Compact resource directly using its URI.</p>
+          <p>The consumer then requests the Compact resource directly using its URI.</p>
 
-<strong>Request:</strong>
+          <strong>Request:</strong>
 
-<pre class="example" id="linkHeaderRequest">
+          <pre class="example" id="linkHeaderRequest">
 GET /bugs/324/screenshot?compact HTTP/1.1
 Host: example.com
 Accept: application/json
-</pre>
+</pre
+          >
 
-<strong>Response:</strong>
+          <strong>Response:</strong>
 
-<pre class="example" id="linkHeaderResponse">
+          <pre class="example" id="linkHeaderResponse">
 HTTP/1.1 200 OK
 Content-Length: 192
 Content-Type: application/json; charset=UTF-8
@@ -214,48 +229,47 @@ Vary: Accept,Accept-Language
         "document": "http://example.com/bugs/324/screenshot?preview=small"
     }
 }
-</pre>
+</pre
+          >
+        </section>
+      </section>
 
-</section>
-</section>
+      <section id="sizing">
+        <h2>Preview Sizing</h2>
 
-<section id="sizing">
-<h2>Preview Sizing</h2>
+        <ol>
+          <li>
+            Resize messages for previews now use <code>oslc-resize</code> messages, the same as dialogs, and can set
+            both a height and a width. OSLC 2.0 used <code>oslc-preview-height</code>, which was inconsistent with
+            dialogs and only allowed changing heights. Note that the width and height in an
+            <code>oslc:resize</code> message must use [[CSS2]] length units, unlike <code>oslc-preview-height</code>,
+            which was always pixels.
+          </li>
+          <li>
+            <code>oslc:initialHeight</code> and <code>oslc:initialWidth</code> are no longer properties on the
+            <code>oslc:Compact</code> resource. Instead use <code>oslc:hintHeight</code> and
+            <code>oslc:hintWidth</code>. Resize messages can be sent regardless of whether size hints were provided.
+          </li>
+          <li>
+            Any [[CSS2]] length unit can be used for <code>oslc:hintHeight</code> and <code>oslc:hintWidth</code>, not
+            just relative length units. <code>px</code> is fair game.
+          </li>
+        </ol>
+      </section>
+    </section>
 
-    <ol>
-        <li>Resize messages for previews now use <code>oslc-resize</code>
-            messages, the same as dialogs, and can set both a height and a
-            width. OSLC 2.0 used <code>oslc-preview-height</code>, which was
-            inconsistent with dialogs and only allowed changing heights. Note
-            that the width and height in an <code>oslc:resize</code> message
-            must use [[CSS2]] length units, unlike
-            <code>oslc-preview-height</code>, which was always pixels.</li>
-        <li><code>oslc:initialHeight</code> and <code>oslc:initialWidth</code>
-            are no longer properties on the <code>oslc:Compact</code> resource.
-            Instead use <code>oslc:hintHeight</code> and
-            <code>oslc:hintWidth</code>. Resize messages can be sent regardless
-            of whether size hints were provided.</li>
-        <li>Any [[CSS2]] length unit can be used for
-            <code>oslc:hintHeight</code> and <code>oslc:hintWidth</code>, not
-            just relative length units. <code>px</code> is fair game.</li>
-    </ol>
-</section>
-</section>
+    <section id="backwards-compatibility">
+      <h2>Backwards Compatibility</h2>
 
-<section id="backwards-compatibility">
-<h2>Backwards Compatibility</h2>
+      <p>Despite these changes, both providers and consumers can maintain n-1 compatibility with OSLC 2.0.</p>
 
-<p>Despite these changes, both providers and consumers can maintain n-1
-    compatibility with OSLC 2.0.</p>
+      <section id="provider-compatibility">
+        <h2>Backwards Compatibility for Preview Providers</h2>
+      </section>
 
-<section id="provider-compatibility">
-<h2>Backwards Compatibility for Preview Providers</h2>
-</section>
-
-<section id="provider-compatibility">
-<h2>Backwards Compatibility for Preview Consumers</h2>
-</section>
-</section>
-
-</body>
+      <section id="provider-compatibility">
+        <h2>Backwards Compatibility for Preview Consumers</h2>
+      </section>
+    </section>
+  </body>
 </html>
