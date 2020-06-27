@@ -17,6 +17,9 @@ application {
     mainClassName = "net.open_services.scheck.shapechecker.Main"
 }
 
+sourceSets.main {
+	java.srcDirs("src/main/java", "src/main/generated")
+}
 
 dependencies {
     implementation("org.apache.jena:jena-core:3.+")
