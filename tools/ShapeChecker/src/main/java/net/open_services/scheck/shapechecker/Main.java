@@ -50,8 +50,9 @@ public class Main
 
     private void run(String... args)
     {
-        ResultModel resultModel = new ResultModel(args);
-        HttpHandler httpHandler = new HttpHandler();
+        ResultModel resultModel   = new ResultModel(args);
+        HttpHandler httpHandler   = new HttpHandler();
+        boolean		failedToParse = false;
 
         if (!checkUsage(args,resultModel,httpHandler))
         {
@@ -93,11 +94,13 @@ public class Main
             catch (RiotNotFoundException e)
             {
                 System.err.println("Cannot find vocabulary document "+vocab);
+                failedToParse = true;
             }
             catch (RiotException e)
             {
                 System.err.println("Cannot parse vocabulary document "+vocab);
                 e.printStackTrace();
+                failedToParse = true;
             }
         }
 
@@ -115,11 +118,13 @@ public class Main
             catch (RiotNotFoundException e)
             {
                 System.err.println("Cannot find shape document "+shape);
+                failedToParse = true;
             }
             catch (RiotException e)
             {
                 System.err.println("Cannot parse shape document "+shape);
                 e.printStackTrace();
+                failedToParse = true;
             }
         }
 
@@ -163,7 +168,7 @@ public class Main
             crossChecker.printVocabTerms();
         }
 
-        if (errors > 0)
+        if (failedToParse || errors > 0)
         {
             System.exit(1);
         }
