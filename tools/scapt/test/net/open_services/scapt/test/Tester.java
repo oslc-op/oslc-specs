@@ -18,19 +18,19 @@ import net.open_services.scheck.annotations.IssueSeverity;
 
 
 /**
- * Simple test for use of Velocity in this annotation processor
+ * Simple test for use of Mustache in this annotation processor.
  */
 @SuppressWarnings("javadoc")
 public class Tester
 {
-	public SCVocabModel		vocabulary		= null;
-	public boolean			classesOrIssues	= false;
-	public Set<SCTermModel>	classes			= new HashSet<>();
-	public Set<SCTermModel>	properties		= new HashSet<>();
-	public Set<SCTermModel>	resources		= new HashSet<>();
-	public Set<SCTermModel>	issues			= new HashSet<>();
-	public Set<SCTermModel> xchecks    		= new HashSet<>();
-	public Set<SCTermModel> severities 		= new HashSet<>();
+    public SCVocabModel     vocabulary      = null;
+    public boolean          classesOrIssues = false;
+    public Set<SCTermModel> classes         = new HashSet<>();
+    public Set<SCTermModel> properties      = new HashSet<>();
+    public Set<SCTermModel> resources       = new HashSet<>();
+    public Set<SCTermModel> issues          = new HashSet<>();
+    public Set<SCTermModel> xchecks         = new HashSet<>();
+    public Set<SCTermModel> severities      = new HashSet<>();
 
 
     /**
@@ -75,25 +75,25 @@ public class Tester
     {
         DefaultMustacheFactory mf = new DefaultMustacheFactory();
         mf.setObjectHandler(new ReflectionObjectHandler() {
-        	  @Override
-        	  protected boolean areMethodsAccessible(Map<?, ?> map)
-        	  {
-        	    return true;
-        	  }
-        	});
+            @Override
+            protected boolean areMethodsAccessible(Map<?, ?> map)
+            {
+                return true;
+            }
+            });
         Mustache mustache = mf.compile("templates/genVocab.mustache");
 
         classesOrIssues = !(classes.isEmpty() || issues.isEmpty());
 
         System.out.println("Generating output from template " + "templates/genVocab.mustache");
         try (Writer writer = new OutputStreamWriter(System.out,StandardCharsets.UTF_8))
-		{
-			mustache.execute(writer, this).flush();
-		}
-		catch (IOException e)
-		{
-			System.err.println("Failed to generate output");
-			e.printStackTrace();
-		}
+        {
+            mustache.execute(writer, this).flush();
+        }
+        catch (IOException e)
+        {
+            System.err.println("Failed to generate output");
+            e.printStackTrace();
+        }
     }
 }

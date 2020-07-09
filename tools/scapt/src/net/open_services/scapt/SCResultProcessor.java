@@ -44,24 +44,17 @@ import net.open_services.scheck.annotations.SCXCheck;
 @SuppressWarnings("javadoc")
 public class SCResultProcessor extends AbstractProcessor
 {
+    private static final Comparator<SCTermModel> COMPARATOR = Comparator.comparing(SCTermModel::getName);
+
     public SCVocabModel     vocabulary = null;
-    Comparator<SCTermModel> comparator = Comparator.comparing(SCTermModel::getName);
-    public Set<SCTermModel> classes    = new TreeSet<>(comparator);
-    public Set<SCTermModel> properties = new TreeSet<>(comparator);
-    public Set<SCTermModel> resources  = new TreeSet<>(comparator);
-    public Set<SCTermModel> issues     = new TreeSet<>(comparator);
-    public Set<SCTermModel> xchecks    = new TreeSet<>(comparator);
-    public Set<SCTermModel> severities = new TreeSet<>(comparator);
-	public boolean 			classesOrIssues;
+    public Set<SCTermModel> classes    = new TreeSet<>(COMPARATOR);
+    public Set<SCTermModel> properties = new TreeSet<>(COMPARATOR);
+    public Set<SCTermModel> resources  = new TreeSet<>(COMPARATOR);
+    public Set<SCTermModel> issues     = new TreeSet<>(COMPARATOR);
+    public Set<SCTermModel> xchecks    = new TreeSet<>(COMPARATOR);
+    public Set<SCTermModel> severities = new TreeSet<>(COMPARATOR);
+    public boolean          classesOrIssues;
 
-
-    /**
-     * Create new processor
-     */
-    public SCResultProcessor()
-    {
-        super();
-    }
 
 
     @Override
@@ -97,7 +90,7 @@ public class SCResultProcessor extends AbstractProcessor
 
 
     /**
-     * Process the severities enumeration
+     * Process the severities enumeration.
      */
     private void processSeverities()
     {
@@ -125,7 +118,7 @@ public class SCResultProcessor extends AbstractProcessor
         }
         SCVocab annotation = element.getAnnotation(SCVocab.class);
         vocabulary = new SCVocabModel(annotation.uri(),annotation.prefix(),
-        	annotation.domain(),annotation.description(),annotation.additionalStatements());
+            annotation.domain(),annotation.description(),annotation.additionalStatements());
     }
 
 
@@ -215,12 +208,12 @@ public class SCResultProcessor extends AbstractProcessor
         {
             DefaultMustacheFactory mf = new DefaultMustacheFactory();
             mf.setObjectHandler(new ReflectionObjectHandler() {
-            	  @Override
-            	  protected boolean areMethodsAccessible(Map<?,?> map)
-            	  {
-            	    return true;
-            	  }
-            	});
+                @Override
+                protected boolean areMethodsAccessible(Map<?,?> map)
+                {
+                    return true;
+                }
+                });
             Mustache mustache = mf.compile("templates/genVocab.mustache");
 
             classesOrIssues = !(classes.isEmpty() || issues.isEmpty());
@@ -234,7 +227,7 @@ public class SCResultProcessor extends AbstractProcessor
 
             try (Writer writer = vocabFile.openWriter())
             {
-    			mustache.execute(writer, this).flush();
+                mustache.execute(writer, this).flush();
             }
         }
         catch (IOException ioe)
@@ -249,16 +242,16 @@ public class SCResultProcessor extends AbstractProcessor
      * @param s the string to be escaped
      * @return the escaped string
      */
-	public static String enquote(String s)
-	{
-		return s == null ? null :
-			s.replace("\\", "\\\\")
-	         .replace("\t", "\\t")
-	         .replace("\b", "\\b")
-	         .replace("\n", "\\n")
-	         .replace("\r", "\\r")
-	         .replace("\f", "\\f")
-	         .replace("\"", "\\\"");
-	}
+    public static String enquote(String s)
+    {
+        return s == null ? null :
+           s.replace("\\", "\\\\")
+            .replace("\t", "\\t")
+            .replace("\b", "\\b")
+            .replace("\n", "\\n")
+            .replace("\r", "\\r")
+            .replace("\f", "\\f")
+            .replace("\"", "\\\"");
+    }
 
 }
