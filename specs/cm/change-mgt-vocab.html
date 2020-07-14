@@ -4,10 +4,10 @@
   <meta charset='utf-8'/>
   <title>OSLC Change Management Version 3.0. Part 2: Vocabulary</title>
 
-  <meta name="description" content="This specification defines a vocabulary
-  and resource shapes for the Change Management domain.">
+  <meta name="description" content="This specification defines the vocabulary terms
+  for the Change Management domain.">
 
-  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.14/builds/respec-oasis-common.min.js' async class='remove'></script>
+  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.15/builds/respec-oasis-common.min.js' async class='remove'></script>
   <!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
 
   <script class='remove'>
@@ -41,6 +41,9 @@
       additionalArtifacts: [
         { title: "OSLC Change Management Version 3.0. Part 1: Specification", href: thisBase + "/change-mgt-spec.html" },
         { title: "OSLC Change Management Version 3.0. Part 2: Vocabulary (this document)", href: thisBase + "/change-mgt-vocab.html" },
+        { title: "OSLC Change Management Version 3.0. Part 3: Constraints", href: thisBase + "/change-mgt-shapes.html" },
+        { title: "OSLC Change Management Version 3.0. Part 4: Machine Readable Vocabulary Terms", href: thisBase + "/change-mgt-vocab.ttl" },
+        { title: "OSLC Change Management Version 3.0. Part 5: Machine Readable Constraints", href: thisBase + "/change-mgt-shapes.ttl" }
       ],
 
       relatedWork: [
@@ -133,7 +136,7 @@
 </head>
 <body>
 <section id="abstract">
-<p>This specification defines a vocabulary and resource shapes for the Change
+<p>This specification defines a vocabulary terms for the Change
     Management domain.</p>
 </section>
 
@@ -143,7 +146,7 @@
 <section id="introduction" class="informative">
 <h2>Introduction</h2>
 
-<p>This specification defines a vocabulary and resource shapes for common
+<p>This specification defines a vocabulary terms for common
     Change Management resources. The intent is to define resources needed to
     support common integration scenarios and not to provide a comprehensive
     definition of a Change Request. The resource formats may not match exactly
@@ -152,6 +155,8 @@
     scenarios is to delegate operations, as driven by service provider
     contributed user interfaces, as much as possible and not require a service
     provider to expose its complete data model and application logic.</p>
+
+    <p>See <a href='change-mgt-shapes.html'>OSLC Change Management Version 3.0. Part 5: Machine Readable Constraints</a> for the standard OSLC constraints defined on this vocabulary.</p>
 
 <figure>
   <img src="OSLCV3_CM.png" />
@@ -201,102 +206,6 @@
 </section>
 
 
-
-
-<section id="resourceDefinitions">
-<h2>Change Management Resource Constraints</h2>
-
-<p>Property value types that are not defined in the following sections, are
-    defined in <a
-            href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Defining_OSLC_Properties">OSLC
-        Core - Defining OSLC Properties</a></p>
-
-<p>Naming convention for relationship properties follows this pattern:</p>
-
-<ul>
-<li><strong>related</strong> - Identifies a loose relationship between a Change Request and referenced resource. These relationships can be used to name associated resources managed by other service providers.</li>
-<li><strong>tracks</strong> - Identifies that a Change Request is used to track the lifecycle of referenced resource. From the CM tool perspective, these relationships can be used to track work that needs to be done for referenced resources.</li>
-<li><strong>affects</strong> - Indicates that the Change Request affects, or has been predetermined to have impact on, the related resource. These property relationships can be used to understand the potential impact of referenced resources.</li>
-</ul>
-
-<section id="changerequest">
-<h3 id="resourcechangerequestresource_changerequest">Resource: ChangeRequest</h3>
-
-<p>The Change Request resource properties are not limited to the ones defined
-    in this specification, service providers may provide additional properties.
-    It is recommended that any additional properties exist in their own unique
-    namespace and not use the namespaces defined in these specifications.</p>
-
-<div title='Shape for oslc_cm:ChangeRequest'
-        data-include='./change-mgt-shapes.ttl#ChangeRequestShape'
-        data-oninclude='shapeToSpec'
-        data-include-sync='true'
-        data-include-replace='true'
-        data-include-format='html'></div>
-
-</section>
-
-<section id="changeNotice">
-<h3>Resource: ChangeNotice</h3>
-<div title='Shape for oslc_cm:ChangeNotice'
-        data-include='./change-mgt-shapes.ttl#ChangeNoticeShape'
-        data-oninclude='shapeToSpec'
-        data-include-sync='true'
-        data-include-replace='true'
-        data-include-format='html'></div>
-
-</section>
-
-<section id="defect">
-<h3>Resource: Defect</h3>
-
-<p>A software or product defect. Used by Quality Management tools to report
-    defects in testing.</p>
-
-<div title='Shape for oslc_cm:Defect'
-        data-include='./change-mgt-shapes.ttl#DefectShape'
-        data-oninclude='shapeToSpec'
-        data-include-sync='true'
-        data-include-replace='true'
-        data-include-format='html'></div>
-
-</section>
-
-<section id="enhancement">
-<h3>Resource: Enhancement</h3>
-
-<div title='Shape for oslc_cm:Enhancement'
-        data-include='change-mgt-shapes.ttl#EnhancementShape'
-        data-oninclude='shapeToSpec'
-        data-include-sync='true'
-        data-include-replace='true'
-        data-include-format='html'></div>
-
-</section>
-
-<section id="reviewtask">
-<h3>Resource: ReviewTask</h3>
-
-<div title='Shape for oslc_cm:ReviewTask'
-        data-include='change-mgt-shapes.ttl#ReviewTaskShape'
-        data-oninclude='shapeToSpec'
-        data-include-sync='true'
-        data-include-replace='true'
-        data-include-format='html'></div>
-
-</section>
-
-<section id="task">
-<h3 id="resourcetask">Resource: Task</h3>
-
-<div title='Shape for oslc_cm:Task'
-        data-include='change-mgt-shapes.ttl#TaskShape'
-        data-oninclude='shapeToSpec'
-        data-include-sync='true'
-        data-include-replace='true'
-        data-include-format='html'></div>
-
-</section>
 
 <section id="standardEnumerands">
 <h3>Standard Enumeration Values</h3>
@@ -461,5 +370,12 @@
 
 </section>
 
+<section id='conformance'>
+<h2>Conformance</h2>
+<p>Change Management servers MUST use the vocabulary terms defined here where required,
+and with the meanings defined here.</p>
+<p>Change Management servers MAY augment this vocabulary with additional classes, properties,
+and individuals.</p>
+</section>
 </body>
 </html>
