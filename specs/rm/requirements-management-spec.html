@@ -1,414 +1,588 @@
 <!DOCTYPE html>
 <html>
-<!-- replace Architecture Management with your domain name, e.g., Change Management -->
-<!-- replace am with your domains's short name, e.g., cm -->
-<head>
-<meta charset='utf-8' />
-<meta name="description" content="This specification defines the OSLC Requirements Management domain, a RESTful web services interface for the management of Requirements, Requirements Collections and supporting resources defined in the OSLC Core specification.">
+  <!-- replace Architecture Management with your domain name, e.g., Change Management -->
+  <!-- replace am with your domains's short name, e.g., cm -->
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="This specification defines the OSLC Requirements Management domain, a RESTful web services interface for the management of Requirements, Requirements Collections and supporting resources defined in the OSLC Core specification."
+    />
 
-<title>OSLC Requirements Management Version 2.1. Part 1: Specification</title>
-<script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.14/builds/respec-oasis-common.min.js' async class='remove'></script>
-<!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
-<script class='remove'>
-  var wdBase = "https://oslc-op.github.io/oslc-specs/specs/rm/";
-  var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/rm/v2.1/"
-  // var thisBase = wdBase;
-  var thisBase = oasisBase + "psd02/";
-  var respecConfig = {
-      // === Revision-specific ===
+    <title>OSLC Requirements Management Version 2.1. Part 1: Specification</title>
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.15/builds/respec-oasis-common.min.js"
+      async
+      class="remove"
+    ></script>
+    <script class="remove">
+      var status = "WD"; //Change to "PS" once it is time to publish the PS
+      var revision = 1;
 
-      // the specification's short name with version but no dots
-      shortName: "requirements-management-spec",
-      specStatus: "PSD",
-      revision: "02",
-      publishDate:  "2019-10-01",
-      previousPublishDate: "2018-05-31",
-      previousMaturity: "CS",
-
-      prevVersion: "http://docs.oasis-open.org/oslc-domains/oslc-rm/v2.1/cs01/part1-requirements-management-spec/oslc-rm-v2.1-cs01-part1-requirements-management-spec.html",
-      // latestVersion: oasisBase + "requirements-management-spec.html",
-      latestVersion: oasisBase + "requirements-management-spec.html",
-
-      thisVersion: thisBase + "requirements-management-spec.html",
-      latestSpecVersion: "https://open-services.net/spec/rm/latest",
-      edDraftURI: "https://open-services.net/spec/rm/latest-draft",
-
-      additionalArtifacts: [
-        { title: "OSLC Requirements Management Version 2.1. Part 1: Specification (this document)", href: "requirements-management-spec.html" },
-        { title: "OSLC Requirements Management Version 2.1. Part 2: Vocabulary", href: "requirements-management-vocab.html" },
-      ],
-
-      relatedWork: [
-        { title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0", href: "http://open-services.net/bin/view/Main/RmSpecificationV2" }
-      ],
-
-      localBiblio: {
-        "OSLCCore2": {
-          title: "OSLC Core 2.0",
-          href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
-          authors: ["S. Speicher", "D. Johnson"],
-          status: "Finalized",
-          publisher: "http://open-services.net",
-        },
-        "OSLCCore3": {
-          title: "OSLC Core 3.0",
-          href: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
-          authors: ["Jim Amsden", "S. Speicher"],
-          status: "Project Specification",
-          publisher: "OASIS",
-        },
-        "OSLCQuery3": {
-          title: "OSLC Query Capability Version 3.0",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-query/v3.0/oslc-query.html ",
-          authors: ["David Honey"],
-          status: "Public Review Draft",
-          publisher: "OASIS",
-        },
-        "OSLCShapes": {
-          title: "OSLC Resource Shape 3.0",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part6-resource-shape/oslc-core-v3.0-csprd03-part6-resource-shape.html",
-          authors: ["Arthur Ryman", "Jim Amsden"],
-          status: "Project Specification",
-          publisher: "OASIS",
-        },
-        "OSLCResourcePreview": {
-          title: "OSLC Core 3.0 Resource Preview",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html",
-          authors: ["Jim Amsden", "S. Speicher"],
-          status: "Project Specification",
-          publisher: "OASIS",
-        },
-        "OSLCRM20": {
-          title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
-          href: "http://open-services.net/bin/view/Main/RmSpecificationV2",
-          authors: ["Ian Green"],
-          status: "Finalized",
-          publisher: "http://open-services.net"
-        },
-        "OpenIDConnect": {
-          title: "OpenID Connect",
-          href: "http://openid.net/connect/",
-          publisher: "openid.net",
-        },
-        "LDPPatch": {
-          title: "Linked Data Patch Format",
-          href: "http://www.w3.org/TR/ldpatch/",
-          status: "Working Group Note",
-          publisher: "http://www.w3.org/",
-        },
-        "OSLCCoreVocab": {
-          title: "OSLC Core 3.0 Vocabulary",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part7-core-vocabulary/oslc-core-v3.0-csprd03-part7-core-vocabulary.html",
-          authors: ["Jim Amsden", "S. Speicher"],
-          status: "Project Specification",
-          publisher: "OASIS",
-        }
-      },
-
-
-      // === Spec related ===
-      license: "cc-by-4",
-      additionalLicenses: [{
-        licenseName: "Apache License 2.0",
-        licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
-      }],
-      citationLabel: "OSLC-RM-2.1-Part1",
-      maxTocLevel: 2,
-      namespaces: [
-        { href: "http://open-services.net/ns/rm#", prefix: "oslc_rm" }
-      ],
-      editors: [{
-        name: "Mark Schulte",
-        mailto: "mark.d.schulte@boeing.com",
-        company: "The Boeing Company",
-        companyURL: "http://www.boeing.com"
-      },
-      {
-        name: "Jad El-khoury",
-        mailto: "jad@kth.se",
-        company: "KTH The Royal Institute of Technology",
-        companyURL: "https://www.kth.se/"
+      var wdBase = "https://oslc-op.github.io/oslc-specs/specs/rm/";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/rm/v2.1/";
+      var thisBase = wdBase;
+      if ("WD" !== status) {
+        var thisBase = oasisBase + status.toLowerCase() + revision.toString().padStart(2, "0") + "/";
       }
-      ],
 
+      var respecConfig = {
+        // === Revision-specific ===
 
-      // === OSLC OP related ===
-      wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
-      wgShortName: "oslc-op",
-      chairs: [{
-        name: "Jim Amsden",
-        mailto: "jamsden@us.ibm.com",
-        company: "IBM",
-        companyURL: "https://www.ibm.com/"
-      }, {
-        name: "Andrii Berezovskyi",
-        mailto: "andriib@kth.se",
-        company: "KTH",
-        companyURL: "https://www.kth.se/"
-      }],
-    };
-</script>
+        // the specification's short name with version but no dots
+        shortName: "requirements-management-spec",
+        specStatus: status,
+        revision: revision.toString().padStart(2, "0"),
+        //publishDate: "2020-xx-xx", //Set date once it is time to publish the PS
+        previousPublishDate: "2019-10-01",
+        previousMaturity: "PSD",
 
-</head>
-<body>
-<section id='abstract'>
-  <p>This specification defines the OSLC Requirements Management domain. The specification supports key RESTful web service interfaces for the management of Requirements, Requirements Collections and supporting resources defined in the OSLC Core specification. To support these scenarios, this specification
-    defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET,
-    POST, PUT and DELETE, HTTP response codes, content type handling and resource
-    formats.</p>
-</section>
+        prevVersion:
+          "https://docs.oasis-open-projects.org/oslc-op/rm/v2.1/psd02/requirements-management-spec.html",
+        // latestVersion: oasisBase + "requirements-management-spec.html",
+        latestVersion: oasisBase + "requirements-management-spec.html",
 
-<section id='toc'></section>
+        thisVersion: thisBase + "requirements-management-spec.html",
+        latestSpecVersion: "https://open-services.net/spec/rm/latest",
+        edDraftURI: "https://open-services.net/spec/rm/latest-draft",
 
-<section id='sotd'></section>
+        additionalArtifacts: [
+          {
+            title: "OSLC Requirements Management Version 2.1. Part 1: Specification (this document)",
+            href: "requirements-management-spec.html",
+          },
+          {
+            title: "OSLC Requirements Management Version 2.1. Part 2: Vocabulary",
+            href: "requirements-management-vocab.html",
+          },
+          {
+            title: "OSLC Requirements Management Version 2.1. Part 3: Machine-readable RDF Vocabulary",
+            href: "Requirements-management-vocab.ttl",
+          },
+          {
+            title: "OSLC Requirements Management Version 2.1. Part 4: Machine-readable Resource Shapes",
+            href: "Requirements-management-shapes.ttl",
+          },
+        ],
 
-<section id='introduction' class='informative'>
-<h2>Introduction</h2>
-<p>This specification defines the OSLC Requirements Management domain, also known as OSLC RM. The specification supports key RESTful web service interfaces for software Requirements Management systems. OSLC takes an open, loosely coupled approach to specific lifecycle integration scenarios. The scenarios and this specification were created by the OASIS OSLC OP TSC.</p>
+        relatedWork: [
+          {
+            title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
+            href: "http://open-services.net/bin/view/Main/RmSpecificationV2",
+          },
+        ],
 
-<p>This specification builds on the Open Services for Lifecycle Collaboration Core Specification [[!OSLCCore3]] to define the resources, properties and operations supported by an OSLC Requirements Definition and Management (OSLC-RM) server.</p>
+        localBiblio: {
+          OSLCCore2: {
+            title: "OSLC Core 2.0",
+            href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCCore3: {
+            title: "OSLC Core 3.0",
+            href: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Project Specification",
+            publisher: "OASIS",
+          },
+          OSLCQuery3: {
+            title: "OSLC Query Capability Version 3.0",
+            href: "http://docs.oasis-open.org/oslc-core/oslc-query/v3.0/oslc-query.html ",
+            authors: ["David Honey"],
+            status: "Public Review Draft",
+            publisher: "OASIS",
+          },
+          OSLCShapes: {
+            title: "OSLC Resource Shape 3.0",
+            href:
+              "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part6-resource-shape/oslc-core-v3.0-csprd03-part6-resource-shape.html",
+            authors: ["Arthur Ryman", "Jim Amsden"],
+            status: "Project Specification",
+            publisher: "OASIS",
+          },
+          OSLCResourcePreview: {
+            title: "OSLC Core 3.0 Resource Preview",
+            href:
+              "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part3-resource-preview/oslc-core-v3.0-csprd03-part3-resource-preview.html",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Project Specification",
+            publisher: "OASIS",
+          },
+          OSLCRM20: {
+            title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
+            href: "http://open-services.net/bin/view/Main/RmSpecificationV2",
+            authors: ["Ian Green"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OpenIDConnect: {
+            title: "OpenID Connect",
+            href: "http://openid.net/connect/",
+            publisher: "openid.net",
+          },
+          LDPPatch: {
+            title: "Linked Data Patch Format",
+            href: "http://www.w3.org/TR/ldpatch/",
+            status: "Working Group Note",
+            publisher: "http://www.w3.org/",
+          },
+          OSLCCoreVocab: {
+            title: "OSLC Core 3.0 Vocabulary",
+            href:
+              "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part7-core-vocabulary/oslc-core-v3.0-csprd03-part7-core-vocabulary.html",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Project Specification",
+            publisher: "OASIS",
+          },
+        },
 
-<p>Requirements Management resources include Requirements, Requirements Collections and supporting resources defined in the OSLC Core specification. The properties defined describe these resources and the relationships between resources. Operations are defined in terms of HTTP methods and MIME type handling. The resources, properties and operations defined do not form a comprehensive interface to Requirements Definition and Management, but instead target specific integration use cases documented by the OASIS OSLC OP.</p>
+        // === Spec related ===
+        license: "cc-by-4",
+        additionalLicenses: [
+          {
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+          },
+        ],
+        citationLabel: "OSLC-RM-2.1-Part1",
+        maxTocLevel: 2,
+        namespaces: [{ href: "http://open-services.net/ns/rm#", prefix: "oslc_rm" }],
+        editors: [
+          {
+            name: "Mark Schulte",
+            mailto: "mark.d.schulte@boeing.com",
+            company: "The Boeing Company",
+            companyURL: "http://www.boeing.com",
+          },
+          {
+            name: "Jad El-khoury",
+            mailto: "jad@kth.se",
+            company: "KTH The Royal Institute of Technology",
+            companyURL: "https://www.kth.se/",
+          },
+        ],
 
+        // === OSLC OP related ===
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-op",
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "https://www.ibm.com/",
+          },
+          {
+            name: "Andrii Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se/",
+          },
+        ],
+      };
+    </script>
+  </head>
+  <body>
+    <section id="abstract">
+      <p>
+        This specification defines the OSLC Requirements Management domain. The specification supports key RESTful web
+        service interfaces for the management of Requirements, Requirements Collections and supporting resources defined
+        in the OSLC Core specification. To support these scenarios, this specification defines a set of HTTP-based
+        RESTful interfaces in terms of HTTP methods: GET, POST, PUT and DELETE, HTTP response codes, content type
+        handling and resource formats.
+      </p>
+    </section>
 
-  <section id='terminology' class='informative'>
+    <section id="toc"></section>
 
-    <h2>Terminology</h2>
-  <p>Terminology uses and extends the terminology and capabilities of [[!OSLCCore3]].</p>
-      <dl class="glossary">
-      <dt>Requirement Resource</dt>
-      <dd>Requirements are the basis for defining what the system stakeholders (users, customers, suppliers and so on)           need from a system and also what the system must do in order to meet those needs, and how the surrounding           processes must be orchestrated so that quality, scope and timescale objectives are satisfied.</dd>
+    <section id="sotd"></section>
 
-      <dt>RequirementCollection Resource</dt>
-      <dd>A collection of resources which constitute some statement of need.</dd>
+    <section id="introduction" class="informative">
+      <h2>Introduction</h2>
+      <p>
+        This specification defines the OSLC Requirements Management domain, also known as OSLC RM. The specification
+        supports key RESTful web service interfaces for software Requirements Management systems. OSLC takes an open,
+        loosely coupled approach to specific lifecycle integration scenarios. The scenarios and this specification were
+        created by the OASIS OSLC OP TSC.
+      </p>
 
-    <dt>Client</dt>
-    <dd>An implementation of the OSLC Requirement Management specifications as a client. OSLC RM Clients consume services provided by servers.</dd>
+      <p>
+        This specification builds on the Open Services for Lifecycle Collaboration Core Specification [[!OSLCCore3]] to
+        define the resources, properties and operations supported by an OSLC Requirements Definition and Management
+        (OSLC-RM) server.
+      </p>
 
-    <dt>Server</dt>
-    <dd>An implementation of the OSLC Requirement Management specifications as a server. OSLC RM clients consume services provided by Servers. The use of the terms Client and Server are intended to distinguish typical consumers and providers of OSLC resources in a distributed environment based on REST. A particular application component could be a client for some OSLC domain services and a server for the same or another domain.</dd>
-    </dl>
-  </section>
-  <section id='references'><h3>References</h3></section>
-  <section id="conventions"></section>
-</section>
+      <p>
+        Requirements Management resources include Requirements, Requirements Collections and supporting resources
+        defined in the OSLC Core specification. The properties defined describe these resources and the relationships
+        between resources. Operations are defined in terms of HTTP methods and MIME type handling. The resources,
+        properties and operations defined do not form a comprehensive interface to Requirements Definition and
+        Management, but instead target specific integration use cases documented by the OASIS OSLC OP.
+      </p>
 
-<section id="baseRequirements">
-<h2>Base Requirements</h2>
+      <section id="terminology" class="informative">
+        <h2>Terminology</h2>
+        <p>Terminology uses and extends the terminology and capabilities of [[!OSLCCore3]].</p>
+        <dl class="glossary">
+          <dt>Requirement Resource</dt>
+          <dd>
+            Requirements are the basis for defining what the system stakeholders (users, customers, suppliers and so on)
+            need from a system and also what the system must do in order to meet those needs, and how the surrounding
+            processes must be orchestrated so that quality, scope and timescale objectives are satisfied.
+          </dd>
 
-<p>The following sub-sections define the mandatory and optional requirements for an OSLC Requirements Management (OSLC RM) server.</p>
+          <dt>RequirementCollection Resource</dt>
+          <dd>A collection of resources which constitute some statement of need.</dd>
 
-<section id="baseRequirements">
-<h2>Base Requirements</h2>
+          <dt>Client</dt>
+          <dd>
+            An implementation of the OSLC Requirement Management specifications as a client. OSLC RM Clients consume
+            services provided by servers.
+          </dd>
 
-<p class='conformance'>This specification is based on [[!OSLCCore3]]. OSLC RM servers
-MUST be compliant with both the core specification,  MUST follow all the mandatory requirements in the normative sections of this specification, and SHOULD follow all the guidelines and recommendations in both
-these specifications.</p>
+          <dt>Server</dt>
+          <dd>
+            An implementation of the OSLC Requirement Management specifications as a server. OSLC RM clients consume
+            services provided by Servers. The use of the terms Client and Server are intended to distinguish typical
+            consumers and providers of OSLC resources in a distributed environment based on REST. A particular
+            application component could be a client for some OSLC domain services and a server for the same or another
+            domain.
+          </dd>
+        </dl>
+      </section>
+      <section id="references"><h3>References</h3></section>
+      <section id="conventions"></section>
+    </section>
 
-<p class='conformance'>An OSLC RM server MUST implement the domain vocabulary defined in <a href="http://docs.oasis-open.org/oslc-domains/oslc-rm/v2.1/oslc-rm-v2.1-part1-requirements-management-spec.html">OSLC Requirements Management Version 2.1. Part 2: Vocabulary</a>
+    <section id="baseRequirements">
+      <h2>Base Requirements</h2>
 
-<p>The following table summarizes the requirements from OSLC Core Specification
-as well as some additional requirements specific to the RM domain. Note that
-this specification further restricts some of the requirements for OSLC Core
-Specification. See the previous sections in this specification or the
-OSLC Core Specification to get further details on each of these
-requirements.</p>
+      <p>
+        The following sub-sections define the mandatory and optional requirements for an OSLC Requirements Management
+        (OSLC RM) server.
+      </p>
 
-<table border="1" cellspacing="0" cellpadding="5">
-<thead>
-<tr>
-  <th><strong>Requirement</strong></th>
-  <th><strong>Meaning</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-  <td>Unknown properties and content</td>
-  <td class='conformance'>OSLC servers MAY ignore unknown content and OSLC clients MUST preserve unknown content</td>
-</tr>
-<tr>
-  <td>Resource Operations</td>
-  <td class='conformance'>OSLC servers MUST support resource operations via standard HTTP operations</td>
-</tr>
-<tr>
-  <td>Resource Paging</td>
-  <td class='conformance'>OSLC servers MAY provide paging for resources but only when specifically requested by client</td>
-</tr>
-<tr>
-  <td>Partial Resource Representations</td>
-  <td class='conformance'>OSLC servers MUST support request for a subset of a resource's properties via the oslc.properties URL parameter retrieval via HTTP GET and MAY support via HTTP PUT</td>
-</tr>
-<tr>
-  <td>Partial Update</td>
-  <td class='conformance'>OSLC servers MAY support partial update of resources using [[LDPPatch]].</td>
-</tr>
-<tr>
-  <td>Discovery</td>
-  <td class='conformance'>OSLC servers MAY provide a Service Provider Catalog, MUST provide a Service Provider resource, and MAY provide other forms of discovery described in Core 3.0 Discovery.</td>
-</tr>
-<tr>
-  <td>Creation Factories</td>
-  <td class='conformance'>OSLC servers MUST provide at least one creation factory resource for requirements and MAY provide creation factory resources for requirement collections</td>
-</tr>
-<tr>
-  <td>Query Capabilities</td>
-  <td class='conformance'>OSLC servers MUST provide query capabilities to enable clients to query for resources </td>
-</tr>
-<tr>
-  <td>Query Syntax</td>
-  <td class='conformance'>OSLC query capabilities MUST support the OSLC Core Query Syntax</td>
-</tr>
-<tr>
-  <td>Delegated UI Dialogs</td>
-  <td class='conformance'>OSLC Services MUST offer delegated UI dialogs (for both creation and selection) specified via service provider resource</td>
-</tr>
-<tr>
-  <td>UI Preview</td>
-  <td class='conformance'>OSLC Services SHOULD offer UI previews for resources that may be referenced by other resources </td>
-</tr>
-<tr>
-  <td>HTTP Basic Authentication</td>
-  <td class='conformance'>OSLC Servers MAY support Basic Authentication and SHOULD only do so only over HTTPS</td>
-</tr>
-<tr>
-  <td>OAuth Authentication</td>
-  <td class='conformance'>OSLC Server MAY support OAuth and MAY indicate the required OAuth URLs via the service provider resource</td>
-</tr>
-<tr>
-  <td>Error Responses</td>
-  <td class='conformance'>OSLC Servers MAY provide error responses using Core defined error formats</td>
-</tr>
-<tr>
-  <td>RDF/XML Representations</td>
-  <td class='conformance'>OSLC servers MUST support RDF/XML representations for OSLC Defined Resources</td>
-</tr>
-<tr>
-  <td>XML Representations</td>
-  <td class='conformance'>OSLC servers MUST support XML representations that conform to the OSLC Core Guidelines for XML</td>
-</tr>
-<tr>
-  <td>JSON Representations</td>
-  <td class='conformance'>OSLC servers MAY support JSON representations; those which do MUST conform to the OSLC Core Guidelines for JSON</td>
-</tr>
-<tr>
-  <td>HTML Representations</td>
-  <td class='conformance'>OSLC servers MAY provide HTML representations for GET requests</td>
-</tr>
-</tbody>
-</table>
-</section>
+      <section id="baseRequirements">
+        <h2>Base Requirements</h2>
 
-<section id="versioning">
-<h2 id="specificationversioningspec_versioning">Specification Versioning</h2>
+        <p class="conformance">
+          This specification is based on [[!OSLCCore3]]. OSLC RM servers MUST be compliant with both the core
+          specification, MUST follow all the mandatory requirements in the normative sections of this specification, and
+          SHOULD follow all the guidelines and recommendations in both these specifications.
+        </p>
 
-<p>This specification follows the specification version guidelines given in [[!OSLCCore3]].</p>
-</section>
+        <p class="conformance">
+          An OSLC RM server MUST implement the domain vocabulary defined in
+          <a href="requirements-management-vocab.html"></a>OSLC Requirements Management Version 2.1. Part 2: Vocabulary
+        </p>
 
-<section id="namespaces">
-<h2>Namespaces</h2>
+        <p>
+          The following table summarizes the requirements from OSLC Core Specification as well as some additional
+          requirements specific to the RM domain. Note that this specification further restricts some of the
+          requirements for OSLC Core Specification. See the previous sections in this specification or the OSLC Core
+          Specification to get further details on each of these requirements.
+        </p>
 
-<p> In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>, <code>dcterms</code> and <code>foaf</code> defined in the [[!OSLCCore3]], OSLC RM defines the namespace URI of <code>http://open-services.net/ns/rm#</code> with a preferred namespace prefix of <code>oslc_rm</code>.</p>
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th><strong>Requirement</strong></th>
+              <th><strong>Meaning</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Unknown properties and content</td>
+              <td class="conformance">
+                OSLC servers MAY ignore unknown content and OSLC clients MUST preserve unknown content
+              </td>
+            </tr>
+            <tr>
+              <td>Resource Operations</td>
+              <td class="conformance">OSLC servers MUST support resource operations via standard HTTP operations</td>
+            </tr>
+            <tr>
+              <td>Resource Paging</td>
+              <td class="conformance">
+                OSLC servers MAY provide paging for resources but only when specifically requested by client
+              </td>
+            </tr>
+            <tr>
+              <td>Partial Resource Representations</td>
+              <td class="conformance">
+                OSLC servers MUST support request for a subset of a resource's properties via the oslc.properties URL
+                parameter retrieval via HTTP GET and MAY support via HTTP PUT
+              </td>
+            </tr>
+            <tr>
+              <td>Partial Update</td>
+              <td class="conformance">OSLC servers MAY support partial update of resources using [[LDPPatch]].</td>
+            </tr>
+            <tr>
+              <td>Discovery</td>
+              <td class="conformance">
+                OSLC servers MAY provide a Service Provider Catalog, MUST provide a Service Provider resource, and MAY
+                provide other forms of discovery described in Core 3.0 Discovery.
+              </td>
+            </tr>
+            <tr>
+              <td>Creation Factories</td>
+              <td class="conformance">
+                OSLC servers MUST provide at least one creation factory resource for requirements and MAY provide
+                creation factory resources for requirement collections
+              </td>
+            </tr>
+            <tr>
+              <td>Query Capabilities</td>
+              <td class="conformance">
+                OSLC servers MUST provide query capabilities to enable clients to query for resources
+              </td>
+            </tr>
+            <tr>
+              <td>Query Syntax</td>
+              <td class="conformance">OSLC query capabilities MUST support the OSLC Core Query Syntax</td>
+            </tr>
+            <tr>
+              <td>Delegated UI Dialogs</td>
+              <td class="conformance">
+                OSLC Services MUST offer delegated UI dialogs (for both creation and selection) specified via service
+                provider resource
+              </td>
+            </tr>
+            <tr>
+              <td>UI Preview</td>
+              <td class="conformance">
+                OSLC Services SHOULD offer UI previews for resources that may be referenced by other resources
+              </td>
+            </tr>
+            <tr>
+              <td>HTTP Basic Authentication</td>
+              <td class="conformance">
+                OSLC Servers MAY support Basic Authentication and SHOULD only do so only over HTTPS
+              </td>
+            </tr>
+            <tr>
+              <td>OAuth Authentication</td>
+              <td class="conformance">
+                OSLC Server MAY support OAuth and MAY indicate the required OAuth URLs via the service provider resource
+              </td>
+            </tr>
+            <tr>
+              <td>Error Responses</td>
+              <td class="conformance">OSLC Servers MAY provide error responses using Core defined error formats</td>
+            </tr>
+            <tr>
+              <td>RDF/XML Representations</td>
+              <td class="conformance">OSLC servers MUST support RDF/XML representations for OSLC Defined Resources</td>
+            </tr>
+            <tr>
+              <td>XML Representations</td>
+              <td class="conformance">
+                OSLC servers MUST support XML representations that conform to the OSLC Core Guidelines for XML
+              </td>
+            </tr>
+            <tr>
+              <td>JSON Representations</td>
+              <td class="conformance">
+                OSLC servers MAY support JSON representations; those which do MUST conform to the OSLC Core Guidelines
+                for JSON
+              </td>
+            </tr>
+            <tr>
+              <td>HTML Representations</td>
+              <td class="conformance">OSLC servers MAY provide HTML representations for GET requests</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-</section>
+      <section id="versioning">
+        <h2 id="specificationversioningspec_versioning">Specification Versioning</h2>
 
-<section id="formats">
-<h2>Resource Formats</h2>
+        <p>This specification follows the specification version guidelines given in [[!OSLCCore3]].</p>
+      </section>
 
-<p>In addition to the requirements for resource representations in [[!OSLCCore3]], this section outlines further refinements and restrictions.</p>
+      <section id="namespaces">
+        <h2>Namespaces</h2>
 
-<div  class='conformance'>
-<p>For HTTP GET/PUT/POST requests on all OSLC RM and OSLC Core defined resource types,
-</p>
+        <p>
+          In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>,
+          <code>dcterms</code> and <code>foaf</code> defined in the [[!OSLCCore3]], OSLC RM defines the namespace URI of
+          <code>http://open-services.net/ns/rm#</code> with a preferred namespace prefix of <code>oslc_rm</code>.
+        </p>
+      </section>
 
-<ul>
-  <li>RM Servers MUST support RDF/XML representations with media-type <code>application/rdf+xml</code>. RM Clients MUST be prepared to deal with any valid RDF/XML document.
-  </li>
-  <li>RM Servers MUST support XML representations with media-type <code>application/xml</code>. The XML representations MUST follow the guidelines outlined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations Guidance</a> to maintain compatibility with [[!OSLCCore2]].
-  </li>
-  <li>RM Servers MAY support JSON representations with media-type <code>application/json</code>. The JSON representations MUST follow the guidelines outlined in the <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations">OSLC Core Representations Guidance</a> to maintain compatibility with [[!OSLCCore2]].
-  </li>
-</ul>
-</div>
+      <section id="formats">
+        <h2>Resource Formats</h2>
 
-<p>Additionally, for HTTP GET,</p>
-<ul class='conformance'>
-  <li>RM Servers SHOULD provide an [X]HTML representation and a user interface (UI) preview as defined by <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview">UI Preview Guidance</a>
-  </li>
-</ul>
+        <p>
+          In addition to the requirements for resource representations in [[!OSLCCore3]], this section outlines further
+          refinements and restrictions.
+        </p>
 
-<div class='conformance'>
-<p>For HTTP GET response formats for Query requests,</p>
-<ul>
-  <li>RM Servers MUST support RDF/XML representations with meda-type <code>application/rdf+xml</code>.</li>
-  <li>RM Servers MUST support XML representations with media-type <code>application/xml</code>.</li>
-  <li> RM Servers MAY support JSON representations with media-type <code>application/json</code>.</li>
-</ul>
-</div>
+        <div class="conformance">
+          <p>For HTTP GET/PUT/POST requests on all OSLC RM and OSLC Core defined resource types,</p>
 
-<p class='conformance'>OSLC Servers MAY refuse to accept RDF/XML documents which do not have a top-level rdf:RDF document element. The OSLC Core describes an example, non-normative algorithm for generating RDF/XML representations of OSLC Defined Resources.
-</p>
-<p class='conformance'>In addition to the resource formats defined above, Servers MAY support additional resource formats; the meaning and usage of these resource formats is not defined by this specification.
-</p>
+          <ul>
+            <li>
+              RM Servers MUST support RDF/XML representations with media-type <code>application/rdf+xml</code>. RM
+              Clients MUST be prepared to deal with any valid RDF/XML document.
+            </li>
+            <li>
+              RM Servers MUST support XML representations with media-type <code>application/xml</code>. The XML
+              representations MUST follow the guidelines outlined in the
+              <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations"
+                >OSLC Core Representations Guidance</a
+              >
+              to maintain compatibility with [[!OSLCCore2]].
+            </li>
+            <li>
+              RM Servers MAY support JSON representations with media-type <code>application/json</code>. The JSON
+              representations MUST follow the guidelines outlined in the
+              <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations"
+                >OSLC Core Representations Guidance</a
+              >
+              to maintain compatibility with [[!OSLCCore2]].
+            </li>
+          </ul>
+        </div>
 
-</section>
+        <p>Additionally, for HTTP GET,</p>
+        <ul class="conformance">
+          <li>
+            RM Servers SHOULD provide an [X]HTML representation and a user interface (UI) preview as defined by
+            <a href="http://open-services.net/bin/view/Main/OslcCoreUiPreview">UI Preview Guidance</a>
+          </li>
+        </ul>
 
-<section id="authentication">
-<h2>Authentication</h2>
+        <div class="conformance">
+          <p>For HTTP GET response formats for Query requests,</p>
+          <ul>
+            <li>RM Servers MUST support RDF/XML representations with meda-type <code>application/rdf+xml</code>.</li>
+            <li>RM Servers MUST support XML representations with media-type <code>application/xml</code>.</li>
+            <li>RM Servers MAY support JSON representations with media-type <code>application/json</code>.</li>
+          </ul>
+        </div>
 
-<p class='conformance'>[[!OSLCCore3]] specifies the recommended OSLC authentication mechanisms. In addition to the OSLC Core authentication requirements, OSLC RM servers SHOULD support [[!OpenIDConnect]].</p>
-</section>
+        <p class="conformance">
+          OSLC Servers MAY refuse to accept RDF/XML documents which do not have a top-level rdf:RDF document element.
+          The OSLC Core describes an example, non-normative algorithm for generating RDF/XML representations of OSLC
+          Defined Resources.
+        </p>
+        <p class="conformance">
+          In addition to the resource formats defined above, Servers MAY support additional resource formats; the
+          meaning and usage of these resource formats is not defined by this specification.
+        </p>
+      </section>
 
-<section id="errors">
-<h2>Error Responses</h2>
+      <section id="authentication">
+        <h2>Authentication</h2>
 
-<p>[[!OSLCCoreVocab]] specifies the OSLC Core error responses. OSLC RM puts no additional constraints on error responses.</p>
-</section>
+        <p class="conformance">
+          [[!OSLCCore3]] specifies the recommended OSLC authentication mechanisms. In addition to the OSLC Core
+          authentication requirements, OSLC RM servers SHOULD support [[!OpenIDConnect]].
+        </p>
+      </section>
 
-<section id="pagination">
-<h2>Pagination</h2>
+      <section id="errors">
+        <h2>Error Responses</h2>
 
-<p class='conformance'>OSLC RM servers SHOULD support pagination of query results and MAY support pagination of a single resource's properties as defined by [[!OSLCCore3]].</p>
-</section>
+        <p>
+          [[!OSLCCoreVocab]] specifies the OSLC Core error responses. OSLC RM puts no additional constraints on error
+          responses.
+        </p>
+      </section>
 
-<section id="requestProps">
-<h3>Requesting and Updating Properties</h3>
+      <section id="pagination">
+        <h2>Pagination</h2>
 
-<section id="requestSubset">
-<h4>Requesting a Subset of Properties</h4>
+        <p class="conformance">
+          OSLC RM servers SHOULD support pagination of query results and MAY support pagination of a single resource's
+          properties as defined by [[!OSLCCore3]].
+        </p>
+      </section>
 
-<p class='conformance'>A client MAY request a subset of a resource's properties as well as properties from a referenced resource. In order to support this behavior a server MUST support the <code>oslc.properties</code> and <code>oslc.prefix</code> URL parameter on a HTTP GET request on individual resource request or a collection of resources by query. If the <code>oslc.properties</code> parameter is omitted on the request, then all resource properties MUST be provided in the response.</p>
-</section>
+      <section id="requestProps">
+        <h3>Requesting and Updating Properties</h3>
 
-<section id="updateSubset">
-<h4>Updating a Subset of Properties</h4>
+        <section id="requestSubset">
+          <h4>Requesting a Subset of Properties</h4>
 
-<p class='conformance'>A client MAY request that a subset of a resource's properties be updated by using the [[LDPPatch]] <code>PATCH</code> method.</p>
+          <p class="conformance">
+            A client MAY request a subset of a resource's properties as well as properties from a referenced resource.
+            In order to support this behavior a server MUST support the <code>oslc.properties</code> and
+            <code>oslc.prefix</code> URL parameter on a HTTP GET request on individual resource request or a collection
+            of resources by query. If the <code>oslc.properties</code> parameter is omitted on the request, then all
+            resource properties MUST be provided in the response.
+          </p>
+        </section>
 
-<p class='conformance'>For compatibility with [[!OSLCCore2]], a Server MAY also support partial update by identifying those properties to be modified using the <code>oslc.properties</code> URL parameter on a HTTP PUT request.</p>
+        <section id="updateSubset">
+          <h4>Updating a Subset of Properties</h4>
 
-<p class='conformance'>If the parameter <code>oslc.properties</code> contains a valid resource property on the request that is not provided in the content, the server MUST set the resource's property to a null or empty value. If the parameter <code>oslc.properties</code> contains an invalid resource property, then a <code>409 Conflict</code> MUST be returned.</p>
-</section>
+          <p class="conformance">
+            A client MAY request that a subset of a resource's properties be updated by using the [[LDPPatch]]
+            <code>PATCH</code> method.
+          </p>
 
-<section id="updatingMultiValueProps">
-<h4>Updating Multi-Valued Properties</h4>
+          <p class="conformance">
+            For compatibility with [[!OSLCCore2]], a Server MAY also support partial update by identifying those
+            properties to be modified using the <code>oslc.properties</code> URL parameter on a HTTP PUT request.
+          </p>
 
-<p class='conformance'>For multi-valued properties that contain a large number of values, it may be difficult and inefficient to add or remove property values. OSLC RM servers MAY provide support for a partial update of the multi-valued properties as defined by draft specification [[LDPPatch]]. RM servers MAY also support partial updates through HTTP PUT where only the updated properties are included in the entity request body.</p>
-</section>
-</section>
+          <p class="conformance">
+            If the parameter <code>oslc.properties</code> contains a valid resource property on the request that is not
+            provided in the content, the server MUST set the resource's property to a null or empty value. If the
+            parameter <code>oslc.properties</code> contains an invalid resource property, then a
+            <code>409 Conflict</code> MUST be returned.
+          </p>
+        </section>
 
-<section id="labels" class='informative'>
-<h3>Labels for Relationships</h3>
+        <section id="updatingMultiValueProps">
+          <h4>Updating Multi-Valued Properties</h4>
 
-<p>Requirement Management relationships to other resources are represented by RDF properties. Instances of a relationship - often called links - are RDF triples with a subject URI, a predicate that is the property, and a value (or object) that is the URI of target resource. When a link is to be presented in a user interface, it may be helpful to display an informative and useful textual label instead of, or in addition to, the URI of the predicate and/or object. There are three items that clients could display:</p>
-<ul>
-  <li><b>The property</b>: OSLC recommends using the rdfs:label property of the rdf:Property from the vocabulary to display the property.</li>
-  <li><b>The value, or object of the triple</b>: OSLC recommends using OSLC resource preview [[!OSLCResourcePreview]] to obtain an appropriate icon and label, and possibly a small and/or large dialog for displaying the object.</li>
-  <li><b>The link</b>: The link is a combination of the subject, predicate and object of the triple (RDF statement or assertion). Where the link requires a unique label that is not available from the target resource, OSLC servers may support a dcterms:title on a reified statement to provide a label for a link that describes the assertion itself.</li>
-</ul>
+          <p class="conformance">
+            For multi-valued properties that contain a large number of values, it may be difficult and inefficient to
+            add or remove property values. OSLC RM servers MAY provide support for a partial update of the multi-valued
+            properties as defined by draft specification [[LDPPatch]]. RM servers MAY also support partial updates
+            through HTTP PUT where only the updated properties are included in the entity request body.
+          </p>
+        </section>
+      </section>
 
-<p>Turtle example using a reified statement:</p>
+      <section id="labels" class="informative">
+        <h3>Labels for Relationships</h3>
 
-<pre class="example">
+        <p>
+          Requirement Management relationships to other resources are represented by RDF properties. Instances of a
+          relationship - often called links - are RDF triples with a subject URI, a predicate that is the property, and
+          a value (or object) that is the URI of target resource. When a link is to be presented in a user interface, it
+          may be helpful to display an informative and useful textual label instead of, or in addition to, the URI of
+          the predicate and/or object. There are three items that clients could display:
+        </p>
+        <ul>
+          <li>
+            <b>The property</b>: OSLC recommends using the rdfs:label property of the rdf:Property from the vocabulary
+            to display the property.
+          </li>
+          <li>
+            <b>The value, or object of the triple</b>: OSLC recommends using OSLC resource preview
+            [[!OSLCResourcePreview]] to obtain an appropriate icon and label, and possibly a small and/or large dialog
+            for displaying the object.
+          </li>
+          <li>
+            <b>The link</b>: The link is a combination of the subject, predicate and object of the triple (RDF statement
+            or assertion). Where the link requires a unique label that is not available from the target resource, OSLC
+            servers may support a dcterms:title on a reified statement to provide a label for a link that describes the
+            assertion itself.
+          </li>
+        </ul>
+
+        <p>Turtle example using a reified statement:</p>
+
+        <pre class="example">
 @prefix oslc_rm: &lt;http://open-services.net/ns/rm#&gt; .
 @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
 @prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
@@ -423,11 +597,12 @@ requirements.</p>
   rdf:predicate oslc_rm:elaboratedBy ;
   rdf:object &lt;http://anotherexample.com/requ/123&gt; ;
   dcterms:title &quot;Requirement 123: The system shall be robust&quot; .
-</pre>
+</pre
+        >
 
-<p>JSON-LD example using reified statement:</p>
+        <p>JSON-LD example using reified statement:</p>
 
-<pre class="example">
+        <pre class="example">
 {
   "@context": {
     "dcterms": "http://purl.org/dc/terms/",
@@ -442,173 +617,263 @@ requirements.</p>
     "dcterms:title": "Requirement 123: The system shall be robust"
   }
 }
-</pre>
-</section>
-</section>
+</pre
+        >
+      </section>
+    </section>
 
-<section id='termsAndConstraints'>
-  <h2>Vocabulary Terms and Constraints</h2>
-  <p><a href="http://docs.oasis-open.org/oslc-domains/oslc-rm/v2.1/oslc-rm-v2.1-part2-requirements-management-vocab.html">OSLC Requirements Management Version 2.1. Part 2: Vocabulary</a>
-    defines the vocabulary terms and constraints for OSLC Requirements Management resources.
-    These terms and constraints are specified according to [[!OSLCCoreVocab]].</p>
-</section>
+    <section id="termsAndConstraints">
+      <h2>Vocabulary Terms and Constraints</h2>
+      <p>
+        <a href="./requirements-management-vocab.html">OSLC Requirements Management Version 2.1. Part 2: Vocabulary</a>
+        defines the vocabulary terms and constraints for OSLC Requirements Management resources. These terms and
+        constraints are specified according to [[!OSLCCoreVocab]].
+      </p>
+    </section>
 
-<section id="capabilities">
-<h2>RM Server Capabilities</h2>
+    <section id="capabilities">
+      <h2>RM Server Capabilities</h2>
 
-<section id="resources">
-<h3>Server Resources</h3>
+      <section id="resources">
+        <h3>Server Resources</h3>
 
-<p class='conformance'>RM Servers MUST provide one or more <code>oslc:ServiceProvider</code> resources. Discovery of OSLC Service Provider Resources MAY be via one or more OSLC Service Provider Catalog Resources, or may be discovered by some other and/or additional Provider-specific means beyond the scope of this specification. The <code>oslc:Service</code> resources referenced by this <code>oslc:ServiceProvider</code> MUST have an <code>oslc:domain</code> of <code>http://open-services.net/ns/rm#</code>.
-</p>
+        <p class="conformance">
+          RM Servers MUST provide one or more <code>oslc:ServiceProvider</code> resources. Discovery of OSLC Service
+          Provider Resources MAY be via one or more OSLC Service Provider Catalog Resources, or may be discovered by
+          some other and/or additional Provider-specific means beyond the scope of this specification. The
+          <code>oslc:Service</code> resources referenced by this <code>oslc:ServiceProvider</code> MUST have an
+          <code>oslc:domain</code> of <code>http://open-services.net/ns/rm#</code>.
+        </p>
 
-<p class='conformance'>RM servers MAY provide other forms of discovery described in Core 3.0 Discovery.</p>
+        <p class="conformance">RM servers MAY provide other forms of discovery described in Core 3.0 Discovery.</p>
 
-<p class='conformance'>RM Servers MAY provide one more more <code>oslc:ServiceProviderCatalog</code> resources. Any such catalog resources MUST include at least one <code>oslc:domain</code> of <code>http://open-services.net/ns/rm#</code>. Discovery of top-level OSLC Service Provider Catalog Resources is beyond the scope of this specification.
-</p>
+        <p class="conformance">
+          RM Servers MAY provide one more more <code>oslc:ServiceProviderCatalog</code> resources. Any such catalog
+          resources MUST include at least one <code>oslc:domain</code> of <code>http://open-services.net/ns/rm#</code>.
+          Discovery of top-level OSLC Service Provider Catalog Resources is beyond the scope of this specification.
+        </p>
 
-<p class='conformance'>Service providers MUST give an <code>oslc:serviceProvider</code> property on all OSLC Defined Resources. This property MUST refer to an appropriate <code>oslc:ServiceProvider</code> resource.
-</p>
+        <p class="conformance">
+          Service providers MUST give an <code>oslc:serviceProvider</code> property on all OSLC Defined Resources. This
+          property MUST refer to an appropriate <code>oslc:ServiceProvider</code> resource.
+        </p>
+      </section>
 
-</section>
+      <section id="creationfactories">
+        <h3>Creation Factories</h3>
 
+        <p class="conformance">
+          RM Servers supporting resource creation MUST do so through <code>oslc:CreationFactory</code> resources, as
+          defined by [[!OSLCCore3]]. Any such factory resources MUST be discoverable through
+          <code>oslc:Service</code> resources. Servers SHOULD provide <code>oslc:ResourceShape</code> resources on
+          <code>oslc:CreationFactory</code> resources as defined by [[!OSLCShapes]].
+        </p>
+      </section>
 
-<section id="creationfactories">
-<h3>Creation Factories</h3>
+      <section id="querycapabilities">
+        <h3>Query Capabilities</h3>
 
-<p class='conformance'>RM Servers supporting resource creation MUST do so through <code>oslc:CreationFactory</code> resources, as defined by [[!OSLCCore3]]. Any such factory resources MUST be discoverable through <code>oslc:Service</code> resources. Servers SHOULD provide <code>oslc:ResourceShape</code> resources on <code>oslc:CreationFactory</code> resources as defined by [[!OSLCShapes]].</p>
+        <p class="conformance">
+          RM Servers MUST support query capabilities, as defined by [[!OSLCCore3]]. Servers SHOULD provide
+          <code>oslc:ResourceShape</code> on <code>oslc:QueryCapability</code> resources as defined by [[!OSLCShapes]].
+        </p>
 
-</section>
+        <div class="conformance">
+          <p>The Query Capability, if supported, MUST support these parameters:</p>
+          <ul>
+            <li><code>oslc.where</code></li>
+            <li><code>oslc.select</code></li>
+            <li><code>oslc.properties</code></li>
+            <li><code>oslc.prefix</code></li>
+          </ul>
+        </div>
 
-<section id="querycapabilities">
-<h3>Query Capabilities</h3>
+        <p class="conformance">
+          Where <code>oslc:ResourceShape</code> is not supported by the Query Capability, Servers SHOULD use the
+          following guidance to represent query results:
+        </p>
+        <ul>
+          <li>
+            For RDF/XML and XML, use <code>rdf:Description</code> and <code>rdfs:member</code> as defined by
+            <a
+              class="twikiAnchorLink"
+              href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#RDF_XML_Examples"
+              >Core Specification Appendix B:Representations and Examples - RDF/XML Examples</a
+            >.
+          </li>
+          <li>
+            For JSON the query results are contained within <code>oslc:results</code> array. See
+            <a
+              class="twikiAnchorLink"
+              href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_JSON"
+              >Core Specification Appendix B: Representations and Examples - Guidelines for JSON</a
+            >.
+          </li>
+        </ul>
 
-<p class='conformance'>RM Servers MUST support query capabilities, as defined by [[!OSLCCore3]]. Servers SHOULD provide <code>oslc:ResourceShape</code> on <code>oslc:QueryCapability</code> resources as defined by [[!OSLCShapes]].
-</p>
+        <p>
+          The stability of query results is OPTIONAL (see
+          <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging"
+            >Core Specification Version 2.0 - Stable Paging</a
+          >).
+        </p>
+      </section>
 
-<div class='conformance'>
-<p>The Query Capability, if supported, MUST support these parameters: </p><ul>
-<li> <code>oslc.where</code>
-</li> <li> <code>oslc.select</code>
-</li> <li> <code>oslc.properties</code>
-</li> <li> <code>oslc.prefix</code>
-</li></ul>
-</div>
+      <section id="delegatedUIs">
+        <h3>Delegated UIs</h3>
 
-<p class='conformance'>Where <code>oslc:ResourceShape</code> is not supported by the Query Capability, Servers SHOULD use the following guidance to represent query results: </p>
-<ul>
-  <li>For RDF/XML and XML, use <code>rdf:Description</code> and <code>rdfs:member</code> as defined by <a class="twikiAnchorLink" href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#RDF_XML_Examples">Core Specification Appendix B:Representations and Examples - RDF/XML Examples</a>.</li>
-  <li>For JSON the query results are contained within <code>oslc:results</code> array. See <a class="twikiAnchorLink" href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_JSON">Core Specification Appendix B: Representations and Examples - Guidelines for JSON</a>.</li>
-</ul>
+        <p class="conformance">
+          RM Servers MUST support the selection and creation of resources by delegated web-based user interface dialogs
+          <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part4-delegated-dialogs.html"
+            >Delegated Dialogs</a
+          >
+          as defined by [[!OSLCCore3]].
+        </p>
 
-<p>The stability of query results is OPTIONAL (see <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Resource_Paging">Core Specification Version 2.0 - Stable Paging</a>).</p>
-</section>
+        <p class="conformance">
+          RM Servers MAY support the pre-filling of creation dialogs based on the definition at
+          <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part4-delegated-dialogs.html"
+            >Delegated Dialogs</a
+          >.
+        </p>
+      </section>
 
-<section id="delegatedUIs">
-<h3>Delegated UIs</h3>
+      <section id="usageidentifiers">
+        <h3>Usage Identifiers</h3>
 
-<p class='conformance'>RM Servers MUST support the selection and creation of resources by delegated web-based user interface dialogs <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part4-delegated-dialogs.html">Delegated Dialogs</a> as defined by [[!OSLCCore3]].
-</p>
+        <p class="conformance">
+          RM Servers MAY identify the usage of various services with additional property values for the
+          <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part2-discovery.html"
+            >OSLC Core Discovery</a
+          >
+          defined <code>oslc:usage</code> property on <code>oslc:Dialog</code>, <code>CreationFactory</code> and
+          <code>QueryCapability</code>. The <code>oslc:usage</code> property value of
+          <code>http://open-services.net/ns/core#default</code> SHOULD be used to designate the default or primary
+          service to be used by consumers when multiple entries are found.
+        </p>
+        <p class="conformance">
+          There are no additional usage identifiers defined by this specification. RM Servers MAY provide their own
+          usage URIs. Such usage URIs MUST be in a non-OSLC namespace.
+        </p>
+      </section>
+    </section>
 
-<p class='conformance'>RM Servers MAY support the pre-filling of creation dialogs based on the definition at <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part4-delegated-dialogs.html">Delegated Dialogs</a>.</p>
+    <section id="conformance"></section>
 
-</section>
+    <section id="versioncompatibility" class="appendix">
+      <h2>Version Compatibility</h2>
 
-<section id="usageidentifiers">
-<h3>Usage Identifiers</h3>
+      <section id="versioncompatibility2" class="informative">
+        <h3>Version Compatibility with 2.0 Specifications</h3>
+        <p>
+          The specification is updated to be based on the [[!OSLCCore3]] Specification. The changes are all upward
+          compatible additions and therefore do not introduce incompatibilities with version 2.0.
+        </p>
+      </section>
 
-<p class='conformance'>RM Servers MAY identify the usage of various services with additional property values for the <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part2-discovery.html">OSLC Core Discovery</a> defined <code>oslc:usage</code> property on <code>oslc:Dialog</code>, <code>CreationFactory</code> and <code>QueryCapability</code>. The <code>oslc:usage</code> property value of <code>http://open-services.net/ns/core#default</code> SHOULD be used to designate the default or primary service to be used by consumers when multiple entries are found.
-</p>
-<p class='conformance'>There are no additional usage identifiers defined by this specification. RM Servers MAY provide their own usage URIs. Such usage URIs MUST be in a non-OSLC namespace.
-</p>
+      <section id="versioncompatibility1" class="informative">
+        <h3>Version Compatibility with 1.0 Specifications</h3>
+        <p>
+          The goal is to provide a smooth transition to 2.0 for both Clients and Servers. This section will clarify the
+          usage of 1.0 media types so that Servers can support both 1.0 and 2.0 Clients when HTTP requests are made for
+          a resource with the same URI.
+        </p>
+        <p>
+          Network addressable resource URIs used for 1.0 resources for these types: Requirement, RequirementCollection,
+          ServiceDescriptor and ServiceProviderCatalog, should not have to change. Clients who support both 1.0 and 2.0,
+          should only preserve these resource URIs. When a Server starts to serve 2.0 resource formats, for instance the
+          ServiceProvider resource, it is recommended to update its locally stored or cached information about the
+          contents of the ServiceProvider resource as the URIs to various capabilities may have changed (query,
+          delegated UIs, factories, etc.).
+        </p>
+      </section>
+    </section>
 
-</section>
-</section>
+    <section class="appendix informative">
+      <h2>Acknowledgements</h2>
+      <p>
+        The following individuals have participated in the creation of this specification and are gratefully
+        acknowledged:
+      </p>
 
-<section  id="conformance"></section>
-</section>
+      <p><b>Project Governing Board</b>:</p>
+      <p style="margin-left: 40px;">
+        James Amsden, IBM (co-chair)<br />
+        Andrii Berezovskyi, KTH (co-chair)<br />
+        Bill Chown, Mentor<br />
+        Wesley Coelho, Tasktop<br />
+        Axel Reichwein, Koneksys<br />
+      </p>
 
-<section id="versioncompatibility" class="appendix">
-<h2>Version Compatibility </h2>
+      <p><b>Techical Steering Committee</b>:</p>
+      <p style="margin-left: 40px;">
+        James Amsden, IBM<br />
+        Andrii Berezovskyi, KTH<br />
+        Axel Reichwein, Koneksys<br />
+      </p>
 
-<section id="versioncompatibility2" class="informative">
-  <h3>Version Compatibility with 2.0 Specifications </h3>
-<p>
-The specification is updated to be based on the [[!OSLCCore3]] Specification. The changes are all upward compatible additions and therefore do not introduce incompatibilities with version 2.0.
-</p>
-</section>
+      <p><b>Additional Participants</b>:</p>
+      <p style="margin-left: 40px;">
+        Andy Berner, IBM<br />
+        Scott Bosworth, IBM<br />
+        Jim Conallen, IBM<br />
+        George De Candio, IBM<br />
+        Jeremy Dick, Integrate<br />
+        Brenda Ellis, Northrop Grumman<br />
+        Rainer Ersch, Siemens<br />
+        Ian Green, IBM<br />
+        Dave Johnson, IBM<br />
+        Andreas Keis, EADS<br />
+        Nicholas Kruk, IBM<br />
+        Chris McGraw, IBM<br />
+        Paul McMahan, IBM<br />
+        David Ruiz, Ravenflow<br />
+        Matthew Stone, Stoneworks<br />
+        Dominic Tulley, IBM<br />
+        Simon Wills, Integrate<br />
+      </p>
+    </section>
 
-<section id="versioncompatibility1" class="informative">
-  <h3>Version Compatibility with 1.0 Specifications </h3>
-<p>
-The goal is to provide a smooth transition to 2.0 for both Clients and Servers. This section will clarify the usage of 1.0 media types so that Servers can support both 1.0 and 2.0 Clients when HTTP requests are made for a resource with the same URI.
-</p>
-<p>
-Network addressable resource URIs used for 1.0 resources for these types: Requirement, RequirementCollection, ServiceDescriptor and ServiceProviderCatalog, should not have to change. Clients who support both 1.0 and 2.0, should only preserve these resource URIs. When a Server starts to serve 2.0 resource formats, for instance the ServiceProvider resource, it is recommended to update its locally stored or cached information about the contents of the ServiceProvider resource as the URIs to various capabilities may have changed (query, delegated UIs, factories, etc.).
-</p>
-</section>
-
-</section>
-
-<section class='appendix informative'>
-  <h2>Acknowledgements</h2>
-  <p>The following individuals have participated in the creation of this specification and are gratefully acknowledged:</p>
-
-<p><b>Project Governing Board</b>:</p><p style="margin-left: 40px">
-James Amsden, IBM (co-chair)<br>
-Andrii Berezovskyi, KTH (co-chair)<br>
-Bill Chown, Mentor<br>
-Wesley Coelho, Tasktop<br>
-Axel Reichwein, Koneksys<br>
-</p>
-
-<p><b>Techical Steering Committee</b>:</p><p style="margin-left: 40px">
-James Amsden, IBM<br>
-Andrii Berezovskyi, KTH<br>
-Axel Reichwein, Koneksys<br>
-</p>
-
-<p><b>Additional Participants</b>:</p><p style="margin-left: 40px">
-Andy Berner, IBM<br>
-Scott Bosworth, IBM<br>
-Jim Conallen, IBM<br>
-George De Candio, IBM<br>
-Jeremy Dick, Integrate<br>
-Brenda Ellis, Northrop Grumman<br>
-Rainer Ersch, Siemens<br>
-Ian Green, IBM<br>
-Dave Johnson, IBM<br>
-Andreas Keis, EADS<br>
-Nicholas Kruk, IBM<br>
-Chris McGraw, IBM<br>
-Paul McMahan, IBM<br>
-David Ruiz, Ravenflow<br>
-Matthew Stone, Stoneworks<br>
-Dominic Tulley, IBM<br>
-Simon Wills, Integrate<br></p>
-</section>
-
-
-<section class="appendix informative" id="history">
-<h2>Change History</h2>
-<table border=1 cellspacing=0 cellpadding=0>
- <tr>
-  <td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;
-  padding:0in 5.4pt 0in 5.4pt'><b>Revision</b></td>
-  <td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Date</b></td>
-  <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Editor</b></td>
-  <td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Changes Made</b></td>
- </tr>
- <tr>
-  <td>01</td>
-  <td>2018-05-22</td>
-  <td>Jad El-khoury</td>
-  <td>Initial Committee Specification Draft migrated from open-services.net</td>
- </tr>
-</table>
-</section>
-</body>
+    <section class="appendix informative" id="history">
+      <h2>Change History</h2>
+      <table border="1" cellspacing="0" cellpadding="0">
+        <tr>
+          <td
+            width="103"
+            valign="top"
+            style="width: 77.4pt; border: solid windowtext 1pt; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Revision</b>
+          </td>
+          <td
+            width="96"
+            valign="top"
+            style="width: 1in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Date</b>
+          </td>
+          <td
+            width="144"
+            valign="top"
+            style="width: 1.5in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Editor</b>
+          </td>
+          <td
+            width="295"
+            valign="top"
+            style="width: 221.4pt; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Changes Made</b>
+          </td>
+        </tr>
+        <tr>
+          <td>01</td>
+          <td>2018-05-22</td>
+          <td>Jad El-khoury</td>
+          <td>Initial Committee Specification Draft migrated from open-services.net</td>
+        </tr>
+      </table>
+    </section>
+  </body>
 </html>
