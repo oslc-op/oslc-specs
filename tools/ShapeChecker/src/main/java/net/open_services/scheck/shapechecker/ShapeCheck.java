@@ -77,7 +77,7 @@ public class ShapeCheck
         // Look for the optional properties
         node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
         node.checkLangString(DCTerms.description, Occurrence.ZeroOrOne,
-            desc -> NodeCheck.checkPeriod(desc));
+            desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
 
@@ -139,7 +139,7 @@ public class ShapeCheck
             return;
         }
         node.checkLangString(DCTerms.description, Occurrence.ExactlyOne,
-            desc -> NodeCheck.checkPeriod(desc));
+            desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(OSLC.name, null, Occurrence.ExactlyOne,
             literal -> checkUnique(names,literal));
         node.checkURI(OSLC.occurs, Occurrence.ExactlyOne,
