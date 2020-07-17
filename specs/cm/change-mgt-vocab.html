@@ -6,12 +6,12 @@
 
     <meta
       name="description"
-      content="This specification defines a vocabulary
-  and resource shapes for the Change Management domain."
+      content="This specification defines the vocabulary terms
+  for the Change Management domain."
     />
 
     <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.14/builds/respec-oasis-common.min.js"
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.15/builds/respec-oasis-common.min.js"
       async
       class="remove"
     ></script>
@@ -52,6 +52,18 @@
           {
             title: "OSLC Change Management Version 3.0. Part 2: Vocabulary (this document)",
             href: thisBase + "/change-mgt-vocab.html",
+          },
+          {
+            title: "OSLC Change Management Version 3.0. Part 3: Constraints",
+            href: thisBase + "/change-mgt-shapes.html",
+          },
+          {
+            title: "OSLC Change Management Version 3.0. Part 4: Machine Readable Vocabulary Terms",
+            href: thisBase + "/change-mgt-vocab.ttl",
+          },
+          {
+            title: "OSLC Change Management Version 3.0. Part 5: Machine Readable Constraints",
+            href: thisBase + "/change-mgt-shapes.ttl",
           },
         ],
 
@@ -154,7 +166,7 @@
   </head>
   <body>
     <section id="abstract">
-      <p>This specification defines a vocabulary and resource shapes for the Change Management domain.</p>
+      <p>This specification defines a vocabulary terms for the Change Management domain.</p>
     </section>
 
     <section id="toc"></section>
@@ -164,12 +176,18 @@
       <h2>Introduction</h2>
 
       <p>
-        This specification defines a vocabulary and resource shapes for common Change Management resources. The intent
-        is to define resources needed to support common integration scenarios and not to provide a comprehensive
-        definition of a Change Request. The resource formats may not match exactly the native models supported by change
-        management service providers, but are intended to be compatible with them. The approach to supporting these
-        scenarios is to delegate operations, as driven by service provider contributed user interfaces, as much as
-        possible and not require a service provider to expose its complete data model and application logic.
+        This specification defines a vocabulary terms for common Change Management resources. The intent is to define
+        resources needed to support common integration scenarios and not to provide a comprehensive definition of a
+        Change Request. The resource formats may not match exactly the native models supported by change management
+        service providers, but are intended to be compatible with them. The approach to supporting these scenarios is to
+        delegate operations, as driven by service provider contributed user interfaces, as much as possible and not
+        require a service provider to expose its complete data model and application logic.
+      </p>
+
+      <p>
+        See
+        <a href="change-mgt-shapes.html">OSLC Change Management Version 3.0. Part 5: Machine Readable Constraints</a>
+        for the standard OSLC constraints defined on this vocabulary.
       </p>
 
       <figure>
@@ -228,140 +246,26 @@
       ></div>
     </section>
 
-    <section id="resourceDefinitions">
-      <h2>Change Management Resource Constraints</h2>
-
+    <section id="standardEnumerands">
+      <h3>Standard Enumeration Values</h3>
       <p>
-        Property value types that are not defined in the following sections, are defined in
-        <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Defining_OSLC_Properties"
-          >OSLC Core - Defining OSLC Properties</a
-        >
+        The Change Management specification defines a number of standard enumeration values for ChangeRequest state,
+        priority and severity. Servers are not limited to these values, they are only provided to establish a common set
+        of values that facilitate interoperability.
+      </p>
+      <p>Providers <strong>MAY</strong> have custom state, priority and severity values.</p>
+      <p>
+        Providers <strong>SHOULD</strong> use <code>skos:narrower</code> when custom state, priority or severity values
+        refine standard values to help clients understand the meaning of custom values.
+      </p>
+      <p>
+        Providers <strong>SHOULD NOT</strong> use owl:sameAs when custom state, priority or severity values refine
+        standard values.
       </p>
 
-      <p>Naming convention for relationship properties follows this pattern:</p>
+      <p>Priority and severity example:</p>
 
-      <ul>
-        <li>
-          <strong>related</strong> - Identifies a loose relationship between a Change Request and referenced resource.
-          These relationships can be used to name associated resources managed by other service providers.
-        </li>
-        <li>
-          <strong>tracks</strong> - Identifies that a Change Request is used to track the lifecycle of referenced
-          resource. From the CM tool perspective, these relationships can be used to track work that needs to be done
-          for referenced resources.
-        </li>
-        <li>
-          <strong>affects</strong> - Indicates that the Change Request affects, or has been predetermined to have impact
-          on, the related resource. These property relationships can be used to understand the potential impact of
-          referenced resources.
-        </li>
-      </ul>
-
-      <section id="changerequest">
-        <h3 id="resourcechangerequestresource_changerequest">Resource: ChangeRequest</h3>
-
-        <p>
-          The Change Request resource properties are not limited to the ones defined in this specification, service
-          providers may provide additional properties. It is recommended that any additional properties exist in their
-          own unique namespace and not use the namespaces defined in these specifications.
-        </p>
-
-        <div
-          title="Shape for oslc_cm:ChangeRequest"
-          data-include="./change-mgt-shapes.ttl#ChangeRequestShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="changeNotice">
-        <h3>Resource: ChangeNotice</h3>
-        <div
-          title="Shape for oslc_cm:ChangeNotice"
-          data-include="./change-mgt-shapes.ttl#ChangeNoticeShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="defect">
-        <h3>Resource: Defect</h3>
-
-        <p>A software or product defect. Used by Quality Management tools to report defects in testing.</p>
-
-        <div
-          title="Shape for oslc_cm:Defect"
-          data-include="./change-mgt-shapes.ttl#DefectShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="enhancement">
-        <h3>Resource: Enhancement</h3>
-
-        <div
-          title="Shape for oslc_cm:Enhancement"
-          data-include="change-mgt-shapes.ttl#EnhancementShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="reviewtask">
-        <h3>Resource: ReviewTask</h3>
-
-        <div
-          title="Shape for oslc_cm:ReviewTask"
-          data-include="change-mgt-shapes.ttl#ReviewTaskShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="task">
-        <h3 id="resourcetask">Resource: Task</h3>
-
-        <div
-          title="Shape for oslc_cm:Task"
-          data-include="change-mgt-shapes.ttl#TaskShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="standardEnumerands">
-        <h3>Standard Enumeration Values</h3>
-        <p>
-          The Change Management specification defines a number of standard enumeration values for ChangeRequest state,
-          priority and severity. Servers are not limited to these values, they are only provided to establish a common
-          set of values that facilitate interoperability.
-        </p>
-        <p>Providers <strong>MAY</strong> have custom state, priority and severity values.</p>
-        <p>
-          Providers <strong>SHOULD</strong> use <code>skos:narrower</code> when custom state, priority or severity
-          values refine standard values to help clients understand the meaning of custom values.
-        </p>
-        <p>
-          Providers <strong>SHOULD NOT</strong> use owl:sameAs when custom state, priority or severity values refine
-          standard values.
-        </p>
-
-        <p>Priority and severity example:</p>
-
-        <pre class="example">
+      <pre class="example">
 @prefix ex: &lt;http://example.com/bugtracker&gt; .
 @prefix oslc: &lt;http://open-services.net/ns/core#&gt; .
 @prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt; .
@@ -379,138 +283,146 @@
 
 &lt;http://example.com/enums#HOT&gt;
    a oslc_cm:Severity;
-   dcterms:title "Severe - HOT" ;
+   rdfs:label "Severe - HOT" ;
    skos:narrower oslc_cm:Critical ;
    ex:icon &lt;http://example.com/severity/S1.gif&gt;.
 </pre
-        >
+      >
 
-        <section id="state">
-          <h3>Resource: State</h3>
-          <p>Defines a set of standard values for property oslc_cm:status.</p>
-          <ul>
-            <li><strong>Name:</strong> <code>State</code></li>
-            <li><strong>Type URI</strong> <code>http://open-services.net/ns/cm#State</code></li>
-          </ul>
+      <section id="state">
+        <h3>Resource: State</h3>
+        <p>Defines a set of standard values for property oslc_cm:status.</p>
+        <ul>
+          <li><strong>Name:</strong> <code>State</code></li>
+          <li><strong>Type URI</strong> <code>http://open-services.net/ns/cm#State</code></li>
+        </ul>
 
-          <table class="ruled">
-            <thead>
-              <tr>
-                <th><strong>Range</strong></th>
-                <th><strong>Description</strong></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>oslc_cm:Closed</td>
-                <td>Completely done, no further fixes or fix verification is needed.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Inprogress</td>
-                <td>Active work is occurring.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Fixed</td>
-                <td>The issue is resolved or fixed but the resolution or fix has not yet been verified.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Approved</td>
-                <td>The resolution or fix is approved and can be delivered.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Reviewed</td>
-                <td>The resolution or fix has been reviewed.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Verified</td>
-                <td>The resolution or the fix is verified.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <section id="priority">
-          <h3>Resource: Priority</h3>
-
-          <ul>
-            <li><strong>Name:</strong> <code>Priority</code></li>
-            <li><strong>Type URI</strong> <code>http://open-services.net/ns/cm#Priority</code></li>
-          </ul>
-
-          <table class="ruled">
-            <thead>
-              <tr>
-                <th><strong>Range</strong></th>
-                <th><strong>Description</strong></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>oslc_cm:High</td>
-                <td>Highest priority, action on the change request highly recommended.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Medium</td>
-                <td>Acting on the change request can wait, but not forever.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Low</td>
-                <td>Action on the change request can be safely deferred.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:PriorityUnassigned</td>
-                <td>The priority of the change request is intentionally not set.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <section id="severity">
-          <h3>Resource: Severity</h3>
-
-          <ul>
-            <li><strong>Name:</strong> <code>Severity</code></li>
-            <li><strong>Type URI</strong> <code>http://open-services.net/ns/cm#Severity</code></li>
-          </ul>
-
-          <p><strong>NEEDS UPDATE</strong>: Improve descriptions.</p>
-
-          <table class="ruled">
-            <thead>
-              <tr>
-                <th><strong>Range</strong></th>
-                <th><strong>Description</strong></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>oslc_cm:Blocker</td>
-                <td>Severe problem. No workaround. Blocks development, test, or usage.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Critical</td>
-                <td>Severe problem. No workaround.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Major</td>
-                <td>Prevents function from being used. There is a workaround.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Normal</td>
-                <td>Affects non-critical functionality. There is a workaround.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:Minor</td>
-                <td>Minimal impact.</td>
-              </tr>
-              <tr>
-                <td>oslc_cm:SeverityUnassigned</td>
-                <td>Intentionally set blank.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
+        <table class="ruled">
+          <thead>
+            <tr>
+              <th><strong>Range</strong></th>
+              <th><strong>Description</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>oslc_cm:Closed</td>
+              <td>Completely done, no further fixes or fix verification is needed.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Inprogress</td>
+              <td>Active work is occurring.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Fixed</td>
+              <td>The issue is resolved or fixed but the resolution or fix has not yet been verified.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Approved</td>
+              <td>The resolution or fix is approved and can be delivered.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Reviewed</td>
+              <td>The resolution or fix has been reviewed.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Verified</td>
+              <td>The resolution or the fix is verified.</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
+
+      <section id="priority">
+        <h3>Resource: Priority</h3>
+
+        <ul>
+          <li><strong>Name:</strong> <code>Priority</code></li>
+          <li><strong>Type URI</strong> <code>http://open-services.net/ns/cm#Priority</code></li>
+        </ul>
+
+        <table class="ruled">
+          <thead>
+            <tr>
+              <th><strong>Range</strong></th>
+              <th><strong>Description</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>oslc_cm:High</td>
+              <td>Highest priority, action on the change request highly recommended.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Medium</td>
+              <td>Acting on the change request can wait, but not forever.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Low</td>
+              <td>Action on the change request can be safely deferred.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:PriorityUnassigned</td>
+              <td>The priority of the change request is intentionally not set.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="severity">
+        <h3>Resource: Severity</h3>
+
+        <ul>
+          <li><strong>Name:</strong> <code>Severity</code></li>
+          <li><strong>Type URI</strong> <code>http://open-services.net/ns/cm#Severity</code></li>
+        </ul>
+
+        <p><strong>NEEDS UPDATE</strong>: Improve descriptions.</p>
+
+        <table class="ruled">
+          <thead>
+            <tr>
+              <th><strong>Range</strong></th>
+              <th><strong>Description</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>oslc_cm:Blocker</td>
+              <td>Severe problem. No workaround. Blocks development, test, or usage.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Critical</td>
+              <td>Severe problem. No workaround.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Major</td>
+              <td>Prevents function from being used. There is a workaround.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Normal</td>
+              <td>Affects non-critical functionality. There is a workaround.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:Minor</td>
+              <td>Minimal impact.</td>
+            </tr>
+            <tr>
+              <td>oslc_cm:SeverityUnassigned</td>
+              <td>Intentionally set blank.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+
+    <section id="conformance">
+      <h2>Conformance</h2>
+      <p>
+        Change Management servers MUST use the vocabulary terms defined here where required, and with the meanings
+        defined here.
+      </p>
+      <p>Change Management servers MAY augment this vocabulary with additional classes, properties, and individuals.</p>
     </section>
   </body>
 </html>
