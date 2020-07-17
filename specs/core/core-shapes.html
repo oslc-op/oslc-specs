@@ -1,363 +1,477 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>OSLC Core Version 3.0. Part 8: Constraints</title>
+    <meta
+      name="description"
+      content="Core Constraints specifies the standard constraints on the OSLC Core RDF vocabulary terms and resources."
+    />
+    <meta charset="utf-8" />
+    <script src="./config.js" class="remove"></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.15/builds/respec-oasis-common.min.js"
+      async
+      class="remove"
+    ></script>
+    <!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
+    <script class="remove">
+      var fileName = "core-shapes.html";
+      var respecConfig = {
+        // ===== Revision-specific settings =====
 
-<head>
-  <title>OSLC Core Version 3.0. Part 8: Constraints</title>
-  <meta name="description" content="Core Constraints specifies the standard constraints on the OSLC Core RDF vocabulary terms and resources.">
-  <meta charset='utf-8' />
-  <script src='./config.js' class='remove'></script>
-  <script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.15/builds/respec-oasis-common.min.js' async
-    class='remove'></script>
-  <!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
-  <script class='remove'>
-    var fileName = "core-shapes.html";
-    var respecConfig = {
-      // ===== Revision-specific settings =====
+        specStatus: specConfig.status,
+        revision: specConfig.revision,
+        publishDate: specConfig.publishDate,
+        previousPublishDate: specConfig.previousPublishDate,
+        previousMaturity: specConfig.previousMaturity,
 
-      specStatus: specConfig.status,
-      revision: specConfig.revision,
-      publishDate:  specConfig.publishDate,
-      previousPublishDate: specConfig.previousPublishDate,
-      previousMaturity: specConfig.previousMaturity,
+        // ===== Links =====
 
-      // ===== Links =====
+        prevVersion: "",
+        thisVersion: thisBase + fileName,
+        latestVersion: oasisBase + fileName,
+        latestSpecVersion: "https://open-services.net/spec/core/latest",
+        edDraftURI: "https://open-services.net/spec/core/latest-draft",
 
-      prevVersion: "",
-      thisVersion: thisBase + fileName,
-      latestVersion: oasisBase + fileName,
-      latestSpecVersion: "https://open-services.net/spec/core/latest",
-      edDraftURI: "https://open-services.net/spec/core/latest-draft",
+        additionalArtifacts: [
+          { title: "OSLC Core Version 3.0. Part 1: Overview", href: "oslc-core.html" },
+          { title: "OSLC Core Version 3.0. Part 2: Discovery", href: "discovery.html" },
+          { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: "resource-preview.html" },
+          { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: "dialogs.html" },
+          { title: "OSLC Core Version 3.0. Part 5: Attachments", href: "attachments.html" },
+          { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: "resource-shape.html" },
+          { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: "core-vocab.html" },
+          { title: "OSLC Core Version 3.0. Part 8: Constraints (this document)", href: "core-shapes.html" },
+          { title: "OSLC Core Version 3.0. Part 9: Machine Readable Vocabulary Terms", href: "core-vocab.ttl" },
+          { title: "OSLC Core Version 3.0. Part 10: Machine Readable Constraints", href: "core-shapes.ttl" },
+        ],
 
-      additionalArtifacts: [
-        { title: "OSLC Core Version 3.0. Part 1: Overview", href:"oslc-core.html" },
-        { title: "OSLC Core Version 3.0. Part 2: Discovery", href:"discovery.html" },
-        { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href:"resource-preview.html" },
-        { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href:"dialogs.html" },
-        { title: "OSLC Core Version 3.0. Part 5: Attachments", href:"attachments.html" },
-        { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href:"resource-shape.html" },
-        { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href:"core-vocab.html" },
-        { title: "OSLC Core Version 3.0. Part 8: Constraints (this document)", href:"core-shapes.html" },
-        { title: "OSLC Core Version 3.0. Part 9: Machine Readable Vocabulary Terms", href:"core-vocab.ttl" },
-        { title: "OSLC Core Version 3.0. Part 10: Machine Readable Constraints", href:"core-shapes.ttl" }
-      ],
+        relatedWork: [
+          {
+            title: "OSLC Core Version 3.0: Link Guidance",
+            href: "https://oslc-op.github.io/oslc-specs/notes/link-guidance.html",
+          },
+        ],
 
-      relatedWork: [
-        { title: "OSLC Core Version 3.0: Link Guidance", href: "https://oslc-op.github.io/oslc-specs/notes/link-guidance.html" }
-      ],
-
-      localBiblio: {
-        "OSLCCore2": {
-          title: "OSLC Core 2.0",
-          href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
-          authors: ["S. Speicher", "D. Johnson"],
-          status: "Finalized",
-          publisher: "http://open-services.net",
+        localBiblio: {
+          OSLCCore2: {
+            title: "OSLC Core 2.0",
+            href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          SysML: {
+            title: "System Modeling Language",
+            href: "http://www.omg.org/spec/SysML/",
+            publisher: "OMG",
+          },
+          LinkGuidance: {
+            title: "OSLC Link Guidance 3.0",
+            href: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/link-guidance.html",
+            authors: ["Steve Speicher", "Jim Amsden"],
+            publisher: "OASIS",
+          },
+          SHACL: {
+            title: "Shapes Constraint Language (SHACL)",
+            href: "https://w3c.github.io/data-shapes/shacl/",
+            authors: ["Holger Knublauch", "Arthur Ryman"],
+            status: "Draft",
+            publisher: "http://www.w3.org/",
+          },
         },
-        "SysML": {
-          title: "System Modeling Language",
-          href: "http://www.omg.org/spec/SysML/",
-          publisher: "OMG",
-        },
-        "LinkGuidance": {
-          title: "OSLC Link Guidance 3.0",
-          href: "https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/link-guidance.html",
-          authors: ["Steve Speicher", "Jim Amsden"],
-          publisher: "OASIS",
-        },
-        "SHACL": {
-          title: "Shapes Constraint Language (SHACL)",
-          href: "https://w3c.github.io/data-shapes/shacl/",
-          authors: ["Holger Knublauch", "Arthur Ryman"],
-          status: "Draft",
-          publisher: "http://www.w3.org/",
-        }
-      },
 
-      // ===== Spec settings =====
+        // ===== Spec settings =====
 
-      maxTocLevel: 2,
-      shortName: "core-shapes",
-      subtitle: "Core Constraints",
-      citationLabel: "OSLC-CoreShapes-3.0",
-      noConformanceTable: true,
-      namespaces: [{
-        href: "http://open-services.net/ns/core#",
-        prefix: "oslc"
-      }],
-      editors: [{
-        name: "Jim Amsden",
-        mailto: "jamsden@us.ibm.com",
-        company: "IBM",
-        companyURL: "http://www.ibm.com/"
-      }],
-      license: "cc-by-4",
-      additionalLicenses: [{
-        licenseName: "Apache License 2.0",
-        licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
-      }],
+        maxTocLevel: 2,
+        shortName: "core-shapes",
+        subtitle: "Core Constraints",
+        citationLabel: "OSLC-CoreShapes-3.0",
+        noConformanceTable: true,
+        namespaces: [
+          {
+            href: "http://open-services.net/ns/core#",
+            prefix: "oslc",
+          },
+        ],
+        editors: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/",
+          },
+        ],
+        license: "cc-by-4",
+        additionalLicenses: [
+          {
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+          },
+        ],
 
-      // =====  Overall OSLC OP settings =====
+        // =====  Overall OSLC OP settings =====
 
-      wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
-      wgShortName: "oslc-op",
-      wgURI: "https://github.com/oslc-op/oslc-specs",
-      wgPublicList: "oslc-op",
-      chairs: [{
-        name: "Jim Amsden",
-        mailto: "jamsden@us.ibm.com",
-        company: "IBM",
-        companyURL: "http://www.ibm.com/"
-      }, {
-        name: "Andrii Berezovskyi",
-        mailto: "andriib@kth.se",
-        company: "KTH",
-        companyURL: "https://www.kth.se/en"
-      }],
-    };
-  </script>
-</head>
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-op",
+        wgURI: "https://github.com/oslc-op/oslc-specs",
+        wgPublicList: "oslc-op",
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Andrii Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se/en",
+          },
+        ],
+      };
+    </script>
+  </head>
 
-<body>
+  <body>
+    <section id="abstract">
+      Core Vocabulary defines the OSLC Core RDF vocabulary terms and resources, that have broad applicability across
+      various domains. This document specifies the standard constraints on those vocabulary terms using OSLC
+      ResourceShapes.
+    </section>
 
-    <section id='abstract'>Core Vocabulary defines the OSLC Core RDF vocabulary terms and resources, that have broad applicability across various domains. This document specifies the standard constraints on those vocabulary terms using OSLC ResourceShapes.</section>
+    <section id="toc"></section>
+    <section id="sotd"></section>
 
-  <section id='toc'></section>
-  <section id='sotd'></section>
+    <section id="intro" class="informative">
+      <h2>Introduction</h2>
+      <p>
+        RDF vocabularies define the terms and resources for a domain of interest, life-cycle management in the case of
+        OSLC Core. These vocabularies are often specified in an open manner, without providing information such as
+        property domain and range assertions, cardinalities, etc. This helps keep the vocabulary applicable for a wide
+        range of uses and furthering integration with other vocabularies.
+      </p>
 
-    <section id='intro' class='informative'>
-        <h2>Introduction</h2>
-        <p>RDF vocabularies define the terms and resources for a domain of interest, life-cycle management in the case of OSLC Core. These vocabularies are often specified in an open manner, without providing information such as property domain and range assertions, cardinalities, etc. This helps keep the vocabulary applicable for a wide range of uses and furthering integration with other vocabularies.</p> 
+      <p>
+        However, it is often desirable to closed down a vocabulary with specific constraints to facilitate using the
+        vocabulary for a specific purpose. This document specifies the constraints for using the OSLC Core vocabulary in
+        OSLC. Different sets of constraints may be applied to a vocabulary in order to tailor its use, without overly
+        constraining the vocabulary for other usages.
+      </p>
 
-        <p>However, it is often desirable to closed down a vocabulary with specific constraints to facilitate using the vocabulary for a specific purpose. This document specifies the constraints for using the OSLC Core vocabulary in OSLC. Different sets of constraints may be applied to a vocabulary in order to tailor its use, without overly constraining the vocabulary for other usages.</p>
+      <p>
+        These constraints apply to the core vocabulary defined in
+        <a href="core-vocab.html">OSLC Core Version 3.0. Part 7: Vocabulary</a>.
+      </p>
 
-        <p>These constraints apply to the core vocabulary defined in <a href='core-vocab.html'>OSLC Core Version 3.0. Part 7: Vocabulary</a>.</p>
-
-
-    <section id="terms">
+      <section id="terms">
         <h1>Terminology</h1>
-        <p>Terminology uses and extends the terminology and capabilities of <a href="./oslc-core.html">OSLC Core Overview</a>, W3C Linked Data Platform [[!LDP]], W3C's
-            Architecture of the World Wide Web [[WEBARCH]],  Hyper-text
-            Transfer Protocol [[!HTTP11]].</p>
+        <p>
+          Terminology uses and extends the terminology and capabilities of
+          <a href="./oslc-core.html">OSLC Core Overview</a>, W3C Linked Data Platform [[!LDP]], W3C's Architecture of
+          the World Wide Web [[WEBARCH]], Hyper-text Transfer Protocol [[!HTTP11]].
+        </p>
         <dl>
-            <dt class='loc-heading'><dfn>Archived Resource</dfn></dt>
-            <dd>A resource in which an explicit action has been performed to mark the resource as no longer active and may be removed from typical user interactions.  As a consequence, an archived resource should be considered immutable.</dd>
+          <dt class="loc-heading"><dfn>Archived Resource</dfn></dt>
+          <dd>
+            A resource in which an explicit action has been performed to mark the resource as no longer active and may
+            be removed from typical user interactions. As a consequence, an archived resource should be considered
+            immutable.
+          </dd>
         </dl>
+      </section>
+
+      <section id="references"><h3>References</h3></section>
+      <section id="conventions"></section>
     </section>
 
-  <section id='references'><h3>References</h3></section>
-    <section id='conventions'></section>
-
+    <section id="resourceShapes">
+      <h2>Resource Shape</h2>
+      <p>
+        The shape of an RDF resource is a description of the set of triples it is expected to contain and the integrity
+        constraints those triples are required to satisfy. Applications of shapes include validating RDF data,
+        documenting RDF APIs, and providing meta-data to tools, such as form and query builders, that handle RDF data.
+        OSLC Core uses shapes to:
+      </p>
+      <ul>
+        <li>
+          Define specific vocabulary constraints including allowed values, max size, cardinality, representation in RDF
+          specifications and if the property is read only.
+        </li>
+        <ls>Specify the properties required for resource creation.</ls>
+        <li>Specify what servers all allow for prefilling delegated dialogs.</li>
+        <li>Describe the results of query operations.</li>
+      </ul>
+      <p>
+        Constraints on OSLC Core and Domain resources SHOULD be described using
+        <a href="./resource-shape.html">ResourceShapes</a> which is included as part of the OSLC Core multi-part
+        specifications. Servers MAY use other constraint languages such as [[SHACL]] to define resource constraints.
+      </p>
     </section>
 
-    <section id='resourceShapes'>
-        <h2>Resource Shape</h2>
-        <p>The shape of an RDF resource is a description of the set of triples it is expected to contain and the integrity constraints those triples are required to satisfy. Applications of shapes include validating RDF data, documenting RDF APIs, and providing meta-data to tools, such as form and query builders, that handle RDF data. OSLC Core uses shapes to:
-        <ul>
-            <li>Define specific vocabulary constraints including allowed values, max size, cardinality, representation in RDF specifications and if the property is read only.</li>
-            <ls>Specify the properties required for resource creation.</ls>
-            <li>Specify what servers all allow for prefilling delegated dialogs.</li>
-            <li>Describe the results of query operations.</li>
-        </ul></p>
-        <p>Constraints on OSLC Core and Domain resources SHOULD be described using <a href="./resource-shape.html">ResourceShapes</a> which is included as part of the OSLC Core multi-part specifications. Servers MAY use other constraint languages such as [[SHACL]] to define resource constraints.</p>
-    </section>
+    <section id="commonprops">
+      <h2>Common Properties</h2>
+      <p>
+        Unlike the rest of the Core specification, these properties change and grow as new common properties are added.
+        The properties that we list here are available for use in OSLC domain specifications when defining OSLC
+        resources, but this does not mean that they are required to be in OSLC resources. OSLC domain specifications
+        decide which properties are allowed and required for resources needed to realize their use cases. The OSLC
+        common properties include properties defined in other standard vocabularies including:
+      </p>
 
+      <ul>
+        <li><a href="http://xmlns.com/foaf/spec/">Friend of a Friend (FOAF)</a></li>
+        <li><a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core (dcterms)</a></li>
+        <li><a href="https://www.w3.org/TR/2004/REC-rdf-schema-20040210/">RDF Schema (rdfs)</a></li>
+      </ul>
 
-     <section id="commonprops">
-        <h2>Common Properties</h2>
-        <p>Unlike the rest of the Core specification, these properties change and grow as new common properties are added.
-            The properties that we list here are available for use in OSLC domain specifications
-            when defining OSLC resources, but this does not mean that they are required to be in OSLC resources.
-            OSLC domain specifications decide which properties are allowed and required for resources needed to realize their use cases. The OSLC common properties include properties defined in other standard vocabularies including:
-            <ul>
-                <li><a href="http://xmlns.com/foaf/spec/">Friend of a Friend (FOAF)</a></li>
-                <li><a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core (dcterms)</a></li>
-                <li><a href="https://www.w3.org/TR/2004/REC-rdf-schema-20040210/">RDF Schema (rdfs)</a></li>
-            </ul>
-            </p>
+      <section id="anyProperties" class="shapes">
+        <h2>Properties on Any Resource</h2>
+        <div
+          title="Common Properties"
+          data-include="./core-shapes.ttl#CommonPropertiesShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
 
-        <section id="anyProperties" class="shapes">
-            <h2>Properties on Any Resource</h2>
-         <div title='Common Properties'
-            data-include='./core-shapes.ttl#CommonPropertiesShape'
-            data-oninclude='shapeToSpec'
-            data-include-sync='true'
-            data-include-replace='true'
-            data-include-format='html'>
-         </div>
-         </section>
+      <section id="personProperties" class="shapes">
+        <h2>Person Properties</h2>
+        <div
+          title="Person Properties"
+          data-include="./core-shapes.ttl#PersonShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
 
-        <section id="personProperties" class="shapes">
-            <h2>Person Properties</h2>
-         <div title='Person Properties'
-            data-include='./core-shapes.ttl#PersonShape'
-            data-oninclude='shapeToSpec'
-            data-include-sync='true'
-            data-include-replace='true'
-            data-include-format='html'>
-         </div>
-         </section>
+      <section id="comPropImplConform">
+        <h2>Implementation Conformance</h2>
 
-        <section id="comPropImplConform">
-            <h2>Implementation Conformance</h2>
-
-            <section id="nsRule"><h2 class="normalText">
-            Changes to the OSLC Core Vocabulary MUST be approved by the OASIS OSLC Open Project. The OSLC Core Vocabulary is assigned the namespace URI of the <code>http://open-services.net/ns/core#</code>.
-            </h2></section>
-
-            <section id="nsRuleExtend"><h2 class="normalText">
-            Domain TCs and other extensions MUST contribute their vocabulary terms in a namespace which is assigned to them as an authority.
-            </h2></section>
-
-            <section id="vocabReuse"><h2 class="normalText">
-            OSLC Core, domain and other extensions SHOULD reuse existing vocabulary terms from stable vocabularies such as [[!DC-TERMS]], RDF [[!rdf11-concepts]], RDF Schema [[!rdf-schema]],
-            [[!FOAF]], [[skos-reference]] and OSLC.  New vocabulary terms should only be created when there is no clear existing choice available. See the [[!LDP]] <a href="http://www.w3.org/TR/ldp/#ldprs-gen-reusevocabsuchas">similar clause on reuse</a>.
-            </h2></section>
-
-            <p>See <a href="#rdfvocab" class="sectionRef"></a> for details on common property terms.</p>
+        <section id="nsRule">
+          <h2 class="normalText">
+            Changes to the OSLC Core Vocabulary MUST be approved by the OASIS OSLC Open Project. The OSLC Core
+            Vocabulary is assigned the namespace URI of the <code>http://open-services.net/ns/core#</code>.
+          </h2>
         </section>
+
+        <section id="nsRuleExtend">
+          <h2 class="normalText">
+            Domain TCs and other extensions MUST contribute their vocabulary terms in a namespace which is assigned to
+            them as an authority.
+          </h2>
+        </section>
+
+        <section id="vocabReuse">
+          <h2 class="normalText">
+            OSLC Core, domain and other extensions SHOULD reuse existing vocabulary terms from stable vocabularies such
+            as [[!DC-TERMS]], RDF [[!rdf11-concepts]], RDF Schema [[!rdf-schema]], [[!FOAF]], [[skos-reference]] and
+            OSLC. New vocabulary terms should only be created when there is no clear existing choice available. See the
+            [[!LDP]] <a href="http://www.w3.org/TR/ldp/#ldprs-gen-reusevocabsuchas">similar clause on reuse</a>.
+          </h2>
+        </section>
+
+        <p>See <a href="#rdfvocab" class="sectionRef"></a> for details on common property terms.</p>
+      </section>
     </section>
 
     <section id="discussion">
-        <h2>Discussion</h2>
+      <h2>Discussion</h2>
 
-        <section id="shapeDiscussion">
-            <h2>Shape: Discussion</h2>
-            <p>It is common to collect a series of comments on a lifecycle resource, often referred to as a discussion. For example: tasks, bug reports, requirements, assets and so on, are often collected across various types of resources such as project. A project might reflect the planning of work to deliver a product that realizes the requirements as validated through test cases and bug reports. Discussions allow users to collaborate with each other for more efficient and effective delivery. This Discussion resource definition provides a minimal shape describing the needed properties.</p>
+      <section id="shapeDiscussion">
+        <h2>Shape: Discussion</h2>
+        <p>
+          It is common to collect a series of comments on a lifecycle resource, often referred to as a discussion. For
+          example: tasks, bug reports, requirements, assets and so on, are often collected across various types of
+          resources such as project. A project might reflect the planning of work to deliver a product that realizes the
+          requirements as validated through test cases and bug reports. Discussions allow users to collaborate with each
+          other for more efficient and effective delivery. This Discussion resource definition provides a minimal shape
+          describing the needed properties.
+        </p>
 
-            <div title='RDF Shape for Discussion'
-                data-include='./core-shapes.ttl#DiscussionShape'
-                data-oninclude='shapeToSpec'
-                data-include-sync='true'
-                data-include-replace='true'
-                data-include-format='html'></div>
-        </section>
+        <div
+          title="RDF Shape for Discussion"
+          data-include="./core-shapes.ttl#DiscussionShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
 
-        <section id="shapeComment">
-            <h2>Shape: Comment</h2>
-            <p>Used in conjunction with <a href="#shapeDiscussion" title="Shape: Discussion">Shape: Discussion</a> to provide a minimal resource definition for a collection
-            of comments.</p>
+      <section id="shapeComment">
+        <h2>Shape: Comment</h2>
+        <p>
+          Used in conjunction with <a href="#shapeDiscussion" title="Shape: Discussion">Shape: Discussion</a> to provide
+          a minimal resource definition for a collection of comments.
+        </p>
 
-            <div title='RDF Shape for Comment'
-                data-include='./core-shapes.ttl#CommentShape'
-                data-oninclude='shapeToSpec'
-                data-include-sync='true'
-                data-include-replace='true'
-                data-include-format='html'></div>
-        </section>
+        <div
+          title="RDF Shape for Comment"
+          data-include="./core-shapes.ttl#CommentShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
 
-        <p>See <a href="#rdfvocab" class="sectionRef"></a> for details on discussion property terms.</p>
-
+      <p>See <a href="#rdfvocab" class="sectionRef"></a> for details on discussion property terms.</p>
     </section>
 
     <section id="errorresponses">
-        <h2>Errors</h2>
+      <h2>Errors</h2>
 
-        <section id="errImplConform">
-            <h2>Implementation Conformance</h2>
-            <section id="errUseful"><h2 class="normalText">When an OSLC Server incurs an error, it is RECOMMENDED that useful information  be provided to clients in the body of the HTTP response.</h2>
-            </section>
-
-            <section id="errMsg"><h2 class="normalText">OSLC Servers SHOULD use the <a href="#shapeError">Error resource</a> defined below as the basis for forming error responses.</h2>
-            </section>
-
-            <section id="errFormat"><h2 class="normalText">OSLC Servers SHOULD return an <a href="#shapeError">Error resource</a> using the same representation format requested by the client via the HTTP <code>Accept</code> request header. [[!HTTP11]]</h2>
-            </section>
-
-            <section id="errFormatStatusCode"><h2 class="normalText">OSLC Clients SHOULD treat the <code>oslc:statusCode</code> as a String that starts with digits, but may contain non-digit text.</h2>
-            </section>
+      <section id="errImplConform">
+        <h2>Implementation Conformance</h2>
+        <section id="errUseful">
+          <h2 class="normalText">
+            When an OSLC Server incurs an error, it is RECOMMENDED that useful information be provided to clients in the
+            body of the HTTP response.
+          </h2>
         </section>
 
-        <section id="shapeError">
-            <h2>Shape: Error</h2>
-            <p>Used when servers may need a consistent shape to communicate error messages.</p>
-
-            <div title='RDF Shape for Error'
-                data-include='./core-shapes.ttl#ErrorShape'
-                data-oninclude='shapeToSpec'
-                data-include-sync='true'
-                data-include-replace='true'
-                data-include-format='html'></div>
-
+        <section id="errMsg">
+          <h2 class="normalText">
+            OSLC Servers SHOULD use the <a href="#shapeError">Error resource</a> defined below as the basis for forming
+            error responses.
+          </h2>
         </section>
 
-        <section id="shapeExtendedError">
-            <h2>Shape: ExtendedError</h2>
-            <p>Additional details about an error the server had when processing the request.</p>
+        <section id="errFormat">
+          <h2 class="normalText">
+            OSLC Servers SHOULD return an <a href="#shapeError">Error resource</a> using the same representation format
+            requested by the client via the HTTP <code>Accept</code> request header. [[!HTTP11]]
+          </h2>
+        </section>
 
-            <div title='RDF Shape for ExtendedError'
-                data-include='./core-shapes.ttl#ExtendedErrorShape'
-                data-oninclude='shapeToSpec'
-                data-include-sync='true'
-                data-include-replace='true'
-                data-include-format='html'></div>
+        <section id="errFormatStatusCode">
+          <h2 class="normalText">
+            OSLC Clients SHOULD treat the <code>oslc:statusCode</code> as a String that starts with digits, but may
+            contain non-digit text.
+          </h2>
+        </section>
+      </section>
+
+      <section id="shapeError">
+        <h2>Shape: Error</h2>
+        <p>Used when servers may need a consistent shape to communicate error messages.</p>
+
+        <div
+          title="RDF Shape for Error"
+          data-include="./core-shapes.ttl#ErrorShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="shapeExtendedError">
+        <h2>Shape: ExtendedError</h2>
+        <p>Additional details about an error the server had when processing the request.</p>
+
+        <div
+          title="RDF Shape for ExtendedError"
+          data-include="./core-shapes.ttl#ExtendedErrorShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
         <p>See <a href="#rdfvocab" class="sectionRef"></a> for details on error property terms.</p>
+      </section>
 
-        </section>
+      <section id="responseInfo">
+        <h2>Shape: ResponseInfo</h2>
+        <p>
+          Resource representations returned via [[!OSLCCore2]] Resource Paging MUST include a resource of type
+          oslc:ResponseInfo, as defined in this section. A response info resource representation describes information
+          about a paged HTTP response body in which it appears.
+        </p>
 
-        <section id="responseInfo">
-            <h2>Shape: ResponseInfo</h2>
-            <p>Resource representations returned via [[!OSLCCore2]] Resource Paging MUST include a resource of type oslc:ResponseInfo, as defined in this section. A response info resource representation describes information about a paged HTTP response body in which it appears.</p>
-
-                <div title='RDF Shape for ResponseInfo'
-                    data-include='./core-shapes.ttl#ResponseInfoShape'
-                    data-oninclude='shapeToSpec'
-                    data-include-sync='true'
-                    data-include-replace='true'
-                    data-include-format='html'></div>
-
-        </section>
+        <div
+          title="RDF Shape for ResponseInfo"
+          data-include="./core-shapes.ttl#ResponseInfoShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
     </section>
 
+    <section id="conformance">
+      <h2>Conformance</h2>
+      <p>OSLC servers MUST follow the constraints defined here where required, and with the meanings defined here.</p>
+      <p>OSLC servers MAY provide additional constraints for specific purposes.</p>
+    </section>
 
-
-<section id='conformance'>
-<h2>Conformance</h2>
-<p>OSLC servers MUST follow the constraints defined here where required,
-and with the meanings defined here.</p>
-<p>OSLC servers MAY provide additional constraints for specific purposes.</p>
-</section>
-
-<section class="appendix informative" id="history">
-<h2>Change History</h2>
-<table border=1 cellspacing=0 cellpadding=0>
- <tr>
-  <td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;
-  padding:0in 5.4pt 0in 5.4pt'><b>Revision</b></td>
-  <td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Date</b></td>
-  <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Editor</b></td>
-  <td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'><b>Changes Made</b></td>
- </tr>
- <tr>
-  <td>01</td>
-  <td>04 April 2017</td>
-  <td>Jim Amsden</td>
-  <td>CS was approved and published.</td>
- </tr>
- <tr>
-  <td>03</td>
-  <td>31 May 2018</td>
-  <td>Jim Amsden</td>
-  <td>Added oslc:error common property to associate oslc:Error resources with any resource.<br>
-Added missing ResponseInfo resource.<br>
-Changed prefix acc to oslc_acc for consistency.<br>
-Added oslc:queryable property for OSLC Query Capability.<br>
-Added oslc:postBody property to ResponseInfo for POST method paging.<br>
-Added dcterms:references as a common property.<br>
-Added the created, references, identifier properties to oslc:Error.
-</td>
-</tr>
-<tr>
-    <td>04</td>
-    <td>26 June 2019</td>
-    <td>Jim Amsden</td>
-    <td>Migration to Open Project</td>
-</tr>
-</table>
-
-</section>
-
-</body>
+    <section class="appendix informative" id="history">
+      <h2>Change History</h2>
+      <table border="1" cellspacing="0" cellpadding="0">
+        <tr>
+          <td
+            width="103"
+            valign="top"
+            style="width: 77.4pt; border: solid windowtext 1pt; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Revision</b>
+          </td>
+          <td
+            width="96"
+            valign="top"
+            style="width: 1in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Date</b>
+          </td>
+          <td
+            width="144"
+            valign="top"
+            style="width: 1.5in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Editor</b>
+          </td>
+          <td
+            width="295"
+            valign="top"
+            style="width: 221.4pt; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Changes Made</b>
+          </td>
+        </tr>
+        <tr>
+          <td>01</td>
+          <td>04 April 2017</td>
+          <td>Jim Amsden</td>
+          <td>CS was approved and published.</td>
+        </tr>
+        <tr>
+          <td>03</td>
+          <td>31 May 2018</td>
+          <td>Jim Amsden</td>
+          <td>
+            Added oslc:error common property to associate oslc:Error resources with any resource.<br />
+            Added missing ResponseInfo resource.<br />
+            Changed prefix acc to oslc_acc for consistency.<br />
+            Added oslc:queryable property for OSLC Query Capability.<br />
+            Added oslc:postBody property to ResponseInfo for POST method paging.<br />
+            Added dcterms:references as a common property.<br />
+            Added the created, references, identifier properties to oslc:Error.
+          </td>
+        </tr>
+        <tr>
+          <td>04</td>
+          <td>26 June 2019</td>
+          <td>Jim Amsden</td>
+          <td>Migration to Open Project</td>
+        </tr>
+      </table>
+    </section>
+  </body>
 </html>
