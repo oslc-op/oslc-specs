@@ -36,4 +36,10 @@ public @interface SCVocab
      * @return a longer description of the vocabulary or domain.
      */
     String description();
+
+    /**
+     * A set of additional statements to be added to the ontology.
+     * @return A set of additional statements to be added to the ontology
+     */
+    String[] additionalStatements() default {};
 }

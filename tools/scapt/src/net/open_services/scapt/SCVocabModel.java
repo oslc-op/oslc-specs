@@ -1,15 +1,19 @@
 package net.open_services.scapt;
 
+import static net.open_services.scapt.SCResultProcessor.enquote;
+
+
 /**
  * Data object for ShapeChecker vocabulary.
  * @author Nick Crossley. Released to public domain, September 2015.
  */
 public class SCVocabModel
 {
-    private String uri;
-    private String prefix;
-    private String domain;
-    private String description;
+    private String   uri;
+    private String   prefix;
+    private String   domain;
+    private String   description;
+    private String[] additionalStatements;
 
 
     /**
@@ -18,13 +22,15 @@ public class SCVocabModel
      * @param prefix the preferred namespace prefix for the vocabulary
      * @param domain a short title for the vocabulary/domain
      * @param description a longer description of the vocabulary or domain
+     * @param additionalStatements additional statements to be added to the ontology
      */
-    public SCVocabModel(String uri, String prefix, String domain, String description)
+    public SCVocabModel(String uri, String prefix, String domain, String description, String... additionalStatements)
     {
         this.uri = uri;
         this.prefix = prefix;
         this.domain = domain;
-        this.description = description;
+        this.description = enquote(description);
+        this.additionalStatements = additionalStatements;
     }
 
 
@@ -66,4 +72,14 @@ public class SCVocabModel
     {
         return description;
     }
+
+
+    /**
+     * Get the additional statements.
+     * @return returns the additional statements.
+     */
+	public String[] getAdditionalStatements()
+	{
+		return additionalStatements;
+	}
 }

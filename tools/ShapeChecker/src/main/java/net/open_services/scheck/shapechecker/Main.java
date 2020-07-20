@@ -1,10 +1,8 @@
 package net.open_services.scheck.shapechecker;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -23,7 +21,7 @@ public class Main
 {
     private List<URI>  vocabularies = new ArrayList<>();
     private List<URI>  shapes       = new ArrayList<>();
-    private boolean    debug        = false;
+    private int		   debug        = 0;
     private boolean    verbose      = false;
     private boolean    crossCheck   = true;
     private CrossCheck crossChecker;
@@ -38,7 +36,7 @@ public class Main
      * <li>Each -x/--exclude argument specifies a regular expression for URIs not to be read</li>
      * <li>-N/--nocrosscheck turns off the cross-checking of vocabularies and shapes</li>
      * <li>-V/--verbose turns out more progress information</li>
-     * <li>-D/--debug turns on debugging output</li>
+     * <li>-D/--debug turns on debugging output; multiple -D flags increase the debug level</li>
      * </ul>
      * The arguments may be repeated to check multiple vocabulary and shape documents.
      * The vocabulary and shape arguments can use shell-style globs (*.ttl, etc.),
@@ -52,8 +50,9 @@ public class Main
 
     private void run(String... args)
     {
-        ResultModel resultModel = new ResultModel(args);
-        HttpHandler httpHandler = new HttpHandler();
+        ResultModel resultModel   = new ResultModel(args);
+        HttpHandler httpHandler   = new HttpHandler();
+        boolean		failedToParse = false;
 
         if (!checkUsage(args,resultModel,httpHandler))
         {
@@ -95,11 +94,13 @@ public class Main
             catch (RiotNotFoundException e)
             {
                 System.err.println("Cannot find vocabulary document "+vocab);
+                failedToParse = true;
             }
             catch (RiotException e)
             {
                 System.err.println("Cannot parse vocabulary document "+vocab);
                 e.printStackTrace();
+                failedToParse = true;
             }
         }
 
@@ -117,16 +118,18 @@ public class Main
             catch (RiotNotFoundException e)
             {
                 System.err.println("Cannot find shape document "+shape);
+                failedToParse = true;
             }
             catch (RiotException e)
             {
                 System.err.println("Cannot parse shape document "+shape);
                 e.printStackTrace();
+                failedToParse = true;
             }
         }
 
         // Check that terms and defined and used
-        if (!vocabularies.isEmpty() && (verbose || crossCheck))
+        if ((verbose || crossCheck) && !vocabularies.isEmpty())
         {
             crossChecker = new CrossCheck(resultModel);
             crossChecker.buildMaps();
@@ -136,16 +139,16 @@ public class Main
             }
         }
 
-        if (debug && verbose)
+        if (debug > 2)
         {
             System.err.println("\nResult model before summarizing:");
             Models.write(resultModel.getModel(), System.err);
         }
 
         // Scan the result model, adding issue counts
-        int errors = resultModel.summarizeIssues();
+        int errors = resultModel.summarizeIssues(debug);
 
-        if (debug && verbose)
+        if (debug > 2)
         {
             System.err.println("\nResult model after summarizing:");
             Models.write(resultModel.getModel(), System.err);
@@ -165,7 +168,7 @@ public class Main
             crossChecker.printVocabTerms();
         }
 
-        if (errors > 0)
+        if (failedToParse || errors > 0)
         {
             System.exit(1);
         }
@@ -185,9 +188,12 @@ public class Main
                 if (args[index].equals("-D") || args[index].equals("--debug"))
                 {
                     index++;
-                    debug = true;
+                    debug++;
                     httpHandler.setDebug(debug);
-                    System.err.println("Arguments: "+String.join(" ",args));
+                    if (debug==1)
+                	{
+                    	System.err.println("Arguments: "+String.join(" ",args));
+                	}
                 }
                 else if (args[index].equals("-V") || args[index].equals("--verbose"))
                 {
@@ -206,12 +212,12 @@ public class Main
                 else if (args[index].equals("-v") || args[index].equals("--vocab"))
                 {
                     index++;
-                    vocabularies.addAll(checkFileOrURI(args[index++]));
+                    vocabularies.addAll(GlobExpander.checkFileOrURI(args[index++]));
                 }
                 else if (args[index].equals("-s") || args[index].equals("--shape"))
                 {
                     index++;
-                    shapes.addAll(checkFileOrURI(args[index++]));
+                    shapes.addAll(GlobExpander.checkFileOrURI(args[index++]));
                 }
                 else if (args[index].equals("-q") || args[index].equals("--quiet"))
                 {
@@ -247,35 +253,5 @@ public class Main
             return false;
         }
         return passed;
-    }
-
-
-    /**
-     * Make a list of URIs for an argument that is either a single URI string,
-     * or a file path that contains shell-style globs to be expanded.
-     * @param argVal an argument that is either a URI string or a file path with globs
-     * @return a list of URIs that are formed from the provided string
-     * @throws URISyntaxException if the URI is not valid
-     */
-    @javax.annotation.CheckReturnValue
-    public List<URI> checkFileOrURI(String argVal) throws URISyntaxException
-    {
-        if (argVal.startsWith("http://") || argVal.startsWith("https://"))
-        {
-            return Collections.singletonList(new URI(argVal));
-        }
-        else
-        {
-           List<URI> uris = new ArrayList<>();
-           for (String path : GlobExpander.expand(argVal))
-           {
-               uris.add(new File(path).toURI());
-           }
-           if (uris.isEmpty())
-           {
-               System.err.println("Warning: nothing matches "+argVal);
-           }
-           return uris;
-        }
     }
 }

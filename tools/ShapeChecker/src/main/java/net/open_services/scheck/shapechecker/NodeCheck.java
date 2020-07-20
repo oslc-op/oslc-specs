@@ -224,7 +224,6 @@ public class NodeCheck
             {
                 Literal lit = node.asLiteral();
                 RDFDatatype dt = lit.getDatatype();
-                Resource validation;
 
                 if (!(dt == null || dt.equals(RDF.dtLangString) || dt.equals(XSDDatatype.XSDstring) || dt.equals(RDF.dtXMLLiteral)))
                 {
@@ -237,7 +236,8 @@ public class NodeCheck
                 }
                 else
                 {
-                    String lang = lit.getLanguage();
+                    Resource validation;
+                    String   lang = lit.getLanguage();
                     if (langTags.contains(lang))
                     {
                         resultModel.createIssue(resultNode, Terms.DuplicateLangString, property, node);
@@ -302,7 +302,6 @@ public class NodeCheck
             count++;
 
             RDFNode node = st.getObject();
-            Resource validation;
 
             if (!node.isResource())
             {
@@ -310,7 +309,8 @@ public class NodeCheck
             }
             else
             {
-                String uri = node.asResource().getURI();
+                Resource validation;
+                String   uri = node.asResource().getURI();
                 if (originalModel.contains(node.asResource(), null))
                 {
                     // ignore internal references for now
