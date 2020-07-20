@@ -39,6 +39,7 @@ public class VocabularyCheck
     private Resource    vocabResult;
     private Property    preferredNameSpace;
     private Set<String> labels = new HashSet<>();
+    private Set<Property> additionalProperties = new HashSet<>();
 
 
     /**
@@ -149,11 +150,14 @@ public class VocabularyCheck
         // Check the optional properties of the ontology
         node.checkNode(DCTerms.license, Occurrence.ZeroOrOne);
         node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne,
-            desc -> NodeCheck.checkPeriod(desc));
+            desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
         node.checkLiteral(preferredNameSpace, null, Occurrence.ZeroOrOne, null);
-
         node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
+
+        // Look for additional properties permitted for terms in this vocabulary
+        node.checkURI(Terms.additionalProperty, Occurrence.ZeroOrMany,
+        	uri->{additionalProperties.add(ResourceFactory.createProperty(uri)); return null; });
 
         StmtIterator it = modelCopy.listStatements(ontology, null, (RDFNode)null);
         while (it.hasNext())
@@ -187,7 +191,7 @@ public class VocabularyCheck
         NodeCheck node = new NodeCheck(term, httpHandler, vocabModel, modelCopy, resultModel, termResult);
         node.checkLiteral(RDFS.label, null, Occurrence.ExactlyOne, label -> checkUniqueLabel(labels,label));
         node.checkLiteral(RDFS.comment, null, Occurrence.ExactlyOne,
-            comment -> NodeCheck.checkPeriod(comment));
+            comment -> NodeCheck.checkSentence(comment));
         node.checkURI(RDFS.isDefinedBy, Occurrence.ExactlyOne,
             uri -> uri.equals(vocab.getURI()) ? null : Terms.TermNotInVocab);
 
@@ -205,12 +209,16 @@ public class VocabularyCheck
         // Special checks for the term type, and the type-specific properties of a term
         checkTermType(term, termResult);
 
-        // Check that the term has no other properties
+        // Check that the term has no other properties, other than declared additional ones
         StmtIterator it = modelCopy.listStatements(term, null, (RDFNode)null);
         while (it.hasNext())
         {
             Statement st = it.next();
-            resultModel.createIssue(termResult, Terms.Redundant, st.getPredicate(), st.getObject());
+            Property pred = st.getPredicate();
+            if (!additionalProperties.contains(pred))
+            {
+            	resultModel.createIssue(termResult, Terms.Redundant, pred, st.getObject());
+            }
             it.remove();
         }
     }

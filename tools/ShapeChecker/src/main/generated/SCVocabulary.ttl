@@ -1,13 +1,12 @@
 # RDF Vocabulary document for ShapeChecker Result Vocabulary.
 
-@prefix dcterms:        <http://purl.org/dc/terms/> .
-@prefix owl:            <http://www.w3.org/2002/07/owl#> .
-@prefix oslc:           <http://open-services.net/ns/core#> .
-@prefix rdf:            <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix vann:           <http://purl.org/vocab/vann/> .
-@prefix vs:             <http://www.w3.org/2003/06/sw-vocab-status/ns#> .
-@prefix xsd:            <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:  <http://purl.org/dc/terms/> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann:     <http://purl.org/vocab/vann/> .
+
+@base <http://open-services.net/ns/scheck#> .
 @prefix scheck:  <http://open-services.net/ns/scheck#> .
 
 
@@ -18,7 +17,10 @@ scheck:
     dcterms:title "ShapeChecker Result Vocabulary." ;
     dcterms:description "A vocabulary for terms used in the result model of the OSLC Shape and Vocabulary checker." ;
     rdfs:label "ShapeChecker Result Vocabulary." ;
+    scheck:additionalProperty scheck:severity, scheck:singular, scheck:plural ;
+    dcterms:source <https://oslc-op.github.io/oslc-specs/tools/ShapeChecker/src/main/java/net/open_services/scheck/shapechecker/Terms.java> ;
     vann:preferredNamespacePrefix "scheck" .
+
 
 # Classes
 
@@ -70,7 +72,14 @@ scheck:Issue
     rdfs:label "Issue" ;
     rdfs:comment "A class for the issues enumeration." .
 
+
 # Properties
+
+scheck:additionalProperty
+    a rdf:Property ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "additionalProperty" ;
+    rdfs:comment "An additional property allowed on terms in this vocabulary" .
 
 scheck:checks
     a rdf:Property ;
@@ -145,6 +154,8 @@ scheck:warnCount
     rdfs:comment "The number of warning issues reported by the checker within the current scope." .
 
 
+# Individuals
+
 
 # Issues
 
@@ -210,6 +221,13 @@ scheck:DuplicateLangString
     rdfs:label "DuplicateLangString" ;
     rdfs:comment "Duplicate language on string literal." ;
     scheck:severity scheck:Error .
+
+scheck:EmbeddedWhitespace
+    a scheck:Issue ;
+    rdfs:isDefinedBy scheck: ;
+    rdfs:label "EmbeddedWhitespace" ;
+    rdfs:comment "White space after embedded newline - misuse of triple quotes?" ;
+    scheck:severity scheck:Warning .
 
 scheck:InappropriateMaxSize
     a scheck:Issue ;
@@ -411,6 +429,7 @@ scheck:unusedVocabulary
 
 
 # The severity enumeration
+
 scheck:Severity
     a rdfs:Class ;
     rdfs:isDefinedBy scheck: ;
@@ -434,4 +453,3 @@ scheck:Warning
     rdfs:isDefinedBy scheck: ;
     rdfs:label "Warning" ;
     rdfs:comment "Warning severity." .
-

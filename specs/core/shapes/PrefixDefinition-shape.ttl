@@ -18,28 +18,24 @@
 @prefix dcterms: <http://purl.org/dc/terms/>.
 @prefix oslc: <http://open-services.net/ns/core#> .
 
-@base <http://open-services.net/ns/core/shapes/3.0/PrefixDefinition-shape.ttl> .
+@prefix : <http://open-services.net/ns/core/shapes/3.0/#> .
+@base <http://open-services.net/ns/core/shapes/3.0/#> .
 
 
 <#PrefixDefinition> a oslc:ResourceShape ;
     dcterms:title "Prefix Definition" ;
     dcterms:description "Service Providers MUST provide a Prefix Definition for each prefix supported by the service. Each Prefix Definition defines a namespace prefix that clients MAY use in forming OSLC Query Syntax strings."^^rdf:XMLLiteral ;
     oslc:describes oslc:PrefixDefinition ;
-    oslc:property
-        <#oslc-prefix>,
-        <#oslc-prefixBase>
-.
-
-<#oslc-prefix> a oslc:Property ;
+    oslc:property [ a oslc:Property ;
 	oslc:name "prefix" ;
 	oslc:propertyDefinition oslc:prefix ;
 	oslc:occurs oslc:Exactly-one ;
 	dcterms:description "Namespace prefix to be used for this namespace."^^rdf:XMLLiteral ;
 	oslc:valueType <http://www.w3.org/2001/XMLSchema#string> ;
 	oslc:readOnly true
-.
-
-<#oslc-prefixBase> a oslc:Property ;
+],
+[
+ a oslc:Property ;
 	oslc:name "prefixBase" ;
 	oslc:propertyDefinition oslc:prefixBase ;
 	oslc:occurs oslc:Exactly-one;
@@ -47,5 +43,5 @@
 	oslc:valueType oslc:Resource ;
 	oslc:representation oslc:Reference ;
 	oslc:readOnly true
-.
+] .
 

@@ -103,10 +103,10 @@ public final class ResultModelProcessor
         while (sti1.hasNext())
         {
             Resource resultRes = sti1.next().getResource();
-            Resource parent = resultRes.getPropertyResourceValue(Terms.checks);
-            String parentName = parent == null ? defaultParentName : parent.getURI();
+            Statement parent = resultRes.getProperty(Terms.checks);
+            String parentName = parent == null ? defaultParentName : parent.getObject().toString();
 
-            preVisitor.visit(level,parentName,parent,resultRes);
+            preVisitor.visit(level,parentName,null,resultRes);
             StmtIterator sti2 = resultRes.listProperties(Terms.issue);
             while (sti2.hasNext())
             {
@@ -114,7 +114,7 @@ public final class ResultModelProcessor
                 issueVisitor.visit(level+1,parentName,resultRes,st.getResource());
             }
             processInnerIssues(level+1,resultRes,parentName,preVisitor,issueVisitor,postVisitor);
-            postVisitor.visit(level,parentName,parent,resultRes);
+            postVisitor.visit(level,parentName,null,resultRes);
         }
     }
 }

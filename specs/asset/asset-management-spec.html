@@ -1,705 +1,827 @@
 <!DOCTYPE html>
-<html xmlns='http://www.w3.org/1999/xhtml'>
-<!-- replace domain-name with your domain name, e.g., Change Management -->
-<!-- replace domain-short-name with your domains's short name, e.g., oslc-cm -->
-<meta charset='utf-8' />
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <!-- replace domain-name with your domain name, e.g., Change Management -->
+  <!-- replace domain-short-name with your domains's short name, e.g., oslc-cm -->
+  <meta charset="utf-8" />
 
-<head>
-  <title>OSLC Asset Management Version 2.1 Part 1: Specification</title>
-  <script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async class='remove'></script>
-  <script class='remove'>
-    var respecConfig = {
-      // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN).
-      // If in doubt use WD.
-      // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
-      // CSPRD is the most likely document you'll deliver first, so we'll start there.
-      specStatus: "WD",
-      // the specification's short name with version but no dots
-      shortName: "oslc-asset-v2.1",
-      // if your specification has a subtitle that goes below the main
-      // formal title, define it here
-      // subtitle   :  "Committee Specification Draft 02",
-      // the document's citation label
-      citationLabel: "OSLC-ASSET-v2.1",
-      // Revision level of the document within its stage
-      revision: "01",
-      thisVersion: "http://docs.oasis-open.org/oslc-domains/oslc-asset/v2.1/csprd01/part1-asset-management-spec/oslc-asset-v2.1-csprd01-part1-asset-management-spec.html",
-      latestVersion: "",
-      prevVersion: "",
-      // if you wish the publication date to be other than the last modification, set this
-      // publishDate:  "2009-08-06",
-      // if the specification's copyright date is a range of years, specify the start date here:
-      // copyrightStart: "2005"
-      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-      // and its maturity status
-      // previousPublishDate:  "1977-03-15",
-      // previousMaturity:  "WD",
-      // Only include h1 and h2 levels in the table of contents
-      maxTocLevel: 3,
-          conformanceLabelPrefix: "Asset",
-    // noConformanceStyling: 1,
-    // noConformanceTable: 1,
-    // conformanceClauseStrength : 1,
-    // if there a publicly available Editor's Draft, this is the link
-      edDraftURI: "https://github.com/oslc-op/oslc-specs/blob/master/specs/asset/asset-management-spec.html",
-      // Chairs and editors, add as many as you like: you must have at least one editor.
-      // Only "name" is required, but the other fields are recommended.
-      editors: [{
-        name: "Fabio Ribeiro",
-        mailto: "fabio.ribeiro@koneksys.com",
-        company: "Koneksys",
-        companyURL: "https://www.koneksys.com"
-      },
-      ],
-      chairs: [{
-        name: "Jim Amsden",
-        mailto: "jamsden@us.ibm.com",
-        company: "IBM",
-        companyURL: "http://www.ibm.com/"
-      }, {
-        name: "Gray Bachelor",
-        mailto: "gray_bachelor@uk.ibm.com",
-        company: "IBM",
-        companyURL: "http://www.ibm.com"
-      }],
-      // name of the TC
-      wg: "OASIS OSLC Lifecycle Integration Domains TC",
-      wgShortName: "oslc-domains",
-      // URI of the public TC page
-      wgURI: "https://www.oasis-open.org/committees/oslc-domains/",
-      // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
-      wgPublicList: "oslc-domains-comment",
-      // Namespaces defined by this TC
-      namespaces: [
-        { href: "http://open-services.net/ns/asset#", prefix: "asset" }
-      ],
-      // For multi-part specifications, each part must list the other parts
-      // additionalArtifacts : [
-      //  { title: "OSLC XXX 1.0 Part 1: Overview (this document)", href: "oslc-xxx.html" },
-      //  { title: "OSLC XXX 1.0 Part 2: XXX2", href: "xxx-part2.html" },
-      //  { title: "OSLC XXX 1.0 Part 3: XXX3", href: "xxx-part3.html" },
-      // ],
-      // Related work
-      // relatedWork : [
-      //    { title: "Some title", href: "http://example.com/relatedDocument.html" },
-      //    ],
-      // supersedes : [
-      //    { title: "Some title", href: "http://example.com/supercededDocument.html" },
-      //    ],
-      // Other parts of multi-part spec
-      additionalArtifacts: [
-        { title: "OSLC Asset Management Version 2.1 Part 1: Specification (this document)", href: "http://docs.oasis-open.org/oslc-domains/oslc-asset/v2.1/csprd01/part1-asset-management/oslc-asset-v2.1-csprd01-part1-asset-management-spec.html" },
-        { title: "OSLC Asset Management Version 2.1 Part 2: Vocabulary", href: "http://docs.oasis-open.org/oslc-domains/oslc-asset/v2.1/csprd01/part2-asset-management/oslc-asset-v2.1-csprd01-part2-asset-management-vocab.html" },
-      ],
-      relatedWork: [
-        { title: "Open Services for Lifecycle Collaboration Asset Management Version 2.1", href: "http://open-services.net/wiki/asset-management/OSLC-Asset-Management-2.1-Specification/" }
-      ],
-      localBiblio: {
-        "OSLCCore2": {
-          title: "OSLC Core Specification 2.0",
-          href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
-          authors: ["S. Speicher", "D. Johnson"],
-          status: "Finalized",
-          publisher: "http://open-services.net",
-        },
-        "OSLCCore3": {
-                title:    "OSLC Core 3.0",
-                href:     "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
-                authors:  ["Jim Amsden", "S. Speicher"],
-                status:   "Committee Specification",
-                publisher:  "OASIS",
-            },
-        "OSLCCore2RepresentationGuidance": {
-          title: "OSLC Core 2.0 - Representation Guidance",
-          href: "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations",
-          authors: ["S. Speicher", "D. Johnson"],
-          status: "Finalized",
-          publisher: "http://open-services.net",
-        },
-        "OSLCCore2UIGuidance": {
-          title: "OSLC Core 2.0 - UI Preview Guidance",
-          href: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
-          authors: ["S. Speicher", "D. Johnson"],
-          status: "Finalized",
-          publisher: "http://open-services.net",
-        },
-        "OSLCCore2RDFXMLExamples": {
-          title: "OSLC Core Specification 2.0 - RDF/XML examples",
-          href: "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Specifying_the_shape_of_a_query",
-          authors: ["S. Speicher", "D. Johnson"],
-          status: "Finalized",
-          publisher: "http://open-services.net",
-        },
-        "OSLCCore2JsonRepresentationGuidance": {
-          title: "OSLC Core Specification 2.0 - Representation Guidance for JSON",
-          href: "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_JSON",
-          authors: ["S. Speicher", "D. Johnson"],
-          status: "Finalized",
-          publisher: "http://open-services.net",
-        },
-        "OSLCAssetResourceDefinition": {
-          title: "OSLC Asset Management 2.0 - Resource Definition",
-          href: "http://open-services.net/bin/view/Main/AssetMgResourceDefinitionsV1",
-          authors: ["S. Speicher", "D. Johnson"],
-          status: "Finalized",
-          publisher: "http://open-services.net",
-        },
-        "OSLCAssetSamples": {
-          title: "OSLC Asset Management 2.0 - Samples",
-          href: "http://open-services.net/wiki/asset-management/OSLC-Asset-Management-2.0-Samples",
-          authors: ["S. Speicher", "D. Johnson"],
-          status: "Finalized",
-          publisher: "http://open-services.net",
-        },
-        "DublinCore1": {
-          title: "Dublin Core Metadata Element Set, Version 1.1",
-          href: "http://dublincore.org/documents/2010/10/11/dces/",
-          publisher: "Dublin Core",
-        },
-        "FOAF": {
-          title: "Friend of a Friend (FOAF) v0.98",
-          href: "http://xmlns.com/foaf/spec/20100809.html",
-          authors: ["D. Brickley", "L. Miller"],
-          status: "Stable",
-        },
-        "HTTP1.1": {
-          title: "Hyper-text Transfer Protocol (HTTP/1.1)",
-          href: "https://tools.ietf.org/html/rfc2616",
-          authors: ["R. Fielding", "J. Gettis", "J. Morgul"],
-          status: "STD 1",
-        },
-        "OAuth1.0a": {
-          title: "The OAuth 1.0 Protocol",
-          href: "https://tools.ietf.org/html/rfc5849",
-          status: "Published",
-          publisher: "Internet Engineering Task Force",
-        },
-        "RDFXMLConcepts": {
-          title: "RDF/XML Concepts and Abstract Syntax",
-          href: "https://www.w3.org/TR/2004/REC-rdf-concepts-20040210/",
-          authors: ["G. Klyne", "J. Carroll"],
-          status: "W3C Recommendation",
-          publisher: "https://www.w3.org",
-        },
-        "RDFXMLSyntax": {
-          title: "RDF/XML Syntax Specification (Revised)",
-          href: "https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp-paging.html",
-          authors: ["D. Beckett"],
-          status: "W3C Recommendation",
-          publisher: "http://www.w3.org",
-        },
-        "URISyntax": {
-          title: "URI Generic Syntax",
-          href: "https://tools.ietf.org/html/rfc3986",
-          authors: ["T. Berners-Lee", "R. Fielding"],
-          status: "STD 1",
-        },
-        "XMLNamespaces": {
-          title: "Namespaces in XML 1.0 (Third Edition)",
-          href: "https://www.w3.org/TR/REC-xml-names/",
-          authors: ["T. Bray", "D. Hollander", "A. Layman"],
-          publisher: "https://www.w3.org",
-        },
-        "XSDDatatypes": {
-          title: "XML Schema Part 2: Datatypes Second Edition",
-          href: "http://openid.net/connect/",
-          authors: ["P. Biron", "A. Malhotra"],
-          status: "W3C Recommendation",
-          publisher: "https://www.w3.org",
-        },
-        "OSLCCoreVocab": {
-          title: "OSLC Core Vocabulary",
-          href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
-          authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
-          status: "Working Draft",
-          publisher: "OASIS",
-        },
-        "OSLCCAsset": {
-          title: "OSLC Asset Management Specification 1.0",
-          href: "http://open-services.net/bin/view/Main/AssetMgSpecificationV1",
-          authors: ["G. Larsen", "G. Mendel", "K.Bauer"],
-          status: "OSLC Specification",
-          publisher: "open-services.net",
-        },
-        "ATOM": {
-          title: "RFC4287 - Atom Syndication Format",
-          href: "https://tools.ietf.org/html/rfc4287",
-          status: "STD 1",
-        },
-        "W3CBestPractices": {
-          title: "W3C Best Practices for Publishing RDF Vocabularies",
-          href: "http://www.w3.org/TR/swbp-vocab-pub/",
-          status: "Note",
-          publisher: "W3C"
-        },
+  <head>
+    <title>OSLC Asset Management Version 2.1 Part 1: Specification</title>
+    <script
+      src="https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js"
+      async
+      class="remove"
+    ></script>
+    <script class="remove">
+      var respecConfig = {
+        // specification status (WD, CSD, CSPRD, CS, COS, OS, Errata, CND, CNPRD, CN).
+        // If in doubt use WD.
+        // See http://docs.oasis-open.org/specGuidelines/ndr/namingDirectives.html#stage
+        // CSPRD is the most likely document you'll deliver first, so we'll start there.
+        specStatus: "WD",
+        // the specification's short name with version but no dots
+        shortName: "oslc-asset-v2.1",
+        // if your specification has a subtitle that goes below the main
+        // formal title, define it here
+        // subtitle   :  "Committee Specification Draft 02",
+        // the document's citation label
+        citationLabel: "OSLC-ASSET-v2.1",
+        // Revision level of the document within its stage
+        revision: "01",
+        thisVersion:
+          "http://docs.oasis-open.org/oslc-domains/oslc-asset/v2.1/csprd01/part1-asset-management-spec/oslc-asset-v2.1-csprd01-part1-asset-management-spec.html",
+        latestVersion: "",
+        prevVersion: "",
+        // if you wish the publication date to be other than the last modification, set this
+        // publishDate:  "2009-08-06",
+        // if the specification's copyright date is a range of years, specify the start date here:
+        // copyrightStart: "2005"
+        // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+        // and its maturity status
+        // previousPublishDate:  "1977-03-15",
+        // previousMaturity:  "WD",
+        // Only include h1 and h2 levels in the table of contents
+        maxTocLevel: 3,
+        conformanceLabelPrefix: "Asset",
+        // noConformanceStyling: 1,
+        // noConformanceTable: 1,
+        // conformanceClauseStrength : 1,
+        // if there a publicly available Editor's Draft, this is the link
+        edDraftURI: "https://github.com/oslc-op/oslc-specs/blob/master/specs/asset/asset-management-spec.html",
+        // Chairs and editors, add as many as you like: you must have at least one editor.
+        // Only "name" is required, but the other fields are recommended.
+        editors: [
+          {
+            name: "Fabio Ribeiro",
+            mailto: "fabio.ribeiro@koneksys.com",
+            company: "Koneksys",
+            companyURL: "https://www.koneksys.com",
+          },
+        ],
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Gray Bachelor",
+            mailto: "gray_bachelor@uk.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com",
+          },
+        ],
+        // name of the TC
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-domains",
+        // URI of the public TC page
+        wgURI: "https://www.oasis-open.org/committees/oslc-domains/",
+        // name (without the @lists.oasis-open.org) of the public mailing to which comments are due
+        wgPublicList: "oslc-domains-comment",
+        // Namespaces defined by this TC
+        namespaces: [{ href: "http://open-services.net/ns/asset#", prefix: "asset" }],
+        // For multi-part specifications, each part must list the other parts
+        // additionalArtifacts : [
+        //  { title: "OSLC XXX 1.0 Part 1: Overview (this document)", href: "oslc-xxx.html" },
+        //  { title: "OSLC XXX 1.0 Part 2: XXX2", href: "xxx-part2.html" },
+        //  { title: "OSLC XXX 1.0 Part 3: XXX3", href: "xxx-part3.html" },
+        // ],
+        // Related work
+        // relatedWork : [
+        //    { title: "Some title", href: "http://example.com/relatedDocument.html" },
+        //    ],
+        // supersedes : [
+        //    { title: "Some title", href: "http://example.com/supercededDocument.html" },
+        //    ],
+        // Other parts of multi-part spec
+        additionalArtifacts: [
+          {
+            title: "OSLC Asset Management Version 2.1 Part 1: Specification (this document)",
+            href:
+              "http://docs.oasis-open.org/oslc-domains/oslc-asset/v2.1/csprd01/part1-asset-management/oslc-asset-v2.1-csprd01-part1-asset-management-spec.html",
+          },
+          {
+            title: "OSLC Asset Management Version 2.1 Part 2: Vocabulary",
+            href:
+              "http://docs.oasis-open.org/oslc-domains/oslc-asset/v2.1/csprd01/part2-asset-management/oslc-asset-v2.1-csprd01-part2-asset-management-vocab.html",
+          },
+        ],
+        relatedWork: [
+          {
+            title: "Open Services for Lifecycle Collaboration Asset Management Version 2.1",
+            href: "http://open-services.net/wiki/asset-management/OSLC-Asset-Management-2.1-Specification/",
+          },
+        ],
+        localBiblio: {
+          OSLCCore2: {
+            title: "OSLC Core Specification 2.0",
+            href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCCore3: {
+            title: "OSLC Core 3.0",
+            href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Committee Specification",
+            publisher: "OASIS",
+          },
+          OSLCCore2RepresentationGuidance: {
+            title: "OSLC Core 2.0 - Representation Guidance",
+            href: "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCCore2UIGuidance: {
+            title: "OSLC Core 2.0 - UI Preview Guidance",
+            href: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCCore2RDFXMLExamples: {
+            title: "OSLC Core Specification 2.0 - RDF/XML examples",
+            href:
+              "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Specifying_the_shape_of_a_query",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCCore2JsonRepresentationGuidance: {
+            title: "OSLC Core Specification 2.0 - Representation Guidance for JSON",
+            href: "http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations#Guidelines_for_JSON",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCAssetResourceDefinition: {
+            title: "OSLC Asset Management 2.0 - Resource Definition",
+            href: "http://open-services.net/bin/view/Main/AssetMgResourceDefinitionsV1",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCAssetSamples: {
+            title: "OSLC Asset Management 2.0 - Samples",
+            href: "http://open-services.net/wiki/asset-management/OSLC-Asset-Management-2.0-Samples",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          DublinCore1: {
+            title: "Dublin Core Metadata Element Set, Version 1.1",
+            href: "http://dublincore.org/documents/2010/10/11/dces/",
+            publisher: "Dublin Core",
+          },
+          FOAF: {
+            title: "Friend of a Friend (FOAF) v0.98",
+            href: "http://xmlns.com/foaf/spec/20100809.html",
+            authors: ["D. Brickley", "L. Miller"],
+            status: "Stable",
+          },
+          "HTTP1.1": {
+            title: "Hyper-text Transfer Protocol (HTTP/1.1)",
+            href: "https://tools.ietf.org/html/rfc2616",
+            authors: ["R. Fielding", "J. Gettis", "J. Morgul"],
+            status: "STD 1",
+          },
+          "OAuth1.0a": {
+            title: "The OAuth 1.0 Protocol",
+            href: "https://tools.ietf.org/html/rfc5849",
+            status: "Published",
+            publisher: "Internet Engineering Task Force",
+          },
+          RDFXMLConcepts: {
+            title: "RDF/XML Concepts and Abstract Syntax",
+            href: "https://www.w3.org/TR/2004/REC-rdf-concepts-20040210/",
+            authors: ["G. Klyne", "J. Carroll"],
+            status: "W3C Recommendation",
+            publisher: "https://www.w3.org",
+          },
+          RDFXMLSyntax: {
+            title: "RDF/XML Syntax Specification (Revised)",
+            href: "https://dvcs.w3.org/hg/ldpwg/raw-file/default/ldp-paging.html",
+            authors: ["D. Beckett"],
+            status: "W3C Recommendation",
+            publisher: "http://www.w3.org",
+          },
+          URISyntax: {
+            title: "URI Generic Syntax",
+            href: "https://tools.ietf.org/html/rfc3986",
+            authors: ["T. Berners-Lee", "R. Fielding"],
+            status: "STD 1",
+          },
+          XMLNamespaces: {
+            title: "Namespaces in XML 1.0 (Third Edition)",
+            href: "https://www.w3.org/TR/REC-xml-names/",
+            authors: ["T. Bray", "D. Hollander", "A. Layman"],
+            publisher: "https://www.w3.org",
+          },
+          XSDDatatypes: {
+            title: "XML Schema Part 2: Datatypes Second Edition",
+            href: "http://openid.net/connect/",
+            authors: ["P. Biron", "A. Malhotra"],
+            status: "W3C Recommendation",
+            publisher: "https://www.w3.org",
+          },
+          OSLCCoreVocab: {
+            title: "OSLC Core Vocabulary",
+            href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part7-core-vocabulary.html",
+            authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+            status: "Working Draft",
+            publisher: "OASIS",
+          },
+          OSLCCAsset: {
+            title: "OSLC Asset Management Specification 1.0",
+            href: "http://open-services.net/bin/view/Main/AssetMgSpecificationV1",
+            authors: ["G. Larsen", "G. Mendel", "K.Bauer"],
+            status: "OSLC Specification",
+            publisher: "open-services.net",
+          },
+          ATOM: {
+            title: "RFC4287 - Atom Syndication Format",
+            href: "https://tools.ietf.org/html/rfc4287",
+            status: "STD 1",
+          },
+          W3CBestPractices: {
+            title: "W3C Best Practices for Publishing RDF Vocabularies",
+            href: "http://www.w3.org/TR/swbp-vocab-pub/",
+            status: "Note",
+            publisher: "W3C",
+          },
 
-        "JSON": {
-          title: "Javascript Object Notation",
-          href: "http://json.org/",
-        }
-      }
-    };
-  </script>
+          JSON: {
+            title: "Javascript Object Notation",
+            href: "http://json.org/",
+          },
+        },
+      };
+    </script>
+  </head>
 
-
-</head>
-
-<body>
-  <section id='abstract'>
-    <p>This specification defines the OSLC Asset Management domain, a RESTful web services interface for the management of domain
-      specifica and supporting resources defined in the OSLC Core specification. To support these scenarios, this specification
-      defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET, POST, PUT and DELETE, HTTP response codes,
-      content type handling and resource formats.
-    </p>
-  </section>
-
-  <section id='toc'></section>
-  <hr />
-
-  <section id='sotd'></section>
-
-  <section id='intro' class='informative'>
-    <h2>Introduction</h2>
-    <p>This section is non-normative.</p>
-    <p>Asset management systems allow enterprises to catalog, govern, manage, search for, and maintain assets. An asset is anything
-      tangible or intangible that provides value through reference or reuse across a wide audience over an extended period
-      of time. Assets typically have a lifecycle and require a formal process to govern both modification and access. Cataloging
-      assets with standardized taxonomies controls usage and discovery by end users. Assets may also have relationships to
-      and dependencies on other assets.</p>
-
-    <p>The term asset in this specification generally refers to either software, documentation, or representations of equipment.
-      While other definitions of an asset may be appropriate, financial instruments are not considered an asset in this specification.</p>
-
-    <p>Example software assets may include but are not limited to the final binary output from a software development process,
-      libraries such as a Java archive (JAR) or dynamic-link library (DLL), and installable packages that are distributed
-      through digital distribution platforms such as a repository or app store. Documentation assets may include presentation
-      materials, reports, specifications, blue prints, and instructions. Assets may also represent any type of equipment
-      or structure such as computer hardware, automobiles, pumps, buildings, etc.</p>
-
-    <p>Assets are described by a set of properties and zero or more artifacts. An artifact is a file of any type and a set of
-      properties that describe the file.</p>
-
-    <p>This specification builds on the Open Services for Lifecycle Collaboration (OSLC) Core v2.0 Specification to define the
-      resources, properties and operations supported by an OSLC Asset Management (OSLC-Asset) provider. Asset Management
-      resources include Assets, Artifacts and supporting resources defined in the OSLC Core specification. The properties
-      defined describe these resources and the relationships between resources. Operations are defined in terms of HTTP methods
-      and MIME type handling. The resources, properties and operations defined do not form a comprehensive interface to Asset
-      Management, but instead target specific integration use cases documented by the OSLC-Asset workgroup.</p>
-
-    <p>This specification also defines how Assets and Artifacts are represented in OSLC Services. The [[!OSLCAssetResourceDefinition]]
-      is a set of properties for an Asset, and includes properties that describe Artifacts of an Asset.</p>
-
-    <p>
-      <img width="643" alt="Asset Management Resources Overview" src="http://open-services.net/pub/Main/AssetMgSpecificationV1/overviewDiagram.gif"
-        height="269" />
-    </p>
-
-    <p>This version of the OSLC Asset specification is demonstrated in the [[!OSLCAssetSamples]].
-    </p>
-
-    <section id="iprPolicy">
-      <h2>IPR Policy</h2>
+  <body>
+    <section id="abstract">
       <p>
-        This Committee Specification Public Review Draft is being developed under the
-        <a href="https://www.oasis-open.org/policies-guidelines/ipr#RF-on-Limited-Mode">RF on Limited Terms</a> Mode of the
-        <a href="https://www.oasis-open.org/policies-guidelines/ipr">OASIS IPR Policy</a>, the mode chosen when the Technical Committee was established. For information on whether any
-        patents have been disclosed that may be essential to implementing this specification, and any offers of patent licensing
-        terms, please refer to the Intellectual Property Rights section of the TC’s web page (
-        <a href='https://www.oasis-open.org/committees/oslc-domains/ipr.php'>https://www.oasis-open.org/committees/oslc-domains/ipr.php</a>).
+        This specification defines the OSLC Asset Management domain, a RESTful web services interface for the management
+        of domain specifica and supporting resources defined in the OSLC Core specification. To support these scenarios,
+        this specification defines a set of HTTP-based RESTful interfaces in terms of HTTP methods: GET, POST, PUT and
+        DELETE, HTTP response codes, content type handling and resource formats.
       </p>
     </section>
 
-    <section id='terminology' class='informative'>
-      <h2>Terminology</h2>
-      <p>
-        <strong>Asset Consumer</strong> - A tool or user that performs asset searching and retrieval activities outlined in the search
-        and retrieve scenarios.</p>
+    <section id="toc"></section>
+    <hr />
 
-      <p>
-        <strong>Asset Resource</strong> - An Asset Resource has a set of properties representing an asset. These properties include
-        such things as name, description, classification, and the Artifact properties for an Asset.</p>
+    <section id="sotd"></section>
 
+    <section id="intro" class="informative">
+      <h2>Introduction</h2>
+      <p>This section is non-normative.</p>
       <p>
-        <strong>Asset Query Resource</strong> - When filtering using simple query, the representation of a list of Asset Resources.</p>
-
-      <p>
-        <strong>Asset Submitter</strong> - A tool or user that performs asset preparation activities outlined in the publish scenario.</p>
-
-      <p>
-        <strong>Artifact</strong> - This term refers to the properties that describe an Asset Artifact and potentially the Artifact
-        Media referenced by this Artifact. An Asset may have zero or more Artifacts.</p>
-
-      <p>
-        <strong>Artifact Fragment</strong> - Fragment within an Asset Resource that describes an Artifact Media Resource. The term
-        fragment is associated with an Artifact instead of resource because Artifacts are referenced by the Asset&#8217;s
-        URL with a fragment identifier. Artifacts are considered to be contained within the asset and when the asset is deleted
-        the artifact is also deleted. While two different Artifacts in separate Assets may reference to the same Artifact
-        Media Resource, two different Assets may not contain the same Artifact.</p>
-
-      <p>
-        <strong>Artifact Media Resource</strong> - The Artifact Media Resource represents the actual artifact content. The content
-        can be a presentation, a test case, a binary software component, or any other kind of file.</p>
-
-      <p>
-        <strong>Property</strong> - An attribute of a resource. Typically a property is a name/value pair that describes a certain
-        aspect of the resource. For example, an asset has many properties such as the asset title, subject/short description,
-        version.
+        Asset management systems allow enterprises to catalog, govern, manage, search for, and maintain assets. An asset
+        is anything tangible or intangible that provides value through reference or reuse across a wide audience over an
+        extended period of time. Assets typically have a lifecycle and require a formal process to govern both
+        modification and access. Cataloging assets with standardized taxonomies controls usage and discovery by end
+        users. Assets may also have relationships to and dependencies on other assets.
       </p>
 
       <p>
-        <strong>Service Provider</strong> - An implementation of the OSLC Asset Management specification as a server. OSLC Asset
-        Management clients consume these services.</p>
-
-      <p>
-        <strong>Work product</strong> - This term is often used interchangeably with &#8216;artifact&#8217; or &#8216;file&#8217;.
-        An asset may have zero or more work products.</p>
-    </section>
-
-    <section id='references'>
-      <h3>References</h3>
-    </section>
-    <section id="conventions"></section>
-
-  </section>
-
-  <section id="baseRequirements">
-    <h2>Base Requirements</h2>
-
-    <p>The following sub-sections define the mandatory and optional requirements for an OSLC Asset Management (OSLC Aseet) server.</p>
-
-<section id="baseCompliance">
-<h2>Base Compliance</h2>
-
-<p class="conformance">This specification is based on [[!OSLCCore3]]. OSLC Asset Management servers
-MUST be compliant with both the core specification,  MUST follow all the mandatory requirements in the normative sections of this specification, and SHOULD follow all the guidelines and recommendations in both
-these specifications.</p>
-
-<p class="conformance">An OSLC Asset Management server MUST implement the domain vocabulary defined in <a href="http://docs.oasis-open.org/oslc-domains/qm/v2.1/asset-v2.1-part2-asset-management-vocab.html">OSLC Asset Management Version 2.1. Part 2: Vocabulary</a>
-
-<p>The following table summarizes the requirements from OSLC Core Specification
-as well as some additional requirements specific to the Asset domain. Note that
-this specification further restricts some of the requirements for OSLC Core
-Specification. See subsequent sections in this specification or the
-OSLC Core Specification to get further details on each of these
-requirements.</p>
-
-<table border="1" cellspacing="0" cellpadding="5">
-<thead>
-<tr>
-  <th>Number</th>
-  <th>Requirement</th>
-  <th>Level</th>
-  <th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-  <td>ASSET-1</td>
-  <td>Unknown properties and content</td>
-  <td>MAY / MUST</td>
-  <td class='conformance'>OSLC services MAY ignore unknown content and OSLC clients MUST preserve unknown content</td>
-</tr>
-<tr>
-  <td>ASSET-2</td>
-  <td>Resource Operations</td>
-  <td>MUST</td>
-  <td class='conformance'>OSLC service MUST support resource operations via standard HTTP operations</td>
-</tr>
-<tr>
-  <td>ASSET-3</td>
-  <td>Resource Paging</td>
-  <td>MAY</td>
-  <td class='conformance'>OSLC services MAY provide paging for resources but only when specifically requested by client</td>
-</tr>
-<tr>
-  <td>ASSET-4</td>
-  <td>Partial Resource Representations</td>
-  <td>MAY / MUST</td>
-  <td class='conformance'>OSLC services MUST support request for a subset of a resource’s properties via the oslc.properties URL parameter retrieval via HTTP GET</td>
-</tr>
-<tr>
-  <td>ASSET-5</td>
-  <td>Partial Update</td>
-  <td>MAY</td>
-  <td class='conformance'>OSLC services MAY support partial update of resources using patch semantics and MAY support via HTTP PUT</td>
-</tr>
-<tr>
-  <td>ASSET-6</td>
-  <td>Discovery</td>
-  <td>MUST / MAY / SHOULD</td>
-  <td class='conformance'>OSLC servers MUST support OSLC Core 3.0 Discovery, MAY provide a ServiceProviderCatalog and SHOULD provide a ServiceProvider resource for Core v2 compatibility.</td>
-</tr>
-<tr>
-  <td>ASSET-6</td>
-  <td>Creation Factories</td>
-  <td>MUST</td>
-  <td class='conformance'>OSLC servers MUST provide LDPC creation factories to enable resource creation of Quality Management resources via HTTP POST</td>
-</tr>
-<tr>
-  <td>ASSET-7</td>
-  <td>Query Capabilities</td>
-  <td>SHOULD</td>
-  <td class='conformance'>OSLC servers SHOULD provide query capabilities to enable clients to query for resources</td>
-</tr>
-<tr>
-  <td>ASSET-8</td>
-  <td>Query Syntax</td>
-  <td>SHOULD / MAY</td>
-  <td class='conformance'>OSLC query capabilities SHOULD support the OSLC Core Query Syntax and MAY use other query syntax</td>
-</tr>
-<tr>
-  <td>ASSET-9</td>
-  <td>Delegated UI Dialogs</td>
-  <td>MUST / SHOULD</td>
-  <td class='conformance'>OSLC Services MUST offer delegated UI dialogs (creation and selections) specified via OSLC Core 3.0 Delegated Dialogs and SHOULD include discovery through a ServiceProvider resource for OSLC v2 compatibility</td>
-</tr>
-<tr>
-  <td>ASSET-10</td>
-  <td>UI Preview</td>
-  <td>SHOULD</td>
-  <td class='conformance'>OSLC Services SHOULD offer UI previews for resources that may be referenced by other resources specified via OSLC Core 3.0 Preview and SHOULD include discovery through a server resource for OSLC v2 compatibility</td>
-</tr>
-<tr>
-  <td>ASSET-11</td>
-  <td>HTTP Basic Authentication</td>
-  <td>MAY</td>
-  <td class='conformance'>OSLC Services MAY support Basic Auth and should do so only over HTTPS</td>
-</tr>
-<tr>
-  <td>ASSET-12</td>
-  <td>OAuth Authentication</td>
-  <td>SHOULD</td>
-  <td class='conformance'>OSLC Services SHOULD support OAuth and can indicate the required OAuth URLs via the ServiceProviderCatalog or ServiceProvider resources</td>
-</tr>
-<tr>
-  <td>ASSET-13</td>
-  <td>Error Responses</td>
-  <td>SHOULD</td>
-  <td class='conformance'>OSLC Services SHOULD provide error responses using OSLC Core 3.0 defined error formats</td>
-</tr>
-<tr>
-  <td>ASSET-14</td>
-  <td>Turtle Representations</td>
-  <td>MUST</td>
-  <td class='conformance'>OSLC services MUST provide a Turtle representation for HTTP GET requests and SHOULD support Turtle representations on POST and PUT requests.</td>
-</tr>
-<tr>
-  <td>ASSET-15</td>
-  <td>RDF/XML Representations</td>
-  <td>SHOULD</td>
-  <td class='conformance'>OSLC services SHOULD provide an RDF/XML representation for HTTP GET requests and SHOULD support RDF/XML representations on POST and PUT requests</td>
-</tr>
-<tr>
-  <td>ASSET-16</td>
-  <td>XML Representations</td>
-  <td>SHOULD</td>
-  <td class='conformance'>OSLC services SHOULD provide a XML representation for HTTP GET, POST and PUT requests that conform to the Core 2.0 Guidelines for XML.</td>
-</tr>
-<tr>
-  <td>ASSET-17</td>
-  <td>JSON Representations</td>
-  <td>MUST</td>
-  <td class='conformance'>OSLC services MUST provide JSON-LD representations for HTTP GET, POST and PUT requests that conform to the Core Guidelines for JSON-LD</td>
-</tr>
-<tr>
-  <td>ASSET-18</td>
-  <td>HTML Representations</td>
-  <td>SHOULD</td>
-  <td class='conformance'>OSLC services SHOULD provide HTML representations for HTTP GET requests</td>
-</tr>
-</tbody>
-</table>
-</section>
-
-    <section id="versioning">
-      <h3>Specification Versioning</h3>
-
-      <p>See
-        [[!OSLCCore2]] Specification Versioning section.</p>
-
-      <p class='conformance'>Service providers that support the resource formats and services in this specification MUST use HTTP response header
-        of
-        <code>OSLC-Core-Version</code> with a value of
-        <code>2.0</code> and
-        <code>OSLC-Asset-Version</code> with a value of
-        <code>2.1</code>. Consumers MAY request formats and services defined in this document by providing a HTTP request header of
-        <code>OSLC-Core-Version</code> with a value of
-        <code>2.0</code>. See section below on Version Compatibility with OSLC Asset 1.0 Specifications.</p>
-
-    </section>
-
-    <section id="namespaces">
-      <h3>Namespaces</h3>
-
-      <p>In addition to the namespace URIs and namespace prefixes
-        <code>oslc</code>,
-        <code>rdf</code>,
-        <code>dcterms</code> and
-        <code>foaf</code> defined in the
-        [[!OSLCCore2]], OSLC Asset Management defines the namespace URI of
-        <a href="http://open-services.net/ns/asset#">http://open-services.net/ns/asset#</a> with a namespace prefix of
-        <code>oslc_asset</code>
+        The term asset in this specification generally refers to either software, documentation, or representations of
+        equipment. While other definitions of an asset may be appropriate, financial instruments are not considered an
+        asset in this specification.
       </p>
 
-    </section>
+      <p>
+        Example software assets may include but are not limited to the final binary output from a software development
+        process, libraries such as a Java archive (JAR) or dynamic-link library (DLL), and installable packages that are
+        distributed through digital distribution platforms such as a repository or app store. Documentation assets may
+        include presentation materials, reports, specifications, blue prints, and instructions. Assets may also
+        represent any type of equipment or structure such as computer hardware, automobiles, pumps, buildings, etc.
+      </p>
 
-    <section id="formats">
-      <h3>Resource Formats</h3>
+      <p>
+        Assets are described by a set of properties and zero or more artifacts. An artifact is a file of any type and a
+        set of properties that describe the file.
+      </p>
 
-      <p>In addition to the requirements for
-        [[!OSLCCore2]] Resource Formats section, this section outlines further refinements and restrictions.</p>
+      <p>
+        This specification builds on the Open Services for Lifecycle Collaboration (OSLC) Core v2.0 Specification to
+        define the resources, properties and operations supported by an OSLC Asset Management (OSLC-Asset) provider.
+        Asset Management resources include Assets, Artifacts and supporting resources defined in the OSLC Core
+        specification. The properties defined describe these resources and the relationships between resources.
+        Operations are defined in terms of HTTP methods and MIME type handling. The resources, properties and operations
+        defined do not form a comprehensive interface to Asset Management, but instead target specific integration use
+        cases documented by the OSLC-Asset workgroup.
+      </p>
 
-      <p>For HTTP GET requests on all OSLC Asset Management and OSLC Core defined resource types,</p>
+      <p>
+        This specification also defines how Assets and Artifacts are represented in OSLC Services. The
+        [[!OSLCAssetResourceDefinition]] is a set of properties for an Asset, and includes properties that describe
+        Artifacts of an Asset.
+      </p>
 
-      <ul>
-        <li class='conformance'>Asset Management Providers MUST provide RDF/XML representations, SHOULD provide JSON representations, and MAY provide
-          XML representations. The XML and JSON representations SHOULD follow the guidelines outlined in the
-          [[!OSLCCore2RepresentationGuidance]].</li>
-        <li class='conformance'>Asset Management Consumers requesting RDF/XML SHOULD be prepared for any valid RDF/XML document. Asset Management
-          Consumers requesting XML or JSON SHOULD be prepared for representations that follow the guidelines outlined in
-          the
-          [[!OSLCCore2RepresentationGuidance]].</li>
-        <li class='conformance'>Asset Management Providers SHOULD support an [X]HTML representation and a user interface (UI) preview as defined
-          by
-          [[!OSLCCore2UIGuidance]]
-        </li>
-      </ul>
+      <p>
+        <img
+          width="643"
+          alt="Asset Management Resources Overview"
+          src="http://open-services.net/pub/Main/AssetMgSpecificationV1/overviewDiagram.gif"
+          height="269"
+        />
+      </p>
 
-      <p>For HTTP PUT/POST request formats for resource type of Asset:</p>
+      <p>This version of the OSLC Asset specification is demonstrated in the [[!OSLCAssetSamples]].</p>
 
-      <ul>
-        <li class='conformance'>Asset Management Providers MUST accept RDF/XML representations, SHOULD accept JSON representations, and MAY accept
-          XML representations. Asset Management Providers accepting RDF/XML SHOULD be prepared for any valid RDF/XML document.
-          For XML or JSON, Asset Management Providers SHOULD be prepared for representations that follow the guidelines outlined
-          in the
-          [[!OSLCCore2RepresentationGuidance]].</li>
-      </ul>
-
-      <p>For HTTP GET response formats for Query requests,</p>
-
-      <p class='conformance'>Asset Management Providers MUST provide RDF/XML representations, SHOULD provide JSON and Atom Syndication Format XML
-        representations, and MAY provide XML representations.</p>
-
-      <p>When Asset Management Consumers request:</p>
-
-      <ul>
-        <li class='conformance'>
-          <code>application/rdf+xml</code> Asset Management Providers MUST respond with RDF/XML representation without restrictions.</li>
-        <li class='conformance'>
-          <code>application/json</code> Asset Management Providers SHOULD respond with JSON representation as defined in the
-          [[!OSLCCore2RepresentationGuidance]].</li>
-        <li class='conformance'>
-          <code>application/xml</code> Asset Management Provider MAY respond with OSLC-defined abbreviated XML representation as defined in the
-          [[!OSLCCore2RepresentationGuidance]]
-        </li>
-        <li class='conformance'>
-          <code>application/atom+xml</code> Asset Management Provider SHOULD respond with Atom Syndication Format XML representation as defined in the
-          [[!OSLCCore2RepresentationGuidance]]
-        </li>
-        <li class='conformance'>The Atom Syndication Format XML representation SHOULD use RDF/XML representation without restrictions for the atom:content
-          entries representing the resource representations.
-        </li>
-      </ul>
-
-      <p>See Query Capabilities for additional information when Resource Shapes affect representation.</p>
-
-      <section id='Content-Negotiation'>
-        <h4>Content Negotiation</h4>
-
-        <p>OSLC Core Guidance clearly points to RDF representations (and specifically RDF/XML) as a convention that all OSLC
-          Provider implementations minimally provide and accept. OSLC Asset Provider implementations are strongly encouraged
-          to adopt this convention. Future versions of this specification are expected to require RDF representations for
-          all operations and relax requirements for specialized XML representations.</p>
-
+      <section id="iprPolicy">
+        <h2>IPR Policy</h2>
         <p>
-          <strong>XML Representation</strong> - identified by the
-          <code>application/xml</code> content type. Format representation rules are outlined in Core
-          [[!OSLCCore2RepresentationGuidance]] Formats section
+          This Committee Specification Public Review Draft is being developed under the
+          <a href="https://www.oasis-open.org/policies-guidelines/ipr#RF-on-Limited-Mode">RF on Limited Terms</a> Mode
+          of the <a href="https://www.oasis-open.org/policies-guidelines/ipr">OASIS IPR Policy</a>, the mode chosen when
+          the Technical Committee was established. For information on whether any patents have been disclosed that may
+          be essential to implementing this specification, and any offers of patent licensing terms, please refer to the
+          Intellectual Property Rights section of the TC’s web page (
+          <a href="https://www.oasis-open.org/committees/oslc-domains/ipr.php"
+            >https://www.oasis-open.org/committees/oslc-domains/ipr.php</a
+          >).
+        </p>
+      </section>
+
+      <section id="terminology" class="informative">
+        <h2>Terminology</h2>
+        <p>
+          <strong>Asset Consumer</strong> - A tool or user that performs asset searching and retrieval activities
+          outlined in the search and retrieve scenarios.
         </p>
 
         <p>
-          <strong>RDF/XML Representation</strong> - identified by the
-          <code>application/rdf+xml</code> content type. No additional guidance is given. The OSLC Core describes an algorithm for generating consistent
-          formats that are used as examples only.</p>
+          <strong>Asset Resource</strong> - An Asset Resource has a set of properties representing an asset. These
+          properties include such things as name, description, classification, and the Artifact properties for an Asset.
+        </p>
 
         <p>
-          <strong>JSON Representation</strong> - identified by the
-          <code>application/json</code> content type. Format representation rules are outlined in Core
-          [[!OSLCCore2RepresentationGuidance]] Resource Formats section.</p>
+          <strong>Asset Query Resource</strong> - When filtering using simple query, the representation of a list of
+          Asset Resources.
+        </p>
 
         <p>
-          <strong>Atom Syndication Format XML Representation</strong> - identified by the
-          <code>application/atom+xml</code> content type. Format representation rules are outlined in Core
-          [[!OSLCCore2RepresentationGuidance]] OSLC Core Resource Formats section.</p>
+          <strong>Asset Submitter</strong> - A tool or user that performs asset preparation activities outlined in the
+          publish scenario.
+        </p>
 
+        <p>
+          <strong>Artifact</strong> - This term refers to the properties that describe an Asset Artifact and potentially
+          the Artifact Media referenced by this Artifact. An Asset may have zero or more Artifacts.
+        </p>
+
+        <p>
+          <strong>Artifact Fragment</strong> - Fragment within an Asset Resource that describes an Artifact Media
+          Resource. The term fragment is associated with an Artifact instead of resource because Artifacts are
+          referenced by the Asset&#8217;s URL with a fragment identifier. Artifacts are considered to be contained
+          within the asset and when the asset is deleted the artifact is also deleted. While two different Artifacts in
+          separate Assets may reference to the same Artifact Media Resource, two different Assets may not contain the
+          same Artifact.
+        </p>
+
+        <p>
+          <strong>Artifact Media Resource</strong> - The Artifact Media Resource represents the actual artifact content.
+          The content can be a presentation, a test case, a binary software component, or any other kind of file.
+        </p>
+
+        <p>
+          <strong>Property</strong> - An attribute of a resource. Typically a property is a name/value pair that
+          describes a certain aspect of the resource. For example, an asset has many properties such as the asset title,
+          subject/short description, version.
+        </p>
+
+        <p>
+          <strong>Service Provider</strong> - An implementation of the OSLC Asset Management specification as a server.
+          OSLC Asset Management clients consume these services.
+        </p>
+
+        <p>
+          <strong>Work product</strong> - This term is often used interchangeably with &#8216;artifact&#8217; or
+          &#8216;file&#8217;. An asset may have zero or more work products.
+        </p>
       </section>
 
+      <section id="references">
+        <h3>References</h3>
+      </section>
+      <section id="conventions"></section>
     </section>
 
-    <section id="authentication">
-      <h3>Authentication</h3>
+    <section id="baseRequirements">
+      <h2>Base Requirements</h2>
 
-      <p>See
-        [[!OSLCCore2]] Authentication section. Asset Management puts no additional constraints on authentication.</p>
-    </section>
+      <p>
+        The following sub-sections define the mandatory and optional requirements for an OSLC Asset Management (OSLC
+        Aseet) server.
+      </p>
 
-    <section id="errors">
-      <h3>Error Responses</h3>
+      <section id="baseCompliance">
+        <h2>Base Compliance</h2>
 
-      <p>See
-        [[!OSLCCore2]] Error Responses section. Asset Management puts no additional constraints on error responses.</p>
-    </section>
+        <p class="conformance">
+          This specification is based on [[!OSLCCore3]]. OSLC Asset Management servers MUST be compliant with both the
+          core specification, MUST follow all the mandatory requirements in the normative sections of this
+          specification, and SHOULD follow all the guidelines and recommendations in both these specifications.
+        </p>
 
-    <section id="pagination">
-      <h3>Pagination</h3>
+        <p class="conformance">
+          An OSLC Asset Management server MUST implement the domain vocabulary defined in
+          <a href="http://docs.oasis-open.org/oslc-domains/qm/v2.1/asset-v2.1-part2-asset-management-vocab.html"
+            >OSLC Asset Management Version 2.1. Part 2: Vocabulary</a
+          >
+        </p>
 
-      <p class='conformance'>OSLC Asset service providers SHOULD support pagination of query results and MAY support pagination of a single resource&#8217;s
-        properties as defined by the OSLC CoreSpecification.</p>
-    </section>
+        <p>
+          The following table summarizes the requirements from OSLC Core Specification as well as some additional
+          requirements specific to the Asset domain. Note that this specification further restricts some of the
+          requirements for OSLC Core Specification. See subsequent sections in this specification or the OSLC Core
+          Specification to get further details on each of these requirements.
+        </p>
 
-    <section id='Requesting-and-Updating-Properties'>
-      <h3>Requesting and Updating Properties</h3>
-
-      <section id='Requesting-a-Subset-of-Properties'>
-        <h4>Requesting a Subset of Properties</h4>
-
-        <p class='conformance'>A client MAY request a subset of a resource&#8217;s properties as well as properties from a referenced resource.
-          In order to support this behavior a service provider MUST support the
-          <code>oslc.properties</code> and
-          <code>oslc.prefix</code> URL parameter on a HTTP GET request on individual resource request or a collection of resources by query. If the
-          <code>oslc.properties</code> parameter is omitted on the request, then all resource properties MUST be provided in the response.</p>
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th>Number</th>
+              <th>Requirement</th>
+              <th>Level</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ASSET-1</td>
+              <td>Unknown properties and content</td>
+              <td>MAY / MUST</td>
+              <td class="conformance">
+                OSLC services MAY ignore unknown content and OSLC clients MUST preserve unknown content
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-2</td>
+              <td>Resource Operations</td>
+              <td>MUST</td>
+              <td class="conformance">OSLC service MUST support resource operations via standard HTTP operations</td>
+            </tr>
+            <tr>
+              <td>ASSET-3</td>
+              <td>Resource Paging</td>
+              <td>MAY</td>
+              <td class="conformance">
+                OSLC services MAY provide paging for resources but only when specifically requested by client
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-4</td>
+              <td>Partial Resource Representations</td>
+              <td>MAY / MUST</td>
+              <td class="conformance">
+                OSLC services MUST support request for a subset of a resource’s properties via the oslc.properties URL
+                parameter retrieval via HTTP GET
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-5</td>
+              <td>Partial Update</td>
+              <td>MAY</td>
+              <td class="conformance">
+                OSLC services MAY support partial update of resources using patch semantics and MAY support via HTTP PUT
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-6</td>
+              <td>Discovery</td>
+              <td>MUST / MAY / SHOULD</td>
+              <td class="conformance">
+                OSLC servers MUST support OSLC Core 3.0 Discovery, MAY provide a ServiceProviderCatalog and SHOULD
+                provide a ServiceProvider resource for Core v2 compatibility.
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-6</td>
+              <td>Creation Factories</td>
+              <td>MUST</td>
+              <td class="conformance">
+                OSLC servers MUST provide LDPC creation factories to enable resource creation of Quality Management
+                resources via HTTP POST
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-7</td>
+              <td>Query Capabilities</td>
+              <td>SHOULD</td>
+              <td class="conformance">
+                OSLC servers SHOULD provide query capabilities to enable clients to query for resources
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-8</td>
+              <td>Query Syntax</td>
+              <td>SHOULD / MAY</td>
+              <td class="conformance">
+                OSLC query capabilities SHOULD support the OSLC Core Query Syntax and MAY use other query syntax
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-9</td>
+              <td>Delegated UI Dialogs</td>
+              <td>MUST / SHOULD</td>
+              <td class="conformance">
+                OSLC Services MUST offer delegated UI dialogs (creation and selections) specified via OSLC Core 3.0
+                Delegated Dialogs and SHOULD include discovery through a ServiceProvider resource for OSLC v2
+                compatibility
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-10</td>
+              <td>UI Preview</td>
+              <td>SHOULD</td>
+              <td class="conformance">
+                OSLC Services SHOULD offer UI previews for resources that may be referenced by other resources specified
+                via OSLC Core 3.0 Preview and SHOULD include discovery through a server resource for OSLC v2
+                compatibility
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-11</td>
+              <td>HTTP Basic Authentication</td>
+              <td>MAY</td>
+              <td class="conformance">OSLC Services MAY support Basic Auth and should do so only over HTTPS</td>
+            </tr>
+            <tr>
+              <td>ASSET-12</td>
+              <td>OAuth Authentication</td>
+              <td>SHOULD</td>
+              <td class="conformance">
+                OSLC Services SHOULD support OAuth and can indicate the required OAuth URLs via the
+                ServiceProviderCatalog or ServiceProvider resources
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-13</td>
+              <td>Error Responses</td>
+              <td>SHOULD</td>
+              <td class="conformance">
+                OSLC Services SHOULD provide error responses using OSLC Core 3.0 defined error formats
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-14</td>
+              <td>Turtle Representations</td>
+              <td>MUST</td>
+              <td class="conformance">
+                OSLC services MUST provide a Turtle representation for HTTP GET requests and SHOULD support Turtle
+                representations on POST and PUT requests.
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-15</td>
+              <td>RDF/XML Representations</td>
+              <td>SHOULD</td>
+              <td class="conformance">
+                OSLC services SHOULD provide an RDF/XML representation for HTTP GET requests and SHOULD support RDF/XML
+                representations on POST and PUT requests
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-16</td>
+              <td>XML Representations</td>
+              <td>SHOULD</td>
+              <td class="conformance">
+                OSLC services SHOULD provide a XML representation for HTTP GET, POST and PUT requests that conform to
+                the Core 2.0 Guidelines for XML.
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-17</td>
+              <td>JSON Representations</td>
+              <td>MUST</td>
+              <td class="conformance">
+                OSLC services MUST provide JSON-LD representations for HTTP GET, POST and PUT requests that conform to
+                the Core Guidelines for JSON-LD
+              </td>
+            </tr>
+            <tr>
+              <td>ASSET-18</td>
+              <td>HTML Representations</td>
+              <td>SHOULD</td>
+              <td class="conformance">OSLC services SHOULD provide HTML representations for HTTP GET requests</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
 
-      <section id='Updating-a-Subset-of-Properties'>
-        <h4>Updating a Subset of Properties</h4>
+      <section id="versioning">
+        <h3>Specification Versioning</h3>
 
-        <p class='conformance'>A client MAY request that a subset of a resource&#8217;s properties be updated by identifying those properties to
-          be modified using the
-          <code>oslc.properties</code> URL parameter on a HTTP PUT request.</p>
+        <p>See [[!OSLCCore2]] Specification Versioning section.</p>
 
-        <p class='conformance'>If the parameter
-          <code>oslc.properties</code> contains a valid resource property on the request that is not provided in the content, the server MUST set the
-          resource&#8217;s property to a null or empty value. If the parameter
-          <code>oslc.properties</code> contains an invalid resource property, then a
-          <code>409 Conflict</code> MUST be returned.</p>
+        <p class="conformance">
+          Service providers that support the resource formats and services in this specification MUST use HTTP response
+          header of <code>OSLC-Core-Version</code> with a value of <code>2.0</code> and
+          <code>OSLC-Asset-Version</code> with a value of <code>2.1</code>. Consumers MAY request formats and services
+          defined in this document by providing a HTTP request header of <code>OSLC-Core-Version</code> with a value of
+          <code>2.0</code>. See section below on Version Compatibility with OSLC Asset 1.0 Specifications.
+        </p>
       </section>
-    </section>
 
-    <section id="labels" class='informative'>
-      <h3>Labels for Relationships</h3>
+      <section id="namespaces">
+        <h3>Namespaces</h3>
 
-      <p class='conformance'>Asset relationships to other resources are represented as properties whose values are the URI of the object or target
-        resource. When an Asset relationship property is to be presented in a user interface, it may be helpful to provide
-        an informative and useful textual label for that relationship instance. (This in addition to the relationship property
-        URI and the object resource URI, which are also candidates for presentation to a user.) To this end, OSLC providers
-        MAY support a
-        <code>dcterms:title</code> link property in Asset resource representations, using the anchor approach outlined in the OSLC Core Links Guidance.
-        In addition to the textual label, the Asset resource definition defines several properties that can be used to describe
-        the relationship from one Asset resource to another Asset resource.</p>
+        <p>
+          In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>,
+          <code>dcterms</code> and <code>foaf</code> defined in the [[!OSLCCore2]], OSLC Asset Management defines the
+          namespace URI of <a href="http://open-services.net/ns/asset#">http://open-services.net/ns/asset#</a> with a
+          namespace prefix of
+          <code>oslc_asset</code>
+        </p>
+      </section>
 
-      <p>RDF/XML and XML example using reified statement:</p>
+      <section id="formats">
+        <h3>Resource Formats</h3>
 
-      <pre><code>&lt;rdf:RDF
+        <p>
+          In addition to the requirements for [[!OSLCCore2]] Resource Formats section, this section outlines further
+          refinements and restrictions.
+        </p>
+
+        <p>For HTTP GET requests on all OSLC Asset Management and OSLC Core defined resource types,</p>
+
+        <ul>
+          <li class="conformance">
+            Asset Management Providers MUST provide RDF/XML representations, SHOULD provide JSON representations, and
+            MAY provide XML representations. The XML and JSON representations SHOULD follow the guidelines outlined in
+            the [[!OSLCCore2RepresentationGuidance]].
+          </li>
+          <li class="conformance">
+            Asset Management Consumers requesting RDF/XML SHOULD be prepared for any valid RDF/XML document. Asset
+            Management Consumers requesting XML or JSON SHOULD be prepared for representations that follow the
+            guidelines outlined in the [[!OSLCCore2RepresentationGuidance]].
+          </li>
+          <li class="conformance">
+            Asset Management Providers SHOULD support an [X]HTML representation and a user interface (UI) preview as
+            defined by [[!OSLCCore2UIGuidance]]
+          </li>
+        </ul>
+
+        <p>For HTTP PUT/POST request formats for resource type of Asset:</p>
+
+        <ul>
+          <li class="conformance">
+            Asset Management Providers MUST accept RDF/XML representations, SHOULD accept JSON representations, and MAY
+            accept XML representations. Asset Management Providers accepting RDF/XML SHOULD be prepared for any valid
+            RDF/XML document. For XML or JSON, Asset Management Providers SHOULD be prepared for representations that
+            follow the guidelines outlined in the [[!OSLCCore2RepresentationGuidance]].
+          </li>
+        </ul>
+
+        <p>For HTTP GET response formats for Query requests,</p>
+
+        <p class="conformance">
+          Asset Management Providers MUST provide RDF/XML representations, SHOULD provide JSON and Atom Syndication
+          Format XML representations, and MAY provide XML representations.
+        </p>
+
+        <p>When Asset Management Consumers request:</p>
+
+        <ul>
+          <li class="conformance">
+            <code>application/rdf+xml</code> Asset Management Providers MUST respond with RDF/XML representation without
+            restrictions.
+          </li>
+          <li class="conformance">
+            <code>application/json</code> Asset Management Providers SHOULD respond with JSON representation as defined
+            in the [[!OSLCCore2RepresentationGuidance]].
+          </li>
+          <li class="conformance">
+            <code>application/xml</code> Asset Management Provider MAY respond with OSLC-defined abbreviated XML
+            representation as defined in the [[!OSLCCore2RepresentationGuidance]]
+          </li>
+          <li class="conformance">
+            <code>application/atom+xml</code> Asset Management Provider SHOULD respond with Atom Syndication Format XML
+            representation as defined in the [[!OSLCCore2RepresentationGuidance]]
+          </li>
+          <li class="conformance">
+            The Atom Syndication Format XML representation SHOULD use RDF/XML representation without restrictions for
+            the atom:content entries representing the resource representations.
+          </li>
+        </ul>
+
+        <p>See Query Capabilities for additional information when Resource Shapes affect representation.</p>
+
+        <section id="Content-Negotiation">
+          <h4>Content Negotiation</h4>
+
+          <p>
+            OSLC Core Guidance clearly points to RDF representations (and specifically RDF/XML) as a convention that all
+            OSLC Provider implementations minimally provide and accept. OSLC Asset Provider implementations are strongly
+            encouraged to adopt this convention. Future versions of this specification are expected to require RDF
+            representations for all operations and relax requirements for specialized XML representations.
+          </p>
+
+          <p>
+            <strong>XML Representation</strong> - identified by the <code>application/xml</code> content type. Format
+            representation rules are outlined in Core [[!OSLCCore2RepresentationGuidance]] Formats section
+          </p>
+
+          <p>
+            <strong>RDF/XML Representation</strong> - identified by the <code>application/rdf+xml</code> content type.
+            No additional guidance is given. The OSLC Core describes an algorithm for generating consistent formats that
+            are used as examples only.
+          </p>
+
+          <p>
+            <strong>JSON Representation</strong> - identified by the <code>application/json</code> content type. Format
+            representation rules are outlined in Core [[!OSLCCore2RepresentationGuidance]] Resource Formats section.
+          </p>
+
+          <p>
+            <strong>Atom Syndication Format XML Representation</strong> - identified by the
+            <code>application/atom+xml</code> content type. Format representation rules are outlined in Core
+            [[!OSLCCore2RepresentationGuidance]] OSLC Core Resource Formats section.
+          </p>
+        </section>
+      </section>
+
+      <section id="authentication">
+        <h3>Authentication</h3>
+
+        <p>
+          See [[!OSLCCore2]] Authentication section. Asset Management puts no additional constraints on authentication.
+        </p>
+      </section>
+
+      <section id="errors">
+        <h3>Error Responses</h3>
+
+        <p>
+          See [[!OSLCCore2]] Error Responses section. Asset Management puts no additional constraints on error
+          responses.
+        </p>
+      </section>
+
+      <section id="pagination">
+        <h3>Pagination</h3>
+
+        <p class="conformance">
+          OSLC Asset service providers SHOULD support pagination of query results and MAY support pagination of a single
+          resource&#8217;s properties as defined by the OSLC CoreSpecification.
+        </p>
+      </section>
+
+      <section id="Requesting-and-Updating-Properties">
+        <h3>Requesting and Updating Properties</h3>
+
+        <section id="Requesting-a-Subset-of-Properties">
+          <h4>Requesting a Subset of Properties</h4>
+
+          <p class="conformance">
+            A client MAY request a subset of a resource&#8217;s properties as well as properties from a referenced
+            resource. In order to support this behavior a service provider MUST support the
+            <code>oslc.properties</code> and <code>oslc.prefix</code> URL parameter on a HTTP GET request on individual
+            resource request or a collection of resources by query. If the <code>oslc.properties</code> parameter is
+            omitted on the request, then all resource properties MUST be provided in the response.
+          </p>
+        </section>
+
+        <section id="Updating-a-Subset-of-Properties">
+          <h4>Updating a Subset of Properties</h4>
+
+          <p class="conformance">
+            A client MAY request that a subset of a resource&#8217;s properties be updated by identifying those
+            properties to be modified using the <code>oslc.properties</code> URL parameter on a HTTP PUT request.
+          </p>
+
+          <p class="conformance">
+            If the parameter <code>oslc.properties</code> contains a valid resource property on the request that is not
+            provided in the content, the server MUST set the resource&#8217;s property to a null or empty value. If the
+            parameter <code>oslc.properties</code> contains an invalid resource property, then a
+            <code>409 Conflict</code> MUST be returned.
+          </p>
+        </section>
+      </section>
+
+      <section id="labels" class="informative">
+        <h3>Labels for Relationships</h3>
+
+        <p class="conformance">
+          Asset relationships to other resources are represented as properties whose values are the URI of the object or
+          target resource. When an Asset relationship property is to be presented in a user interface, it may be helpful
+          to provide an informative and useful textual label for that relationship instance. (This in addition to the
+          relationship property URI and the object resource URI, which are also candidates for presentation to a user.)
+          To this end, OSLC providers MAY support a <code>dcterms:title</code> link property in Asset resource
+          representations, using the anchor approach outlined in the OSLC Core Links Guidance. In addition to the
+          textual label, the Asset resource definition defines several properties that can be used to describe the
+          relationship from one Asset resource to another Asset resource.
+        </p>
+
+        <p>RDF/XML and XML example using reified statement:</p>
+
+        <pre><code>&lt;rdf:RDF
        xmlns:dcterms="http://purl.org/dc/terms/"
        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
        xmlns:oslc_asset="http://open-services.net/ns/asset#"&gt;
@@ -713,297 +835,334 @@ requirements.</p>
      &lt;/rdf:Description&gt;
   &lt;/rdf:RDF&gt;
   </code></pre>
-
-    </section>
-
-    <section id='Custom-Properties'>
-      <h3>Custom Properties</h3>
-
-      <p class='conformance'>Asset management providers SHOULD allow consumers to define custom properties. If providers allow consumers to define
-        custom properties, they MUST allow the consumer to optionally specify an HTTP URI for that data element, and the
-        specified URI MUST be used in the RDF representation of all resources that contain the data element. The specified
-        URI MAY be part of an industry standard such as DC, FOAF, or OSLC, or it MAY be defined by the user&#8217;s organization.
-        If the URI is defined by the user&#8217;s organization, then they SHOULD make it dereferencable as per the
-        [[!W3CBestPractices]].</p>
-
-      <p class='conformance'>If the user does not specify the optional URI, then the provider MUST use a default generated HTTP URI. The generated
-        URI SHOULD be as human-readable as possible. One method for achieving human-readability is to apply a human-friendly
-        name mangling algorithm to the user-defined label for the data element. The tool SHOULD make the generated URI dereferencable
-        as per the
-        [[!W3CBestPractices]]. The published RDF vocabulary SHOULD include any relevant
-        descriptive information provided the user as part of the data element definition, e.g. the label and description.</p>
-    </section>
-  </section>
-
-  <section id='termsAndConstraints'>
-    <h2>Vocabulary Terms and Constraints</h2>
-    <p>
-      <a href="http://docs.oasis-open.org/oslc-domains/oslc-asset/v2.1/oslc-asset-v2.1-part1-asset-management-vocab.html">OSLC Asset Management Resources 2.1</a>
-      Defines the vocabulary terms and constraints for OSLC Automation resources. These terms and constraints are specified according
-      to [[!OSLCCoreVocab]].</p>
-  </section>
-
-  <section id='Asset-Management-Service-Provider-Capabilities'>
-    <h2>Asset Management Service Provider Capabilities</h2>
-
-    <section id='Service-Discovery-and-Description'>
-      <h3>Service Discovery and Description</h3>
-
-      <p class='conformance'>OSLC Asset Management service providers MUST provide a
-        [[!OSLCCore2]] Service Provider Resource that can be retrieved at a implementation dependent URI.</p>
-
-      <p class='conformance'>OSLC Asset Management service providers MAY provide a
-        [[!OSLCCore2]] Service Provider Catalog Resource that can be retrieved at a implementation dependent URI.</p>
-
-      <p class='conformance'>OSLC Asset Management service providers MUST provide a
-        <code>oslc:serviceProvider</code> property for their defined resources that will be the URI to a
-        [[!OSLCCore2]] Service Provider Resource.</p>
-
-      <p class='conformance'>OSLC Asset Management service providers MUST supply a value of
-        <a href="http://open-services.net/ns/asset#">http://open-services.net/ns/asset#</a> for the property
-        <code>oslc:domain</code> on either
-        <code>oslc:Service</code> or
-        <code>oslc:ServiceProviderCatalog</code> resources.</p>
-
-    </section>
-
-    <section id='Creation-Factories'>
-      <h3>Creation Factories</h3>
-
-      <p class='conformance'>OSLC Asset Management service providers MUST support
-        [[!OSLCCore2]] Creation Factories and list them in the Service Provider Resource as defined by OSLC Core. OSLC Asset Management
-        service providers SHOULD support
-        [[!OSLCCore2]] Resource Shapes for Creation Factories as defined in
-        [[!OSLCCore2]] OSLC Core Specification
-      </p>
-
-    </section>
-
-    <section id='Query-Capabilities'>
-      <h3>Query Capabilities</h3>
-
-      <p class='conformance'>OSLC Asset Management service providers MUST support the
-        [[!OSLCCore2]] Query Capabilities as defined by OSLC Core. OSLC Asset Management service providers SHOULD support
-        [[!OSLCCore2]] Resource Shapes for Query Capability as defined in
-        [[!OSLCCore2]] Specification
-      </p>
-
-      <p class='conformance'>The Query Capability MUST support these parameters:</p>
-
-      <ul>
-        <li class='conformance'>
-          <code>oslc.where</code>
-        </li>
-        <li class='conformance'>
-          <code>oslc.select</code>
-        </li>
-        <li class='conformance'>
-          <code>oslc.properties</code>
-        </li>
-        <li class='conformance'>
-          <code>oslc.prefix</code>
-        </li>
-      </ul>
-
-      <p class='conformance'>If shape information is NOT present with the Query Capability, service providers SHOULD use these default properties
-        to contain the result:</p>
-
-      <ul>
-        <li>For RDF/XML and XML, use
-          <code>rdf:Description</code> and
-          <code>rdfs:member</code> as defined in
-          [[!OSLCCore2RDFXMLExamples]] RDF/XML Examples
-        </li>
-        <li>For JSON, the query results are contained within
-          <code>oslc:results</code> array. See
-          [[!OSLCCore2JsonRepresentationGuidance]]
-        </li>
-      </ul>
-
-    </section>
-
-    <section id='Delegated-User-Interface-Dialogs'>
-      <h3>Delegated User Interface Dialogs</h3>
-
-      <p class='conformance'>OSLC Asset Management service providers SHOULD support the selection of resources by delegated web-based user interface
-        dialogs
-        [[!OSLCCore2]] Delegated UIs as defined by OSLC Core.</p>
-
-      <p class='conformance'>OSLC Asset Management service providers MAY support the creation of resources by delegated web-based user interface
-        dialogs
-        [[!OSLCCore2]] Delegated UIs as defined by OSLC Core.</p>
-
-      <p class='conformance'>OSLC Asset Management service providers MAY support the pre-filling of creation dialogs based on the definition at
-        [[OSLCCore2]] Delegated UIs.</p>
-
-      <p>The service providers supports the delegated UIs as follows:</p>
-
-      <table>
-        <thead>
-          <tr>
-            <th>
-              <strong>Asset Management Resource</strong>
-            </th>
-            <th>
-              <strong>Selection</strong>
-            </th>
-            <th>
-              <strong>Creation</strong>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Asset</td>
-            <td>SHOULD</td>
-            <td>MAY</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-  </section>
-
-  <section id="conformance">
-
-  </section>
-
-  <section id="versionCompability" class="appendix">
-    <h2>Version Compatibility</h2>
-
-    <section id='Version-Compatibility-with-1.0-Specifications'>
-      <h3>Version Compatibility with 1.0 Specifications</h3>
-
-      <p>The goal is to provide a smooth transition to 2.1 for both Consumers and Providers. This section will clarify the usage
-        of 1.0 media types so that Providers can support both 1.0, 2.0, 2.1 Consumers when HTTP requests are made for a resource
-        with the same URI.</p>
-
-      <section id='Media-Types'>
-        <h4>Media Types</h4>
-
-        <p class='conformance'>For an Asset Resource format identification of RDF/XML and XML, the media type used for this representation SHOULD
-          be
-          <code>application/rdf+xml</code> or
-          <code>application/xml</code>.</p>
-
-        <p class='conformance'>For an Asset Resource format identification of JSON, the media type used for this representation SHOULD be
-          <code>application/json</code>.</p>
-
       </section>
 
+      <section id="Custom-Properties">
+        <h3>Custom Properties</h3>
+
+        <p class="conformance">
+          Asset management providers SHOULD allow consumers to define custom properties. If providers allow consumers to
+          define custom properties, they MUST allow the consumer to optionally specify an HTTP URI for that data
+          element, and the specified URI MUST be used in the RDF representation of all resources that contain the data
+          element. The specified URI MAY be part of an industry standard such as DC, FOAF, or OSLC, or it MAY be defined
+          by the user&#8217;s organization. If the URI is defined by the user&#8217;s organization, then they SHOULD
+          make it dereferencable as per the [[!W3CBestPractices]].
+        </p>
+
+        <p class="conformance">
+          If the user does not specify the optional URI, then the provider MUST use a default generated HTTP URI. The
+          generated URI SHOULD be as human-readable as possible. One method for achieving human-readability is to apply
+          a human-friendly name mangling algorithm to the user-defined label for the data element. The tool SHOULD make
+          the generated URI dereferencable as per the [[!W3CBestPractices]]. The published RDF vocabulary SHOULD include
+          any relevant descriptive information provided the user as part of the data element definition, e.g. the label
+          and description.
+        </p>
+      </section>
     </section>
 
-  </section>
-
-  <section id='Appendix-A.3A-Samples' class="appendix informative">
-    <h2>Samples</h2>
-
-    <p>(this section is informative)</p>
-
-    <p>See
-      <a href="http://open-services.net/wiki/asset-management/OSLC-Asset-Management-2.1-Samples" title="OSLC-Asset-Management-2.1-Samples">OSLC Asset Management 2.1 Samples</a>.</p>
-  </section>
-
-  <section id='Appendix-B.3A-Resource-Shapes' class="appendix informative">
-    <h2>Resource Shapes</h2>
-
-    <p>(this section is informative)</p>
-
-    <p>See
-      <a href="http://open-services.net/wiki/asset-management/OSLC-Asset-Management-2.1-Appendix-B%3A-Resource-Shapes" title="OSLC-Asset-Management-2.1-Appendix-B:-Resource-Shapes">OSLC Asset Management 2.1 Appendix B: Resource Shapes</a>
-    </p>
-  </section>
-
-  <section id='Appendix-C.3A-Notices-and-References' class="appendix informative">
-    <h2>Notices and References</h2>
-
-    <section id='Intellectual-Property-Covenant'>
-      <h3>Intellectual Property Covenant</h3>
-
-      <p>The members of the Working Group (or as appropriate, their employers) have documented a Patent Non-Assertion Covenant
-        for implementations of the Asset Management 2.1 Specification, as described in the open-services.net
-        <a href="/terms/">Terms of Use</a>. Details of the Covenant may be found
-        <a href="http://open-services.net/bin/view/Main/AssetMgSpecificationV2Covenant">here</a>.</p>
+    <section id="termsAndConstraints">
+      <h2>Vocabulary Terms and Constraints</h2>
+      <p>
+        <a
+          href="http://docs.oasis-open.org/oslc-domains/oslc-asset/v2.1/oslc-asset-v2.1-part1-asset-management-vocab.html"
+          >OSLC Asset Management Resources 2.1</a
+        >
+        Defines the vocabulary terms and constraints for OSLC Automation resources. These terms and constraints are
+        specified according to [[!OSLCCoreVocab]].
+      </p>
     </section>
 
-    <section id='Reporting-Issues-on-the-Specification'>
-      <h3>Reporting Issues on the Specification</h3>
+    <section id="Asset-Management-Service-Provider-Capabilities">
+      <h2>Asset Management Service Provider Capabilities</h2>
 
-      <p>The working group participants who author and maintain this working draft specification, monitor a distribution list
-        where issues or questions can be raised, see
-        <a target="_top" href="http://open-services.net/mailman/listinfo/oslc-assetmgmt_open-services.net">Asset Management Mailing List</a>
+      <section id="Service-Discovery-and-Description">
+        <h3>Service Discovery and Description</h3>
+
+        <p class="conformance">
+          OSLC Asset Management service providers MUST provide a [[!OSLCCore2]] Service Provider Resource that can be
+          retrieved at a implementation dependent URI.
+        </p>
+
+        <p class="conformance">
+          OSLC Asset Management service providers MAY provide a [[!OSLCCore2]] Service Provider Catalog Resource that
+          can be retrieved at a implementation dependent URI.
+        </p>
+
+        <p class="conformance">
+          OSLC Asset Management service providers MUST provide a <code>oslc:serviceProvider</code> property for their
+          defined resources that will be the URI to a [[!OSLCCore2]] Service Provider Resource.
+        </p>
+
+        <p class="conformance">
+          OSLC Asset Management service providers MUST supply a value of
+          <a href="http://open-services.net/ns/asset#">http://open-services.net/ns/asset#</a> for the property
+          <code>oslc:domain</code> on either <code>oslc:Service</code> or
+          <code>oslc:ServiceProviderCatalog</code> resources.
+        </p>
+      </section>
+
+      <section id="Creation-Factories">
+        <h3>Creation Factories</h3>
+
+        <p class="conformance">
+          OSLC Asset Management service providers MUST support [[!OSLCCore2]] Creation Factories and list them in the
+          Service Provider Resource as defined by OSLC Core. OSLC Asset Management service providers SHOULD support
+          [[!OSLCCore2]] Resource Shapes for Creation Factories as defined in [[!OSLCCore2]] OSLC Core Specification
+        </p>
+      </section>
+
+      <section id="Query-Capabilities">
+        <h3>Query Capabilities</h3>
+
+        <p class="conformance">
+          OSLC Asset Management service providers MUST support the [[!OSLCCore2]] Query Capabilities as defined by OSLC
+          Core. OSLC Asset Management service providers SHOULD support [[!OSLCCore2]] Resource Shapes for Query
+          Capability as defined in [[!OSLCCore2]] Specification
+        </p>
+
+        <p class="conformance">The Query Capability MUST support these parameters:</p>
+
+        <ul>
+          <li class="conformance">
+            <code>oslc.where</code>
+          </li>
+          <li class="conformance">
+            <code>oslc.select</code>
+          </li>
+          <li class="conformance">
+            <code>oslc.properties</code>
+          </li>
+          <li class="conformance">
+            <code>oslc.prefix</code>
+          </li>
+        </ul>
+
+        <p class="conformance">
+          If shape information is NOT present with the Query Capability, service providers SHOULD use these default
+          properties to contain the result:
+        </p>
+
+        <ul>
+          <li>
+            For RDF/XML and XML, use <code>rdf:Description</code> and <code>rdfs:member</code> as defined in
+            [[!OSLCCore2RDFXMLExamples]] RDF/XML Examples
+          </li>
+          <li>
+            For JSON, the query results are contained within <code>oslc:results</code> array. See
+            [[!OSLCCore2JsonRepresentationGuidance]]
+          </li>
+        </ul>
+      </section>
+
+      <section id="Delegated-User-Interface-Dialogs">
+        <h3>Delegated User Interface Dialogs</h3>
+
+        <p class="conformance">
+          OSLC Asset Management service providers SHOULD support the selection of resources by delegated web-based user
+          interface dialogs [[!OSLCCore2]] Delegated UIs as defined by OSLC Core.
+        </p>
+
+        <p class="conformance">
+          OSLC Asset Management service providers MAY support the creation of resources by delegated web-based user
+          interface dialogs [[!OSLCCore2]] Delegated UIs as defined by OSLC Core.
+        </p>
+
+        <p class="conformance">
+          OSLC Asset Management service providers MAY support the pre-filling of creation dialogs based on the
+          definition at [[OSLCCore2]] Delegated UIs.
+        </p>
+
+        <p>The service providers supports the delegated UIs as follows:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <strong>Asset Management Resource</strong>
+              </th>
+              <th>
+                <strong>Selection</strong>
+              </th>
+              <th>
+                <strong>Creation</strong>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Asset</td>
+              <td>SHOULD</td>
+              <td>MAY</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+
+    <section id="conformance"></section>
+
+    <section id="versionCompability" class="appendix">
+      <h2>Version Compatibility</h2>
+
+      <section id="Version-Compatibility-with-1.0-Specifications">
+        <h3>Version Compatibility with 1.0 Specifications</h3>
+
+        <p>
+          The goal is to provide a smooth transition to 2.1 for both Consumers and Providers. This section will clarify
+          the usage of 1.0 media types so that Providers can support both 1.0, 2.0, 2.1 Consumers when HTTP requests are
+          made for a resource with the same URI.
+        </p>
+
+        <section id="Media-Types">
+          <h4>Media Types</h4>
+
+          <p class="conformance">
+            For an Asset Resource format identification of RDF/XML and XML, the media type used for this representation
+            SHOULD be <code>application/rdf+xml</code> or <code>application/xml</code>.
+          </p>
+
+          <p class="conformance">
+            For an Asset Resource format identification of JSON, the media type used for this representation SHOULD be
+            <code>application/json</code>.
+          </p>
+        </section>
+      </section>
+    </section>
+
+    <section id="Appendix-A.3A-Samples" class="appendix informative">
+      <h2>Samples</h2>
+
+      <p>(this section is informative)</p>
+
+      <p>
+        See
+        <a
+          href="http://open-services.net/wiki/asset-management/OSLC-Asset-Management-2.1-Samples"
+          title="OSLC-Asset-Management-2.1-Samples"
+          >OSLC Asset Management 2.1 Samples</a
+        >.
+      </p>
+    </section>
+
+    <section id="Appendix-B.3A-Resource-Shapes" class="appendix informative">
+      <h2>Resource Shapes</h2>
+
+      <p>(this section is informative)</p>
+
+      <p>
+        See
+        <a
+          href="http://open-services.net/wiki/asset-management/OSLC-Asset-Management-2.1-Appendix-B%3A-Resource-Shapes"
+          title="OSLC-Asset-Management-2.1-Appendix-B:-Resource-Shapes"
+          >OSLC Asset Management 2.1 Appendix B: Resource Shapes</a
+        >
+      </p>
+    </section>
+
+    <section id="Appendix-C.3A-Notices-and-References" class="appendix informative">
+      <h2>Notices and References</h2>
+
+      <section id="Intellectual-Property-Covenant">
+        <h3>Intellectual Property Covenant</h3>
+
+        <p>
+          The members of the Working Group (or as appropriate, their employers) have documented a Patent Non-Assertion
+          Covenant for implementations of the Asset Management 2.1 Specification, as described in the open-services.net
+          <a href="/terms/">Terms of Use</a>. Details of the Covenant may be found
+          <a href="http://open-services.net/bin/view/Main/AssetMgSpecificationV2Covenant">here</a>.
+        </p>
+      </section>
+
+      <section id="Reporting-Issues-on-the-Specification">
+        <h3>Reporting Issues on the Specification</h3>
+
+        <p>
+          The working group participants who author and maintain this working draft specification, monitor a
+          distribution list where issues or questions can be raised, see
+          <a target="_top" href="http://open-services.net/mailman/listinfo/oslc-assetmgmt_open-services.net"
+            >Asset Management Mailing List</a
+          >
+        </p>
+
+        <p>
+          Also the issues found with this specification and their resolution can be found at
+          <a
+            href="http://open-services.net/wiki/asset-management/OSLC-Asset-Management-2.1-specification-issues"
+            title="OSLC-Asset-Management-2.1-specification-issues"
+            >OSLC Asset Management 2.1 specification issues</a
+          >.
+        </p>
+      </section>
+    </section>
+
+    <section class="appendix informative">
+      <h2>Acknowledgments</h2>
+      <p>
+        The following individuals have participated in the creation of this specification and are gratefully
+        acknowledged:
       </p>
 
-      <p>Also the issues found with this specification and their resolution can be found at
-        <a href="http://open-services.net/wiki/asset-management/OSLC-Asset-Management-2.1-specification-issues" title="OSLC-Asset-Management-2.1-specification-issues">OSLC Asset Management 2.1 specification issues</a>.</p>
-
+      <p><b>Participants</b>:</p>
+      <p style="margin-left: 40px;">
+        Fabio Ribeiro, Koneksys (Editor)
+        <br />
+        Jim Amsden, IBM (Chair) <br />
+        Gray Bachelor, IBM (Chair) <br />Brad Sandler, IBM <br />Dave Johnson, IBM <br />Edwin Freekenhorst, Shell
+        <br />Eric Bordeau, IBM <br />Gili Mendel, IBM; OSLC Asset Management Lead <br />Grant Larsen, IBM <br />Hari
+        Padmanabhan, IBM <br />Jaimin Patel, WebLayers <br />John Favazza, WebLayers <br />Kevin Bauer, IBM <br />Randy
+        Lexvold, the Emphasys Group <br />Ren Renganathan, Citigroup <br />Scott Bosworth, IBM <br />Sheehan Anderson,
+        IBM <br />Srimanth Gunturi, IBM
+        <br />
+      </p>
     </section>
-  </section>
 
-  <section class='appendix informative'>
-    <h2>Acknowledgments</h2>
-    <p>The following individuals have participated in the creation of this specification and are gratefully acknowledged:</p>
-
-    <p>
-      <b>Participants</b>:</p>
-    <p style="margin-left: 40px">
-      Fabio Ribeiro, Koneksys (Editor)
-      <br> Jim Amsden, IBM (Chair)
-      <br> Gray Bachelor, IBM (Chair)
-      <br>Brad Sandler, IBM
-      <br>Dave Johnson, IBM
-      <br>Edwin Freekenhorst, Shell
-      <br>Eric Bordeau, IBM
-      <br>Gili Mendel, IBM; OSLC Asset Management Lead
-      <br>Grant Larsen, IBM
-      <br>Hari Padmanabhan, IBM
-      <br>Jaimin Patel, WebLayers
-      <br>John Favazza, WebLayers
-      <br>Kevin Bauer, IBM
-      <br>Randy Lexvold, the Emphasys Group
-      <br>Ren Renganathan, Citigroup
-      <br>Scott Bosworth, IBM
-      <br>Sheehan Anderson, IBM
-      <br>Srimanth Gunturi, IBM
-      <br>
-    </p>
-  </section>
-
-
-  <section class="appendix informative" id="history">
-    <h2>Change History</h2>
-    <table border=1 cellspacing=0 cellpadding=0>
-      <tr>
-        <td width=103 valign=top style='width:77.4pt;border:solid windowtext 1.0pt;
-  padding:0in 5.4pt 0in 5.4pt'>
-          <b>Revision</b>
-        </td>
-        <td width=96 valign=top style='width:1.0in;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
-          <b>Date</b>
-        </td>
-        <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
-          <b>Editor</b>
-        </td>
-        <td width=295 valign=top style='width:221.4pt;border:solid windowtext 1.0pt;
-  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
-          <b>Changes Made</b>
-        </td>
-      </tr>
-      <tr>
-        <td>01</td>
-        <td>07/06/2018</td>
-        <td>Fabio Ribeiro</td>
-        <td>Draft OASIS format version created</td>
+    <section class="appendix informative" id="history">
+      <h2>Change History</h2>
+      <table border="1" cellspacing="0" cellpadding="0">
         <tr>
-        <td>02</td>
-        <td>09/08/2018</td>
-        <td>Gray Bachelor</td>
-        <td>Change to V2.1 and add conformance</td>
-    </table>
-  </section>
+          <td
+            width="103"
+            valign="top"
+            style="width: 77.4pt; border: solid windowtext 1pt; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Revision</b>
+          </td>
+          <td
+            width="96"
+            valign="top"
+            style="width: 1in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Date</b>
+          </td>
+          <td
+            width="144"
+            valign="top"
+            style="width: 1.5in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Editor</b>
+          </td>
+          <td
+            width="295"
+            valign="top"
+            style="width: 221.4pt; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+          >
+            <b>Changes Made</b>
+          </td>
+        </tr>
+        <tr>
+          <td>01</td>
+          <td>07/06/2018</td>
+          <td>Fabio Ribeiro</td>
+          <td>Draft OASIS format version created</td>
+        </tr>
 
-</body>
-
+        <tr>
+          <td>02</td>
+          <td>09/08/2018</td>
+          <td>Gray Bachelor</td>
+          <td>Change to V2.1 and add conformance</td>
+        </tr>
+      </table>
+    </section>
+  </body>
 </html>

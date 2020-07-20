@@ -224,7 +224,6 @@ public class NodeCheck
             {
                 Literal lit = node.asLiteral();
                 RDFDatatype dt = lit.getDatatype();
-                Resource validation;
 
                 if (!(dt == null || dt.equals(RDF.dtLangString) || dt.equals(XSDDatatype.XSDstring) || dt.equals(RDF.dtXMLLiteral)))
                 {
@@ -237,7 +236,8 @@ public class NodeCheck
                 }
                 else
                 {
-                    String lang = lit.getLanguage();
+                    Resource validation;
+                    String   lang = lit.getLanguage();
                     if (langTags.contains(lang))
                     {
                         resultModel.createIssue(resultNode, Terms.DuplicateLangString, property, node);
@@ -302,7 +302,6 @@ public class NodeCheck
             count++;
 
             RDFNode node = st.getObject();
-            Resource validation;
 
             if (!node.isResource())
             {
@@ -310,7 +309,8 @@ public class NodeCheck
             }
             else
             {
-                String uri = node.asResource().getURI();
+                Resource validation;
+                String   uri = node.asResource().getURI();
                 if (originalModel.contains(node.asResource(), null))
                 {
                     // ignore internal references for now
@@ -355,15 +355,19 @@ public class NodeCheck
 
 
     /**
-     * Check to see if a string ends with a period (full stop).
+     * Check to see if a string ends with a period (full stop),
+     * and contains no embedded newlines followed by white space (likely misuse of triple quotes in Turtle).
      * @param str the string to be checked
      * @return true iff the string ends with a period.
      */
-    public static Resource checkPeriod(String str)
+    public static Resource checkSentence(String str)
     {
         // If you want to allow trailing white space, use this:
         // return (str.matches(".*\\.\\s*$") ? null : Terms.MissingPeriod);
+        //CSOFF NeedBraces
 
-        return str.endsWith(".") ? null : Terms.MissingPeriod;
+        if (!str.endsWith("."))                    return Terms.MissingPeriod;
+        if (str.matches("(?s).*[\\n\\r]+\\s+.*"))  return Terms.EmbeddedWhitespace;
+        return null;
     }
 }
