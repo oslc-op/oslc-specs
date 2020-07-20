@@ -53,9 +53,9 @@ public class HttpHandler
     private Map<URI, Boolean> httpResourceIsRDF = new HashMap<>();
     private Set<String>       foundRDFResources = new HashSet<>();
     private Set<Pattern>      skipURIPatterns   = new HashSet<>();
-    private boolean           debug             = false;
+    private int           	  debug             = 0;
     private HttpClient        httpClient;
-    private final HttpClient rdfClient;
+    private final HttpClient  rdfClient;
 
 
     /**
@@ -74,15 +74,19 @@ public class HttpHandler
         // and Dublin Core uses an arcane set of redirects including 308, not handled by Apache by default,
         // so we need to configure our HttpClient very carefully!
         Header rdfHeader = new BasicHeader(HttpHeaders.ACCEPT, RDF_CONTENT_TYPES);
-        rdfClient = HttpClientBuilder
+        HttpClientBuilder builder = HttpClientBuilder
             .create()
             .setRedirectStrategy(redirect308())
             .setDefaultHeaders(Collections.singletonList(rdfHeader))
-            .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> request.addHeader(HttpHeaders.ACCEPT, RDF_CONTENT_TYPES))
+            .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> request.addHeader(HttpHeaders.ACCEPT, RDF_CONTENT_TYPES));
+
+        if (debug > 2)
+        {
             // for debugging redirects
-            //.addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.out.println(response.toString()))
-            //.addInterceptorLast(this::responseInterceptor)
-            .build();
+        	builder = builder.addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.out.println(response.toString()))
+            	.addInterceptorLast(this::responseInterceptor);
+        }
+        rdfClient = builder.build();
     }
 
 
@@ -182,7 +186,7 @@ public class HttpHandler
      * Sets the debug option.
      * @param debug the debug value to set.
      */
-    public void setDebug(boolean debug)
+    public void setDebug(int debug)
     {
         this.debug = debug;
     }
@@ -246,7 +250,7 @@ public class HttpHandler
         else if (containsMatch(skipURIPatterns,httpUriOrig.toString()))
         {
             // Do not try to read or parse this
-            if (debug)
+            if (debug > 1)
             {
                 System.err.println("Skipping reference check for "+httpUri);
             }
@@ -258,7 +262,7 @@ public class HttpHandler
             // An exception will be thrown by Jena if the resource is not RDF, and the
             // setting below will be reversed.
             httpResourceIsRDF.put(httpUri, true);
-            if (debug)
+            if (debug > 0)
             {
                 System.err.println("Parsing "+httpUri);
             }
@@ -286,7 +290,7 @@ public class HttpHandler
         if (containsMatch(skipURIPatterns,httpUri.toString()))
         {
             // Do not try to read or parse this
-            if (debug)
+            if (debug > 1)
             {
                 System.err.println("Skipping reference check for "+httpUri);
             }
@@ -295,7 +299,7 @@ public class HttpHandler
         }
 
         HttpGet get = new HttpGet(httpUri);
-        if (debug)
+        if (debug > 1)
         {
             System.err.println("Fetching " + httpUri);
         }

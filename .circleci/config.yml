@@ -9,21 +9,10 @@ jobs:
       - run:
           name: ShapeChecker Gradle build
           command: cd tools/ShapeChecker && ./gradlew --console=plain installDist
+          condition: always()
       - run:
-          name: Check OSLC Core shapes & vocabs
-          command: cd tools/ShapeChecker && ./check-core.sh
-      - run:
-          name: Check OSLC RM spec shapes & vocabs
-          command: cd tools/ShapeChecker && ./check-rm.sh
-      - run:
-          name: Check OSLC QM spec shapes & vocabs
-          command: cd tools/ShapeChecker && ./check-qm.sh
-      - run:
-          name: Check OSLC CM shapes & vocabs
-          command: cd tools/ShapeChecker && ./check-cm.sh
-      - run:
-          name: Check OSLC AM spec shapes & vocabs
-          command: cd tools/ShapeChecker && ./check-am.sh
+          name: Check shapes & vocabs for  primary domains
+          command: cd tools/ShapeChecker && ./check-main.sh
   prettier:
     working_directory: ~/oslc-specs
     docker:
@@ -34,11 +23,17 @@ jobs:
           name: Install prettier
           command: npm install --global prettier
       - run:
+          name: Check Core spec formatting
+          command: prettier --check specs/core/
+      - run:
           name: Check QM spec formatting
           command: prettier --check specs/qm/
       - run:
           name: Check RM spec formatting
           command: prettier --check specs/rm/
+      - run:
+          name: Check Query spec formatting
+          command: prettier --check specs/query/
         # - run:
       #     name: Check all spec formatting
       #     command: prettier --check specs/

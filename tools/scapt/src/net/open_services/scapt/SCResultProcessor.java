@@ -1,12 +1,11 @@
 package net.open_services.scapt;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
+import java.util.TreeSet;
+import java.util.Comparator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -21,11 +20,15 @@ import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.reflect.ReflectionObjectHandler;
 
-import net.open_services.scheck.annotations.*;
+import net.open_services.scheck.annotations.IssueSeverity;
+import net.open_services.scheck.annotations.SCIssue;
+import net.open_services.scheck.annotations.SCTerm;
+import net.open_services.scheck.annotations.SCVocab;
+import net.open_services.scheck.annotations.SCXCheck;
 
 
 /**
@@ -37,25 +40,21 @@ import net.open_services.scheck.annotations.*;
     "net.open_services.scheck.annotations.SCTerm",
     "net.open_services.scheck.annotations.SCIssue",
     "net.open_services.scheck.annotations.SCXCheck"})
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_6)
+@SuppressWarnings("javadoc")
 public class SCResultProcessor extends AbstractProcessor
 {
-    private SCVocabModel            vocabulary = null;
-    private Map<String,SCTermModel> classes    = new TreeMap<>();
-    private Map<String,SCTermModel> properties = new TreeMap<>();
-    private Map<String,SCTermModel> resources  = new TreeMap<>();
-    private Map<String,SCTermModel> issues     = new TreeMap<>();
-    private Map<String,SCTermModel> xchecks    = new TreeMap<>();
-    private Map<String,SCTermModel> severities = new TreeMap<>();
+    private static final Comparator<SCTermModel> COMPARATOR = Comparator.comparing(SCTermModel::getName);
 
+    public SCVocabModel     vocabulary = null;
+    public Set<SCTermModel> classes    = new TreeSet<>(COMPARATOR);
+    public Set<SCTermModel> properties = new TreeSet<>(COMPARATOR);
+    public Set<SCTermModel> resources  = new TreeSet<>(COMPARATOR);
+    public Set<SCTermModel> issues     = new TreeSet<>(COMPARATOR);
+    public Set<SCTermModel> xchecks    = new TreeSet<>(COMPARATOR);
+    public Set<SCTermModel> severities = new TreeSet<>(COMPARATOR);
+    public boolean          classesOrIssues;
 
-    /**
-     * Create new processor
-     */
-    public SCResultProcessor()
-    {
-        super();
-    }
 
 
     @Override
@@ -91,7 +90,7 @@ public class SCResultProcessor extends AbstractProcessor
 
 
     /**
-     * Process the severities enumeration
+     * Process the severities enumeration.
      */
     private void processSeverities()
     {
@@ -99,7 +98,7 @@ public class SCResultProcessor extends AbstractProcessor
         {
             String s = sev.toString();
             SCTermModel sevTerm = new SCTermModel(s, s + " severity.");
-            severities.put(s, sevTerm);
+            severities.add(sevTerm);
         }
     }
 
@@ -118,7 +117,8 @@ public class SCResultProcessor extends AbstractProcessor
                     + ". The SCVocab annotation may only be applied once.");
         }
         SCVocab annotation = element.getAnnotation(SCVocab.class);
-        vocabulary = new SCVocabModel(annotation.uri(),annotation.prefix(),annotation.domain(),annotation.description());
+        vocabulary = new SCVocabModel(annotation.uri(),annotation.prefix(),
+            annotation.domain(),annotation.description(),annotation.additionalStatements());
     }
 
 
@@ -143,13 +143,13 @@ public class SCResultProcessor extends AbstractProcessor
         switch (termAnnotation.type())
         {
         case Class:
-            classes.put(property.getName(), property);
+            classes.add(property);
             break;
         case Property:
-            properties.put(property.getName(), property);
+            properties.add(property);
             break;
         default:
-            resources.put(property.getName(), property);
+            resources.add(property);
             break;
         }
     }
@@ -173,7 +173,7 @@ public class SCResultProcessor extends AbstractProcessor
         SCIssue issueAnnotation = varElement.getAnnotation(SCIssue.class);
         SCTermModel issue = new SCTermModel(varElement.getSimpleName().toString(),
             issueAnnotation.description(),issueAnnotation.issueSeverity());
-        issues.put(issue.getName(), issue);
+        issues.add(issue);
     }
 
 
@@ -198,7 +198,7 @@ public class SCResultProcessor extends AbstractProcessor
             xcheckAnnotation.severity(),
             xcheckAnnotation.singular(),
             xcheckAnnotation.plural());
-        xchecks.put(xcheck.getName(), xcheck);
+        xchecks.add(xcheck);
     }
 
 
@@ -206,52 +206,28 @@ public class SCResultProcessor extends AbstractProcessor
     {
         try
         {
-            Properties props = new Properties();
-            try (InputStream reader = getClass().getClassLoader().getResourceAsStream("net/open_services/scapt/velocity.properties"))
-            {
-                props.load(reader);
-            }
-            VelocityEngine ve = new VelocityEngine();
-            ve.init(props);
-            VelocityContext vc = new VelocityContext();
-            Template vt = ve.getTemplate("templates/genVocab.vm");
+            DefaultMustacheFactory mf = new DefaultMustacheFactory();
+            mf.setObjectHandler(new ReflectionObjectHandler() {
+                @Override
+                protected boolean areMethodsAccessible(Map<?,?> map)
+                {
+                    return true;
+                }
+                });
+            Mustache mustache = mf.compile("templates/genVocab.mustache");
 
-            vc.put("vocab", vocabulary);
-            if (!classes.isEmpty())
-            {
-                vc.put("classes", classes);
-            }
-            if (!properties.isEmpty())
-            {
-                vc.put("properties", properties);
-            }
-            if (!resources.isEmpty())
-            {
-                vc.put("resources", resources);
-            }
-            if (!issues.isEmpty())
-            {
-                vc.put("issues", issues);
-            }
-            if (!xchecks.isEmpty())
-            {
-                vc.put("xchecks", xchecks);
-            }
-            if (!severities.isEmpty())
-            {
-                vc.put("severities", severities);
-            }
+            classesOrIssues = !(classes.isEmpty() || issues.isEmpty());
 
             FileObject vocabFile =
                     processingEnv.getFiler()
-                        .createResource(StandardLocation.SOURCE_OUTPUT, "", "main/resources/SCVocabulary.ttl");
+                        .createResource(StandardLocation.SOURCE_OUTPUT, "", "SCVocabulary.ttl");
 
             processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
-                "creating vocabulary file " + vocabFile.toUri() + " using  template " + vt.getName());
+                "creating vocabulary file " + vocabFile.toUri() + " using  template " + mustache.getName());
 
             try (Writer writer = vocabFile.openWriter())
             {
-                vt.merge(vc, writer);
+                mustache.execute(writer, this).flush();
             }
         }
         catch (IOException ioe)
@@ -259,4 +235,23 @@ public class SCResultProcessor extends AbstractProcessor
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ioe.getLocalizedMessage());
         }
     }
+
+
+    /**
+     * Escape characters in strings.
+     * @param s the string to be escaped
+     * @return the escaped string
+     */
+    public static String enquote(String s)
+    {
+        return s == null ? null :
+           s.replace("\\", "\\\\")
+            .replace("\t", "\\t")
+            .replace("\b", "\\b")
+            .replace("\n", "\\n")
+            .replace("\r", "\\r")
+            .replace("\f", "\\f")
+            .replace("\"", "\\\"");
+    }
+
 }

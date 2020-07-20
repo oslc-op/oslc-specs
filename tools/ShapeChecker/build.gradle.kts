@@ -11,12 +11,22 @@ version = "0.1.0"
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+
+    sourceSets {
+	    main {
+	        java {
+	            setSrcDirs(listOf("src/main/java"))
+	        }
+	        resources {
+	            setSrcDirs(listOf("src/main/resources","src/main/generated"))
+	        }
+	    }
+	}
 }
 
 application {
     mainClassName = "net.open_services.scheck.shapechecker.Main"
 }
-
 
 dependencies {
     implementation("org.apache.jena:jena-core:3.+")
