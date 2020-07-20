@@ -3,7 +3,7 @@
 <head>
 <meta charset='utf-8' />
 <title>OSLC Configuration Management 1.0 Part 3: Configuration Specification</title>
-<script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async class='remove'></script>
+<script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@master/builds/respec-oasis-common.min.js' async class='remove'></script>
 <script class='remove'>
   var respecConfig = {
       specStatus:             "WD",
@@ -58,484 +58,489 @@
 </script>
 </head>
 <body>
-<section id='abstract'>
-  <p>This part of the OSLC Configuration Management Specification defines the representation and behavior of components
-    and configurations of resources in those components (typically referred to as configurations of components, or just configurations).</p>
-</section>
-<section id="toc"></section>
-<section id='sotd'></section>
-<section id='intro' class='informative'>
-  <h2>Introduction</h2>
-  <section id='conventions'></section>
-  <section id='references'>
-    <h3>References</h3>
+  <section id='abstract'>
+    <p>This part of the OSLC Configuration Management Specification defines the representation and behavior of components
+      and configurations of resources in those components (typically referred to as configurations of components, or just configurations).</p>
   </section>
-</section>
-<hr />
-<section id='discovery'>
-  <h2>Service Discovery</h2>
-  <p>A configuration server SHOULD implement [[OSLCCore3]] ServiceProvider and Service resources,
-    where an <code>oslc:domain</code> property has the value <code>http://open-services.net/ns/config#</code>.
-    A global configuration service resource, if provided, SHOULD include the property <code>oslc:usage</code>
-    with the value <code>http://open-services.net/ns/config#globalConfigurationService</code>.
-    A service with this usage property MUST provide all global configuration capabilities described as mandatory in this specification.</p>
-</section>
-<section id='componentcontainer'>
-  <h2>Component Container</h2>
-  <p>Configuration Management servers MUST provide a single <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container (LDPC)</a> for all components in that server.</p>
-  <p>This component container MUST be advertised as an [[OSLCCore3]] Creation Factory in the Service resource for the configuration server.
-    This creation factory SHOULD provide a resource shape describing the shape of components that can be created;
-    if any properties beyond those described in this standard are required to create components, then a resource shape MUST be provided.</p>
-</section>
-<section id='config-resource-shapes' class='shapes'>
-  <h2>Component and Configuration Resource Shapes</h2>
-  <section id='shape-component' class='shapes'>
-    <h3>Resource shape for Component</h3>
-    <div title='Resource shape for Component'
-      data-include='./config-shapes.ttl#Component'
-      data-oninclude='shapeToSpec'
-      data-include-sync='true'
-      data-include-replace='true'
-      data-include-format='html'>
-    </div>
+  <section id="toc"></section>
+  <section id='sotd'></section>
+  <section id='intro' class='informative'>
+    <h2>Introduction</h2>
+    <section id='conventions'></section>
+    <section id='references'>
+      <h3>References</h3>
+    </section>
   </section>
-  <section id='shape-baseline' class='shapes'>
-    <h3>Resource shape for Baseline</h3>
-    <div title='Resource shape for Baseline'
-      data-include='./config-shapes.ttl#Baseline'
-      data-oninclude='shapeToSpec'
-      data-include-sync='true'
-      data-include-replace='true'
-      data-include-format='html'>
-    </div>
+  <hr />
+  <section id='discovery'>
+    <h2>Service Discovery</h2>
+      <p class='conformance'>A configuration server SHOULD implement [[OSLCCore3]] ServiceProvider and Service resources,
+      where an <code>oslc:domain</code> property has the value <code>http://open-services.net/ns/config#</code>.</p>
+      <p class='conformance'>A global configuration service resource, if provided, SHOULD include the property <code>oslc:usage</code>
+      with the value <code>http://open-services.net/ns/config#globalConfigurationService</code>.</p>
+      <p class='conformance'>A service with this usage property MUST provide all global configuration capabilities described as mandatory in this specification.</p>
   </section>
-  <section id='shape-stream' class='shapes'>
-    <h3>Resource shape for Stream</h3>
-    <div title='Resource shape for Stream'
-      data-include='./config-shapes.ttl#Stream'
-      data-oninclude='shapeToSpec'
-      data-include-sync='true'
-      data-include-replace='true'
-      data-include-format='html'>
-    </div>
+  <section id='componentcontainer'>
+    <h2>Component Container</h2>
+    <p class='conformance'>Configuration Management servers MUST provide a single <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container (LDPC)</a> for all components in that server.</p>
+    <p class='conformance'>This component container MUST be advertised as an [[OSLCCore3]] Creation Factory in the Service resource for the configuration server.</p>
+    <p class='conformance'>This creation factory SHOULD provide a resource shape describing the shape of components that can be created;
+      if any properties beyond those described in this standard are required to create components, then a resource shape MUST be provided.</p>
   </section>
-  <section id='shape-changeset' class='shapes'>
-    <h3>Resource shape for ChangeSet</h3>
-    <div title='Resource shape for ChangeSet'
-      data-include='./config-shapes.ttl#ChangeSet'
-      data-oninclude='shapeToSpec'
-      data-include-sync='true'
-      data-include-replace='true'
-      data-include-format='html'>
-    </div>
+  <section id='config-resource-shapes' class='shapes'>
+    <h2>Component and Configuration Constraints</h2>
+    <p>This section describes constraints on the resources for components, configurations, and related artifacts.</p>
+    <p class='conformance'>Configuration Management servers MUST observe these constraints,
+      but MAY provide additional classes, properties, and individuals.</p>
+    <p class='conformance'>In particular, Configuration Management servers MAY define additional types of configuration, but all configurations MUST also be of one of the types defined here.</p>
+    <section id='shape-component' class='shapes'>
+      <h3>Resource shape for Component</h3>
+      <div title='Resource shape for Component'
+        data-include='./config-shapes.ttl#Component'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'>
+      </div>
+    </section>
+    <section id='shape-baseline' class='shapes'>
+      <h3>Resource shape for Baseline</h3>
+      <div title='Resource shape for Baseline'
+        data-include='./config-shapes.ttl#Baseline'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'>
+      </div>
+    </section>
+    <section id='shape-stream' class='shapes'>
+      <h3>Resource shape for Stream</h3>
+      <div title='Resource shape for Stream'
+        data-include='./config-shapes.ttl#Stream'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'>
+      </div>
+    </section>
+    <section id='shape-changeset' class='shapes'>
+      <h3>Resource shape for ChangeSet</h3>
+      <div title='Resource shape for ChangeSet'
+        data-include='./config-shapes.ttl#ChangeSet'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'>
+      </div>
+    </section>
+    <section id='shape-contribution' class='shapes'>
+      <h3>Resource shape for Contribution</h3>
+      <div title='Resource shape for Contribution'
+        data-include='./config-shapes.ttl#Contribution'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'>
+      </div>
+    </section>
+    <section id='shape-selections' class='shapes'>
+      <h3>Resource shape for Selections</h3>
+      <div title='Resource shape for Selections'
+        data-include='./config-shapes.ttl#Selections'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'>
+      </div>
+    </section>
+    <section id='shape-cselections' class='shapes'>
+      <h3>Resource shape for ChangeSet Selections</h3>
+      <div title='Resource shape for ChangeSet Selections'
+        data-include='./config-shapes.ttl#CSelections'
+        data-oninclude='shapeToSpec'
+        data-include-sync='true'
+        data-include-replace='true'
+        data-include-format='html'>
+      </div>
+    </section>
   </section>
-  <section id='shape-contribution' class='shapes'>
-    <h3>Resource shape for Contribution</h3>
-    <div title='Resource shape for Contribution'
-      data-include='./config-shapes.ttl#Contribution'
-      data-oninclude='shapeToSpec'
-      data-include-sync='true'
-      data-include-replace='true'
-      data-include-format='html'>
-    </div>
-  </section>
-  <section id='shape-selections' class='shapes'>
-    <h3>Resource shape for Selections</h3>
-    <div title='Resource shape for Selections'
-      data-include='./config-shapes.ttl#Selections'
-      data-oninclude='shapeToSpec'
-      data-include-sync='true'
-      data-include-replace='true'
-      data-include-format='html'>
-    </div>
-  </section>
-  <section id='shape-cselections' class='shapes'>
-    <h3>Resource shape for ChangeSet Selections</h3>
-    <div title='Resource shape for ChangeSet Selections'
-      data-include='./config-shapes.ttl#CSelections'
-      data-oninclude='shapeToSpec'
-      data-include-sync='true'
-      data-include-replace='true'
-      data-include-format='html'>
-    </div>
-  </section>
-</section>
-<section id="configcontext">
-  <h4>Configuration context</h4>
-  <p>Since concept resource URIs for versioned resources do not inherently identify a specific version of that resource,
-    a client SHOULD provide a configuration context within which the concept resource is resolved to a specific version.</p>
-  <p>A client requests a specific configuration context in one of two ways:</p>
-  <ul>
-    <li>When performing a GET on a concept URI, add a <code>Configuration-Context</code> header, passing the URI of a configuration resource as the value:
-      <pre class='example'>GET /resources/conceptResourceA HTTP/1.1
-Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
-    </li>
-    <li>When performing a GET on a concept URI, add a query string <code>oslc_config.context</code> and the encoded configuration URI to the end of the request URI:
-      <pre class='example'>GET /resources/conceptResourceA?oslc_config.context=%3Chttp%3A//example.com/configurations/myConfiguration1%3E HTTP/1.1</pre>
-    </li>
-  </ul>
-  <p>TBD - define syntax of Configuration-Context header by referring to IETF RFC.</p>
-  <p>Syntax of the query string for configuration context:</p>
-  <pre class="indent">?oslc_config.context=<em>uri_ref_esc</em></pre>
-  <p>The <em>uri_ref_esc</em> is an angle bracket-delimited URI reference in which &gt; and \ are \-escaped, as defined in [[OSLCCore3]].</p>
-  <p>A server MUST support both these methods of passing configuration context.</p>
-  <p>If a request contains both a header and a query string, the server MUST use the query string.
-    Servers MUST reject requests that contain two or more different configuration contexts passed in query strings.</p>
-  <p>Where the Configuration-Context header is used on a request, a server SHOULD include in the response a header
-  <code>Vary=Configuration-Context</code> so that different configuration contexts do not use a previously cached response.</p>
-  <p>A request SHOULD contain only a single occurrence of the <code>Configuration-Context</code> header,
-    and MUST NOT contain multiple Configuration-Context headers referencing different values.
-    A server SHOULD treat multiple identical <code>Configuration-Context</code> headers as it would a single header,
-    and MUST treat multiple <code>Configuration-Context</code> headers with different configuration values as an error.</p>
-  <p>If a configuration context is passed on a request for a non-versioned resource,
-    the server MUST NOT treat that as an error,
-    and MAY use that context to resolve references to embedded or related resources.</p>
-  <p class="note">The client is responsible for providing the correct configuration context to each request issued by that client
-    at least where the relevant resource might be a versioned resource.
-    If a resource returned from such a request contains links,
-    the client should not assume the server has returned version-specific or configuration-specific links,
-    and the client should continue to provide the correct configuration context to fetch those related resources.
-    Only in cases where the client knows that a resource is not versioned may the configuration context be omitted.
-    As noted later, the <a href="#compact">compact rendering</a> returned for UI Previews is an exception to this rule.</p>
-  <p class="note" title="Implicitly defined configuration contexts">While navigating between resources,
-    resources or links of certain types may indicate that a different context is to be used when following links from that resource.
-    Any such semantics should be defined by the specifications for such resource and link types; none are defined by this specification.</p>
-<section>
-  <h4>Default configuration</h4>
-    <p>If a configuration context is not provided or implied, the server MAY provide a default configuration, or the request MAY fail.
-     A server MAY include an <code>oslc_config:configurationSettings</code> link in the OSLC Service resource,
-     referencing an <code>oslc_config:ConfigurationsSettings</code> resource. That resource MAY contain
-     at most one <code>oslc_config:defaultConfiguration</code> property whose value is the URI of the default configuration to be used by that service.
-     An <code>oslc_config:defaultConfiguration</code> property with an <code>rdf:nil</code> value implies there is no default configuration, so requests with no context MUST fail.
-     The absence of the <code>oslc_config:defaultConfiguration</code> has no implication as to the presence or absence of a default configuration.
-     Servers MAY support a PUT on <code>oslc_config:ConfigurationsSettings</code> resource as a way to set the default configuration.
-     Servers MAY provide other ways for users to set the default configuration.</p>
-</section>
-</section>
-<section id='componentoperations'>
-  <h2>Supported Operations on Components</h2>
-  <p>A configuration server MUST support the following operations on components:</p>
-  <ul>
-    <li>HEAD and OPTIONS: Retrieve information about the component</li>
-    <li>GET: Retrieve the current state of the component</li>
-    <li>GET on the component creation factory LDPC to find all components</li>
-    <li>GET on the configuration LDPC for a component to find all configurations (baselines and streams) of that component</li>
-  </ul>
-  <p>A configuration server SHOULD support, and a global configuration server MUST support,
-    the following operations on Linked Data Platform Containers:</p>
-  <ul>
-    <li>POST to the component LDPC to create a new component</li>
-    <li>POST to the configuration LDPC for a component to create a new stream for that component, optionally specifying an initial baseline;
-      if an initial baseline is not specified, a real or notional empty baseline is implied as the starting point for the stream</li>
-  </ul>
-  <p>Servers SHOULD support the Prefer header for GET on LDPCs specifying PreferMinimalContainer:</p>
-    <pre class='example'>Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalContainer"</pre>
-  <p>allowing a client to retrieve properties about the LDPC, including any <code>oslc:resourceShape</code> properties, without needing to retrieve all membership triples.
-    Servers MAY support OSLC selective properties on a GET, allowing a client to specify exactly which properties of those LDPCs are to be returned.</p>
-</section>
-<section id='configoperations'>
-  <h2>Supported Operations on Configurations</h2>
-  <p>A configuration server MUST support the following operations on configurations:</p>
-  <ul>
-    <li>HEAD and OPTIONS: Retrieve information about the configuration</li>
-    <li>GET: Retrieve the current state of the configuration</li>
-  </ul>
-  <p>A configuration server SHOULD support, and a global configuration server MUST support, the following operations on configurations:</p>
-  <ul>
-    <li>PUT on a configuration resource to update the tags</li>
-    <li>PUT on a configuration resource and its inline Contribution resources to update the set of contributed configurations</li>
-    <li>DELETE a configuration; servers MAY refuse to delete configurations that are part of or referenced by existing baselines.</li>
-  </ul>
-  <p>A configuration server MAY support PATCH on a configuration to update the tags and/or the set of contributed configurations.</p>
-  <p class='note'>Since servers may support deletion of baselines, clients must not assume that references to baselines can be resolved;
-  like any other resource, clients must be prepared to handle 404 errors. Since baselines are normally linked into a provenance chain
-  using the <code>oslc_config:previousBaseline</code> property, servers may elect to leave a stub resource (one with a minimal set of properties) behind
-  instead of truly deleting a baseline.
-  Servers SHOULD add the property <code>oslc:archived=TRUE</code> on a reduced form of a partially deleted baseline.</p>
-</section>
-<section id='citemoperations'>
-  <h2>Supported Operations on Versioned Resources in a Configuration Context</h2>
-  <p>A configuration server MUST support the following operations on configuration items (versioned concept resources)
-    in the context of a global configuration,
-    or in the context of a configuration from this server:</p>
-  <ul>
-    <li>HEAD: Retrieve information including the version resource URI (if any) about the state of a specified versioned concept resource
-      in the context of a specified configuration.</li>
-    <li>GET: Retrieve the state of a specified versioned concept resource in the context of a specified configuration,
-      where this operation returns zero or one version resources matching the required state.
-      An attempt to GET a version resource URI in a configuration context where a different version of that concept resource is bound
-      MUST fail with an HTTP 404 error.</li>
-    <li>PUT: Update the state of a specified versioned concept resource in a specified stream;
-      this operation MAY cause the creation of a new version of the resource.</li>
-  </ul>
-  <p>A configuration server MAY support the following operations on configuration items in the context of a global configuration,
-    or in the context of a configuration from this server:</p>
-  <ul>
-    <li>POST to a component in the context of a stream, resulting in the creation of the first version of a new concept resource,
-      or a new version of an existing resource</li>
-    <li>DELETE: Delete the current mutable version resource in a specified stream.</li>
-  </ul>
-</section>
-<section id='creation'>
-  <h2>Creation of Baselines and Streams</h2>
-  <p>When a new component is created by POSTing to the Component Container, an empty baseline for that component MUST be created automatically,
-    and added to the <code>oslc_config:configurations</code> container for that component.
-    The empty baseline has no contributions, no selections, and no branch.</p>
-  <section id='streamcreation'>
-  <h3>Creation of Streams</h3>
-  <p>A new stream is created by POSTing to the <code>oslc_config:streams</code> container for a baseline.
-    By default, the new stream inherits (MUST copy) the component, contributions, and selections of the baseline,
-    but does not inherit (MUST NOT copy) the branch property.
-    Other properties MAY be inherited (copied) from the baseline, or MAY be set to server defaults.
-    The POSTed data MAY include any of the following properties;
-    if these properties are supported by the server,
-    then the POSTed values for these properties MUST completely replace any default or inherited values:</p>
-  <ul>
-    <li><code>dcterms:subject</code></li>
-    <li><code>dcterms:title</code> *</li>
-    <li><code>dcterms:description</code></li>
-    <li><code>oslc:shortTitle</code> *</li>
-    <li><code>oslc_config:branch</code></li>
-    <li><code>oslc_config:contribution</code></li>
-    <li><code>oslc_config:selections</code></li>
-  </ul>
-  <p>The server MUST set the <code>oslc_config:previousBaseline</code> property of the new stream,
-    and SHOULD set the <code>prov:wasDerivedFrom</code> property of the new stream,
-    to reference the baseline owning the <code>oslc_config:streams</code> container.</p>
-  </section>
-  <section id='baselinecreation'>
-  <h3>Creation of Baselines</h3>
-  <p>A new baseline of a stream is created by POSTing to the <code>oslc_config:baselines</code> container for that stream.
-    If the server determines that a suitable baseline already exists, the server MAY return a 303 with a Location header
-    referring to that existing baseline; for an existing baseline to be suitable it MUST be for the same component,
-    MUST have the same <code>oslc_config:branch</code> value, if any, MUST select the same version resources,
-    each contribution MUST be a suitable baseline for the corresponding stream contribution,
-    and there must be no additional or missing contributions.</p>
-  <p>Where a new baseline is created, that new baseline inherits (MUST copy) the following properties of the stream:</p>
-  <ul>
-    <li><code>oslc_config:branch</code></li>
-    <li><code>oslc_config:component</code></li>
-    <li><code>oslc_config:contribution</code></li>
-    <li><code>oslc_config:selections</code></li>
-    <li><code>oslc_config:previousBaseline</code></li>
-  </ul>
-  <p>Other properties MAY be inherited (copied) from the stream, or MAY be set to server defaults.
-    The POSTed data MAY include any of the following properties;
-    if these properties are supported by the server,
-    then the POSTed values for these properties MUST completely replace any default or inherited values:</p>
-  <ul>
-    <li><code>dcterms:subject</code></li>
-    <li><code>dcterms:title *</code></li>
-    <li><code>dcterms:description</code></li>
-    <li><code>oslc:shortTitle *</code></li>
-  </ul>
-  <p>When creating a new baseline from a stream, after copying all previous values of the <code>previousBaseline</code>
-    to the new baseline, the server MUST replace all those <code>previousBaseline</code> properties on the stream
-    by a single reference to the newly created baseline.
-    The chain of <code>previousBaseline</code> links thus shows the history of baselines of a stream.</p>
-  <p>The server MUST set the <code>oslc_config:baselineOfStream</code> property of the new baseline to reference the stream owning the
-    <code>oslc_config:baselines</code> container.</p>
-  <p>Since all contributions to a baseline must themselves be baselines,
-    creation of a baseline requires that a server MUST first create or obtain baselines for the current state of all stream contributions,
-    recursively downward through the contribution graph.
-    See <a href="#longoperations">Long Operations</a>.</p>
-  </section>
-  <section id='commoncreation'>
-  <h3>Concerns common to streams and baselines</h3>
-  <p>* A server MAY adjust the name properties of a configuration to maintain any name uniqueness constraints;
-    a server SHOULD NOT fail creation of a baseline or stream just because the requested name is not unique.</p>
-  <p>The server MAY ignore any additional properties,
-    or MAY return an error if those properties are considered incompatible with the creation request.</p>
-  <p>Any properties required on new streams or baselines not defined by this standard MUST be described in
-    resource shapes referenced by <code>oslc:resourceShape</code> properties on the container.</p>
-  <p>Servers SHOULD support the Prefer header for GET on those LDPCs specifying PreferMinimalContainer:
-    <pre class='example'>Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalContainer"</pre>
-   allowing a client to retrieve properties about the LDPC, including any <code>oslc:resourceShape</code> properties, without needing to retrieve all membership triples.
-    Servers MAY support OSLC selective properties on a GET, allowing a client to specify exactly which properties of those LDPCs are to be returned.</p>
-  </section>
-</section>
-<section id='contributions'>
-  <h2>Contributions and Overrides</h2>
-  <p>Global configurations, and possible other types of configuration, support aggregation of multiple configurations,
-    using the <code>oslc_config:Contribution</code> resource. Changes to contributions are made using PUT.
-    For change sets, and possibly other use cases, a configuration or contribution can override another configuration contributed to the overall hierarchy.
-    An override relationship may be specified at the configuration level (for change sets that apply to a specific base configuration)
-    or at the contribution level (allowing a hierarchy where some contributions may override others without modifying the properties of potentially shared configurations).
+  <section id="configcontext">
+    <h4>Configuration context</h4>
+    <p>Since concept resource URIs for versioned resources do not inherently identify a specific version of that resource,
+      a client SHOULD provide a configuration context within which the concept resource is resolved to a specific version.</p>
+    <p>A client requests a specific configuration context in one of two ways:</p>
     <ul>
-      <li>When adding a contribution, if the configuration being added has an <code>oslc_config:overrides</code> relationship,
-        that relationship MUST be copied to the contribution.</li>
-      <li>If the configuration being added has no OSLC overrides - it is a reusable configuration - a client MAY include an <code>oslc_config:overrides</code> relationship
-        in a PUT to the contribution resource.</li>
-      <li>Servers MAY require an overriding configuration to be for the same component as the overridden contribution.</li>
-      <li>Servers MAY report an error if the configuration identified in the <code>oslc_config:overrides</code> property does not exist in the hierarchy for the context configuration.</li>
+      <li>When performing a GET on a concept URI, add a <code>Configuration-Context</code> header, passing the URI of a configuration resource as the value:
+        <pre class='example'>GET /resources/conceptResourceA HTTP/1.1
+  Configuration-Context: http://example.com/configurations/myConfiguration1</pre>
+      </li>
+      <li>When performing a GET on a concept URI, add a query string <code>oslc_config.context</code> and the encoded configuration URI to the end of the request URI:
+        <pre class='example'>GET /resources/conceptResourceA?oslc_config.context=%3Chttp%3A//example.com/configurations/myConfiguration1%3E HTTP/1.1</pre>
+      </li>
     </ul>
-  </p>
-</section>
-<section id='vresolution'>
-  <h2>Version Resolution</h2>
-  <p>When a request is made for a versioned resource in the context of a configuration:</p>
-  <ol>
-  <li>if there is no version of that resource in any of the selections in the contributions to the context configuration,
-  nor in any of the selections in their recursive contributions,
-  the request MUST fail with a 404 Resource not found
-  (note that this includes unbound selections from a selection with type <code>oslc_config:UnboundSelections</code>)</li>
-  <li>if there is exactly one version of that resource in the union of the selections in the recursive contributions,
-  the request MUST return that one version</li>
-  <li>if there is more than one version of that resource in the union of the selections in the recursive contributions,
-  the behavior is implementation-defined, but SHOULD be well-defined in that the successive requests in the same
-  configurations with the same selections SHOULD resolve to the same version.
-  A server MAY perform an ordered search using the <code>oslc_config:contributionOrder</code> property,
-  and MAY have a way to indicate multiple possible version resolutions.
-  <p class='note'>
-  The <code>oslc_config:contributionOrder</code> property is defined as a string rather than an integer to
-  make it easier for servers to insert new contributions into an existing set without having to adjust
-  the order value of existing contributions.</p></li>
-  </ol>
-  <p>During this version resolution, overrides from change set configurations MUST be taken into account.
-    If a change set removes a selection for a versioned resource in the overridden configuration,
-    and no other selection is provided for that resource in some other configuration,
-    then the request MUST fail with a 404 Resource not found.
-    If a change set replaces a selection for a versioned resource in the overridden configuration,
-    and no other selection is provided for that resource in some other configuration,
-    the request MUST return the version in the change set selection.</p>
-  <p>Implementations SHOULD provide documentation on their version resolution behavior.</p>
-</section>
-<section id='changesets' class='informative'>
-  <h2>Change Sets</h2>
-  <p>Some systems use change sets to group related changes, or changes to multiple resources that must be kept together.
-    Change sets may be represented using a configuration of type <code>oslc_config:ChangeSet</code> - a special type of stream.
-    Each <code>oslc_config:ChangeSet</code> resource is related to exactly one base configuration (either a stream or a baseline),
-    using the <code>oslc_config:overrides</code> property.
-    A <code>oslc_config:ChangeSet</code> has either a complete set of replacements for the versions selected by that base configuration, or a set of changes - a delta.
-    The configuration defined by a change set thus identifies both the 'before' state (the base configuration that is overridden by this change set),
-    and the 'after' state defined by the change set configuration itself.</p>
-  <p>
-    Systems that allow multiple change sets to be applied to a single base configuration should represent each such internal change set
-    as an <code>oslc_config:ChangeSet</code> resource using the same value of <code>oslc_config:overrides</code>;
-    the property <code>prov:wasDerivedFrom</code> should be used to provide a complete or partial ordering of such change sets.
-    Servers may also synthesize a combined <code>oslc_config:ChangeSet</code> resource representing the overall effect of multiple internal change sets.</p>
-  <p>
-    When a change set is based on a stream (the <code>oslc_config:overrides</code> property on an instance of an <code>oslc_config:ChangeSet</code>
-    refers to a configuration of type <code>oslc_config:Stream</code>), then the 'before' state is mutable, and may not represent the state at the time the change set was created.
-    Servers can avoid this lack of precision by ensuring either that all changes made to a stream are captured in a change set based off that stream,
-    or that the stream's <code>oslc_config:selections</code> properties accurately represent the sets of changes delivered to that stream before any of the change sets based on that stream
-    (those change sets probably representing changes still pending for the stream).</p>
-  <p>
-    Since the shape for a change set allows only a single value for <code>oslc_config:overrides</code>,
-    systems that allow a single change set to be applied to multiple base configurations need to represent that internal change set by multiple <code>oslc_config:ChangeSet</code> resources.
-    These copies may be associated with each other using properties such as <code>http://purl.org/datanode/ns#isCopyOf</code>, <code>dcterms:relation</code>, or similar.</p>
-</section>
-<section id='delegateduis'>
-  <h2>Delegated UIs</h2>
-  <p>All configuration servers MUST provide a delegated user interface dialog for selection of configurations.
-    A global configuration server MUST provide, and a local configuration server MAY provide,
-    a delegated user interface dialog for creation of configurations.</p>
-  <p>In order to provide a good user experience when selecting configurations to be used as contributions to a parent configuration,
-    the UI Consumer SHOULD provide the URI of the parent configuration as a parameter to the Delegated UI Dialog,
-    using the parameter <code>oslc_config.parentConfiguration</code>.
-    UI Providers SHOULD use the types and <code>oslc_config:accepts</code> property values of that resource
-    to filter the list of potential contributions shown in the selection dialog.</p>
-  <p>Syntax:</p>
-  <pre class="indent">?oslc_config.parentConfiguration=<em>uri_ref_esc</em></pre>
-  <p>Example:</p>
-  <pre class="example">?oslc_config.parentConfiguration=%3Chttp://example.com/configurations/globalConfig12%3E</pre>
-  <p>Tools providing versioned resources using configuration management systems SHOULD provide delegated user interface dialogs
-    for selection of versioned resources in the context of a configuration,
-    and MAY provide delegated user interface dialogs for creation of versioned resources in the context of a configuration.</p>
-</section>
-<section id="compact">
-  <h2>Compact Rendering</h2>
-  <p>Configuration servers SHOULD implement [[OSLCCore3]] UI Previews and compact rendering.</p>
-  <p>Where implemented, clients MUST pass any required <a href="#configcontext">configuration context</a> on the initial request for a compact resource,
-    and the configuration server MUST return a compact resource honoring that configuration context.
-    Moreover, the icon reference, the large preview reference, the small preview reference, and any image or intra-page references
-    directly embedded in the large and small HTML preview documents in that compact resource MUST correspond to the given configuration context,
-    so the client need not pass a configuration context to render the icon or the HTML preview.
-    A reference corresponds to a given configuration if it is the URI of a non-versioned resource,
-    the version URI for a versioned resource selected by the given configuration,
-    or a concept resource URI with a configuration query string that resolves to the versioned resource selected by the given configuration.</p>
-</section>
-<section id='trs'>
-  <h2>Tracked Resource Sets</h2>
-  <p>A configuration server SHOULD provide one or more Tracked Resource Sets for configurations, contributions, and components.
-    A configuration server MAY publish selections and versioned resources in a Tracked Resource Set (TRS);
-    URIs for versioned resources in the base and change log of the TRS MUST be version resource URIs.</p>
-</section>
-<section id='queries'>
-  <h2>Query Support</h2>
-  <p>Configuration servers MAY support [[OSLCCore3]] Query for configurations and components.
-  <span class='red'><i>TBD: That reference must be changed to refer to OSLC Core 3.1 once that is published, since query is not in 3.0.</i></span>
-    If OSLC Query is provided, queries for the following properties using <code>oslc.where</code> and <code>oslc.select</code> SHOULD be supported:</p>
-  <ul>
-    <li><code>dcterms:title</code></li>
-    <li><code>dcterms:created</code></li>
-    <li><code>dcterms:subject</code></li>
-    <li><code>rdf:type</code></li>
-    <li><code>oslc_config:component</code></li>
-    <li><code>oslc_config:contribution{oslc_config:configuration}</code></li>
-    <li><code>oslc_config:baselineOfStream</code></li>
-  </ul>
-  <p>Query for other properties MAY be supported.</p>
-  <p>For example, this is a query for baselines of a given stream <code>http://example.com/configs/stream123</code>, with tag 'stellar',
-    created after July 1st 2014:</p>
-  <pre class="example">http://example.com/configs?oslc.where=oslc_config:baselineOfStream=&lt;http://example.com/configs/stream123&gt; and
-   dc_terms:modified&gt;=&quot;2014-07-01T00:00:00&quot; and dcterms_subject=&quot;stellar&quot;</pre>
-  <p>Since some of those character must be encoded, the request would be issued as:</p>
-  <pre class="example">http://example.com/configs?oslc.where=oslc_config%3AbaselineOfStream%3D%3Chttp%3A%2F%2Fexample.com%2Fconfigs%2Fstream123%3E%20and
-   %20dc_terms%3Amodified%3E%3D%222014-07-01T00%3A00%3A00%22%20and%20dcterms_subject%3D%22stellar%22</pre>
-</section>
-<section id="matching_contribs">
-  <h2>Matching Contributions</h2>
-  <p>Certain types of streams accept only certain other types of configurations as contributions. A global stream MUST accept any suitable configuration (baseline or stream) from an arbitrary configuration server,
-    while a stream from some non-global server may accept only configurations from the same server.
-    For a non-global server, some configurations may be acceptable as contributions to global streams,
-    while other non-global configurations are valid only as a contribution to a broader scoped stream from that same server.</p>
-  <p>The acceptability of a configuration as a child contribution to a parent stream is governed by
-    the <code>oslc_config:acceptedBy</code> property on the child configuration
-    and the <code>oslc_config:accepts</code> property on the parent stream.
-    A configuration is a match, and thus acceptable as a contribution, if and only if:</p>
-  <ol>
-    <li>The parent has an <code>oslc_config:accepts</code> property whose value matches one of the types of the child configuration, AND</li>
-    <li>The child has an <code>oslc_config:acceptedBy</code> property whose value matches one of the types of the parent configuration.</li>
-  </ol>
-  <p>A configuration type matches another type if they are the same type, or if the parent type is <code>oslc_config:Configuration</code> and the child type is either <code>oslc_config:Baseline</code> or <code>oslc_config:Stream</code>.
-    No other form of inference is required, but servers MAY use inference through properties such as <code>owl:sameAs</code> and <code>rdfs:subClassOf</code> to extend the definition of matching configuration types. </p>
-  <p>A configuration is marked as a global configuration by adding an <code>oslc_config:accepts</code> property with the value <code>oslc_config:Configuration</code>.
-    Any configuration that is suitable to be a contribution to a global configuration (including global configurations themselves)
-    MUST have an <code>oslc_config:acceptedBy</code> property with the value <code>oslc_config:Configuration</code>.
-    A stream is marked as not accepting any kind of contribution (that is, it may only appear as a leaf in the configuration tree)
-    by not having any <code>oslc_config:accepts</code> property.
-    A configuration is marked as ineligible as any form of contribution (that is, it may only appear as a root in the configuration tree)
-    by not having any <code>oslc_config:acceptedBy</code> property.</p>
-  <p>A stream with an <code>oslc_config:accepts</code> property with the value <code>oslc_config:Baseline</code> accepts only baselines in changes to its set of contributions.
-    A server MAY use this to indicate a stream being used to stage the progressive construction of a baseline, where any initial stream contributions are gradually replaced by baselines as they become available.</p>
-  <p>Since baselines are immutable, their contributions (if any) are immutable, derived from the streams from which those baselines were created,
-    so the <code>oslc_config:accepts</code> property is not meaningful and may be omitted.</p>
-  <p>Configuration servers MAY define their own types of configuration,
-    and use those types in <code>oslc_config:acceptedBy</code> and <code>oslc_config:accepts</code> properties to define the allowed contributions.</p>
-  <p>Servers MAY treat the <code>oslc_config:accepts</code> and <code>oslc_config:acceptedBy</code>
-    as server-generated read-only properties, not modifiable by a client.</p>
-</section>
-<section id='longoperations'>
-  <h2>Long Operations</h2>
-  <p>Some operations (for example, creating a baseline from a large hierarchy of streams) can take a long time to complete.
-    Servers MAY use the standard HTTP response 202 Request Accepted to indicate that a request has been accepted, but may not yet be complete.
-    The content and location header of this 202 response MUST be that of an <code>oslc_config:Activity</code> resource, indicating the progress
-    or result of that activity. Clients SHOULD poll the Activity resource periodically until the state indicates it has finished.</p>
-  <p>Each Activity resource MUST be persisted by a server (including over a restart) for a minimum of 24 hours after completion of the long operation as a whole,
-    or until explicitly deleted by a client.</p>
-  <p>Clients SHOULD delete each Activity created by a long-running operation soon after the client has seen the completion of the activity,
-    or when the client is no longer interested in the result.
-    Servers MAY deny clients access to delete Activity resources including but not limited to activities still in progress,
-    or activities not created by that client,
-    or MAY require clients to have a specific role or permission to delete activities.</p>
-  <div title='Resource shape for Activity'
-    data-include='./config-shapes.ttl#Activity'
-    data-oninclude='shapeToSpec'
-    data-include-sync='true'
-    data-include-replace='true'
-    data-include-format='html'>
-  </div>
-</section>
+    <p>TBD - define syntax of Configuration-Context header by referring to IETF RFC.</p>
+    <p>Syntax of the query string for configuration context:</p>
+    <pre class="indent">?oslc_config.context=<em>uri_ref_esc</em></pre>
+    <p>The <em>uri_ref_esc</em> is an angle bracket-delimited URI reference in which &gt; and \ are \-escaped, as defined in [[OSLCCore3]].</p>
+    <p>A server MUST support both these methods of passing configuration context.</p>
+    <p>If a request contains both a header and a query string, the server MUST use the query string.
+      Servers MUST reject requests that contain two or more different configuration contexts passed in query strings.</p>
+    <p>Where the Configuration-Context header is used on a request, a server SHOULD include in the response a header
+    <code>Vary=Configuration-Context</code> so that different configuration contexts do not use a previously cached response.</p>
+    <p>A request SHOULD contain only a single occurrence of the <code>Configuration-Context</code> header,
+      and MUST NOT contain multiple Configuration-Context headers referencing different values.
+      A server SHOULD treat multiple identical <code>Configuration-Context</code> headers as it would a single header,
+      and MUST treat multiple <code>Configuration-Context</code> headers with different configuration values as an error.</p>
+    <p>If a configuration context is passed on a request for a non-versioned resource,
+      the server MUST NOT treat that as an error,
+      and MAY use that context to resolve references to embedded or related resources.</p>
+    <p class="note">The client is responsible for providing the correct configuration context to each request issued by that client
+      at least where the relevant resource might be a versioned resource.
+      If a resource returned from such a request contains links,
+      the client should not assume the server has returned version-specific or configuration-specific links,
+      and the client should continue to provide the correct configuration context to fetch those related resources.
+      Only in cases where the client knows that a resource is not versioned may the configuration context be omitted.
+      As noted later, the <a href="#compact">compact rendering</a> returned for UI Previews is an exception to this rule.</p>
+    <p class="note" title="Implicitly defined configuration contexts">While navigating between resources,
+      resources or links of certain types may indicate that a different context is to be used when following links from that resource.
+      Any such semantics should be defined by the specifications for such resource and link types; none are defined by this specification.</p>
+  <section>
+    <h4>Default configuration</h4>
+      <p>If a configuration context is not provided or implied, the server MAY provide a default configuration, or the request MAY fail.
+       A server MAY include an <code>oslc_config:configurationSettings</code> link in the OSLC Service resource,
+       referencing an <code>oslc_config:ConfigurationsSettings</code> resource. That resource MAY contain
+       at most one <code>oslc_config:defaultConfiguration</code> property whose value is the URI of the default configuration to be used by that service.
+       An <code>oslc_config:defaultConfiguration</code> property with an <code>rdf:nil</code> value implies there is no default configuration, so requests with no context MUST fail.
+       The absence of the <code>oslc_config:defaultConfiguration</code> has no implication as to the presence or absence of a default configuration.
+       Servers MAY support a PUT on <code>oslc_config:ConfigurationsSettings</code> resource as a way to set the default configuration.
+       Servers MAY provide other ways for users to set the default configuration.</p>
+  </section>
+  </section>
+  <section id='componentoperations'>
+    <h2>Supported Operations on Components</h2>
+    <p>A configuration server MUST support the following operations on components:</p>
+    <ul>
+      <li>HEAD and OPTIONS: Retrieve information about the component</li>
+      <li>GET: Retrieve the current state of the component</li>
+      <li>GET on the component creation factory LDPC to find all components</li>
+      <li>GET on the configuration LDPC for a component to find all configurations (baselines and streams) of that component</li>
+    </ul>
+    <p>A configuration server SHOULD support, and a global configuration server MUST support,
+      the following operations on Linked Data Platform Containers:</p>
+    <ul>
+      <li>POST to the component LDPC to create a new component</li>
+      <li>POST to the configuration LDPC for a component to create a new stream for that component, optionally specifying an initial baseline;
+        if an initial baseline is not specified, a real or notional empty baseline is implied as the starting point for the stream</li>
+    </ul>
+    <p>Servers SHOULD support the Prefer header for GET on LDPCs specifying PreferMinimalContainer:</p>
+      <pre class='example'>Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalContainer"</pre>
+    <p>allowing a client to retrieve properties about the LDPC, including any <code>oslc:resourceShape</code> properties, without needing to retrieve all membership triples.
+      Servers MAY support OSLC selective properties on a GET, allowing a client to specify exactly which properties of those LDPCs are to be returned.</p>
+  </section>
+  <section id='configoperations'>
+    <h2>Supported Operations on Configurations</h2>
+    <p>A configuration server MUST support the following operations on configurations:</p>
+    <ul>
+      <li>HEAD and OPTIONS: Retrieve information about the configuration</li>
+      <li>GET: Retrieve the current state of the configuration</li>
+    </ul>
+    <p>A configuration server SHOULD support, and a global configuration server MUST support, the following operations on configurations:</p>
+    <ul>
+      <li>PUT on a configuration resource to update the tags</li>
+      <li>PUT on a configuration resource and its inline Contribution resources to update the set of contributed configurations</li>
+      <li>DELETE a configuration; servers MAY refuse to delete configurations that are part of or referenced by existing baselines.</li>
+    </ul>
+    <p>A configuration server MAY support PATCH on a configuration to update the tags and/or the set of contributed configurations.</p>
+    <p class='note'>Since servers may support deletion of baselines, clients must not assume that references to baselines can be resolved;
+    like any other resource, clients must be prepared to handle 404 errors. Since baselines are normally linked into a provenance chain
+    using the <code>oslc_config:previousBaseline</code> property, servers may elect to leave a stub resource (one with a minimal set of properties) behind
+    instead of truly deleting a baseline.
+    Servers SHOULD add the property <code>oslc:archived=TRUE</code> on a reduced form of a partially deleted baseline.</p>
+  </section>
+  <section id='citemoperations'>
+    <h2>Supported Operations on Versioned Resources in a Configuration Context</h2>
+    <p>A configuration server MUST support the following operations on configuration items (versioned concept resources)
+      in the context of a global configuration,
+      or in the context of a configuration from this server:</p>
+    <ul>
+      <li>HEAD: Retrieve information including the version resource URI (if any) about the state of a specified versioned concept resource
+        in the context of a specified configuration.</li>
+      <li>GET: Retrieve the state of a specified versioned concept resource in the context of a specified configuration,
+        where this operation returns zero or one version resources matching the required state.
+        An attempt to GET a version resource URI in a configuration context where a different version of that concept resource is bound
+        MUST fail with an HTTP 404 error.</li>
+      <li>PUT: Update the state of a specified versioned concept resource in a specified stream;
+        this operation MAY cause the creation of a new version of the resource.</li>
+    </ul>
+    <p>A configuration server MAY support the following operations on configuration items in the context of a global configuration,
+      or in the context of a configuration from this server:</p>
+    <ul>
+      <li>POST to a component in the context of a stream, resulting in the creation of the first version of a new concept resource,
+        or a new version of an existing resource</li>
+      <li>DELETE: Delete the current mutable version resource in a specified stream.</li>
+    </ul>
+  </section>
+  <section id='creation'>
+    <h2>Creation of Baselines and Streams</h2>
+    <p>When a new component is created by POSTing to the Component Container, an empty baseline for that component MUST be created automatically,
+      and added to the <code>oslc_config:configurations</code> container for that component.
+      The empty baseline has no contributions, no selections, and no branch.</p>
+    <section id='streamcreation'>
+    <h3>Creation of Streams</h3>
+    <p>A new stream is created by POSTing to the <code>oslc_config:streams</code> container for a baseline.
+      By default, the new stream inherits (MUST copy) the component, contributions, and selections of the baseline,
+      but does not inherit (MUST NOT copy) the branch property.
+      Other properties MAY be inherited (copied) from the baseline, or MAY be set to server defaults.
+      The POSTed data MAY include any of the following properties;
+      if these properties are supported by the server,
+      then the POSTed values for these properties MUST completely replace any default or inherited values:</p>
+    <ul>
+      <li><code>dcterms:subject</code></li>
+      <li><code>dcterms:title</code> *</li>
+      <li><code>dcterms:description</code></li>
+      <li><code>oslc:shortTitle</code> *</li>
+      <li><code>oslc_config:branch</code></li>
+      <li><code>oslc_config:contribution</code></li>
+      <li><code>oslc_config:selections</code></li>
+    </ul>
+    <p>The server MUST set the <code>oslc_config:previousBaseline</code> property of the new stream,
+      and SHOULD set the <code>prov:wasDerivedFrom</code> property of the new stream,
+      to reference the baseline owning the <code>oslc_config:streams</code> container.</p>
+    </section>
+    <section id='baselinecreation'>
+    <h3>Creation of Baselines</h3>
+    <p>A new baseline of a stream is created by POSTing to the <code>oslc_config:baselines</code> container for that stream.
+      If the server determines that a suitable baseline already exists, the server MAY return a 303 with a Location header
+      referring to that existing baseline; for an existing baseline to be suitable it MUST be for the same component,
+      MUST have the same <code>oslc_config:branch</code> value, if any, MUST select the same version resources,
+      each contribution MUST be a suitable baseline for the corresponding stream contribution,
+      and there must be no additional or missing contributions.</p>
+    <p>Where a new baseline is created, that new baseline inherits (MUST copy) the following properties of the stream:</p>
+    <ul>
+      <li><code>oslc_config:branch</code></li>
+      <li><code>oslc_config:component</code></li>
+      <li><code>oslc_config:contribution</code></li>
+      <li><code>oslc_config:selections</code></li>
+      <li><code>oslc_config:previousBaseline</code></li>
+    </ul>
+    <p>Other properties MAY be inherited (copied) from the stream, or MAY be set to server defaults.
+      The POSTed data MAY include any of the following properties;
+      if these properties are supported by the server,
+      then the POSTed values for these properties MUST completely replace any default or inherited values:</p>
+    <ul>
+      <li><code>dcterms:subject</code></li>
+      <li><code>dcterms:title *</code></li>
+      <li><code>dcterms:description</code></li>
+      <li><code>oslc:shortTitle *</code></li>
+    </ul>
+    <p>When creating a new baseline from a stream, after copying all previous values of the <code>previousBaseline</code>
+      to the new baseline, the server MUST replace all those <code>previousBaseline</code> properties on the stream
+      by a single reference to the newly created baseline.
+      The chain of <code>previousBaseline</code> links thus shows the history of baselines of a stream.</p>
+    <p>The server MUST set the <code>oslc_config:baselineOfStream</code> property of the new baseline to reference the stream owning the
+      <code>oslc_config:baselines</code> container.</p>
+    <p>Since all contributions to a baseline must themselves be baselines,
+      creation of a baseline requires that a server MUST first create or obtain baselines for the current state of all stream contributions,
+      recursively downward through the contribution graph.
+      See <a href="#longoperations">Long Operations</a>.</p>
+    </section>
+    <section id='commoncreation'>
+    <h3>Concerns common to streams and baselines</h3>
+    <p>* A server MAY adjust the name properties of a configuration to maintain any name uniqueness constraints;
+      a server SHOULD NOT fail creation of a baseline or stream just because the requested name is not unique.</p>
+    <p>The server MAY ignore any additional properties,
+      or MAY return an error if those properties are considered incompatible with the creation request.</p>
+    <p>Any properties required on new streams or baselines not defined by this standard MUST be described in
+      resource shapes referenced by <code>oslc:resourceShape</code> properties on the container.</p>
+    <p>Servers SHOULD support the Prefer header for GET on those LDPCs specifying PreferMinimalContainer:
+      <pre class='example'>Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalContainer"</pre>
+     allowing a client to retrieve properties about the LDPC, including any <code>oslc:resourceShape</code> properties, without needing to retrieve all membership triples.
+      Servers MAY support OSLC selective properties on a GET, allowing a client to specify exactly which properties of those LDPCs are to be returned.</p>
+    </section>
+  </section>
+  <section id='contributions'>
+    <h2>Contributions and Overrides</h2>
+    <p>Global configurations, and possible other types of configuration, support aggregation of multiple configurations,
+      using the <code>oslc_config:Contribution</code> resource. Changes to contributions are made using PUT.
+      For change sets, and possibly other use cases, a configuration or contribution can override another configuration contributed to the overall hierarchy.
+      An override relationship may be specified at the configuration level (for change sets that apply to a specific base configuration)
+      or at the contribution level (allowing a hierarchy where some contributions may override others without modifying the properties of potentially shared configurations).
+      <ul>
+        <li>When adding a contribution, if the configuration being added has an <code>oslc_config:overrides</code> relationship,
+          that relationship MUST be copied to the contribution.</li>
+        <li>If the configuration being added has no OSLC overrides - it is a reusable configuration - a client MAY include an <code>oslc_config:overrides</code> relationship
+          in a PUT to the contribution resource.</li>
+        <li>Servers MAY require an overriding configuration to be for the same component as the overridden contribution.</li>
+        <li>Servers MAY report an error if the configuration identified in the <code>oslc_config:overrides</code> property does not exist in the hierarchy for the context configuration.</li>
+      </ul>
+    </p>
+  </section>
+  <section id='vresolution'>
+    <h2>Version Resolution</h2>
+    <p>When a request is made for a versioned resource in the context of a configuration:</p>
+    <ol>
+    <li>if there is no version of that resource in any of the selections in the contributions to the context configuration,
+    nor in any of the selections in their recursive contributions,
+    the request MUST fail with a 404 Resource not found
+    (note that this includes unbound selections from a selection with type <code>oslc_config:UnboundSelections</code>)</li>
+    <li>if there is exactly one version of that resource in the union of the selections in the recursive contributions,
+    the request MUST return that one version</li>
+    <li>if there is more than one version of that resource in the union of the selections in the recursive contributions,
+    the behavior is implementation-defined, but SHOULD be well-defined in that the successive requests in the same
+    configurations with the same selections SHOULD resolve to the same version.
+    A server MAY perform an ordered search using the <code>oslc_config:contributionOrder</code> property,
+    and MAY have a way to indicate multiple possible version resolutions.
+    <p class='note'>
+    The <code>oslc_config:contributionOrder</code> property is defined as a string rather than an integer to
+    make it easier for servers to insert new contributions into an existing set without having to adjust
+    the order value of existing contributions.</p></li>
+    </ol>
+    <p>During this version resolution, overrides from change set configurations MUST be taken into account.
+      If a change set removes a selection for a versioned resource in the overridden configuration,
+      and no other selection is provided for that resource in some other configuration,
+      then the request MUST fail with a 404 Resource not found.
+      If a change set replaces a selection for a versioned resource in the overridden configuration,
+      and no other selection is provided for that resource in some other configuration,
+      the request MUST return the version in the change set selection.</p>
+    <p>Implementations SHOULD provide documentation on their version resolution behavior.</p>
+  </section>
+  <section id='changesets' class='informative'>
+    <h2>Change Sets</h2>
+    <p>Some systems use change sets to group related changes, or changes to multiple resources that must be kept together.
+      Change sets may be represented using a configuration of type <code>oslc_config:ChangeSet</code> - a special type of stream.
+      Each <code>oslc_config:ChangeSet</code> resource is related to exactly one base configuration (either a stream or a baseline),
+      using the <code>oslc_config:overrides</code> property.
+      A <code>oslc_config:ChangeSet</code> has either a complete set of replacements for the versions selected by that base configuration, or a set of changes - a delta.
+      The configuration defined by a change set thus identifies both the 'before' state (the base configuration that is overridden by this change set),
+      and the 'after' state defined by the change set configuration itself.</p>
+    <p>
+      Systems that allow multiple change sets to be applied to a single base configuration should represent each such internal change set
+      as an <code>oslc_config:ChangeSet</code> resource using the same value of <code>oslc_config:overrides</code>;
+      the property <code>prov:wasDerivedFrom</code> should be used to provide a complete or partial ordering of such change sets.
+      Servers may also synthesize a combined <code>oslc_config:ChangeSet</code> resource representing the overall effect of multiple internal change sets.</p>
+    <p>
+      When a change set is based on a stream (the <code>oslc_config:overrides</code> property on an instance of an <code>oslc_config:ChangeSet</code>
+      refers to a configuration of type <code>oslc_config:Stream</code>), then the 'before' state is mutable, and may not represent the state at the time the change set was created.
+      Servers can avoid this lack of precision by ensuring either that all changes made to a stream are captured in a change set based off that stream,
+      or that the stream's <code>oslc_config:selections</code> properties accurately represent the sets of changes delivered to that stream before any of the change sets based on that stream
+      (those change sets probably representing changes still pending for the stream).</p>
+    <p>
+      Since the shape for a change set allows only a single value for <code>oslc_config:overrides</code>,
+      systems that allow a single change set to be applied to multiple base configurations need to represent that internal change set by multiple <code>oslc_config:ChangeSet</code> resources.
+      These copies may be associated with each other using properties such as <code>http://purl.org/datanode/ns#isCopyOf</code>, <code>dcterms:relation</code>, or similar.</p>
+  </section>
+  <section id='delegateduis'>
+    <h2>Delegated UIs</h2>
+    <p>All configuration servers MUST provide a delegated user interface dialog for selection of configurations.
+      A global configuration server MUST provide, and a local configuration server MAY provide,
+      a delegated user interface dialog for creation of configurations.</p>
+    <p>In order to provide a good user experience when selecting configurations to be used as contributions to a parent configuration,
+      the UI Consumer SHOULD provide the URI of the parent configuration as a parameter to the Delegated UI Dialog,
+      using the parameter <code>oslc_config.parentConfiguration</code>.
+      UI Providers SHOULD use the types and <code>oslc_config:accepts</code> property values of that resource
+      to filter the list of potential contributions shown in the selection dialog.</p>
+    <p>Syntax:</p>
+    <pre class="indent">?oslc_config.parentConfiguration=<em>uri_ref_esc</em></pre>
+    <p>Example:</p>
+    <pre class="example">?oslc_config.parentConfiguration=%3Chttp://example.com/configurations/globalConfig12%3E</pre>
+    <p>Tools providing versioned resources using configuration management systems SHOULD provide delegated user interface dialogs
+      for selection of versioned resources in the context of a configuration,
+      and MAY provide delegated user interface dialogs for creation of versioned resources in the context of a configuration.</p>
+  </section>
+  <section id="compact">
+    <h2>Compact Rendering</h2>
+    <p>Configuration servers SHOULD implement [[OSLCCore3]] UI Previews and compact rendering.</p>
+    <p>Where implemented, clients MUST pass any required <a href="#configcontext">configuration context</a> on the initial request for a compact resource,
+      and the configuration server MUST return a compact resource honoring that configuration context.
+      Moreover, the icon reference, the large preview reference, the small preview reference, and any image or intra-page references
+      directly embedded in the large and small HTML preview documents in that compact resource MUST correspond to the given configuration context,
+      so the client need not pass a configuration context to render the icon or the HTML preview.
+      A reference corresponds to a given configuration if it is the URI of a non-versioned resource,
+      the version URI for a versioned resource selected by the given configuration,
+      or a concept resource URI with a configuration query string that resolves to the versioned resource selected by the given configuration.</p>
+  </section>
+  <section id='trs'>
+    <h2>Tracked Resource Sets</h2>
+    <p>A configuration server SHOULD provide one or more Tracked Resource Sets for configurations, contributions, and components.
+      A configuration server MAY publish selections and versioned resources in a Tracked Resource Set (TRS);
+      URIs for versioned resources in the base and change log of the TRS MUST be version resource URIs.</p>
+  </section>
+  <section id='queries'>
+    <h2>Query Support</h2>
+    <p>Configuration servers MAY support [[OSLCCore3]] Query for configurations and components.
+    <span class='red'><i>TBD: That reference must be changed to refer to OSLC Core 3.1 once that is published, since query is not in 3.0.</i></span>
+      If OSLC Query is provided, queries for the following properties using <code>oslc.where</code> and <code>oslc.select</code> SHOULD be supported:</p>
+    <ul>
+      <li><code>dcterms:title</code></li>
+      <li><code>dcterms:created</code></li>
+      <li><code>dcterms:subject</code></li>
+      <li><code>rdf:type</code></li>
+      <li><code>oslc_config:component</code></li>
+      <li><code>oslc_config:contribution{oslc_config:configuration}</code></li>
+      <li><code>oslc_config:baselineOfStream</code></li>
+    </ul>
+    <p>Query for other properties MAY be supported.</p>
+    <p>For example, this is a query for baselines of a given stream <code>http://example.com/configs/stream123</code>, with tag 'stellar',
+      created after July 1st 2014:</p>
+    <pre class="example">http://example.com/configs?oslc.where=oslc_config:baselineOfStream=&lt;http://example.com/configs/stream123&gt; and
+     dc_terms:modified&gt;=&quot;2014-07-01T00:00:00&quot; and dcterms_subject=&quot;stellar&quot;</pre>
+    <p>Since some of those character must be encoded, the request would be issued as:</p>
+    <pre class="example">http://example.com/configs?oslc.where=oslc_config%3AbaselineOfStream%3D%3Chttp%3A%2F%2Fexample.com%2Fconfigs%2Fstream123%3E%20and
+     %20dc_terms%3Amodified%3E%3D%222014-07-01T00%3A00%3A00%22%20and%20dcterms_subject%3D%22stellar%22</pre>
+  </section>
+  <section id="matching_contribs">
+    <h2>Matching Contributions</h2>
+    <p>Certain types of streams accept only certain other types of configurations as contributions. A global stream MUST accept any suitable configuration (baseline or stream) from an arbitrary configuration server,
+      while a stream from some non-global server may accept only configurations from the same server.
+      For a non-global server, some configurations may be acceptable as contributions to global streams,
+      while other non-global configurations are valid only as a contribution to a broader scoped stream from that same server.</p>
+    <p>The acceptability of a configuration as a child contribution to a parent stream is governed by
+      the <code>oslc_config:acceptedBy</code> property on the child configuration
+      and the <code>oslc_config:accepts</code> property on the parent stream.
+      A configuration is a match, and thus acceptable as a contribution, if and only if:</p>
+    <ol>
+      <li>The parent has an <code>oslc_config:accepts</code> property whose value matches one of the types of the child configuration, AND</li>
+      <li>The child has an <code>oslc_config:acceptedBy</code> property whose value matches one of the types of the parent configuration.</li>
+    </ol>
+    <p>A configuration type matches another type if they are the same type, or if the parent type is <code>oslc_config:Configuration</code> and the child type is either <code>oslc_config:Baseline</code> or <code>oslc_config:Stream</code>.
+      No other form of inference is required, but servers MAY use inference through properties such as <code>owl:sameAs</code> and <code>rdfs:subClassOf</code> to extend the definition of matching configuration types. </p>
+    <p>A configuration is marked as a global configuration by adding an <code>oslc_config:accepts</code> property with the value <code>oslc_config:Configuration</code>.
+      Any configuration that is suitable to be a contribution to a global configuration (including global configurations themselves)
+      MUST have an <code>oslc_config:acceptedBy</code> property with the value <code>oslc_config:Configuration</code>.
+      A stream is marked as not accepting any kind of contribution (that is, it may only appear as a leaf in the configuration tree)
+      by not having any <code>oslc_config:accepts</code> property.
+      A configuration is marked as ineligible as any form of contribution (that is, it may only appear as a root in the configuration tree)
+      by not having any <code>oslc_config:acceptedBy</code> property.</p>
+    <p>A stream with an <code>oslc_config:accepts</code> property with the value <code>oslc_config:Baseline</code> accepts only baselines in changes to its set of contributions.
+      A server MAY use this to indicate a stream being used to stage the progressive construction of a baseline, where any initial stream contributions are gradually replaced by baselines as they become available.</p>
+    <p>Since baselines are immutable, their contributions (if any) are immutable, derived from the streams from which those baselines were created,
+      so the <code>oslc_config:accepts</code> property is not meaningful and may be omitted.</p>
+    <p>Configuration servers MAY define their own types of configuration,
+      and use those types in <code>oslc_config:acceptedBy</code> and <code>oslc_config:accepts</code> properties to define the allowed contributions.</p>
+    <p>Servers MAY treat the <code>oslc_config:accepts</code> and <code>oslc_config:acceptedBy</code>
+      as server-generated read-only properties, not modifiable by a client.</p>
+  </section>
+  <section id='longoperations'>
+    <h2>Long Operations</h2>
+    <p>Some operations (for example, creating a baseline from a large hierarchy of streams) can take a long time to complete.
+      Servers MAY use the standard HTTP response 202 Request Accepted to indicate that a request has been accepted, but may not yet be complete.
+      The content and location header of this 202 response MUST be that of an <code>oslc_config:Activity</code> resource, indicating the progress
+      or result of that activity. Clients SHOULD poll the Activity resource periodically until the state indicates it has finished.</p>
+    <p>Each Activity resource MUST be persisted by a server (including over a restart) for a minimum of 24 hours after completion of the long operation as a whole,
+      or until explicitly deleted by a client.</p>
+    <p>Clients SHOULD delete each Activity created by a long-running operation soon after the client has seen the completion of the activity,
+      or when the client is no longer interested in the result.
+      Servers MAY deny clients access to delete Activity resources including but not limited to activities still in progress,
+      or activities not created by that client,
+      or MAY require clients to have a specific role or permission to delete activities.</p>
+    <div title='Resource shape for Activity'
+      data-include='./config-shapes.ttl#Activity'
+      data-oninclude='shapeToSpec'
+      data-include-sync='true'
+      data-include-replace='true'
+      data-include-format='html'>
+    </div>
+  </section>
+  <section id="conformance"></section>
 </body>
 </html>
