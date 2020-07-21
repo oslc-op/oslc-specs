@@ -23,7 +23,6 @@
 @prefix rdfs:           <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:            <http://www.w3.org/2001/XMLSchema#> .
 
-@base                   <http://open-services.net/ns/config/shapes/1.0/#> .
 @prefix :               <http://open-services.net/ns/config/shapes/1.0/#> .
 
 
@@ -40,9 +39,9 @@
     oslc:range               rdfs:Class ;
     oslc:valueType           oslc:Resource ;
     dcterms:description      """A type of configuration that <a href="config-resources.html#matching_contribs">accepts</a> this configuration as a contribution.
-A configuration with no value for this predicate MUST NOT be used as a contribution to any other configuration -
+{{A configuration with no value for `oslc_config:acceptedBy` MUST NOT be used as a contribution to any other configuration}} -
 that is, it can only be a root of a configuration hierarchy
-(or a stand-alone configuration if there is also no value for <code>oslc_config:accepts</code>). Such configurations should be rare."""^^rdf:XMLLiteral .
+(or a stand-alone configuration if there is also no value for `oslc_config:accepts`). Such configurations should be rare."""^^rdf:XMLLiteral .
 
 :accepts
     a                        oslc:Property ;
@@ -89,7 +88,7 @@ The component is an invariant relating the different configurations of the same 
     oslc:representation      oslc:Either ;
     oslc:range               foaf:Person, foaf:Agent ;
     dcterms:description      """Contributor or contributors to the resource.
-The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>, but could be any type."""^^rdf:XMLLiteral .
+The link target is usually a `foaf:Person` or `foaf:Agent`, but could be any type."""^^rdf:XMLLiteral .
 
 :created
     a                        oslc:Property ;
@@ -98,7 +97,7 @@ The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>
     oslc:occurs              oslc:Zero-or-one ;
     oslc:valueType           xsd:dateTime ;
     oslc:readOnly            true ;
-    dcterms:description      "Timestamp of resource creation. Each resource SHOULD have one instance of this property."^^rdf:XMLLiteral .
+    dcterms:description      "Timestamp of resource creation. {{Each resource SHOULD have one instance of the `dcterms:created` property}}."^^rdf:XMLLiteral .
 
 :creator
     a                        oslc:Property ;
@@ -110,7 +109,7 @@ The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>
     oslc:range               foaf:Person, foaf:Agent ;
     oslc:readOnly            true ;
     dcterms:description      """Creator or creators of the resource.
-The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>, but could be any type."""^^rdf:XMLLiteral .
+The link target is usually a `foaf:Person` or `foaf:Agent`, but could be any type."""^^rdf:XMLLiteral .
 
 :description
     a                        oslc:Property ;
@@ -141,8 +140,8 @@ The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>
     oslc:readOnly            true ;
     dcterms:description      """The URI of a Resource Shape that describes the possible properties, occurrence, value types, allowed values and labels.
 This shape information is useful in displaying the subject resource as well as guiding clients in performing modifications.
-Instance shapes may be specific to the authenticated user associated with the request that retrieved the resource,
-the current state of the resource and other factors and thus SHOULD NOT be cached."""^^rdf:XMLLiteral .
+{{Instance shapes may be specific to the authenticated user associated with the request that retrieved the resource,
+the current state of the resource and other factors and thus SHOULD NOT be cached}}."""^^rdf:XMLLiteral .
 
 :modified
     a                        oslc:Property ;
@@ -151,7 +150,7 @@ the current state of the resource and other factors and thus SHOULD NOT be cache
     oslc:occurs              oslc:Zero-or-one ;
     oslc:valueType           xsd:dateTime ;
     oslc:readOnly            true ;
-    dcterms:description      "Timestamp of latest resource modification. Each resource SHOULD have one instance of this property."^^rdf:XMLLiteral .
+    dcterms:description      "Timestamp of latest resource modification. {{Each resource SHOULD have one instance of the `dcterms:modified` property}}."^^rdf:XMLLiteral .
 
 :modifiedBy
     a                        oslc:Property ;
@@ -163,7 +162,7 @@ the current state of the resource and other factors and thus SHOULD NOT be cache
     oslc:range               foaf:Person, foaf:Agent ;
     oslc:readOnly            true ;
     dcterms:description      """The entity that most recently modified the subject resource.
-The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>, but could be any type."""^^rdf:XMLLiteral .
+The link target is usually a `foaf:Person` or `foaf:Agent`, but could be any type."""^^rdf:XMLLiteral .
 
 :serviceProvider
     a                        oslc:Property ;
@@ -201,7 +200,7 @@ If the subject resource is available from an application that implements multipl
     oslc:valueType           xsd:string ;
     oslc:readOnly            false;
     dcterms:description      """Tag or keyword for a resource.
-Each occurrence of a <code>dcterms:subject</code> property denotes an additional tag for the resource."""^^rdf:XMLLiteral .
+Each occurrence of a `dcterms:subject` property denotes an additional tag for the resource."""^^rdf:XMLLiteral .
 
 :title
     a                        oslc:Property ;
@@ -224,10 +223,10 @@ Each occurrence of a <code>dcterms:subject</code> property denotes an additional
     dcterms:description      """A stream or baseline from which this stream was first copied.
 This property can be absent for streams created as new empty streams.
 Multiple instances of this property imply the stream was initially formed from a merge from one or more baselines.
-The property is undefined for baselines; it MAY be absent, or it MAY have the same value as <code>oslc_config:baselineOfStream</code>.
+{{The `prov:wasDerivedFrom` property is undefined for baselines; it MAY be absent, or it MAY have the same value as `oslc_config:baselineOfStream`}}.
 If this property is present on multiple change sets overriding the same base configuration, it implies a partial ordering of those change sets,
 identifying change sets derived from earlier change sets on the same base.
-Servers SHOULD treat this property as read-only after intial creation."""^^rdf:XMLLiteral .
+Servers SHOULD treat this property as read-only after initial creation."""^^rdf:XMLLiteral .
 
 
 # ============================ Component shape ============================
@@ -238,11 +237,11 @@ Servers SHOULD treat this property as read-only after intial creation."""^^rdf:X
     oslc:describes          oslc_config:Component ;
     dcterms:title           "The shape of a component." ;
     dcterms:description     """A set of versioned resources; a configuration selects zero, one, or (very rarely) more than one version of these resources.
-A component itself MAY be a versioned resource,
-indicated by the RDF type <code>oslc_config:VersionResource</code> on its versions, but need not be versioned;
+{{A component itself MAY be a versioned resource}},
+indicated by the RDF type `oslc_config:VersionResource` on its versions, but need not be versioned;
 the semantics of versioned components are not defined by this specification.
 Typically, components themselves are not nested - that is,
-typically none of the members of an <code>oslc_config:Component</code> container are themselves of type <code>oslc_config:Component</code>;
+typically none of the members of an `oslc_config:Component` container are themselves of type `oslc_config:Component`;
 any required structure and hierarchy is realized through configurations,
 or through the structures within the configuration items themselves (e.g., versioned folders or directories)."""^^rdf:XMLLiteral ;
     oslc:property
@@ -258,14 +257,14 @@ or through the structures within the configuration items themselves (e.g., versi
             oslc:representation      oslc:Reference ;
             oslc:valueType           oslc:Resource ;
             oslc:range               rdfs:Class ;
-            dcterms:description      """A resource type URI. A Component MUST have a resource type of <code>oslc_config:Component</code>.
-A component MAY be a <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container</a>,
-containing the concept resources associated with this component.
-The members of such an <code>oslc_config:Component</code> container MUST NOT be of type <code>oslc_config:Configuration</code>;
-sub-configurations are given in the <code>oslc_config:contributions</code> property.
-No meaning is assigned to a member of type <code>oslc_config:Component</code>;
+            dcterms:description      """A resource type URI. A Component MUST have a resource type of `oslc_config:Component`.
+{{A component MAY be a <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container</a>,
+containing the concept resources associated with this component}}.
+{{The members of such an `oslc_config:Component` container MUST NOT be of type `oslc_config:Configuration`}};
+sub-configurations are given in the `oslc_config:contributions` property.
+No meaning is assigned to a member of type `oslc_config:Component`;
 neither client nor server is obligated to perform any recursion through nested Components.
-Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
+{{Servers MAY treat the `rdf:type` property for a component as read-only."""^^rdf:XMLLiteral
         ] ,
         [
             #configurations
@@ -279,8 +278,8 @@ Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
             oslc:range               ldp:Container ;
             dcterms:description      """The <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container</a>
 that contains all the configurations (both streams and baselines) of this component.
-This property is read-only; servers MAY also treat the referenced container as read-only.
-If it is not read-only, the container MAY have <code>oslc:resourceShape</code> properties describing the shapes of streams and baselines that may be created."""^^rdf:XMLLiteral
+{{The `oslc_config:configurations` property on a component is read-only; servers MAY also treat the referenced container as read-only}}.
+If it is not read-only, {{the container MAY have `oslc:resourceShape` properties describing the shapes of streams and baselines that may be created}}."""^^rdf:XMLLiteral
         ] ,
 
         # Properties shared with other shapes
@@ -306,7 +305,7 @@ If it is not read-only, the container MAY have <code>oslc:resourceShape</code> p
 :BaselineShape
     a                        oslc:ResourceShape ;
     oslc:describes           oslc_config:Baseline ;
-    dcterms:title            "The shape of a baseline. Properties of a baseline defined in this specification MUST be read-only unless stated otherwise." ;
+    dcterms:title            "The shape of a baseline. {{Properties of a baseline defined in this specification MUST be read-only unless stated otherwise}}." ;
     oslc:property
 
         # Property definitions unique to Baseline
@@ -321,12 +320,12 @@ If it is not read-only, the container MAY have <code>oslc:resourceShape</code> p
             oslc:valueType           oslc:Resource ;
             oslc:range               rdfs:Class ;
             dcterms:description      """A resource type URI.
-A baseline MUST have at least the resource type <code>oslc_config:Baseline</code>.
-Clients can infer a resource type of <code>oslc_config:Configuration</code>,
+{{A baseline MUST have at least the resource type `oslc_config:Baseline`.}}
+Clients can infer a resource type of `oslc_config:Configuration`,
 but there is no requirement for servers to materialize this triple in the RDF representation.
-Other types MAY be added, including types that are used in <code>oslc_config:accepts</code> and <code>oslc_config:acceptedBy</code> properties
+{{Other types MAY be added, including types that are used in `oslc_config:accepts` and `oslc_config:acceptedBy` properties}}
 to define which <a href="config-resources.html#matching_contribs">matching configurations</a> may be added as contributions to this configuration,
-or to which this configuration may be added as a contribution. Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
+or to which this configuration may be added as a contribution. Servers MAY treat the `rdf:type` property of a baseline as read-only."""^^rdf:XMLLiteral
         ] ,
         [
             #baselineOfStream
@@ -364,7 +363,7 @@ but this property remains valuable to relate all baselines of the same stream.""
             oslc:range               foaf:Person, foaf:Agent ;
             oslc:readOnly            true ;
             dcterms:description      """The entity that committed this configuration as a baseline.
-The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>, but could be any type."""^^rdf:XMLLiteral
+The link target is usually a `foaf:Person` or `foaf:Agent`, but could be any type."""^^rdf:XMLLiteral
         ] ,
         [
             #committed
@@ -389,8 +388,8 @@ The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>
             oslc:range               oslc_config:Contribution ;
             dcterms:description      """A contribution to this baseline.
 The set of resource versions identified by this baseline is the union of the set determined by the
-<code>oslc_config:selections</code> resources and each of the sets of resource versions identified by the contributed baselines.
-The target MUST be of type <code>oslc_config:Contribution</code>.
+`oslc_config:selections` resources and each of the sets of resource versions identified by the contributed baselines.
+The target MUST be of type `oslc_config:Contribution`.
 Contribution resources MUST be returned inline with the baseline resource.
 In the set of Contribution resources for a single parent baseline,
 there MUST be only one Contribution resource for a given contributed baseline."""^^rdf:XMLLiteral
@@ -406,7 +405,7 @@ there MUST be only one Contribution resource for a given contributed baseline.""
             oslc:valueType           oslc:AnyResource ;
             oslc:range               foaf:Person, foaf:Agent ;
             dcterms:description      """Contributor or contributors to the resource.
-The link target is usually a <code>foaf:Person</code> or <code>foaf:Agent</code>, but could be any type."""^^rdf:XMLLiteral
+The link target is usually a `foaf:Person` or `foaf:Agent`, but could be any type."""^^rdf:XMLLiteral
         ] ,
         [
             #description
@@ -460,10 +459,10 @@ servers MAY treat such multiple occurrences of selections as an error."""^^rdf:X
             dcterms:description      """The <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container</a>
 that contains all the streams derived from this baseline.
 A new stream derived from this baseline is created by a POST to this container;
-a <code>previousBaseline</code> property of the new stream MUST be set to refer to this baseline.
-Note that the <code>streams</code> property itself is immutable,
+a `previousBaseline` property of the new stream MUST be set to refer to this baseline.
+Note that the `streams` property itself is immutable,
 but the container referenced by the property is not.
-The container MAY have <code>oslc:resourceShape</code> properties describing the shapes of baselines that may be created."""^^rdf:XMLLiteral
+The container MAY have `oslc:resourceShape` properties describing the shapes of baselines that may be created."""^^rdf:XMLLiteral
         ] ,
         [
             #subject (tag)
@@ -474,7 +473,7 @@ The container MAY have <code>oslc:resourceShape</code> properties describing the
             oslc:readOnly            false;
             oslc:valueType           xsd:string ;
             dcterms:description      """Tag or keyword for a resource.
-Each occurrence of a <code>dcterms:subject</code> property denotes an additional tag for the resource.
+Each occurrence of a `dcterms:subject` property denotes an additional tag for the resource.
 Tags on baselines MUST be modifiable."""^^rdf:XMLLiteral
         ] ,
         [
@@ -526,10 +525,10 @@ The title of a baseline SHOULD be modifiable."""^^rdf:XMLLiteral
             oslc:valueType           oslc:Resource ;
             oslc:range               rdfs:Class ;
             dcterms:description      """A resource type URI.
-A stream MUST have at least the resource type <code>oslc_config:Stream</code>.
-Clients can infer a resource type of <code>oslc_config:Configuration</code>,
+A stream MUST have at least the resource type `oslc_config:Stream`.
+Clients can infer a resource type of `oslc_config:Configuration`,
 but there is no requirement for servers to materialize this triple in the RDF representation.
-Other types MAY be added, including types that are used in <code>oslc_config:accepts</code> and <code>oslc_config:acceptedBy</code> properties
+Other types MAY be added, including types that are used in `oslc_config:accepts` and `oslc_config:acceptedBy` properties
 to define which <a href="config-resources.html#matching_contribs">matching configurations</a> may be added as contributions to this configuration,
 or to which this configuration may be added as a contribution. Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
         ] ,
@@ -546,9 +545,9 @@ or to which this configuration may be added as a contribution. Servers MAY treat
             dcterms:description      """The <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container</a>
 that contains all the baselines of this stream.
 A new baseline of this stream is created by a POST to this container.
-Note that the <code>baselines</code> property itself is immutable,
+Note that the `baselines` property itself is immutable,
 but the container referenced by the property is not.
-The container MAY have an <code>oslc:resourceShape</code> property describing additional properties required when creating baselines."""^^rdf:XMLLiteral
+The container MAY have an `oslc:resourceShape` property describing additional properties required when creating baselines."""^^rdf:XMLLiteral
         ] ,
         [
             #previousBaseline
@@ -593,10 +592,10 @@ Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
 		    oslc:range               oslc_config:Contribution ;
 		    dcterms:description      """A contribution to this configuration.
 The set of resource versions identified by this configuration is the union of the set determined by the
-<code>oslc_config:selections</code> resources and each of the sets of resource versions identified by the contributed configurations.
+`oslc_config:selections` resources and each of the sets of resource versions identified by the contributed configurations.
 A user can request an update to a configuration to change the set of contributions;
 servers MUST deny such requests if any added contributions do not <a href="config-resources.html#matching_contribs">match</a> this configuration.
-The target MUST be of type <code>oslc_config:Contribution</code>.
+The target MUST be of type `oslc_config:Contribution`.
 Contribution resources MUST be returned inline with the configuration resource.
 In the set of Contribution resources for a single parent configuration,
 there MUST be only one Contribution resource for a given contributed configuration."""^^rdf:XMLLiteral
@@ -645,7 +644,7 @@ there MUST be only one Contribution resource for a given contributed configurati
             oslc:valueType           oslc:Resource ;
             oslc:range               rdfs:Class ;
             dcterms:description      """A resource type URI.
-Clients can infer a resource type of <code>oslc_config:Contribution</code>,
+Clients can infer a resource type of `oslc_config:Contribution`,
 but there is no requirement for servers to materialize this triple in the RDF representation."""^^rdf:XMLLiteral
         ] ,
         [
@@ -710,8 +709,8 @@ This property is read-only for contributions to a baseline, and modifiable for c
             oslc:valueType           oslc:Resource ;
             oslc:range               rdfs:Class ;
             dcterms:description      """A resource type URI.
-A Selections resource MUST have at least the resource type <code>oslc_config:Selections</code>.
-Selections resources may also have the type <code>oslc_config:UnboundSelections</code>."""^^rdf:XMLLiteral
+A Selections resource MUST have at least the resource type `oslc_config:Selections`.
+Selections resources may also have the type `oslc_config:UnboundSelections`."""^^rdf:XMLLiteral
         ] ,
         [
             #selects
@@ -721,17 +720,17 @@ Selections resources may also have the type <code>oslc_config:UnboundSelections<
             oslc:occurs              oslc:Zero-or-many ;
             oslc:representation      oslc:Reference ;
             oslc:valueType           oslc:Resource ;
-            dcterms:description      """If the selection type is not <code>oslc_config:UnboundSelections</code>,
+            dcterms:description      """If the selection type is not `oslc_config:UnboundSelections`,
 the target resource MUST be a version resource.
-If the selection type is <code>oslc_config:UnboundSelections</code>,
+If the selection type is `oslc_config:UnboundSelections`,
 the target is a concept URI for a concept resource that should be in the configuration,
 but for which no version is determined by this selection.
 Unbound selections can be bound to specific versions by mechanisms not defined by this specification
 (such as effectivity parameters, variability parameters, etc.), or may be left unbound,
 in which case the configuration may represent an incomplete or abstract view of a system.
-Selected resources MUST NOT be of type <code>oslc_config:Configuration</code>;
-sub-configurations are given in the <code>oslc_config:contributions</code> property.
-No meaning is assigned to a selected resource of type <code>oslc_config:Component</code>.
+Selected resources MUST NOT be of type `oslc_config:Configuration`;
+sub-configurations are given in the `oslc_config:contributions` property.
+No meaning is assigned to a selected resource of type `oslc_config:Component`.
 This property is read-only for selections of a baseline, but MAY be modifiable for selections of a stream."""^^rdf:XMLLiteral
         ] .
 
@@ -743,7 +742,7 @@ This property is read-only for selections of a baseline, but MAY be modifiable f
     a                        oslc:ResourceShape ;
     oslc:describes           oslc_config:ChangeSet ;
     dcterms:title            "The shape of a ChangeSet." ;
-    dcterms:description      """A ChangeSet is a mutable configuration (a type of stream) that replaces, or identifies a set of changes from, the configuration identified by the <code>oslc_config:overrides</code> property.
+    dcterms:description      """A ChangeSet is a mutable configuration (a type of stream) that replaces, or identifies a set of changes from, the configuration identified by the `oslc_config:overrides` property.
 That overridden configuration may be either a stream or a baseline, but a change set itself may not be a baseline.
 Servers MAY refuse to construct a baseline of a change set configuration.
 This specification does not define the meaning of one change set overriding another change set; servers MAY treat this as an error.
@@ -764,10 +763,10 @@ as defined in <a href="#h3_shape-cselections">ChangeSet Selections</a>."""^^rdf:
             oslc:valueType           oslc:Resource ;
             oslc:range               rdfs:Class ;
             dcterms:description      """A resource type URI.
-A change set configuration MUST have at least the resource type <code>oslc_config:ChangeSet</code>.
-Clients may infer a resource type of <code>oslc_config:Configuration</code>,
+A change set configuration MUST have at least the resource type `oslc_config:ChangeSet`.
+Clients may infer a resource type of `oslc_config:Configuration`,
 but there is no requirement for servers to materialize this triple in the RDF representation.
-Other types may be added, including types that are used in <code>oslc_config:accepts</code> properties
+Other types may be added, including types that are used in `oslc_config:accepts` properties
 to define which <a href="config-resources.html#matching_contribs">matching configurations</a> to which this configuration may be added as a contribution.
 Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
         ] ,
@@ -781,7 +780,7 @@ Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
             oslc:valueType           oslc:Resource ;
             oslc:range               oslc_config:ChangeSetSelections ;
             dcterms:description      """A reference to a resource identifying versions of the resources (configuration items) in the configuration;
-these selections override, reduce, or extend the selections in the configuration identified by the <code>oslc_config:overrides</code> property.
+these selections override, reduce, or extend the selections in the configuration identified by the `oslc_config:overrides` property.
 Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
         ] ,
         [
@@ -847,10 +846,10 @@ Servers MAY support contributions to change sets, and if so, this property behav
             oslc:valueType           oslc:Resource ;
             oslc:range               rdfs:Class ;
             dcterms:description      """A resource type URI.
-A change set Selections resource MUST have at least the resource type <code>oslc_config:Selections</code>.
-Change set selections resources may also have the types <code>oslc_config:ChangeSetSelections</code>,
-<code>oslc_config:UnboundSelections</code>, <code>oslc_config:Removals</code>,
-or <code>oslc_config:RemoveAll</code>."""^^rdf:XMLLiteral
+A change set Selections resource MUST have at least the resource type `oslc_config:Selections`.
+Change set selections resources may also have the types `oslc_config:ChangeSetSelections`,
+`oslc_config:UnboundSelections`, `oslc_config:Removals`,
+or `oslc_config:RemoveAll`."""^^rdf:XMLLiteral
         ] ,
         [
             #selects
@@ -861,22 +860,22 @@ or <code>oslc_config:RemoveAll</code>."""^^rdf:XMLLiteral
             oslc:representation      oslc:Reference ;
             oslc:valueType           oslc:Resource ;
             dcterms:description      """A selected version resource.
-Selected resources MUST NOT be of type <code>oslc_config:Configuration</code>;
-sub-configurations are given in the <code>oslc_config:contributions</code> property.
-No meaning is assigned to a selected resource of type <code>oslc_config:Component</code>.
+Selected resources MUST NOT be of type `oslc_config:Configuration`;
+sub-configurations are given in the `oslc_config:contributions` property.
+No meaning is assigned to a selected resource of type `oslc_config:Component`.
 This property MAY be modifiable for selections of a change set.
-If the subject has the type <code>oslc_config:RemoveAll</code>, all selections in the overriden configuration are to be ignored;
-all selections are in this and other <code>oslc_selects</code> properties of the change set.
-Any target concept or version resources (depending on the presence or absence of the type <code>oslc_config:UnboundSelections</code>)
+If the subject has the type `oslc_config:RemoveAll`, all selections in the overriden configuration are to be ignored;
+all selections are in this and other `oslc_selects` properties of the change set.
+Any target concept or version resources (depending on the presence or absence of the type `oslc_config:UnboundSelections`)
 indicated in this selection resource are selected in this configuration.
-Otherwise, if the subject has the type <code>oslc_config:Removals</code>,
+Otherwise, if the subject has the type `oslc_config:Removals`,
 the indicated target concepts or versions are explicitly removed from the set of versions selected by the configuration overridden by this configuration.
-Otherwise, if the subject has only the (possibly inferred) type <code>oslc_config:Selections</code>,
+Otherwise, if the subject has only the (possibly inferred) type `oslc_config:Selections`,
 the indicated target concept or version resources are selected by this configuration;
 a change set selection overrides (replaces) the concepts or versions selected by a matching concept resource in the overridden configuration's selection,
 and adds additional selections for concept resources that are not mentioned in the overridden configuration's selection.
 Since selections properties are not ordered, there is no defined meaning to a selection that appears in two or more different selections properties of any types,
-or to a change set that include both a <code>oslc_config:RemoveAll</code> and a <code>oslc_config:Removals</code> selection;
+or to a change set that include both a `oslc_config:RemoveAll` and a `oslc_config:Removals` selection;
 servers MAY treat occurrences of potentially conflicting selections as an error."""^^rdf:XMLLiteral
         ] .
 
@@ -901,7 +900,7 @@ servers MAY treat occurrences of potentially conflicting selections as an error.
             oslc:representation      oslc:Reference ;
             oslc:valueType           oslc:Resource ;
             oslc:range               rdfs:Class ;
-            dcterms:description      "A resource type URI. An Activity MUST have a resource type of <code>oslc_config:Activity</code>, and MAY have other types."^^rdf:XMLLiteral
+            dcterms:description      "A resource type URI. An Activity MUST have a resource type of `oslc_config:Activity`, and MAY have other types."^^rdf:XMLLiteral
         ] ,
         [
             #modified
@@ -1035,7 +1034,7 @@ properties and property constraints beyond those defined here.""" ;
             oslc:valueType           oslc:Resource ;
             oslc:range               rdfs:Class ;
             dcterms:description      """A resource type URI. One of the type properties MUST have the version resource URI as the subject,
-and MUST have a resource type of <code>oslc_config:VersionResource</code>.
+and MUST have a resource type of `oslc_config:VersionResource`.
 Other types for the concept resource of which this is a version SHOULD use the concept resource URI as the subject."""^^rdf:XMLLiteral
         ] ,
         [
@@ -1094,7 +1093,7 @@ or using the membership relationship from the component LDPC."""^^rdf:XMLLiteral
             oslc:propertyDefinition  dcterms:subject ;
             oslc:valueType           xsd:string ;
             dcterms:description      """Tag or keyword for a resource.
-Each occurrence of a <code>dcterms:subject</code> property denotes an additional tag for the resource.
+Each occurrence of a `dcterms:subject` property denotes an additional tag for the resource.
 Tags on versioned resources SHOULD be modifiable even if the resource is otherwise immutable (checked in)."""^^rdf:XMLLiteral
         ] ,
         [
@@ -1119,7 +1118,7 @@ The subject of this property SHOULD be the concept resource URI."""^^rdf:XMLLite
             oslc:valueType           oslc:Resource ;
             dcterms:description      """A resource from which this version was derived.
 This is likely to reference a different concept resource;
-use of <code>prov:wasRevisionOf</code> is recommended to indicate an earlier version of the same concept resource.
+use of `prov:wasRevisionOf` is recommended to indicate an earlier version of the same concept resource.
 The subject of each instance of this property MUST be the concept resource URI;
 the object can be a version resource URI, or a concept resource URI (possibly for a non-versioned resource)."""^^rdf:XMLLiteral
         ] ,
@@ -1133,7 +1132,7 @@ the object can be a version resource URI, or a concept resource URI (possibly fo
             oslc:valueType           oslc:Resource ;
             dcterms:description      """A resource from which this version was derived.
 This is likely to reference an earlier version of the same concept resource;
-use of <code>prov:wasDerivedFrom</code> is recommended to indicate an earlier version of a different concept resource.
+use of `prov:wasDerivedFrom` is recommended to indicate an earlier version of a different concept resource.
 The subject of each instance of this property MUST be the concept resource URI; the object is likely to be a version resource URI."""^^rdf:XMLLiteral
         ] ,
 

@@ -3,24 +3,32 @@
   <head>
     <meta charset="utf-8" />
     <title>OSLC Configuration Management 1.0 Part 3: Configuration Specification</title>
-    <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@master/builds/respec-oasis-common.min.js"
-      async
-      class="remove"
-    ></script>
+    <!--script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@master/builds/respec-oasis-common.min.js' async class='remove'/ -->
+    <script src='file:///Users/ndjc/git/tab-respec/builds/respec-oasis-common.js' async class='remove'></script>
     <script class="remove">
+      var status = "WD";
+      var rev = "01";
+      var wdBase = "https://oslc-op.github.io/oslc-specs/specs/config/";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/config/v1.0/";
+      var thisBase = wdBase;
+      if ("WD" !== status) {
+        var thisBase = oasisBase + status.toLowerCase() + rev + "/";
+      }
+
       var respecConfig = {
-        specStatus: "WD",
-        conformanceLabelPrefix: "CONFIG",
-        thisVersion: "https://raw.githack.com/oslc-op/oslc-specs/master/specs/config/oslc-config-mgt.html",
-        prevVersion:
-          "http://tools.oasis-open.org/version-control/svn/oslc-ccm/trunk/specs/config-mgt/oslc-config-mgt.html",
-        copyrightStart: "2013",
         shortName: "oslc-config-mgmt-cr",
+        revision: rev,
+        specStatus: status,
+        conformanceLabelPrefix: "CONFIG",
+        copyrightStart: "2013",
         citationLabel: "OSLC-ConfigMgmt-v1.0-cr",
-        revision: "01",
+        maxTocLevel: 3,
+
         license: "cc-by-4",
-        label: "config-mgmt-draft",
+        additionalLicenses : [{
+          licenseName : "Apache License 2.0",
+          licenseURI : "https://www.apache.org/licenses/LICENSE-2.0",
+        }],
 
         // chairs and editors, add as many as you like
         // only "name" is required
@@ -32,6 +40,35 @@
             companyURL: "http://ibm.com/",
           },
         ],
+
+        chairs : [
+          {
+            name : "Jim Amsden",
+            mailto : "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/"
+          }, {
+            name : "Andrii Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se/en"
+          }
+	],
+
+        // name of the OP
+        wg : "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName:  "oslc-op",
+
+        //publishDate:  "2018-10-09",
+        //previousPublishDate:  "2011-08-15",
+        //previousMaturity:  "WD",
+
+        thisVersion: thisBase + "oslc-config-mgt.html",
+        prevVersion: null,
+        latestVersion: oasisBase + "oslc-config-mgt.html",
+        latestSpecVersion: "https://open-services.net/spec/config/latest",
+        edDraftURI: "https://open-services.net/spec/config/latest-draft",
+
 
         // Namespaces defined by this spec
         namespaces: [{ href: "http://open-services.net/ns/config#" }],
@@ -48,21 +85,22 @@
         ],
 
         localBiblio: {
-          OSLCCore2: {
-            title: "OSLC Core 2.0",
-            href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
-            authors: ["S. Speicher", "D. Johnson"],
-            status: "Finalized",
-            publisher: "http://open-services.net",
-          },
-          OSLCCore3: {
-            title: "OSLC Core 3.0",
-            href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
-            authors: ["Jim Amsden"],
-            publisher: "OASIS",
-          },
+          "OSLCCore2": {
+          title: "OSLC Core Specification 2.0",
+          href: "https://archive.open-services.net/bin/view/Main/OslcCoreSpecification",
+          authors: ["Dave Johnson", "S. Speicher"],
+          status: "Finalized",
+          publisher: "https://open-services.net/",
         },
-      };
+          "OSLCCore3": {
+          title: "OSLC Core Version 3.0. Part 1: Overview",
+          href: "https://open-services.net/spec/core/latest",
+          authors: ["Jim Amsden", "S. Speicher"],
+          status: "Project Specification Draft",
+          publisher: "OASIS",
+        },
+      }
+    };
     </script>
   </head>
   <body>
@@ -130,7 +168,7 @@
         <h3>Resource shape for Component</h3>
         <div
           title="Resource shape for Component"
-          data-include="./config-shapes.ttl#Component"
+          data-include="./config-shapes.ttl#ComponentShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -141,7 +179,7 @@
         <h3>Resource shape for Baseline</h3>
         <div
           title="Resource shape for Baseline"
-          data-include="./config-shapes.ttl#Baseline"
+          data-include="./config-shapes.ttl#BaselineShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -152,7 +190,7 @@
         <h3>Resource shape for Stream</h3>
         <div
           title="Resource shape for Stream"
-          data-include="./config-shapes.ttl#Stream"
+          data-include="./config-shapes.ttl#StreamShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -163,7 +201,7 @@
         <h3>Resource shape for ChangeSet</h3>
         <div
           title="Resource shape for ChangeSet"
-          data-include="./config-shapes.ttl#ChangeSet"
+          data-include="./config-shapes.ttl#ChangeSetShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -174,7 +212,7 @@
         <h3>Resource shape for Contribution</h3>
         <div
           title="Resource shape for Contribution"
-          data-include="./config-shapes.ttl#Contribution"
+          data-include="./config-shapes.ttl#ContributionShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -185,7 +223,7 @@
         <h3>Resource shape for Selections</h3>
         <div
           title="Resource shape for Selections"
-          data-include="./config-shapes.ttl#Selections"
+          data-include="./config-shapes.ttl#SelectionsShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -196,7 +234,7 @@
         <h3>Resource shape for ChangeSet Selections</h3>
         <div
           title="Resource shape for ChangeSet Selections"
-          data-include="./config-shapes.ttl#CSelections"
+          data-include="./config-shapes.ttl#CSelectionsShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -773,6 +811,17 @@ http://example.com/configs?oslc.where=oslc_config%3AbaselineOfStream%3D%3Chttp%3
         data-include-format="html"
       ></div>
     </section>
-    <section id="conformance"></section>
+    <section id="conformance">
+      <h2>Conformance</h2>
+      <p class="conformance">
+        This specification is based on [[!OSLCCore3]]. OSLC Configuration Management Servers servers MUST be compliant
+        with the Core specification, MUST follow all the mandatory requirements in the normative sections of each part
+        of this specification, and SHOULD follow all the guidelines and recommendations in both these specifications.
+      </p>
+      <p>
+        The following table summarizes the conformance requirements in this document; review the conformance tables or
+        paragraphs in the other parts of this specification for a complete list.
+      </p>
+    </section>
   </body>
 </html>
