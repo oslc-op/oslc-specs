@@ -26,13 +26,17 @@ import static net.open_services.scheck.annotations.IssueSeverity.*;
     uri="http://open-services.net/ns/scheck#",
     prefix="scheck",
     domain="ShapeChecker Result Vocabulary.",
-    description="A vocabulary for terms used in the result model of the OSLC Shape and Vocabulary checker.")
+    description="A vocabulary for terms used in the result model of the OSLC Shape and Vocabulary checker.",
+    additionalStatements=
+		{
+				"scheck:additionalProperty scheck:severity, scheck:singular, scheck:plural",
+			    "dcterms:source <https://oslc-op.github.io/oslc-specs/tools/ShapeChecker/src/main/java/net/open_services/scheck/shapechecker/Terms.java>"
+		})
 public final class Terms
 {
     private static final String checkerNS          = "http://open-services.net/ns/scheck#";
 
     private static Map<String, Resource> issueMap  = new HashMap<>();
-
 
     /**
      * No instantiation.
@@ -106,7 +110,7 @@ public final class Terms
     public static final Resource BadOccurs        = resource("BadOccurs");
 
     /** Error class for a vs:term_status with an unknown value. */
-    @SCIssue(issueSeverity=Error,description="The vs:term_status property must be either \\\"stable\\\" or \\\"archaic\\\"; \\\"unstable\\\" or \\\"testing\\\" are bad practice in published vocabularies.")
+    @SCIssue(issueSeverity=Error,description="The vs:term_status property must be either \"stable\" or \"archaic\"; \"unstable\" or \"testing\" are bad practice in published vocabularies.")
     public static final Resource BadTermStatus    = resource("BadTermStatus");
 
     /** Error class for an unknown vocabulary term type. */
@@ -128,6 +132,10 @@ public final class Terms
     /** Error class for a duplicate language-tagged string. */
     @SCIssue(issueSeverity=Error,description="Duplicate language on string literal.")
     public static final Resource DuplicateLangString = resource("DuplicateLangString");
+
+    /** Error class for embedded whitespace after newline in comment or description. */
+    @SCIssue(issueSeverity=Warning,description="White space after embedded newline - misuse of triple quotes?")
+    public static final Resource EmbeddedWhitespace = resource("EmbeddedWhitespace");
 
     /** Error class for inappropriate use of the oslc:maxSize property. */
     @SCIssue(issueSeverity=Error,description="The property oslc:maxSize appplies only to string or XMLLiteral value types.")
@@ -280,4 +288,9 @@ public final class Terms
     @SCXCheck(severity=IssueSeverity.Warning,singular="vocabulary",plural="vocabularies",
             description="given, but not referenced in the given shapes:")
     public static final Property unusedVocabulary = property("unusedVocabulary");
+
+
+    /** Predicate for additional property allowed on vocabulary terms. */
+    @SCTerm(type=TermType.Property,description="An additional property allowed on terms in this vocabulary")
+    public static final Property additionalProperty = property("additionalProperty");
 }

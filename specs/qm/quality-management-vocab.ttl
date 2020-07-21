@@ -1,4 +1,4 @@
-# Copyright 2019 OASIS Open
+# Copyright 2020 OASIS Open
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,15 +16,24 @@
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
 
 
 <http://open-services.net/ns/qm#>
         a                    owl:Ontology ;
+        dcterms:title        "The OSLC Quality Management(QM) Vocabulary" ;
         rdfs:label           "Quality Management(QM)" ;
-        rdfs:seeAlso         <http://open-services.net/ns/qm/qm.rdf> ;
         dcterms:description  "All vocabulary URIs defined in the OSLC Quality Management (QM) namespace."^^rdf:XMLLiteral ;
-        dcterms:title        "The OSLC Quality Management(QM) Vocabulary" .
-
+        vann:preferredNamespacePrefix "oslc_qm" ;
+        dcterms:publisher <https://open-services.net/about/> ;
+        dcterms:license <http://www.apache.org/licenses/LICENSE-2.0> ;
+        dcterms:modified "2020-06-12"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        rdfs:seeAlso <https://github.com/oslc-op/oslc-specs/blob/master/specs/qm/quality-management-vocab.ttl> ;
+        # TODO replace with a reference to the OASIS Docs archive as part of the publication PR
+        dcterms:source <https://github.com/oslc-op/oslc-specs/blob/master/specs/qm/quality-management-vocab.ttl> ;
+        # TODO replace with a reference to the OASIS Docs archive as part of the publication PR
+        dcterms:isPartOf <https://oslc-op.github.io/oslc-specs/specs/qm/quality-management-spec.html> .
 
 <http://open-services.net/ns/qm#TestPlan>
         a                 rdfs:Class ;
@@ -60,67 +69,78 @@
         a                 rdf:Property ;
         rdfs:comment      "Change request that affects the Test Result. It is likely that the target resource will be an oslc_cm:ChangeRequest but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "affectedByChangeRequest" .
+        rdfs:label        "affectedByChangeRequest" ;
+        oslc:inverseLabel  "Affects Test Case Result" .
 
 <http://open-services.net/ns/qm#runsTestCase>
         a                 rdf:Property ;
         rdfs:comment      "Test Case run by the Test Execution Record. It is likely that the target resource will be an oslc_qm:TestCase but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "runsTestCase" .
+        rdfs:label        "runsTestCase";
+        oslc:inverseLabel  "Run By" .
 
 <http://open-services.net/ns/qm#reportsOnTestPlan>
         a                 rdf:Property ;
         rdfs:comment      "Test Plan that a test or execution record reports on. It is likely that the target resource will be an oslc_qm:TestPlan but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "reportsOnTestPlan" .
+        rdfs:label        "reportsOnTestPlan" ;
+        oslc:inverseLabel  "Reported By" .
 
 <http://open-services.net/ns/qm#relatedChangeRequest>
         a                 rdf:Property ;
         rdfs:comment      "A related change request. It is likely that the target resource will be an oslc_cm:ChangeRequest but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "relatedChangeRequest" .
+        rdfs:label        "relatedChangeRequest" ;
+        oslc:inverseLabel  "Related Test Artifact" .
 
 <http://open-services.net/ns/qm#testsChangeRequest>
         a                 rdf:Property ;
         rdfs:comment      "Change Request tested by the Test Case. It is likely that the target resource will be an oslc_cm:ChangeRequest but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "testsChangeRequest" .
+        rdfs:label        "testsChangeRequest" ;
+        oslc:inverseLabel  "Tested By Test Case" .
 
 <http://open-services.net/ns/qm#executesTestScript>
         a                 rdf:Property ;
         rdfs:comment      "Test Script executed to produce the Test Result. It is likely that the target resource will be an oslc_qm:TestScript but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "executesTestScript" .
+        rdfs:label        "executesTestScript" ;
+        oslc:inverseLabel  "Executed By" .
 
 <http://open-services.net/ns/qm#usesTestCase>
         a                 rdf:Property ;
         rdfs:comment      "Test Case used by the Test Plan. It is likely that the target resource will be an oslc_qm:TestCase but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "usesTestCase" .
+        rdfs:label        "usesTestCase" ;
+        oslc:inverseLabel  "Used By" .
 
 <http://open-services.net/ns/qm#validatesRequirementCollection>
         a                 rdf:Property ;
         rdfs:comment      "Requirement Collection that is validated by the Test Plan. It is likely that the target resource will be an oslc_rm:RequirementCollection but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "validatesRequirementCollection" .
+        rdfs:label        "validatesRequirementCollection" ;
+        oslc:inverseLabel  "Validated By" .
 
 <http://open-services.net/ns/qm#blockedByChangeRequest>
         a                 rdf:Property ;
         rdfs:comment      "Change Request that prevents execution of the Test Execution Record. It is likely that the target resource will be an oslc_cm:ChangeRequest but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "blockedByChangeRequest" .
+        rdfs:label        "blockedByChangeRequest" ;
+        oslc:inverseLabel  "Blocks Test Case Execution Record" .
 
 <http://open-services.net/ns/qm#usesTestScript>
         a                 rdf:Property ;
         rdfs:comment      "Test Script used by the Test Case. It is likely that the target resource will be an oslc_qm:TestScript but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "usesTestScript" .
+        rdfs:label        "usesTestScript" ;
+        oslc:inverseLabel  "Used By" .
 
 <http://open-services.net/ns/qm#validatesRequirement>
         a                 rdf:Property ;
         rdfs:comment      "Requirement that is validated by the Test Case. It is likely that the target resource will be an oslc_rm:Requirement but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "validatesRequirement" .
+        rdfs:label        "validatesRequirement" ;
+        oslc:inverseLabel  "Validated By" .
 
 <http://open-services.net/ns/qm#runsOnTestEnvironment>
         a                 rdf:Property ;
@@ -138,10 +158,17 @@
         a                 rdf:Property ;
         rdfs:comment      "Test Case that the Test Result reports on. It is likely that the target resource will be an oslc_qm:TestCase but that is not necessarily the case." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
-        rdfs:label        "reportsOnTestCase" .
+        rdfs:label        "reportsOnTestCase" ;
+        oslc:inverseLabel  "Reported By" .
 
 <http://open-services.net/ns/qm#executionInstructions>
         a                 rdf:Property ;
         rdfs:comment      "Instructions for executing the test script. Note that the value of Occurs is undefined. The resource shape document provided by the QM service provider may be consulted for its value." ;
         rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
         rdfs:label        "executionInstructions" .
+
+<http://open-services.net/ns/qm#status>
+        a                 rdf:Property ;
+        rdfs:comment      "Used to indicate the state of the Test Result based on values defined by the service provider." ;
+        rdfs:isDefinedBy  <http://open-services.net/ns/qm#> ;
+        rdfs:label        "status" .

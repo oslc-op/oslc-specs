@@ -1,6 +1,8 @@
 package net.open_services.scheck.shapechecker;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -8,21 +10,34 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.RedirectStrategy;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.entity.HttpEntityWrapper;
+import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParserBuilder;
 
 
 /**
@@ -31,11 +46,16 @@ import org.apache.jena.rdf.model.ResourceFactory;
  */
 public class HttpHandler
 {
+    private static final String TEXT_CONTENT_TYPES = "text/html;text/*;*/*";
+    private static final String RDF_CONTENT_TYPES  = "text/turtle;application/n-triples;application/rdf+xml;application/ld+json;text/*";
+
+
     private Map<URI, Boolean> httpResourceIsRDF = new HashMap<>();
     private Set<String>       foundRDFResources = new HashSet<>();
     private Set<Pattern>      skipURIPatterns   = new HashSet<>();
-    private boolean           debug             = false;
+    private int           	  debug             = 0;
     private HttpClient        httpClient;
+    private final HttpClient  rdfClient;
 
 
     /**
@@ -43,19 +63,130 @@ public class HttpHandler
      */
     public HttpHandler()
     {
-        Header header = new BasicHeader(HttpHeaders.ACCEPT, "text/html;text/*;*/*");
+        Header header = new BasicHeader(HttpHeaders.ACCEPT, TEXT_CONTENT_TYPES);
         httpClient = HttpClientBuilder
                 .create()
                 .setRedirectStrategy(new LaxRedirectStrategy())
                 .setDefaultHeaders(Collections.singletonList(header))
                 .build();
+
+        // Seems like Jena has a bug of ignoring the RDFParserBuilder Accept header,
+        // and Dublin Core uses an arcane set of redirects including 308, not handled by Apache by default,
+        // so we need to configure our HttpClient very carefully!
+        Header rdfHeader = new BasicHeader(HttpHeaders.ACCEPT, RDF_CONTENT_TYPES);
+        HttpClientBuilder builder = HttpClientBuilder
+            .create()
+            .setRedirectStrategy(redirect308())
+            .setDefaultHeaders(Collections.singletonList(rdfHeader))
+            .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> request.addHeader(HttpHeaders.ACCEPT, RDF_CONTENT_TYPES));
+
+        if (debug > 2)
+        {
+            // for debugging redirects
+        	builder = builder.addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.out.println(response.toString()))
+            	.addInterceptorLast(this::responseInterceptor);
+        }
+        rdfClient = builder.build();
     }
+
+
+    //CSOFF AnonInnerLength
+    private static RedirectStrategy redirect308()
+    {
+        return new DefaultRedirectStrategy()
+            {
+                @Override
+                public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context)
+                {
+                    int statusCode = response.getStatusLine().getStatusCode();
+                    switch (statusCode)
+                    {
+                    case 301:
+                    case 302:
+                    case 303:
+                    case 307:
+                    case 308:
+                        return true;
+                    case 304:
+                    case 305:
+                    case 306:
+                    default:
+                        return false;
+                    }
+                }
+
+
+                @Override
+                public HttpUriRequest getRedirect(HttpRequest request, HttpResponse response, HttpContext context)
+                        throws ProtocolException
+                {
+                    URI uri = this.getLocationURI(request, response, context);
+                    String method = request.getRequestLine().getMethod();
+                    if (method.equalsIgnoreCase("HEAD"))
+                    {
+                        return new HttpHead(uri);
+                    }
+                    else if (method.equalsIgnoreCase("GET"))
+                    {
+                        return new HttpGet(uri);
+                    }
+                    else
+                    {
+                        int status = response.getStatusLine().getStatusCode();
+                        HttpUriRequest toReturn = null;
+                        if (status == 307 || status == 308)
+                        {
+                            toReturn = RequestBuilder.copy(request).setUri(uri).build();
+                            // Workaround for an apparent bug in HttpClient
+                            toReturn.removeHeaders("Content-Length");
+                        }
+                        else
+                        {
+                            toReturn = new HttpGet(uri);
+                        }
+                        return toReturn;
+                    }
+                }
+            };
+    }
+
+
+    private void responseInterceptor(HttpResponse response, @SuppressWarnings("unused") HttpContext context) throws IOException
+    {
+        HttpEntityWrapper wrapper = new BufferedHttpEntity(response.getEntity());
+        response.setEntity(wrapper);
+
+        // Print response code
+        System.out.println(response.getStatusLine());
+
+        // Print http response headers
+        for (Header hdr : response.getAllHeaders())
+        {
+            System.out.printf("%s: %s%n", hdr.getName(), hdr.getValue());
+        }
+
+        // Print http response content
+        try (BufferedReader rdr = new BufferedReader(new InputStreamReader(wrapper.getContent())))
+        {
+            System.out.println(rdr.lines().collect(Collectors.joining("\n")));
+        }
+    }
+
+
+    private RDFParserBuilder builderFactory()
+    {
+        return RDFParserBuilder.create()
+            .httpClient(rdfClient)
+            .httpAccept(RDF_CONTENT_TYPES)
+            .lang(Lang.TURTLE); // *default* lang
+    }
+
 
     /**
      * Sets the debug option.
      * @param debug the debug value to set.
      */
-    public void setDebug(boolean debug)
+    public void setDebug(int debug)
     {
         this.debug = debug;
     }
@@ -110,7 +241,7 @@ public class HttpHandler
 
     private void fetchRdfHttpResource(URI httpUriOrig)
     {
-        URI httpUri = dctermsRedirectWorkaround(httpUriOrig);
+        URI httpUri = httpUriOrig;
 
         if (httpResourceIsRDF.containsKey(httpUri))
         {
@@ -119,7 +250,7 @@ public class HttpHandler
         else if (containsMatch(skipURIPatterns,httpUriOrig.toString()))
         {
             // Do not try to read or parse this
-            if (debug)
+            if (debug > 1)
             {
                 System.err.println("Skipping reference check for "+httpUri);
             }
@@ -131,11 +262,15 @@ public class HttpHandler
             // An exception will be thrown by Jena if the resource is not RDF, and the
             // setting below will be reversed.
             httpResourceIsRDF.put(httpUri, true);
-            if (debug)
+            if (debug > 0)
             {
                 System.err.println("Parsing "+httpUri);
             }
-            Model foundModel = ModelFactory.createDefaultModel().read(httpUri.toString());
+            Model foundModel = ModelFactory.createDefaultModel();
+
+            RDFParserBuilder rdfParserBuilder = builderFactory();
+            rdfParserBuilder.source(httpUri.toString()).build().parse(foundModel);
+
             ResIterator ri = foundModel.listSubjects();
             while (ri.hasNext())
             {
@@ -150,32 +285,12 @@ public class HttpHandler
     }
 
 
-    /**
-     * Hack to work around <a href="https://github.com/oslc-op/oslc-specs/issues/88">issue88</a>
-     * with Jena handling of Dublin Core redirects.
-     * @param httpUriOrig a URI
-     * @return if the input was a DCTerms URI, return a modified URI reflecting the several redirects
-     */
-    private static URI dctermsRedirectWorkaround(URI httpUriOrig)
-    {
-        Pattern dcterms = Pattern.compile("^http://purl\\.org/dc/terms/(.*)$");
-        URI httpUri = httpUriOrig;
-        Matcher m = dcterms.matcher(httpUri.toString());
-
-        if (m.matches())
-        {
-            httpUri = URI.create("https://www.dublincore.org/2012/06/14/dcterms.rdf#" + m.group(1));
-        }
-        return httpUri;
-    }
-
-
     private void fetchPlainHttpResource(URI httpUri) throws ShapeCheckException, IOException
     {
         if (containsMatch(skipURIPatterns,httpUri.toString()))
         {
             // Do not try to read or parse this
-            if (debug)
+            if (debug > 1)
             {
                 System.err.println("Skipping reference check for "+httpUri);
             }
@@ -184,7 +299,7 @@ public class HttpHandler
         }
 
         HttpGet get = new HttpGet(httpUri);
-        if (debug)
+        if (debug > 1)
         {
             System.err.println("Fetching " + httpUri);
         }

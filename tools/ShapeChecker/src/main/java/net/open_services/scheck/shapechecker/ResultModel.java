@@ -257,14 +257,20 @@ public class ResultModel
 
     /**
      * Add counts of each issue severity.
+     * @param debug the current debug level
      * @return the number of errors found.
      */
-    public int summarizeIssues()
+    public int summarizeIssues(int debug)
     {
         resultVocabModel = ModelFactory.createDefaultModel()
                 .read(ResultModel.class.getClassLoader().getResourceAsStream("SCVocabulary.ttl"),
                     "http://open-services.net/ns/scheck#",
                     "TURTLE");
+        if (debug > 3)
+        {
+            System.err.println("\nVocabulary model:");
+            Models.write(resultVocabModel, System.err);
+        }
         return new IssueSummarizer(this).countIssues();
     }
 }
