@@ -39,7 +39,8 @@ import org.apache.jena.vocabulary.RDF;
  *    # There is one of these for each vocabulary and shape URL provided
  *    a sc:VocabularyResult | sc:ShapesResult ;
  *    dcterms:source fileOrUrl ;
- *    sc:checks vocabUri ; # for sc:VocabularyResult only
+ *    dcterms:title "title or similar name of vocab or shapes resource" ??? TODO DO I WANT THIS?
+ *    sc:checks Uri ; #resultModel always the same as dcterms:source - TODO so why have both?
  *    sc:issueCount [
  *       # The total numbers of issues reported against this vocabulary or shape, added by post-processing.
  *       sc:infoCount nnn ; sc:warnCount nnn ; sc:errorCount nnn
@@ -47,7 +48,7 @@ import org.apache.jena.vocabulary.RDF;
  *    sc:result [
  *       # There is one of these for each ontology, vocabulary term, shape
  *       a OntologyResult|TermResult|ShapeResult|PropertyResult ;
- *       sc:checks subjectUri ;
+ *       sc:checks subjectUri ; #resultModel the URI of the thing being checked (ontology, vocabulary term, shape)
  *       dcterms:references uri ; # for each other resource mentioned by a property definition
  *       sc:result [
  *          # There is a nested sc:result for each property definition in a shape
@@ -111,6 +112,7 @@ public class ResultModel
      * Get the result model.
      * @return the result model
      */
+    @javax.annotation.CheckReturnValue
     public Model getModel()
     {
         return resultModel;
@@ -121,6 +123,7 @@ public class ResultModel
      * Get the vocabulary model.
      * @return the vocabulary model
      */
+    @javax.annotation.CheckReturnValue
     public Model getResultVocabModel()
     {
         return resultVocabModel;
@@ -131,6 +134,7 @@ public class ResultModel
      * Get the summary resource in the result model.
      * @return the result model
      */
+    @javax.annotation.CheckReturnValue
     public Resource getSummaryResource()
     {
         return summaryResource;
@@ -250,16 +254,17 @@ public class ResultModel
      * Get the summary resource.
      * @return the summary resource
      */
+    @javax.annotation.CheckReturnValue
     public Resource getSummary()
     {
         return summaryResource;
     }
-
     /**
      * Add counts of each issue severity.
      * @param debug the current debug level
      * @return the number of errors found.
      */
+    @javax.annotation.CheckReturnValue
     public int summarizeIssues(int debug)
     {
         resultVocabModel = ModelFactory.createDefaultModel()

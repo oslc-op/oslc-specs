@@ -60,7 +60,6 @@ public class VocabularyCheck
         vocabResult = this.resultModel.createOuterResult(Terms.VocabResult);
         vocabResult.addProperty(Terms.checks, docRes);
         vocabResult.addProperty(DCTerms.source,docRes);
-        vocabResult.addLiteral(DCTerms.extent, vocabModel.size());
         preferredNameSpace = vocabModel.createProperty("http://purl.org/vocab/vann/preferredNamespacePrefix");
     }
 
@@ -114,7 +113,6 @@ public class VocabularyCheck
      *
      * @param vocab the vocabulary resource to be checked
      */
-    @javax.annotation.CheckReturnValue
     public void checkVocabulary(Resource vocab)
     {
         vocabResult.addProperty(Terms.checks, vocab);
@@ -134,7 +132,6 @@ public class VocabularyCheck
      *
      * @param ontology the ontology resource to be checked
      */
-    @javax.annotation.CheckReturnValue
     private void checkOntologyProps(Resource ontology)
     {
         Resource ontResult = resultModel.createInnerResult(vocabResult, Terms.OntologyResult);
@@ -152,8 +149,12 @@ public class VocabularyCheck
         node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne,
             desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
+        node.checkLiteral(DCTerms.modified, null, Occurrence.ZeroOrOne, null);
         node.checkLiteral(preferredNameSpace, null, Occurrence.ZeroOrOne, null);
         node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
+        node.checkSuppressibleURI(DCTerms.publisher, Occurrence.ZeroOrMany,false, false, null);
+        node.checkLiteral(DCTerms.issued, null, Occurrence.ZeroOrOne, null);
+        node.checkLiteral(DCTerms.hasVersion, null, Occurrence.ZeroOrOne, null);
 
         // Look for additional properties permitted for terms in this vocabulary
         node.checkURI(Terms.additionalProperty, Occurrence.ZeroOrMany,

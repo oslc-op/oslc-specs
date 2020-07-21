@@ -150,6 +150,7 @@ public class IssueSummarizer
     }
 
 
+    @javax.annotation.CheckReturnValue
     private IssueSeverity lookupSeverity(Resource issueType)
     {
         return IssueSeverity.findSeverity(

@@ -1,18 +1,19 @@
 package net.open_services.scheck.shapechecker;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
 
 /**
@@ -48,8 +49,8 @@ public class ShapesDocCheck
         shapeModel = ModelFactory.createDefaultModel().read(docURI, "TURTLE");
         shapeCopy = ModelFactory.createDefaultModel().add(shapeModel);
         shapesResult = resultModel.createOuterResult(Terms.ShapesResult);
+        shapesResult.addProperty(Terms.checks,docRes);
         shapesResult.addProperty(DCTerms.source,docRes);
-        shapesResult.addLiteral(DCTerms.extent, shapeModel.size());
     }
 
 
@@ -58,8 +59,10 @@ public class ShapesDocCheck
      */
     public void checkShapes()
     {
-        StmtIterator it = shapeModel.listStatements(null, RDF.type, OSLC.ResourceShape);
+    	// First, check properties of this file or collection of shapes
+    	checkShapesDoc();
 
+        StmtIterator it = shapeModel.listStatements(null, RDF.type, OSLC.ResourceShape);
         if (!it.hasNext())
         {
             resultModel.createIssue(shapesResult, Terms.NoShapesInFile, docRes);
@@ -98,4 +101,64 @@ public class ShapesDocCheck
             it.remove();
         }
     }
+
+
+    private void checkShapesDoc()
+    {
+    	Resource shapesUri;
+
+    	// Read shapes file as text, scanning for @base statement (if any)
+    	if ((shapesUri = findBase()) != null)
+    	{
+	        // Check optional properties of the shapes file or collection
+	        NodeCheck node = new NodeCheck(shapesUri, httpHandler, shapeModel, shapeCopy, resultModel, shapesResult);
+	        node.checkLiteral(DCTerms.title, null, Occurrence.ZeroOrOne, null);
+	        node.checkLiteral(RDFS.label, null, Occurrence.ZeroOrOne, null);
+	        node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne,
+	            desc -> NodeCheck.checkSentence(desc));
+	        node.checkSuppressibleURI(DCTerms.source, Occurrence.ZeroOrOne, false, false,
+	            uri -> uri.matches(".*\\.ttl") ? null : Terms.SourceNotTurtle);
+	        node.checkNode(DCTerms.license, Occurrence.ZeroOrOne);
+	        node.checkLiteral(DCTerms.issued, null, Occurrence.ZeroOrOne, null);
+	        node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
+	        node.checkLiteral(DCTerms.modified, null, Occurrence.ZeroOrOne, null);
+	        node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
+	        node.checkSuppressibleURI(DCTerms.publisher, Occurrence.ZeroOrMany,false, false, null);
+	        node.checkLiteral(DCTerms.hasVersion, null, Occurrence.ZeroOrOne, null);
+
+	        // Check that the shape collection has no other properties
+	        StmtIterator it = shapeCopy.listStatements(shapesUri, null, (RDFNode)null);
+	        while (it.hasNext())
+	        {
+	            Statement st = it.next();
+	            resultModel.createIssue(shapesResult, Terms.Redundant, st.getPredicate());
+	            it.remove();
+	        }
+
+    	}
+    }
+
+
+	private Resource findBase()
+	{
+		Pattern p = Pattern.compile(".*@base\\s+<(.*)>\\s+\\.");
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(document.toURL().openStream())))
+		{
+			String line;
+			while ((line = in.readLine()) != null)
+			{
+				Matcher matcher = p.matcher(line);
+				if (matcher.matches())
+				{
+					return shapeModel.createResource(matcher.group(1));
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			// fall through
+		}
+		resultModel.createIssue(shapesResult, Terms.NoBaseURI, docRes);
+		return null;
+	}
 }

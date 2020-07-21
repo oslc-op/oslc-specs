@@ -226,6 +226,7 @@ public class HttpHandler
     }
 
 
+    @javax.annotation.CheckReturnValue
     private static boolean containsMatch(Set<Pattern> patterns, String str)
     {
         for (Pattern p : patterns)
@@ -323,7 +324,6 @@ public class HttpHandler
     }
 
 
-    @javax.annotation.CheckReturnValue
     private void findRDFResource(URI httpUri, String uri) throws ShapeCheckException
     {
         if (httpUri.toString().equals(uri) || !httpResourceIsRDF.get(httpUri))

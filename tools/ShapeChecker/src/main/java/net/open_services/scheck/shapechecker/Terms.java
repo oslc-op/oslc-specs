@@ -177,6 +177,10 @@ public final class Terms
     @SCIssue(issueSeverity=Error,description="This property should appear at most once.")
     public static final Resource MoreThanOne      = resource("MoreThanOne");
 
+    /** Error class for a missing @base in a shapes file. */
+    @SCIssue(issueSeverity=Info,description="This shapes file does not define a base URI.")
+    public static final Resource NoBaseURI        = resource("NoBaseURI");
+
     /** Error class for a term not defined by an ontology. */
     @SCIssue(issueSeverity=Warning,description="This subject does not appear to be part of an ontology or one of its terms.")
     public static final Resource NoOntology       = resource("NoOntology");
