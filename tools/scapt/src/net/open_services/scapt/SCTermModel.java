@@ -2,6 +2,9 @@ package net.open_services.scapt;
 
 import net.open_services.scheck.annotations.IssueSeverity;
 
+import static net.open_services.scapt.SCResultProcessor.enquote;
+
+
 /**
  * Data object for ShapeChecker vocabulary term.
  * @author Nick Crossley. Released to public domain, September 2015.
@@ -22,8 +25,7 @@ public class SCTermModel
      */
     public SCTermModel(String name, String description)
     {
-        this.name = name;
-        this.description = description;
+        this(name,description,null,null,null);
     }
 
 
@@ -35,9 +37,7 @@ public class SCTermModel
      */
     public SCTermModel(String name, String description, IssueSeverity issueSeverity)
     {
-        this.name = name;
-        this.description = description;
-        this.severity = issueSeverity;
+        this(name,description,issueSeverity,null,null);
     }
 
 
@@ -51,11 +51,11 @@ public class SCTermModel
      */
     public SCTermModel(String name, String description, IssueSeverity severity, String singular, String plural)
     {
-        this.name = name;
-        this.description = description;
+        this.name = enquote(name);
+        this.description = enquote(description);
         this.severity = severity;
-        this.singular = singular;
-        this.plural = plural;
+        this.singular = enquote(singular);
+        this.plural = enquote(plural);
     }
 
 

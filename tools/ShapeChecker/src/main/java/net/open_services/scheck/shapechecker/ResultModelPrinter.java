@@ -171,7 +171,7 @@ public class ResultModelPrinter
             prefix,
             severity,
             subjectRes.getURI(),
-            vocabulary.getProperty(type, RDFS.comment).getString());
+            unescape(vocabulary.getProperty(type, RDFS.comment).getString()));
 
 
         if (badValueSt != null)
@@ -258,4 +258,54 @@ public class ResultModelPrinter
     {
         return level == 0 ? "" : String.format("%"+level*3+"s"," ");
     }
+
+
+	private static String unescape(String s)
+	{
+		StringBuilder result = new StringBuilder(s.length());
+		int i = 0;
+		int n = s.length();
+		while (i < n)
+		{
+			char charAt = s.charAt(i);
+			if (charAt != '&')
+			{
+				result.append(charAt);
+				i++;
+			}
+			else
+			{
+				if (s.startsWith("&amp;", i))
+				{
+					result.append('&');
+					i += 5;
+				}
+				else if (s.startsWith("&apos;", i))
+				{
+					result.append('\'');
+					i += 6;
+				}
+				else if (s.startsWith("&quot;", i))
+				{
+					result.append('"');
+					i += 6;
+				}
+				else if (s.startsWith("&lt;", i))
+				{
+					result.append('<');
+					i += 4;
+				}
+				else if (s.startsWith("&gt;", i))
+				{
+					result.append('>');
+					i += 4;
+				}
+				else
+				{
+					i++;
+				}
+			}
+		}
+		return result.toString();
+	}
 }

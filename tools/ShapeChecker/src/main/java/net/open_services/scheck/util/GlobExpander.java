@@ -1,6 +1,9 @@
 package net.open_services.scheck.util;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -91,8 +94,6 @@ public class GlobExpander extends SimpleFileVisitor<Path>
 
     static PathParts splitGlobRoot(String path)
     {
-        String prefix;
-        String glob;
         Matcher matcher = GLOB_CHARS.matcher(path);
         if (!matcher.find())
         {
@@ -100,7 +101,9 @@ public class GlobExpander extends SimpleFileVisitor<Path>
         }
         else
         {
-            int divider = path.substring(0, matcher.start()).lastIndexOf('/');
+            String prefix;
+            String glob;
+            int    divider = path.substring(0, matcher.start()).lastIndexOf('/');
             if (divider < 0)
             {
                 prefix = ".";
@@ -117,6 +120,36 @@ public class GlobExpander extends SimpleFileVisitor<Path>
                 glob = path.substring(divider + 1);
             }
             return new PathParts(Paths.get(prefix),Paths.get(glob));
+        }
+    }
+
+
+    /**
+     * Make a list of URIs for an argument that is either a single URI string,
+     * or a file path that contains shell-style globs to be expanded.
+     * @param argVal an argument that is either a URI string or a file path with globs
+     * @return a list of URIs that are formed from the provided string
+     * @throws URISyntaxException if the URI is not valid
+     */
+    @javax.annotation.CheckReturnValue
+    public static List<URI> checkFileOrURI(String argVal) throws URISyntaxException
+    {
+        if (argVal.startsWith("http://") || argVal.startsWith("https://"))
+        {
+            return Collections.singletonList(new URI(argVal));
+        }
+        else
+        {
+           List<URI> uris = new ArrayList<>();
+           for (String path : expand(argVal))
+           {
+               uris.add(new File(path).toURI());
+           }
+           if (uris.isEmpty())
+           {
+               System.err.println("Warning: nothing matches "+argVal);
+           }
+           return uris;
         }
     }
 
