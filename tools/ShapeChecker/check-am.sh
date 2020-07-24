@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 build/install/ShapeChecker/bin/ShapeChecker \
+-C ${comment# Enforce check for ResourceShapeConstraints} \
 -x http://open-services.net/ns/core  \
 -x http://open-services.net/ns/am  \
 -x http://jazz.net/ns/dm/linktypes \

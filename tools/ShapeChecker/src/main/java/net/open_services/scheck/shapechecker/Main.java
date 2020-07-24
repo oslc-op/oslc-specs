@@ -19,12 +19,13 @@ import net.open_services.scheck.util.GlobExpander;
  */
 public class Main
 {
-    private List<URI>  vocabularies = new ArrayList<>();
-    private List<URI>  shapes       = new ArrayList<>();
-    private int		   debug        = 0;
-    private boolean    verbose      = false;
-    private boolean    crossCheck   = true;
-    private CrossCheck crossChecker;
+	private List<URI>	vocabularies		= new ArrayList<>();
+	private List<URI>	shapes				= new ArrayList<>();
+	private int			debug				= 0;
+	private boolean		verbose				= false;
+	private boolean		crossCheck			= true;
+	private boolean		checkConstraints	= false;
+	private CrossCheck	crossChecker;
 
     /**
      * Main entry point to OSLC Shape and Vocabulary checker.
@@ -61,6 +62,7 @@ public class Main
                 + " [-s|--shape shapeFileGlob|shapeURI ...]"
                 + " [-q|--quiet suppressedIssue ...]"
                 + " [-x|--exclude excludeURIPattern ...]"
+                + " [-C|--constraints]"
                 + " [-N|--nocrosscheck]"
                 + " [-V|--verbose]"
                 + " [-D|--debug]"
@@ -113,7 +115,7 @@ public class Main
                 {
                     System.out.println("Parsing "+shape);
                 }
-                new ShapesDocCheck(shape, httpHandler, resultModel).checkShapes();
+                new ShapesDocCheck(shape, httpHandler, resultModel, checkConstraints).checkShapes();
             }
             catch (RiotNotFoundException e)
             {
@@ -194,6 +196,11 @@ public class Main
                 	{
                     	System.err.println("Arguments: "+String.join(" ",args));
                 	}
+                }
+                else if (args[index].equals("-C") || args[index].equals("--constraints"))
+                {
+                    index++;
+                    checkConstraints = true;
                 }
                 else if (args[index].equals("-V") || args[index].equals("--verbose"))
                 {

@@ -1,14 +1,9 @@
 package net.open_services.scheck.shapechecker;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.DCTerms;
@@ -30,6 +25,7 @@ public class ShapesDocCheck
     private ResultModel resultModel;
     private Resource    shapesResult;
     private Set<String> describes = new HashSet<>();
+    private boolean		checkConstraints = false;
 
 
     /**
@@ -38,12 +34,14 @@ public class ShapesDocCheck
      * @param document The document URI
      * @param httpHandler An HttpHandler to check for reachability of URI references
      * @param resultModel The model to which any results should be added
+     * @param checkConstraints true if this shapes document must have a ResourceShapeConstraints resource
      */
-    public ShapesDocCheck(URI document, HttpHandler httpHandler, ResultModel resultModel)
+    public ShapesDocCheck(URI document, HttpHandler httpHandler, ResultModel resultModel, boolean checkConstraints)
     {
         this.document = document;
         this.resultModel = resultModel;
         this.httpHandler = httpHandler;
+        this.checkConstraints = checkConstraints;
         String docURI = document.toString();
         docRes = resultModel.getModel().createResource(docURI);
         shapeModel = ModelFactory.createDefaultModel().read(docURI, "TURTLE");
@@ -107,24 +105,27 @@ public class ShapesDocCheck
     {
     	Resource shapesUri;
 
-    	// Read shapes file as text, scanning for @base statement (if any)
-    	if ((shapesUri = findBase()) != null)
+    	// Find one ResourceShapeConstraints resource
+    	if ((shapesUri = findResourceShapeConstraints()) != null)
     	{
-	        // Check optional properties of the shapes file or collection
+	        // Check mandatory properties of the shapes collection
 	        NodeCheck node = new NodeCheck(shapesUri, httpHandler, shapeModel, shapeCopy, resultModel, shapesResult);
-	        node.checkLiteral(DCTerms.title, null, Occurrence.ZeroOrOne, null);
-	        node.checkLiteral(RDFS.label, null, Occurrence.ZeroOrOne, null);
+	        node.checkLiteral(DCTerms.title, null, Occurrence.ExactlyOne, null);
+	        node.checkNode(DCTerms.license, Occurrence.ExactlyOne);
+	        node.checkLiteral(DCTerms.hasVersion, null, Occurrence.ExactlyOne, null);
+	        node.checkSuppressibleURI(DCTerms.source, Occurrence.ExactlyOne, false, false,
+	            uri -> uri.matches(".*\\.ttl") ? null : Terms.SourceNotTurtle);
+	        node.checkSuppressibleURI(DCTerms.isPartOf, Occurrence.ExactlyOne, false, false, null);
+
+	        // Check optional properties of the shapes collection
 	        node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne,
 	            desc -> NodeCheck.checkSentence(desc));
-	        node.checkSuppressibleURI(DCTerms.source, Occurrence.ZeroOrOne, false, false,
-	            uri -> uri.matches(".*\\.ttl") ? null : Terms.SourceNotTurtle);
-	        node.checkNode(DCTerms.license, Occurrence.ZeroOrOne);
-	        node.checkLiteral(DCTerms.issued, null, Occurrence.ZeroOrOne, null);
-	        node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
 	        node.checkLiteral(DCTerms.modified, null, Occurrence.ZeroOrOne, null);
 	        node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
 	        node.checkSuppressibleURI(DCTerms.publisher, Occurrence.ZeroOrMany,false, false, null);
-	        node.checkLiteral(DCTerms.hasVersion, null, Occurrence.ZeroOrOne, null);
+	        node.checkLiteral(RDFS.label, null, Occurrence.ZeroOrOne, null);
+	        node.checkLiteral(DCTerms.issued, null, Occurrence.ZeroOrOne, null);
+	        node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
 
 	        // Check that the shape collection has no other properties
 	        StmtIterator it = shapeCopy.listStatements(shapesUri, null, (RDFNode)null);
@@ -139,26 +140,26 @@ public class ShapesDocCheck
     }
 
 
-	private Resource findBase()
+	private Resource findResourceShapeConstraints()
 	{
-		Pattern p = Pattern.compile(".*@base\\s+<(.*)>\\s+\\.");
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(document.toURL().openStream())))
-		{
-			String line;
-			while ((line = in.readLine()) != null)
-			{
-				Matcher matcher = p.matcher(line);
-				if (matcher.matches())
-				{
-					return shapeModel.createResource(matcher.group(1));
-				}
-			}
-		}
-		catch (IOException e)
-		{
-			// fall through
-		}
-		resultModel.createIssue(shapesResult, Terms.NoBaseURI, docRes);
-		return null;
+        StmtIterator it = shapeModel.listStatements(null, RDF.type, OSLC.ResourceShapeConstraints);
+
+        if (!it.hasNext())
+        {
+            if (checkConstraints)
+        	{
+            	resultModel.createIssue(shapesResult, Terms.NoResourceShapeConstraints, docRes);
+        	}
+            return null;
+        }
+
+        Statement st = it.next();
+        shapeCopy.remove(st);
+
+        if (it.hasNext())
+        {
+            resultModel.createIssue(shapesResult, Terms.MultipleResourceShapeConstraints, docRes);
+        }
+        return st.getSubject();
 	}
 }
