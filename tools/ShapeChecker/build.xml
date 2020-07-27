@@ -3,7 +3,7 @@
 <project basedir="." default="build" name="ShapeChecker">
     <property environment="env"/>
 
-    <property name="lib" value="build/distributions/ShapeChecker-0.1.0/lib"/>
+    <property name="lib" value="build/install/ShapeChecker/lib"/>
     <property name="scapt.location" value="../scapt"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
@@ -12,22 +12,17 @@
     <property name="cmvocab" location="../../specs/cm/change-mgt-vocab.ttl"/>
     <property name="assetshapes" location="../../specs/asset/asset-management-shapes.ttl"/>
     <property name="assetvocab" location="../../specs/asset/asset-management-vocab.ttl"/>
+	<property name="elib" location="${env.ELIB}"/>
 
     <path id="scapt.classpath">
         <pathelement location="${scapt.location}/bin"/>
-        <pathelement location="${scapt.location}/lib/velocity-1.7-dep.jar"/>
-    </path>
-
-    <path id="JUnit 4.libraryclasspath">
-        <pathelement location="../../../../.p2/pool/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
-        <pathelement location="../../../../.p2/pool/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar"/>
+        <pathelement location="${scapt.location}/lib/compiler-0.9.6.jar"/>
     </path>
 
     <path id="sc.build.classpath">
         <path refid="scapt.classpath"/>
         <pathelement location="bin"/>
         <path refid="sc.depends.classpath"/>
-        <path refid="JUnit 4.libraryclasspath"/>
     </path>
 
     <path id="sc.run.classpath">
@@ -43,15 +38,6 @@
 
     <target name="init">
         <mkdir dir="bin"/>
-        <copy includeemptydirs="false" todir="bin">
-            <fileset dir="src/main/resources">
-                <exclude name="**/*.launch"/>
-                <exclude name="**/*.DS_Store"/>
-                <exclude name="**/*.jj"/>
-                <exclude name="**/*.jjt"/>
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
     </target>
 
     <target name="clean" description="Remove bin directory and jar file">
@@ -64,8 +50,6 @@
             <compilerarg value="-s"/>
             <compilerarg value="src/main/generated"/>
             <src path="src/main/java"/>
-            <src path="src/test/java"/>
-            <src path="src/main/resources"/>
             <classpath refid="sc.build.classpath"/>
         </javac>
     </target>
@@ -82,7 +66,7 @@
 
     <target depends="build" name="makeCompletejar" description="Create a jar for ShapeChecker, including all dependencies">
         <move file="${lib}/ShapeChecker-0.1.0.jar" tofile="${lib}/shapechecker.jar.tmp"/>
-        <jar jarfile="${ELIB}/shapecheckercomplete.jar" basedir="bin">
+        <jar jarfile="${elib}/shapecheckercomplete.jar" basedir="bin">
             <manifest>
                 <attribute name="Main-Class" value="net.open_services.scheck.shapechecker.Main"/>
             </manifest>
