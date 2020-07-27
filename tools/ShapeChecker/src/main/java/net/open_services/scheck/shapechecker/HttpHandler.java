@@ -37,6 +37,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 
 
@@ -60,9 +61,17 @@ public class HttpHandler
 
     /**
      * Construct a new HttpHandler that will redirect.
+     * @param debug the debug level for logging
+     * @param skipURIPatterns patterns of URIs not to be fetched
      */
-    public HttpHandler()
+    public HttpHandler(int debug, Set<Pattern> skipURIPatterns)
     {
+        this.debug = debug;
+        if (skipURIPatterns != null)
+        {
+        	this.skipURIPatterns.addAll(skipURIPatterns);
+        }
+
         Header header = new BasicHeader(HttpHeaders.ACCEPT, TEXT_CONTENT_TYPES);
         httpClient = HttpClientBuilder
                 .create()
@@ -83,7 +92,8 @@ public class HttpHandler
         if (debug > 2)
         {
             // for debugging redirects
-        	builder = builder.addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.out.println(response.toString()))
+        	System.err.println("Setting up http interceptor");
+        	builder = builder.addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.err.println(response.toString()))
             	.addInterceptorLast(this::responseInterceptor);
         }
         rdfClient = builder.build();
@@ -157,18 +167,18 @@ public class HttpHandler
         response.setEntity(wrapper);
 
         // Print response code
-        System.out.println(response.getStatusLine());
+        System.err.println(response.getStatusLine());
 
         // Print http response headers
         for (Header hdr : response.getAllHeaders())
         {
-            System.out.printf("%s: %s%n", hdr.getName(), hdr.getValue());
+            System.err.printf("%s: %s%n", hdr.getName(), hdr.getValue());
         }
 
         // Print http response content
         try (BufferedReader rdr = new BufferedReader(new InputStreamReader(wrapper.getContent())))
         {
-            System.out.println(rdr.lines().collect(Collectors.joining("\n")));
+            System.err.println(rdr.lines().collect(Collectors.joining("\n")));
         }
     }
 
@@ -179,16 +189,6 @@ public class HttpHandler
             .httpClient(rdfClient)
             .httpAccept(RDF_CONTENT_TYPES)
             .lang(Lang.TURTLE); // *default* lang
-    }
-
-
-    /**
-     * Sets the debug option.
-     * @param debug the debug value to set.
-     */
-    public void setDebug(int debug)
-    {
-        this.debug = debug;
     }
 
 
@@ -216,16 +216,7 @@ public class HttpHandler
     }
 
 
-    /**
-     * Exclude a URI pattern from being fetched and parsed.
-     * @param uri the URI pattern to be skipped
-     */
-    public void excludeURIPattern(String uri)
-    {
-        skipURIPatterns.add(Pattern.compile(uri));
-    }
-
-
+    @javax.annotation.CheckReturnValue
     private static boolean containsMatch(Set<Pattern> patterns, String str)
     {
         for (Pattern p : patterns)
@@ -269,7 +260,10 @@ public class HttpHandler
             Model foundModel = ModelFactory.createDefaultModel();
 
             RDFParserBuilder rdfParserBuilder = builderFactory();
-            rdfParserBuilder.source(httpUri.toString()).build().parse(foundModel);
+            String source = httpUri.toString();
+			rdfParserBuilder = rdfParserBuilder.source(source);
+            RDFParser parser = rdfParserBuilder.build();
+            parser.parse(foundModel);
 
             ResIterator ri = foundModel.listSubjects();
             while (ri.hasNext())
@@ -323,7 +317,6 @@ public class HttpHandler
     }
 
 
-    @javax.annotation.CheckReturnValue
     private void findRDFResource(URI httpUri, String uri) throws ShapeCheckException
     {
         if (httpUri.toString().equals(uri) || !httpResourceIsRDF.get(httpUri))

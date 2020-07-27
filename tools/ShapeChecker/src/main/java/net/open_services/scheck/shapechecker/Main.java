@@ -2,9 +2,8 @@ package net.open_services.scheck.shapechecker;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.RiotNotFoundException;
@@ -19,12 +18,14 @@ import net.open_services.scheck.util.GlobExpander;
  */
 public class Main
 {
-    private List<URI>  vocabularies = new ArrayList<>();
-    private List<URI>  shapes       = new ArrayList<>();
-    private int		   debug        = 0;
-    private boolean    verbose      = false;
-    private boolean    crossCheck   = true;
-    private CrossCheck crossChecker;
+	private List<URI>		vocabularies		= new ArrayList<>();
+	private List<URI>		shapes				= new ArrayList<>();
+	private Set<Pattern>	skipURIPatterns		= new HashSet<>();
+	private int				debug				= 0;
+	private boolean			verbose				= false;
+	private boolean			crossCheck			= true;
+	private boolean			checkConstraints	= false;
+	private CrossCheck		crossChecker;
 
     /**
      * Main entry point to OSLC Shape and Vocabulary checker.
@@ -51,22 +52,24 @@ public class Main
     private void run(String... args)
     {
         ResultModel resultModel   = new ResultModel(args);
-        HttpHandler httpHandler   = new HttpHandler();
         boolean		failedToParse = false;
 
-        if (!checkUsage(args,resultModel,httpHandler))
+        if (!checkUsage(args,resultModel))
         {
             System.err.println("Usage: "+this.getClass().getName()
                 + " [-v|--vocab vocabFileGlob|vocabURI ...]"
                 + " [-s|--shape shapeFileGlob|shapeURI ...]"
                 + " [-q|--quiet suppressedIssue ...]"
                 + " [-x|--exclude excludeURIPattern ...]"
+                + " [-C|--constraints]"
                 + " [-N|--nocrosscheck]"
                 + " [-V|--verbose]"
                 + " [-D|--debug]"
                 );
             System.exit(1);
         }
+
+        HttpHandler httpHandler = new HttpHandler(debug, skipURIPatterns);
 
         // TODO: there's a fundamental problem here in the way the tables are built for the cross-check.
         // Instantiation of VocabularyCheck loads a vocabulary document into memory (good), and
@@ -89,7 +92,7 @@ public class Main
                 {
                     System.out.println("Parsing "+vocab);
                 }
-                new VocabularyCheck(vocab, httpHandler, resultModel).checkVocabularies();
+                new VocabularyCheck(vocab, httpHandler, resultModel, checkConstraints).checkVocabularies();
             }
             catch (RiotNotFoundException e)
             {
@@ -113,7 +116,7 @@ public class Main
                 {
                     System.out.println("Parsing "+shape);
                 }
-                new ShapesDocCheck(shape, httpHandler, resultModel).checkShapes();
+                new ShapesDocCheck(shape, httpHandler, resultModel, checkConstraints).checkShapes();
             }
             catch (RiotNotFoundException e)
             {
@@ -176,7 +179,7 @@ public class Main
 
 
     @javax.annotation.CheckReturnValue
-    private boolean checkUsage(String[] args, ResultModel resultModel, HttpHandler httpHandler)
+    private boolean checkUsage(String[] args, ResultModel resultModel)
     {
         int     index  = 0;
         boolean passed = true;
@@ -189,11 +192,15 @@ public class Main
                 {
                     index++;
                     debug++;
-                    httpHandler.setDebug(debug);
                     if (debug==1)
                 	{
                     	System.err.println("Arguments: "+String.join(" ",args));
                 	}
+                }
+                else if (args[index].equals("-C") || args[index].equals("--constraints"))
+                {
+                    index++;
+                    checkConstraints = true;
                 }
                 else if (args[index].equals("-V") || args[index].equals("--verbose"))
                 {
@@ -227,7 +234,7 @@ public class Main
                 else if (args[index].equals("-x") || args[index].equals("--exclude"))
                 {
                     index++;
-                    httpHandler.excludeURIPattern(args[index++]);
+                    skipURIPatterns.add(Pattern.compile(args[index++]));
                 }
                 else
                 {

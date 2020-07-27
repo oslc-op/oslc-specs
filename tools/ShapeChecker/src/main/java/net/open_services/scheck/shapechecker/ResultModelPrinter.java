@@ -223,6 +223,7 @@ public class ResultModelPrinter
     }
 
 
+    @javax.annotation.CheckReturnValue
     private String lookupSeverity(Resource res)
     {
         return vocabulary
@@ -233,12 +234,14 @@ public class ResultModelPrinter
     }
 
 
+    @javax.annotation.CheckReturnValue
     private String getVocabProp(Property term, Property predicate)
     {
         return vocabulary.getProperty(term, predicate).getString();
     }
 
 
+    @javax.annotation.CheckReturnValue
     private static String wrap(String msg)
     {
         StringBuilder sb = new StringBuilder(msg);
@@ -254,12 +257,14 @@ public class ResultModelPrinter
     }
 
 
+    @javax.annotation.CheckReturnValue
     private static String pad(int level)
     {
         return level == 0 ? "" : String.format("%"+level*3+"s"," ");
     }
 
 
+    @javax.annotation.CheckReturnValue
 	private static String unescape(String s)
 	{
 		StringBuilder result = new StringBuilder(s.length());

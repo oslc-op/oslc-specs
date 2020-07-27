@@ -31,14 +31,16 @@ public class VocabularyCheck
 {
     private static final Property VS_TERM_STATUS = ResourceFactory.createProperty("http://www.w3.org/2003/06/sw-vocab-status/ns#term_status");
 
-    private HttpHandler   httpHandler;
-    private Model         vocabModel;
-    private Model         modelCopy;
-    private ResultModel   resultModel;
-    private Resource      vocabResult;
-    private Property      preferredNameSpace;
-    private Set<String>   labels = new HashSet<>();
-    private Set<Property> additionalProperties = new HashSet<>();
+	private HttpHandler				httpHandler;
+	private Resource				docRes;
+	private Model					vocabModel;
+	private Model					modelCopy;
+	private ResultModel				resultModel;
+	private Resource				vocabResult;
+	private Property				preferredNameSpace;
+	private Set<String>				labels					= new HashSet<>();
+	private Set<Property>			additionalProperties	= new HashSet<>();
+	private boolean					checkConstraints		= false;
 
 
     /**
@@ -47,18 +49,21 @@ public class VocabularyCheck
      * @param document The document URI
      * @param httpHandler An HttpHandler to check for reachability of URI references
      * @param resultModel The {@link ResultModel} to which any results should be added
+     * @param checkConstraints if each vocabulary must have OSLC OP publishing properties
      */
-    public VocabularyCheck(URI document, HttpHandler httpHandler, ResultModel resultModel)
+    public VocabularyCheck(URI document, HttpHandler httpHandler, ResultModel resultModel, boolean checkConstraints)
     {
         String docURI = document.toString();
+        docRes = resultModel.getModel().createResource(docURI);
         vocabModel = ModelFactory.createDefaultModel().read(docURI, "TURTLE");
         modelCopy = ModelFactory.createDefaultModel().add(vocabModel);
         this.httpHandler = httpHandler;
         this.resultModel = resultModel;
         vocabResult = this.resultModel.createOuterResult(Terms.VocabResult);
-        vocabResult.addProperty(DCTerms.source,resultModel.getModel().createResource(docURI));
-        vocabResult.addLiteral(DCTerms.extent, vocabModel.size());
+        vocabResult.addProperty(Terms.checks, docRes);
+        vocabResult.addProperty(DCTerms.source,docRes);
         preferredNameSpace = vocabModel.createProperty("http://purl.org/vocab/vann/preferredNamespacePrefix");
+        this.checkConstraints = checkConstraints;
     }
 
 
@@ -68,6 +73,13 @@ public class VocabularyCheck
     public void checkVocabularies()
     {
         StmtIterator it = vocabModel.listStatements(null, RDF.type, OWL.Ontology);
+
+        if (!it.hasNext())
+        {
+            resultModel.createIssue(vocabResult, Terms.NoVocabsInFile, docRes);
+            return;
+        }
+
         while (it.hasNext())
         {
             Statement st = it.next();
@@ -104,7 +116,6 @@ public class VocabularyCheck
      *
      * @param vocab the vocabulary resource to be checked
      */
-    @javax.annotation.CheckReturnValue
     public void checkVocabulary(Resource vocab)
     {
         vocabResult.addProperty(Terms.checks, vocab);
@@ -124,7 +135,6 @@ public class VocabularyCheck
      *
      * @param ontology the ontology resource to be checked
      */
-    @javax.annotation.CheckReturnValue
     private void checkOntologyProps(Resource ontology)
     {
         Resource ontResult = resultModel.createInnerResult(vocabResult, Terms.OntologyResult);
@@ -137,13 +147,21 @@ public class VocabularyCheck
         node.checkSuppressibleURI(DCTerms.source, Occurrence.ExactlyOne, false, false,
             uri -> uri.matches(".*\\.ttl") ? null : Terms.SourceNotTurtle);
 
+        // Checks for properties that are mandatory for OSLC specs about to be published
+        Occurrence published = checkConstraints ? Occurrence.ExactlyOne : Occurrence.ZeroOrOne;
+        node.checkNode(DCTerms.license, published);
+        node.checkLiteral(DCTerms.hasVersion, null, published, null);
+        node.checkSuppressibleURI(DCTerms.isPartOf, published, false, false, null);
+
         // Check the optional properties of the ontology
-        node.checkNode(DCTerms.license, Occurrence.ZeroOrOne);
         node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne,
             desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
+        node.checkLiteral(DCTerms.modified, null, Occurrence.ZeroOrOne, null);
         node.checkLiteral(preferredNameSpace, null, Occurrence.ZeroOrOne, null);
         node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
+        node.checkSuppressibleURI(DCTerms.publisher, Occurrence.ZeroOrMany,false, false, null);
+        node.checkLiteral(DCTerms.issued, null, Occurrence.ZeroOrOne, null);
 
         // Look for additional properties permitted for terms in this vocabulary
         node.checkURI(Terms.additionalProperty, Occurrence.ZeroOrMany,
