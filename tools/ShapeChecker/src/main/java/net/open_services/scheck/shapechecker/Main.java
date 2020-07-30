@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.RiotNotFoundException;
 
+import net.open_services.scheck.annotations.IssueSeverity;
 import net.open_services.scheck.util.GlobExpander;
 
 
@@ -25,7 +26,9 @@ public class Main
 	private boolean			verbose				= false;
 	private boolean			crossCheck			= true;
 	private boolean			checkConstraints	= false;
+	private IssueSeverity	threshold			= IssueSeverity.Info;
 	private CrossCheck		crossChecker;
+
 
     /**
      * Main entry point to OSLC Shape and Vocabulary checker.
@@ -35,6 +38,10 @@ public class Main
      * <li>Each -s/--shape argument introduces a shape, by local path or by URI</li>
      * <li>Each -q/--quiet argument names an issue to be ignored</li>
      * <li>Each -x/--exclude argument specifies a regular expression for URIs not to be read</li>
+     * <li>-t/--threshold this defines a threshold for reporting issues;
+     *    issues with a lower severity will not be reported.
+     *    The default is {@code info}, so by default all issues are reported.</li>
+     * <li>-C/--constraints require extra metadata on vocabularies and shapes for OSLC Specifications</li>
      * <li>-N/--nocrosscheck turns off the cross-checking of vocabularies and shapes</li>
      * <li>-V/--verbose turns out more progress information</li>
      * <li>-D/--debug turns on debugging output; multiple -D flags increase the debug level</li>
@@ -61,6 +68,7 @@ public class Main
                 + " [-s|--shape shapeFileGlob|shapeURI ...]"
                 + " [-q|--quiet suppressedIssue ...]"
                 + " [-x|--exclude excludeURIPattern ...]"
+                + " [-t|--threshold severityThreshold]"
                 + " [-C|--constraints]"
                 + " [-N|--nocrosscheck]"
                 + " [-V|--verbose]"
@@ -163,7 +171,7 @@ public class Main
         {
             System.out.println();
         }
-        new ResultModelPrinter(resultModel,System.out,crossCheck).print();
+        new ResultModelPrinter(resultModel,System.out,crossCheck, threshold).print();
 
         // Print list of vocabulary terms if requested
         if (verbose && crossChecker != null)
@@ -215,6 +223,20 @@ public class Main
                 else if (args.length <= index+1)
                 {
                     return false;
+                }
+                else if (args[index].equals("-t") || args[index].equals("--threshold"))
+                {
+                    index++;
+                    String arg = args[index++];
+                    try
+					{
+						threshold = IssueSeverity.findSeverity(arg);
+					}
+					catch (IllegalArgumentException e)
+					{
+						System.err.println("Invalid severity threshold "+arg);
+	                    return false;
+					}
                 }
                 else if (args[index].equals("-v") || args[index].equals("--vocab"))
                 {
