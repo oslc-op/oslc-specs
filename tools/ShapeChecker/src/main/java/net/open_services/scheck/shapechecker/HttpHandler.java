@@ -21,6 +21,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.RedirectStrategy;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -77,6 +79,7 @@ public class HttpHandler
                 .create()
                 .setRedirectStrategy(new LaxRedirectStrategy())
                 .setDefaultHeaders(Collections.singletonList(header))
+                .setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
                 .build();
 
         // Seems like Jena has a bug of ignoring the RDFParserBuilder Accept header,
