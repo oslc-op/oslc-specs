@@ -1,14 +1,8 @@
 package net.open_services.scheck.shapechecker;
 
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 
@@ -131,17 +125,6 @@ public class ResultModel
 
 
     /**
-     * Get the summary resource in the result model.
-     * @return the result model
-     */
-    @javax.annotation.CheckReturnValue
-    public Resource getSummaryResource()
-    {
-        return summaryResource;
-    }
-
-
-    /**
      * Create an anonymous outer node to hold results for a vocabulary or shape.
      * @param type the type of the outer node ({@code VocabResult} or {@code ShapesResult})
      * @return the resource created
@@ -176,7 +159,7 @@ public class ResultModel
      */
     public void suppressIssue(String name)
     {
-        Terms.findIssue(name).ifPresent(r -> suppressedIssues.add(r));
+    	Terms.findIssue(name).ifPresent(r -> suppressedIssues.add(r));
     }
 
 
@@ -250,7 +233,7 @@ public class ResultModel
     }
 
 
-    /**
+	/**
      * Get the summary resource.
      * @return the summary resource
      */
@@ -259,7 +242,23 @@ public class ResultModel
     {
         return summaryResource;
     }
+
+
     /**
+     * Description of addSummaryIssue.
+     * @param type the type of the issue
+     * @param resource the resource (vocabulary, shape, term) for the issue
+     */
+    public void addSummaryIssue(Property type, Resource resource)
+	{
+		if (!suppressedIssues.contains(type))
+		{
+			getSummary().addProperty(type, resource);
+		}
+	}
+
+
+	/**
      * Add counts of each issue severity.
      * @param debug the current debug level
      * @return the number of errors found.
