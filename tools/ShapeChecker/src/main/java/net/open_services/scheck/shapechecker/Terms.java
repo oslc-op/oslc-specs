@@ -34,9 +34,9 @@ import static net.open_services.scheck.annotations.IssueSeverity.*;
 		})
 public final class Terms
 {
-    private static final String checkerNS          = "http://open-services.net/ns/scheck#";
+    private static final String checkerNS         = "http://open-services.net/ns/scheck#";
 
-    private static Map<String, Resource> issueMap  = new HashMap<>();
+    private static Map<String, Resource> termMap  = new HashMap<>();
 
     /**
      * No instantiation.
@@ -51,21 +51,32 @@ public final class Terms
      */
     public static Optional<Resource> findIssue(String name)
     {
-        return Optional.ofNullable(Terms.issueMap.get(name));
+        return Optional.ofNullable(Terms.termMap.get(name));
+    }
+
+
+    private static void addTerm(String local, Resource resource)
+    {
+        if (termMap.put(local, resource) != null)
+        {
+        	throw new RuntimeException("Duplicate term name found: "+local);
+        }
     }
 
 
     private static Resource resource(String local)
     {
         Resource resource = ResourceFactory.createResource(checkerNS + local);
-        issueMap.put(local, resource);
+        addTerm(local, resource);
         return resource;
     }
 
 
     private static Property property(String local)
     {
-        return ResourceFactory.createProperty(checkerNS, local);
+        Property property = ResourceFactory.createProperty(checkerNS, local);
+        addTerm(local, property);
+		return property;
     }
 
 
