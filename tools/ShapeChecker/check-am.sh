@@ -2,6 +2,7 @@
 
 build/install/ShapeChecker/bin/ShapeChecker \
 -C ${comment# Enforce check for ResourceShapeConstraints} \
+-t Error \
 -x http://open-services.net/ns/core  \
 -x http://open-services.net/ns/am  \
 -x http://jazz.net/ns/dm/linktypes \
