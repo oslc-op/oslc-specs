@@ -22,10 +22,12 @@ Command line usage
     net.open_services.shapechecker.Main
         [-v|--vocab vocabFileGlob|vocabURI ...]
         [-s|--shape shapeFileGlob|shapeURI ...]
-        [-q|--quiet suppressedIssue ...]
+        [-C]
         [-x|--exclude excludeURIPattern ...]
         [-N|--nocrosscheck]
+        [-q|--quiet suppressedIssue ...]
         [-V|--verbose]
+        [-T Level]
         [-D]
 
 where:
@@ -42,12 +44,17 @@ Each `-s` argument provides the path to a local file, supporting shell-style exp
 or the URI for a single resource,
 containing the Turtle source for one or more OSLC Shape resources.
 
+    -C
+
+Enables validation of the `ResourceShapeConstraints` metadata in the shapes.
+
     -q suppressedIssue ...
 
 Each `-q` argument provides the local name of a warning to be suppressed.
 Warning names are defined in `net.open_services.shapechecker.ResultModel`.
 For example, `-q BadTermStatus` suppresses warnings about uses of
-`vs:term_status` with values other than `stable` or `archaic`.
+`vs:term_status` with values other than `stable` or `archaic`. Other warnings include
+`undefinedTerm` and `unusedTerm`.
 
     -x excludeURIPattern ...
 
@@ -60,6 +67,15 @@ of a not-yet-published vocabulary or shape.
     --verbose -D
 
 These optional flags enable extra progress or debugging information.
+
+   -T Level
+ 
+Provides a facility to filter out less critical messages. `Level` must be one of: 
+
+- `Info` shows everything, and is the default
+- `Warning` shows only Warning and Error
+- `Error` shows only Error messages
+- `None` shows only the summary, with no messages for individual issues
 
 The RDF model with the summary and warnings is described in the Javadoc for `net.open_services.shapechecker.ResultModel`.
 Issues are classified into informational messages, warnings, and errors;
