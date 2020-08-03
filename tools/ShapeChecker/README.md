@@ -22,13 +22,13 @@ Command line usage
     net.open_services.shapechecker.Main
         [-v|--vocab vocabFileGlob|vocabURI ...]
         [-s|--shape shapeFileGlob|shapeURI ...]
-        [-C]
-        [-x|--exclude excludeURIPattern ...]
-        [-N|--nocrosscheck]
         [-q|--quiet suppressedIssue ...]
+        [-x|--exclude excludeURIPattern ...]
+        [-t|--threshold level]
+        [-C|--constraints]
+        [-N|--nocrosscheck]
         [-V|--verbose]
-        [-T Level]
-        [-D]
+        [-D|--debug]
 
 where:
 
@@ -44,14 +44,10 @@ Each `-s` argument provides the path to a local file, supporting shell-style exp
 or the URI for a single resource,
 containing the Turtle source for one or more OSLC Shape resources.
 
-    -C
-
-Enables validation of the `ResourceShapeConstraints` metadata in the shapes.
-
     -q suppressedIssue ...
 
 Each `-q` argument provides the local name of a warning to be suppressed.
-Warning names are defined in `net.open_services.shapechecker.ResultModel`.
+Warning names are defined in `net.open_services.shapechecker.Terms`.
 For example, `-q BadTermStatus` suppresses warnings about uses of
 `vs:term_status` with values other than `stable` or `archaic`. Other warnings include
 `undefinedTerm` and `unusedTerm`.
@@ -64,18 +60,31 @@ vocabularies or shapes being checked, or vocabularies or shapes not yet publishe
 their intended location. Use `@base` in the source to specify the intended location
 of a not-yet-published vocabulary or shape.
 
-    --verbose -D
+    -t level
 
-These optional flags enable extra progress or debugging information.
-
-   -T Level
- 
-Provides a facility to filter out less critical messages. `Level` must be one of: 
+Provides a facility to filter out less critical messages. `level` must be one of:
 
 - `Info` shows everything, and is the default
 - `Warning` shows only Warning and Error
 - `Error` shows only Error messages
 - `None` shows only the summary, with no messages for individual issues
+
+    -C
+
+Enforces validation of the `ResourceShapeConstraints` metadata in the shapes,
+and additional publication metadata in vocabularies.
+
+    -N
+
+Suppress the normal cross-checks between vocabularies and shapes
+(that terms used in the shapes are defined in the vocabularies,
+and that terms defined in the vocabularies are used in the shapes).
+
+    -V
+    -D
+
+These optional flags enable extra progress or debugging information.
+Multiple occurrences of the -D option increase the debug output.
 
 The RDF model with the summary and warnings is described in the Javadoc for `net.open_services.shapechecker.ResultModel`.
 Issues are classified into informational messages, warnings, and errors;
