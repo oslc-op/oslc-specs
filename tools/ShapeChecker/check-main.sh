@@ -12,7 +12,7 @@ do
 	echo "Running $SCDIR/check-$domain.sh"
     $SCDIR/check-$domain.sh
     let Errors=Errors+$?
-    echo "Cumulative error status is $Errors"
+    echo -e "Cumulative error status is $Errors\n\n===================================================\n\n"
 done
 
 exit $Errors

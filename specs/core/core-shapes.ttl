@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-@prefix :      <http://open-services.net/ns/core/shapes/3.0/#> .
+@prefix :      <http://open-services.net/ns/core/shapes/3.0#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
@@ -20,6 +20,20 @@
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 @prefix oslc:  <http://open-services.net/ns/core#> .
+
+
+:
+  a oslc:ResourceShapeConstraints ;
+  dcterms:title "The OSLC Core Constraints" ;
+  dcterms:description "Constraints on vocabulary terms defined in the OSLC Core namespace."^^rdf:XMLLiteral ;
+  rdfs:label "The OSLC Core Constraints" ;
+  dcterms:publisher <https://open-services.net/about/> ;
+  #dcterms:issued "2020-xx-xx"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  dcterms:license <http://www.apache.org/licenses/LICENSE-2.0> ;
+  dcterms:source <https://github.com/oslc-op/oslc-specs/blob/master/specs/core/core-shapes.ttl> ;
+  dcterms:isPartOf <https://oslc-op.github.io/oslc-specs/specs/core/oslc-core.html> ;
+  dcterms:hasVersion "WD" .
+
 
 :AllowedValuesShape  a  oslc:ResourceShape ;
         oslc:describes  oslc:AllowedValues ;
@@ -445,6 +459,14 @@
                           oslc:representation      oslc:Reference ;
                           oslc:valueType           oslc:Resource ;
                           dcterms:description      "For object properties, the URI of a shape resource that describes the object resource."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "queryable" ;
+                          oslc:occurs              oslc:Zero-or-one ;
+                          oslc:propertyDefinition  oslc:queryable ;
+                          oslc:readOnly            true ;
+                          oslc:valueType           xsd:boolean ;
+                          dcterms:description      "Indicates whether a property is queryable (can appear in oslc.where and olsc.select clause) or not."^^rdf:XMLLiteral
                         ] ;
         oslc:property   [ a                        oslc:Property ;
                           oslc:name                "readOnly" ;

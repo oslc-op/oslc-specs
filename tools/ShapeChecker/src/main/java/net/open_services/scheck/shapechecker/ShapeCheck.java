@@ -110,7 +110,6 @@ public class ShapeCheck
      * @param shape the shape in which the property appears
      * @param propDefNode the property definition to be checked
      */
-    @javax.annotation.CheckReturnValue
     private void checkPropDef(URI document, Resource shape, RDFNode propDefNode)
     {
         Resource propDef = null;
@@ -248,7 +247,6 @@ public class ShapeCheck
      * @param propDef the property definition whose type is being checked
      * @param propResult the {@link ResultModel} resource to which to add errors
      */
-    @javax.annotation.CheckReturnValue
     public void checkValueType(Resource propDef,Resource propResult)
     {
         Resource valueType = OSLC.Any;
@@ -318,7 +316,6 @@ public class ShapeCheck
      * @param propDef the property definition whose type is being checked
      * @param propResult the {@link ResultModel} resource to which to add errors
      */
-    @javax.annotation.CheckReturnValue
     private void checkAllowedValues(Resource propDef, Resource propResult)
     {
         StmtIterator it = shapeModel.listStatements(propDef, OSLC.allowedValues, (RDFNode)null);

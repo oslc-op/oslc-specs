@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 
@@ -101,7 +97,7 @@ public class CrossCheck
         {
             if (!vocab.getValue())
             {
-                resultModel.getSummary().addProperty(Terms.unusedVocabulary, vocab.getKey());
+                resultModel.addSummaryIssue(Terms.unusedVocabulary, vocab.getKey());
             }
         }
 
@@ -109,7 +105,7 @@ public class CrossCheck
         {
             if (!term.getValue())
             {
-                resultModel.getSummary().addProperty(Terms.unusedTerm, term.getKey());
+                resultModel.addSummaryIssue(Terms.unusedTerm, term.getKey());
             }
         }
 
@@ -117,13 +113,13 @@ public class CrossCheck
         {
             if (!term.getValue())
             {
-                resultModel.getSummary().addProperty(Terms.undefinedTerm, term.getKey());
+                resultModel.addSummaryIssue(Terms.undefinedTerm, term.getKey());
             }
         }
     }
 
 
-    /**
+	/**
      * Print a list of all vocabulary terms defined.
      */
     public void printVocabTerms()

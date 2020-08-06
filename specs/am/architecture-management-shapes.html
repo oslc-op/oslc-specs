@@ -2,14 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>OSLC Architecture Management Version 3.0. Part 2: Vocabulary</title>
+    <title>OSLC Architecture Management Version 3.0. Part 2: Constraints</title>
     <meta
       name="description"
-      content="This specification defines a vocabulary and resource shapes for the OSLC Architecture Management domain."
+      content="Specifies the standard constraints on the OSLC Architecture Management domain vocabulary terms."
     />
 
     <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.15/builds/respec-oasis-common.min.js"
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.17/builds/respec-oasis-common.min.js"
       async
       class="remove"
     ></script>
@@ -28,7 +28,7 @@
         shortName: "oslc-am",
         specStatus: status,
         revision: revision.toString().padStart(2, "0"),
-        citationLabel: "OSLC-AM-3.0-Part2",
+        citationLabel: "OSLC-AM-3.0-Part3",
 
         license: "cc-by-4",
         additionalLicenses: [
@@ -38,13 +38,13 @@
           },
         ],
 
-        //publishDate: "2020-08-31",
+        publishDate: "2020-08-31",
         //previousPublishDate:  "2011-08-15",
         //previousMaturity:  "WD",
 
-        thisVersion: thisBase + "architecture-management-vocab.html",
+        thisVersion: thisBase + "architecture-management-shape.html",
         prevVersion: null,
-        latestVersion: oasisBase + "architecture-management-vocab.html",
+        latestVersion: oasisBase + "architecture-management-shape.html",
         latestSpecVersion: "https://open-services.net/spec/am/latest",
         edDraftURI: "https://open-services.net/spec/am/latest-draft",
 
@@ -55,11 +55,11 @@
             href: "architecture-management-spec.html",
           },
           {
-            title: "OSLC Architecture Management Version 3.0. Part 2: Vocabulary (this document)",
+            title: "OSLC Architecture Management Version 3.0. Part 2: Vocabulary",
             href: "architecture-management-vocab.html",
           },
           {
-            title: "OSLC Architecture Management Version 3.0. Part 3: Constraints",
+            title: "OSLC Architecture Management Version 3.0. Part 3: Constraints (this document)",
             href: "architecture-management-shapes.html",
           },
           {
@@ -112,8 +112,11 @@
         wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
         wgShortName: "oslc-op",
 
-        // Namespaces defined by this spec
-        namespaces: [{ href: "http://open-services.net/ns/core/am#", prefix: "oslc_am" }],
+        // Namespaces defined by this TC
+        namespaces: [
+          { href: "http://open-services.net/ns/core/am#", prefix: "oslc_am" },
+          { href: "http://jazz.net/ns/dm/linktypes#", prefix: "jazz_am" },
+        ],
 
         localBiblio: {
           OSLCAM2: {
@@ -255,7 +258,11 @@
   </head>
   <body>
     <section id="abstract">
-      This specification defines vocabulary terms for the OSLC Architecture Management domain.
+      <p>
+        OSLC Architecture Management Version 3.0. Part 2: Vocabulary defines the OSLC Architecture Management RDF
+        vocabulary terms and resources. This document specifies the standard constraints on those vocabulary terms using
+        OSLC ResourceShapes.
+      </p>
     </section>
 
     <section id="toc"></section>
@@ -265,14 +272,23 @@
       <h2>Introduction</h2>
 
       <p>
-        This specification defines vocabulary terms for OSLC Architecture Management resources. The intent is to
-        define resources needed to support common integration scenarios and not to provide a comprehensive definition of
-        an architecture resource. The resource formats are intended to define a high-level resource that can be
-        specialized by enterprise architecture, analysis or design artifacts. The approach to supporting these scenarios
-        is to delegate operations, as driven by service provider contributed user interfaces, as much as possible and
-        not require a service provider to expose its complete data model and application logic.
+        RDF vocabularies define the terms and resources for a domain of interest, life-cycle management in the case of
+        OSLC Architecture Management. These vocabularies are often specified in an open manner, without providing
+        information such as property domain and range assertions, cardinalities, etc. This helps keep the vocabulary
+        applicable for a wide range of uses and furthering integration with other vocabularies.
       </p>
 
+      <p>
+        However, it is often desirable to closed down a vocabulary with specific constraints to facilitate using the
+        vocabulary for a specific purpose. This document specifies the constraints for using the OSLC Architecture
+        Management vocabulary in OSLC. Different sets of constraints may be applied to a vocabulary in order to tailor
+        its use, without overly constraining the vocabulary for other usages.
+      </p>
+
+      <p>
+        These constraints apply to the core vocabulary defined in
+        <a href="architecture-management-vocab.html">OSLC Architecture Management Version 3.0. Part 2: Vocabulary</a>.
+      </p>
       <section id="terminology" class="informative">
         <h1>Terminology</h1>
         <p>
@@ -304,130 +320,77 @@
       </section>
     </section>
 
-    <section id="amVocab">
-      <h2>Architecture Management Vocabulary Terms</h2>
-      <p>Property value types that are not defined in the following sections, are defined in [[!OSLCCore3]].</p>
-
+    <section id="resourceConstraints">
+      <h2>Resource Constraints</h2>
       <p>
-        There are two OSLC AM defined resources: Resource and LinkType. OSLC AM defines a least common set of properties
-        for resources, however service implementations are free to extend this set of properties. Clients
-        <strong>MUST</strong> preserve properties it does not recognize when updating resources. AM Servers
-        <strong>MAY</strong> ignore properties that it does not recognize. Additional properties may come from existing
-        vocabularies (ie. Dublin Core, OWL). When additional properties do not come from a known vocabulary, it is
-        recommended that they exist in their own unique namespace, and providers <strong>SHOULD NOT</strong> reuse
-        namespaces defined in these specifications.
+        This section specifies the constraints for the Architecture Management resources. The resource properties are
+        not limited to the ones defined in this specification, AM Servers may provide additional properties. It is
+        recommended that any additional properties exist in their own unique namespace and not use the namespaces
+        defined in these specifications.
       </p>
 
-      <p>
-        All RDF/XML resources that include links with annotations MUST begin with an outer
-        <code>&lt;rdf:RDF&gt;</code> element. This outer XML element is required to support the ability to include
-        annotations on &#8216;link&#8217; properties with additional <code>&lt;rdf:Description&gt;</code> elements
-        <a href="http://www.w3.org/TR/REC-rdf-syntax/#section-Syntax-reifying">reifying statements</a> about the link.
-      </p>
+      <section id="resource">
+        <h3>Resource: Resource</h3>
+        <p>
+          An Architecture Management Resource (AMR) is a generic resource format that can be used to represent any type
+          of specific architecture resource such as a UML Class, Use Case, or Business Process Diagram.
+        </p>
 
-      <p>
-        Service implementations and clients MUST be prepared to accept any form of valid RDF/XML. For example the
-        following two resource forms are equivalent.
-      </p>
+        <div
+          title="Shapes for Architecture Management"
+          data-include="./architecture-management-shapes.ttl#ResourceShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
 
-      <pre class="example">
-&lt;rdf:RDF
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:oslc="http://open-services.net/ns/core#"
-   xmlns:oslc_am="http://open-services.net/ns/am#"
-   xmlns:dcterms="http://purl.org/dc/terms/"&gt;
+      <section id="linkType">
+        <h3>Resource: LinkType</h3>
+        <p>
+          A Link Type Resource (LTR) represents type of link that is or can be used when defining links from AM
+          resources. The type has an ID (expressed as a string), whose universally accepted semantics may be defined
+          elsewhere. This resource represents the definition as it is used by this service provider. This resource is
+          meant as a convenience for clients to get a list of known/registered link types with human readable labels and
+          definitions that can be used in client user interfaces when links are being created.
+        </p>
 
-    &lt;oslc_am:Resource rdf:about="https://acme.com/resources/res1"&gt;
-      &lt;dcterms:title&gt;Service Interface&lt;/dcterms:title&gt;
-      &lt;dcterms:identifier&gt;res1&lt;/dcterms:identifier&gt;
-      &lt;oslc:serviceProvider rdf:resource="http://open-services.net/ns/am#"/&gt;
-    &lt;/oslc_am:Resource&gt;
-&lt;/rdf:RDF&gt;
+        <p>
+          The resource defines the properties rdfs:label and rdfs:comments for the link type URI. The link type URI is
+          made type: <code>http://open-services.net/ns/am#LinkType</code> via an <code>rdf:type</code> property. The
+          remaining properties may be properties of the link type URI, or on a separate resource managed by the service
+          provider. In the case where the service provider owns the domain of the link type URI these can be the same,
+          and all properties can be on the same link type URI.
+        </p>
 
-is equivalent to
+        <p>
+          Links from AMR resources are managed in accordance with the
+          <a href="https://tools.oasis-open.org/version-control/svn/oslc-core/trunk/supporting-docs/link-guidance.html"
+            >OSLC Core Guidance on Links and Relationships</a
+          >. They appear as simple properties in the resource. Links MAY include inlined values for the target and MAY
+          include anchor properties on the link itself. AM Servers SHOULD support LinkType Resources for clients to get
+          a list of known and acceptable link properties.
+        </p>
 
-&lt;rdf:RDF
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:oslc="http://open-services.net/ns/core#"
-   xmlns:dcterms="http://purl.org/dc/terms/"&gt;
-
-    &lt;rdf:Description rdf:about="https://acme.com/resources/res1"&gt;
-      &lt;dcterms:title&gt;Service Interface&lt;/dcterms:title&gt;
-      &lt;dcterms:identifier&gt;res1&lt;/dcterms:identifier&gt;
-      &lt;rdf:type rdf:resource="http://open-services.net/ns/am#Resource" /&gt;
-      &lt;oslc:serviceProvider rdf:resource="http://open-services.net/ns/am#"/&gt;
-    &lt;/rdf:Description&gt;
-&lt;/rdf:RDF&gt;
-</pre
-      >
-
-      <p>
-        This specification defines a number of specific, commonly occurring vocabulary terms (OWL classes), properties
-        and values. Servers may define additional classes and provide additional properties as needed.
-      </p>
-
-      <div
-        title="RDF Vocabulary for OSLC Architecture Management Domain"
-        data-include="./architecture-management-vocab.ttl"
-        data-oninclude="vocabToSpec"
-        data-include-sync="true"
-        data-include-replace="true"
-        data-include-format="html"
-      ></div>
+        <div
+          title="Shapes for Architecture Management"
+          data-include="architecture-management-shapes.ttl#LinkTypeShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
     </section>
 
     <section id="conformance">
       <h2>Conformance</h2>
       <p>
-        Architecture Management servers MUST use the vocabulary terms defined here where required, and with the meanings
+        Architecture Management servers MUST follow the constraints defined here where required, and with the meanings
         defined here.
       </p>
-      <p>
-        Architecture Management servers MAY augment this vocabulary with additional classes, properties, and
-        individuals.
-      </p>
-    </section>
-
-    <section class="appendix informative" id="history">
-      <h2>Change History</h2>
-      <table border="1" cellspacing="0" cellpadding="0">
-        <tr>
-          <td
-            width="103"
-            valign="top"
-            style="width: 77.4pt; border: solid windowtext 1pt; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Revision</b>
-          </td>
-          <td
-            width="96"
-            valign="top"
-            style="width: 1in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Date</b>
-          </td>
-          <td
-            width="144"
-            valign="top"
-            style="width: 1.5in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Editor</b>
-          </td>
-          <td
-            width="295"
-            valign="top"
-            style="width: 221.4pt; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Changes Made</b>
-          </td>
-        </tr>
-        <tr>
-          <td>01</td>
-          <td>07/06/2016</td>
-          <td>Jim Amsden</td>
-          <td>Initial CSPRD01</td>
-        </tr>
-      </table>
+      <p>Architecture Management servers MAY provide additional constraints for specific purposes.</p>
     </section>
   </body>
 </html>
