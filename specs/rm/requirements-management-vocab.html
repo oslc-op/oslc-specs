@@ -52,11 +52,15 @@
             href: "requirements-management-vocab.html",
           },
           {
-            title: "OSLC Requirements Management Version 2.1. Part 3: Machine-readable RDF Vocabulary",
+            title: "OSLC Requirements Management Version 2.1. Part 3: Constraints",
+            href: "requirements-management-shapes.html",
+          },
+          {
+            title: "OSLC Requirements Management Version 2.1. Part 4: Machine-readable Vocabulary Terms",
             href: "Requirements-management-vocab.ttl",
           },
           {
-            title: "OSLC Requirements Management Version 2.1. Part 4: Machine-readable Resource Shapes",
+            title: "OSLC Requirements Management Version 2.1. Part 5: Machine-readable Constraints",
             href: "Requirements-management-shapes.ttl",
           },
         ],
@@ -152,7 +156,7 @@
   </head>
   <body>
     <section id="abstract">
-      <p>This specification defines a vocabulary and resource shapes for the OSLC Requirements Management domain.</p>
+      <p>This specification defines a vocabulary for the OSLC Requirements Management domain.</p>
     </section>
 
     <section id="toc"></section>
@@ -162,7 +166,7 @@
       <h2>Introduction</h2>
 
       <p>
-        This specification defines a vocabulary and resource shapes for the OSLC Requirements Management resources. The
+        This specification defines a vocabulary for the OSLC Requirements Management resources. The
         intent is to define resources needed to support common integration scenarios and not to provide a comprehensive
         definition of a Requirement. The resource formats may not match exactly the native models supported by
         requirement management service providers, but are intended to be compatible with them. The approach to
@@ -223,203 +227,6 @@
         data-include-replace="true"
         data-include-format="html"
       ></div>
-    </section>
-
-    <section id="resourceDefinitions">
-      <h2>Requirements Management Resource Constraints</h2>
-
-      <section id="requirement">
-        <h3>Resource: Requirement</h3>
-        <p>
-          The constraints on the Requirement resource properties are defined in the tables below. Requirement resource
-          properties are not limited to the ones defined in this specification. Service providers may provide additional
-          properties. It is strongly recommended that any additional properties be defined in XML namespaces distinct
-          from those defined by OSLC in these specifications. Requirement creation through a Creation Factory resource
-          in the Service Description is REQUIRED by this specification.
-        </p>
-        <p>
-          Any <strong>resource</strong> asserted to be of <code>rdf:type</code>
-          <code>http://open-services.net/ns/rm#Requirement</code> MUST conform to the constraints and meaning of
-          properties defined below. Notice that partial representations of a requirement resource are admitted by this
-          specification (for example, in query results, or where <code>oslc.properties</code> has been used), and such
-          partial representations will in general not conform to these constraints.
-        </p>
-
-        <div
-          title="Shape for oslc_rm:Requirement"
-          data-include="./requirements-management-shapes.ttl#Requirement"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="requirementCollection">
-        <h3>Resource: RequirementCollection</h3>
-        <p>
-          The constraints on the RequirementCollection vocaubluary resource properties are defined in the tables below.
-          RequirementCollection resource properties are not limited to the ones defined in this specification, service
-          providers may provide additional properties. It is strongly recommended that any additional properties be
-          defined in XML namespaces distinct from those defined by OSLC in these specifications. RequirementCollection
-          creation through a Creation Factory resource in the Service Description is OPTIONAL in this specification.
-        </p>
-        <p>
-          Any <strong>resource</strong> asserted to be of <code>rdf:type</code>
-          <code>http://open-services.net/ns/rm#RequirementCollection</code> MUST conform to the constraints and meaning
-          of properties defined below. Notice that partial representations of a requirement collection resource are
-          admitted by this specification (for example, in query results, or where <code>oslc.properties</code> has been
-          used), and such partial representations will in general not conform to these constraints.
-        </p>
-
-        <div
-          title="Shape for oslc_rm:RequirementCollection"
-          data-include="./requirements-management-shapes.ttl#RequirementCollection"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-    </section>
-
-    <section id="relationshipProperties" class="informative">
-      <h2>Relationship Properties</h2>
-      <p>
-        For compatibility with OSLC Core 2.0 [[!OSLCCore2]], RM servers MAY accept relationship properties. This is
-        however no longer recommended practice, since the necessary reification of relationship can have entailment and
-        inferencing issues. OSLC Core 3.0 Link Guidance [[!OSLCCore3LinkGuidance]] details an alternative approach,
-        where a separate resource is created to represent the relationship and its properties.
-      </p>
-
-      <p>The following relationship properties are defined by this specification:</p>
-
-      <table cellspacing="0" cellpadding="0" rules="all" border="1">
-        <tr>
-          <th bgcolor="#687684" valign="top"><font color="#ffffff">Prefixed Name</font></th>
-          <th bgcolor="#687684" valign="top"><font color="#ffffff">Occurs</font></th>
-          <th bgcolor="#687684" valign="top"><font color="#ffffff">Read-only</font></th>
-          <th bgcolor="#687684" valign="top"><font color="#ffffff">Value-type</font></th>
-          <th bgcolor="#687684" valign="top"><font color="#ffffff">Representation</font></th>
-          <th bgcolor="#687684" valign="top"><font color="#ffffff">Range</font></th>
-          <th bgcolor="#687684" colspan="2" valign="top"><font color="#ffffff">Description</font></th>
-        </tr>
-        <tr>
-          <td bgcolor="#edf4f9" valign="top"><code>dcterms:title</code></td>
-          <td bgcolor="#edf4f9" valign="top">zero-or-one</td>
-          <td bgcolor="#edf4f9" valign="top">unspecified</td>
-          <td bgcolor="#edf4f9" valign="top">XMLLiteral</td>
-          <td bgcolor="#edf4f9" valign="top">n/a</td>
-          <td bgcolor="#edf4f9" valign="top">n/a</td>
-          <td bgcolor="#edf4f9" colspan="2" valign="top">
-            Title (reference: Dublin Core) of the link represented as rich text in XHTML content. SHOULD include only
-            content that is valid inside an XHTML &lt;span&gt; element.
-          </td>
-        </tr>
-        <tr>
-          <td bgcolor="#ffffff" valign="top"><code>dcterms:creator</code></td>
-          <td bgcolor="#ffffff" valign="top">zero-or-many</td>
-          <td bgcolor="#ffffff" valign="top">unspecified</td>
-          <td bgcolor="#ffffff" valign="top">Resource or Local Resource</td>
-          <td bgcolor="#ffffff" valign="top">Either Reference or Inline</td>
-          <td bgcolor="#ffffff" valign="top"><code>any</code></td>
-          <td bgcolor="#ffffff" colspan="2" valign="top">
-            Creator(s) of resource (reference: Dublin Core). It is likely that the target resource will be a
-            <code>foaf:Person</code> but that is not necessarily the case.
-          </td>
-        </tr>
-        <tr>
-          <td bgcolor="#edf4f9" valign="top"><code>dcterms:contributor</code></td>
-          <td bgcolor="#edf4f9" valign="top">zero-or-many</td>
-          <td bgcolor="#edf4f9" valign="top">unspecified</td>
-          <td bgcolor="#edf4f9" valign="top">Resource or Local Resource</td>
-          <td bgcolor="#edf4f9" valign="top">Either Reference or Inline</td>
-          <td bgcolor="#edf4f9" valign="top"><code>any</code></td>
-          <td bgcolor="#edf4f9" colspan="2" valign="top">
-            Creator(s) of resource (reference: Dublin Core). It is likely that the target resource will be a
-            <code>foaf:Person</code> but that is not necessarily the case.
-          </td>
-        </tr>
-        <tr>
-          <td bgcolor="#ffffff" valign="top"><code>dcterms:created</code></td>
-          <td bgcolor="#ffffff" valign="top">zero-or-one</td>
-          <td bgcolor="#ffffff" valign="top">True</td>
-          <td bgcolor="#ffffff" valign="top">DateTime</td>
-          <td bgcolor="#ffffff" valign="top">n/a</td>
-          <td bgcolor="#ffffff" valign="top">n/a</td>
-          <td bgcolor="#ffffff" colspan="2" valign="top">Timestamp of link creation (reference: Dublin Core).</td>
-        </tr>
-        <tr>
-          <td bgcolor="#edf4f9" valign="top"><code>dcterms:modified</code></td>
-          <td bgcolor="#edf4f9" valign="top">zero-or-one</td>
-          <td bgcolor="#edf4f9" valign="top">True</td>
-          <td bgcolor="#edf4f9" valign="top">DateTime</td>
-          <td bgcolor="#edf4f9" valign="top">n/a</td>
-          <td bgcolor="#edf4f9" valign="top">n/a</td>
-          <td bgcolor="#edf4f9" colspan="2" valign="top">
-            Timestamp last latest link modification (reference: Dublin Core).
-          </td>
-        </tr>
-      </table>
-
-      <section id="relationshipLabels" class="informative">
-        <h3>Relationship labels</h3>
-        <p>
-          When an RM relationship property is to be presented in a user interface, it may be helpful to provide an
-          informative and useful textual label for that relationship instance. (This in addition to the relationship
-          property URI and the object resource URI, which are also candidates for presentation to a user.) To this end,
-          OSLC Servers MAY suppport a <code>dcterms:title</code> link property in RM resource representations where a
-          relationship property is permitted, using the anchor approach outlined in the OSLC Core Links Guidance.
-        </p>
-
-        <p>
-          Servers and Clients should be aware that the <code>dcterms:title</code> of a link is unrelated to the
-          dcterms:title of the object resource. Indeed, links may carry other properties with names in common to the
-          object of the link, but there is no specified relationship between these property values.
-        </p>
-      </section>
-    </section>
-
-    <section class="appendix informative" id="history">
-      <h2>Change History</h2>
-      <table border="1" cellspacing="0" cellpadding="0">
-        <tr>
-          <td
-            width="103"
-            valign="top"
-            style="width: 77.4pt; border: solid windowtext 1pt; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Revision</b>
-          </td>
-          <td
-            width="96"
-            valign="top"
-            style="width: 1in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Date</b>
-          </td>
-          <td
-            width="144"
-            valign="top"
-            style="width: 1.5in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Editor</b>
-          </td>
-          <td
-            width="295"
-            valign="top"
-            style="width: 221.4pt; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Changes Made</b>
-          </td>
-        </tr>
-        <tr>
-          <td>01</td>
-          <td>2018-05-22</td>
-          <td>Jad El-khoury</td>
-          <td>Initial Committee Specification Draft migrated from open-services.net</td>
-        </tr>
-      </table>
     </section>
   </body>
 </html>
