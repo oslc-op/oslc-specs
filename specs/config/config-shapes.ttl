@@ -56,6 +56,14 @@ that is, it can only be a root of a configuration hierarchy
 A configuration with no value for this predicate accepts no contributions -
 that is, it can only be a leaf in a configuration hierarchy."""^^rdf:XMLLiteral .
 
+:archived
+    a                        oslc:Property ;
+    oslc:name                "archived" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:archived ;
+    oslc:valueType           xsd:boolean ;
+    dcterms:description      "Indicates whether the subject has been marked as archived, no longer an active resource."^^rdf:XMLLiteral .
+
 :branch
     a                        oslc:Property ;
     oslc:name                "branch" ;
@@ -117,7 +125,7 @@ The link target is usually a `foaf:Person` or `foaf:Agent`, but could be any typ
     oslc:propertyDefinition  dcterms:description ;
     oslc:occurs              oslc:Zero-or-one ;
     oslc:valueType           rdf:XMLLiteral ;
-    oslc:readOnly			 false ;
+    oslc:readOnly             false ;
     dcterms:description      """Descriptive text about the resource, represented as rich text in XHTML content."""^^rdf:XMLLiteral .
 
 :identifier
@@ -208,7 +216,7 @@ Each occurrence of a `dcterms:subject` property denotes an additional tag for th
     oslc:propertyDefinition  dcterms:title ;
     oslc:occurs              oslc:Zero-or-one ;
     oslc:valueType           rdf:XMLLiteral ;
-    oslc:readOnly			 false ;
+    oslc:readOnly             false ;
     dcterms:description      "Title of the resource, represented as rich text in XHTML content."^^rdf:XMLLiteral .
 
 :wasDerivedFrom
@@ -284,6 +292,7 @@ If it is not read-only, {{the container MAY have `oslc:resourceShape` properties
 
         # Properties shared with other shapes
 
+        :archived ,
         :contributor ,
         :created ,
         :creator ,
@@ -491,6 +500,7 @@ The title of a baseline SHOULD be modifiable."""^^rdf:XMLLiteral
         # Properties shared with other shapes
 
         :acceptedBy ,
+        :archived ,
         :component ,
         :created ,
         :creator ,
@@ -580,17 +590,17 @@ servers MAY treat such multiple occurrences of selections as an error.
 Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
         ] ,
         [
-			#contribution
-		    a                        oslc:Property ;
-		    oslc:name                "contribution" ;
-		    oslc:propertyDefinition  oslc_config:contribution ;
-		    oslc:occurs              oslc:Zero-or-many ;
-		    oslc:readOnly			 false ;
-		    oslc:representation      oslc:Inline ;
-		    oslc:valueType           oslc:AnyResource ;
-		    oslc:valueShape          :ContributionShape ;
-		    oslc:range               oslc_config:Contribution ;
-		    dcterms:description      """A contribution to this configuration.
+            #contribution
+            a                        oslc:Property ;
+            oslc:name                "contribution" ;
+            oslc:propertyDefinition  oslc_config:contribution ;
+            oslc:occurs              oslc:Zero-or-many ;
+            oslc:readOnly             false ;
+            oslc:representation      oslc:Inline ;
+            oslc:valueType           oslc:AnyResource ;
+            oslc:valueShape          :ContributionShape ;
+            oslc:range               oslc_config:Contribution ;
+            dcterms:description      """A contribution to this configuration.
 The set of resource versions identified by this configuration is the union of the set determined by the
 `oslc_config:selections` resources and each of the sets of resource versions identified by the contributed configurations.
 A user can request an update to a configuration to change the set of contributions;
@@ -599,12 +609,13 @@ The target MUST be of type `oslc_config:Contribution`.
 Contribution resources MUST be returned inline with the configuration resource.
 In the set of Contribution resources for a single parent configuration,
 there MUST be only one Contribution resource for a given contributed configuration."""^^rdf:XMLLiteral
-		] ,
+        ] ,
 
         # Properties shared with other shapes
 
         :acceptedBy ,
         :accepts ,
+        :archived ,
         :branch ,
         :component ,
         :contributor ,
@@ -794,22 +805,23 @@ Servers MAY treat this property as read-only."""^^rdf:XMLLiteral
             oslc:range               oslc_config:Configuration ;
             dcterms:description      "A reference to a configuration modified or overridden by this change set configuration."^^rdf:XMLLiteral
         ] ,
-		[
-			#contribution
-		    a                        oslc:Property ;
-		    oslc:name                "contribution" ;
-		    oslc:propertyDefinition  oslc_config:contribution ;
-		    oslc:occurs              oslc:Zero-or-many ;
-		    oslc:representation      oslc:Inline ;
-		    oslc:valueType           oslc:AnyResource ;
-		    oslc:valueShape          :ContributionShape ;
-		    oslc:range               oslc_config:Contribution ;
-		    dcterms:description      """A contribution to this change set configuration.
+        [
+            #contribution
+            a                        oslc:Property ;
+            oslc:name                "contribution" ;
+            oslc:propertyDefinition  oslc_config:contribution ;
+            oslc:occurs              oslc:Zero-or-many ;
+            oslc:representation      oslc:Inline ;
+            oslc:valueType           oslc:AnyResource ;
+            oslc:valueShape          :ContributionShape ;
+            oslc:range               oslc_config:Contribution ;
+            dcterms:description      """A contribution to this change set configuration.
 Servers MAY support contributions to change sets, and if so, this property behaves just as that for streams."""^^rdf:XMLLiteral
-		] ,
+        ] ,
 
         :acceptedBy ,
         :accepts ,
+        :archived ,
         :branch ,
         :component ,
         :contributor ,
@@ -910,7 +922,7 @@ servers MAY treat occurrences of potentially conflicting selections as an error.
             oslc:occurs              oslc:Zero-or-one ;
             oslc:readOnly            true ;
             oslc:valueType           xsd:dateTime ;
-    		dcterms:description      """Timestamp of the last change of status.
+            dcterms:description      """Timestamp of the last change of status.
 If this property is missing, the time of creation can be taken to be the same as the last change of status."""^^rdf:XMLLiteral
         ] ,
         [
@@ -1138,6 +1150,7 @@ The subject of each instance of this property MUST be the concept resource URI; 
 
         # Properties with the concept resource URI as the subject, and definitions shared with other shapes
 
+        :archived ,
         :contributor ,
         :created ,
         :creator ,
