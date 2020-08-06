@@ -1,16 +1,14 @@
 package net.open_services.scheck.shapechecker;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.RiotNotFoundException;
 
+import net.open_services.scheck.annotations.IssueSeverity;
 import net.open_services.scheck.util.GlobExpander;
 
 
@@ -21,12 +19,16 @@ import net.open_services.scheck.util.GlobExpander;
  */
 public class Main
 {
-    private List<URI>  vocabularies = new ArrayList<>();
-    private List<URI>  shapes       = new ArrayList<>();
-    private boolean    debug        = false;
-    private boolean    verbose      = false;
-    private boolean    crossCheck   = true;
-    private CrossCheck crossChecker;
+	private List<URI>		vocabularies		= new ArrayList<>();
+	private List<URI>		shapes				= new ArrayList<>();
+	private Set<Pattern>	skipURIPatterns		= new HashSet<>();
+	private int				debug				= 0;
+	private boolean			verbose				= false;
+	private boolean			crossCheck			= true;
+	private boolean			checkConstraints	= false;
+	private IssueSeverity	threshold			= IssueSeverity.Info;
+	private CrossCheck		crossChecker;
+
 
     /**
      * Main entry point to OSLC Shape and Vocabulary checker.
@@ -36,9 +38,13 @@ public class Main
      * <li>Each -s/--shape argument introduces a shape, by local path or by URI</li>
      * <li>Each -q/--quiet argument names an issue to be ignored</li>
      * <li>Each -x/--exclude argument specifies a regular expression for URIs not to be read</li>
+     * <li>-t/--threshold this defines a threshold for reporting issues;
+     *    issues with a lower severity will not be reported.
+     *    The default is {@code info}, so by default all issues are reported.</li>
+     * <li>-C/--constraints require extra metadata on vocabularies and shapes for OSLC Specifications</li>
      * <li>-N/--nocrosscheck turns off the cross-checking of vocabularies and shapes</li>
      * <li>-V/--verbose turns out more progress information</li>
-     * <li>-D/--debug turns on debugging output</li>
+     * <li>-D/--debug turns on debugging output; multiple -D flags increase the debug level</li>
      * </ul>
      * The arguments may be repeated to check multiple vocabulary and shape documents.
      * The vocabulary and shape arguments can use shell-style globs (*.ttl, etc.),
@@ -52,22 +58,26 @@ public class Main
 
     private void run(String... args)
     {
-        ResultModel resultModel = new ResultModel(args);
-        HttpHandler httpHandler = new HttpHandler();
+        ResultModel resultModel   = new ResultModel(args);
+        boolean		failedToParse = false;
 
-        if (!checkUsage(args,resultModel,httpHandler))
+        if (!checkUsage(args,resultModel))
         {
             System.err.println("Usage: "+this.getClass().getName()
                 + " [-v|--vocab vocabFileGlob|vocabURI ...]"
                 + " [-s|--shape shapeFileGlob|shapeURI ...]"
                 + " [-q|--quiet suppressedIssue ...]"
                 + " [-x|--exclude excludeURIPattern ...]"
+                + " [-t|--threshold severityThreshold]"
+                + " [-C|--constraints]"
                 + " [-N|--nocrosscheck]"
                 + " [-V|--verbose]"
                 + " [-D|--debug]"
                 );
             System.exit(1);
         }
+
+        HttpHandler httpHandler = new HttpHandler(debug, skipURIPatterns);
 
         // TODO: there's a fundamental problem here in the way the tables are built for the cross-check.
         // Instantiation of VocabularyCheck loads a vocabulary document into memory (good), and
@@ -90,16 +100,18 @@ public class Main
                 {
                     System.out.println("Parsing "+vocab);
                 }
-                new VocabularyCheck(vocab, httpHandler, resultModel).checkVocabularies();
+                new VocabularyCheck(vocab, httpHandler, resultModel, checkConstraints).checkVocabularies();
             }
             catch (RiotNotFoundException e)
             {
                 System.err.println("Cannot find vocabulary document "+vocab);
+                failedToParse = true;
             }
             catch (RiotException e)
             {
                 System.err.println("Cannot parse vocabulary document "+vocab);
                 e.printStackTrace();
+                failedToParse = true;
             }
         }
 
@@ -112,21 +124,23 @@ public class Main
                 {
                     System.out.println("Parsing "+shape);
                 }
-                new ShapesDocCheck(shape, httpHandler, resultModel).checkShapes();
+                new ShapesDocCheck(shape, httpHandler, resultModel, checkConstraints).checkShapes();
             }
             catch (RiotNotFoundException e)
             {
                 System.err.println("Cannot find shape document "+shape);
+                failedToParse = true;
             }
             catch (RiotException e)
             {
                 System.err.println("Cannot parse shape document "+shape);
                 e.printStackTrace();
+                failedToParse = true;
             }
         }
 
         // Check that terms and defined and used
-        if (!vocabularies.isEmpty() && (verbose || crossCheck))
+        if ((verbose || crossCheck) && !vocabularies.isEmpty())
         {
             crossChecker = new CrossCheck(resultModel);
             crossChecker.buildMaps();
@@ -136,16 +150,16 @@ public class Main
             }
         }
 
-        if (debug && verbose)
+        if (debug > 2)
         {
             System.err.println("\nResult model before summarizing:");
             Models.write(resultModel.getModel(), System.err);
         }
 
         // Scan the result model, adding issue counts
-        int errors = resultModel.summarizeIssues();
+        int errors = resultModel.summarizeIssues(debug);
 
-        if (debug && verbose)
+        if (debug > 2)
         {
             System.err.println("\nResult model after summarizing:");
             Models.write(resultModel.getModel(), System.err);
@@ -157,7 +171,7 @@ public class Main
         {
             System.out.println();
         }
-        new ResultModelPrinter(resultModel,System.out,crossCheck).print();
+        new ResultModelPrinter(resultModel,System.out,crossCheck, threshold).print();
 
         // Print list of vocabulary terms if requested
         if (verbose && crossChecker != null)
@@ -165,7 +179,7 @@ public class Main
             crossChecker.printVocabTerms();
         }
 
-        if (errors > 0)
+        if (failedToParse || errors > 0)
         {
             System.exit(1);
         }
@@ -173,7 +187,7 @@ public class Main
 
 
     @javax.annotation.CheckReturnValue
-    private boolean checkUsage(String[] args, ResultModel resultModel, HttpHandler httpHandler)
+    private boolean checkUsage(String[] args, ResultModel resultModel)
     {
         int     index  = 0;
         boolean passed = true;
@@ -185,9 +199,16 @@ public class Main
                 if (args[index].equals("-D") || args[index].equals("--debug"))
                 {
                     index++;
-                    debug = true;
-                    httpHandler.setDebug(debug);
-                    System.err.println("Arguments: "+String.join(" ",args));
+                    debug++;
+                    if (debug==1)
+                	{
+                    	System.err.println("Arguments: "+String.join(" ",args));
+                	}
+                }
+                else if (args[index].equals("-C") || args[index].equals("--constraints"))
+                {
+                    index++;
+                    checkConstraints = true;
                 }
                 else if (args[index].equals("-V") || args[index].equals("--verbose"))
                 {
@@ -203,15 +224,29 @@ public class Main
                 {
                     return false;
                 }
+                else if (args[index].equals("-t") || args[index].equals("--threshold"))
+                {
+                    index++;
+                    String arg = args[index++];
+                    try
+					{
+						threshold = IssueSeverity.findSeverity(arg);
+					}
+					catch (IllegalArgumentException e)
+					{
+						System.err.println("Invalid severity threshold "+arg);
+	                    return false;
+					}
+                }
                 else if (args[index].equals("-v") || args[index].equals("--vocab"))
                 {
                     index++;
-                    vocabularies.addAll(checkFileOrURI(args[index++]));
+                    vocabularies.addAll(GlobExpander.checkFileOrURI(args[index++]));
                 }
                 else if (args[index].equals("-s") || args[index].equals("--shape"))
                 {
                     index++;
-                    shapes.addAll(checkFileOrURI(args[index++]));
+                    shapes.addAll(GlobExpander.checkFileOrURI(args[index++]));
                 }
                 else if (args[index].equals("-q") || args[index].equals("--quiet"))
                 {
@@ -221,7 +256,7 @@ public class Main
                 else if (args[index].equals("-x") || args[index].equals("--exclude"))
                 {
                     index++;
-                    httpHandler.excludeURIPattern(args[index++]);
+                    skipURIPatterns.add(Pattern.compile(args[index++]));
                 }
                 else
                 {
@@ -247,35 +282,5 @@ public class Main
             return false;
         }
         return passed;
-    }
-
-
-    /**
-     * Make a list of URIs for an argument that is either a single URI string,
-     * or a file path that contains shell-style globs to be expanded.
-     * @param argVal an argument that is either a URI string or a file path with globs
-     * @return a list of URIs that are formed from the provided string
-     * @throws URISyntaxException if the URI is not valid
-     */
-    @javax.annotation.CheckReturnValue
-    public List<URI> checkFileOrURI(String argVal) throws URISyntaxException
-    {
-        if (argVal.startsWith("http://") || argVal.startsWith("https://"))
-        {
-            return Collections.singletonList(new URI(argVal));
-        }
-        else
-        {
-           List<URI> uris = new ArrayList<>();
-           for (String path : GlobExpander.expand(argVal))
-           {
-               uris.add(new File(path).toURI());
-           }
-           if (uris.isEmpty())
-           {
-               System.err.println("Warning: nothing matches "+argVal);
-           }
-           return uris;
-        }
     }
 }

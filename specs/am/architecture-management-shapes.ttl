@@ -13,8 +13,6 @@
 # limitations under the License.
 
 @prefix dcterms:    <http://purl.org/dc/terms/> .
-@prefix foaf:       <http://xmlns.com/foaf/0.1/> .
-@prefix ldp:        <http://www.w3.org/ns/ldp#> .
 @prefix oslc:       <http://open-services.net/ns/core#> .
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -22,60 +20,72 @@
 
 @prefix oslc_am:    <http://open-services.net/ns/am#> .
 @prefix jazz_am:    <http://jazz.net/ns/dm/linktypes#> .
-
-@base <http://open-services.net/ns/core/shapes/3.0/architecture-management-shape.ttl> .
+@prefix : <http://open-services.net/ns/am/shapes/3.0#> . 
 
 # OSLC Architecutre Management Resource Shapes
 
-<#Resource>
+:
+  a oslc:ResourceShapeConstraints ;
+  dcterms:title "OSLC Architecture Management (AM) Constraints" ;
+  rdfs:label "OSLC Architecture Management (AM) Constraints" ;
+  dcterms:description "All vocabulary URIs defined in the OSLC Architecture Management (AM) namespace."^^rdf:XMLLiteral ;
+  dcterms:publisher <https://open-services.net/about/> ;
+  #dcterms:issued "2020-xx-xx"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  dcterms:license <http://www.apache.org/licenses/LICENSE-2.0> ;
+  dcterms:source <https://github.com/oslc-op/oslc-specs/blob/master/specs/am/architecture-management-shapes.ttl> ;
+  dcterms:isPartOf <https://oslc-op.github.io/oslc-specs/specs/am/architecture-management-spec.html> ;
+  dcterms:hasVersion "WD" .
+
+
+:ResourceShape
     a                       oslc:ResourceShape ;
     oslc:describes          oslc_am:Resource ;
     dcterms:title           "Resource" ;
     dcterms:description     """A generic resource format that can be used to represent any type of specific architecture
 resource like a UML Class, Use Case, or Business Process Diagram."""^^rdf:XMLLiteral ;
     oslc:property
-        <#type>,
-        <#dctype>,
-        <#identifier>,
-        <#title>,
-        <#shortTitle>,
-        <#description>,
-        <#source>,
-        <#creator>,
-        <#contributor>,
-        <#created>,
-        <#modified>,
-        <#serviceProvider>,
-        <#instanceShape>,
+        :type,
+        :dctype,
+        :identifier,
+        :title,
+        :shortTitle,
+        :description,
+        :source,
+        :creator,
+        :contributor,
+        :created,
+        :modified,
+        :serviceProvider,
+        :instanceShape,
 
-        # Common link types 
-        <#derives>,
-        <#elaborates>,
-        <#refine>,
-        <#external>,
-        <#satisfy>,
-        <#trace>
+        # Common link types
+        :derives,
+        :elaborates,
+        :refine,
+        :external,
+        :satisfy,
+        :trace
     .
 
-<#LinkType>
+:LinkTypeShape
     a                       oslc:ResourceShape ;
     oslc:describes          oslc_am:LinkType ;
     dcterms:title           "LinkType" ;
     dcterms:description     """Represents type of link that is or can be used when defining links from AM resources."""^^rdf:XMLLiteral ;
     oslc:property
-        <#identifier>,
-        <#label>,
-        <#comment>,
-        <#creator>,
-        <#contributor>,
-        <#created>,
-        <#modified>,
-        <#serviceProvider>,
-        <#instanceShape>.
+        :identifier,
+        :label,
+        :comment,
+        :creator,
+        :contributor,
+        :created,
+        :modified,
+        :serviceProvider,
+        :instanceShape.
 
 
 
-<#contributor>  a                 oslc:Property ;
+:contributor  a                 oslc:Property ;
         oslc:name                "contributor" ;
         oslc:range               oslc:Any ;
         oslc:occurs              oslc:Zero-or-many ;
@@ -84,7 +94,7 @@ resource like a UML Class, Use Case, or Business Process Diagram."""^^rdf:XMLLit
         oslc:representation      oslc:Either ;
         dcterms:description      "Contributor or contributors to the resource. It is likely that the target resource will be a foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
 
-<#creator>  a                 oslc:Property ;
+:creator  a                 oslc:Property ;
         oslc:name                "creator" ;
         oslc:range               oslc:Any ;
         oslc:occurs              oslc:Zero-or-many ;
@@ -93,7 +103,7 @@ resource like a UML Class, Use Case, or Business Process Diagram."""^^rdf:XMLLit
         oslc:representation      oslc:Either ;
         dcterms:description      "Creator or creators of the resource. It is likely that the target resource will be a foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
 
-<#created>  a                 oslc:Property ;
+:created  a                 oslc:Property ;
         oslc:name                "created" ;
         oslc:occurs              oslc:Zero-or-one ;
         oslc:propertyDefinition  dcterms:created ;
@@ -101,14 +111,14 @@ resource like a UML Class, Use Case, or Business Process Diagram."""^^rdf:XMLLit
         dcterms:description      "Timestamp of resource creation."^^rdf:XMLLiteral .
 
 # Dublin Core Properties
-<#description> a oslc:Property ;
+:description a oslc:Property ;
     oslc:name "description" ;
     oslc:propertyDefinition dcterms:description ;
     oslc:occurs oslc:Zero-or-one;
     dcterms:description "Descriptive text about resource represented as rich text in XHTML content."^^rdf:XMLLiteral ;
     oslc:valueType rdf:XMLLiteral .
 
-<#identifier> a oslc:Property ;
+:identifier a oslc:Property ;
     oslc:name "identifier" ;
     oslc:propertyDefinition dcterms:identifier ;
     oslc:occurs oslc:Exactly-one;
@@ -116,21 +126,21 @@ resource like a UML Class, Use Case, or Business Process Diagram."""^^rdf:XMLLit
 service provider when a resource is created. Not typically intended for end-user display."""^^rdf:XMLLiteral ;
     oslc:valueType xsd:string .
 
-<#dctype> a oslc:Property ;
+:dctype a oslc:Property ;
     oslc:name "dctype" ;
     oslc:propertyDefinition dcterms:type ;
     oslc:occurs oslc:Zero-or-many;
     dcterms:description """A short string representation for the type, for example ‘Car’."""^^rdf:XMLLiteral ;
     oslc:valueType xsd:string .
 
-<#modified> a oslc:Property ;
+:modified a oslc:Property ;
     oslc:name "modified" ;
     oslc:propertyDefinition dcterms:modified   ;
     oslc:occurs oslc:Zero-or-one;
     dcterms:description "Timestamp of latest resource modification."^^rdf:XMLLiteral ;
     oslc:valueType xsd:dateTime .
 
- <#source> a oslc:Property ;
+ :source a oslc:Property ;
     oslc:name "source" ;
     oslc:occurs oslc:Zero-or-one;
     dcterms:description "The resource URI a client can perform a get on to obtain the original non-OSLC AM formatted resource that was used to create this resource. The source resource is usually a binary or proprietary format that the service provider can consume and convert into an OSLC AM format. The service may use content negotiation with the Accept header to obtain the desired content type."^^rdf:XMLLiteral ;
@@ -139,14 +149,14 @@ service provider when a resource is created. Not typically intended for end-user
     oslc:representation      oslc:Reference ;
     oslc:valueType           oslc:Resource .
 
-<#title> a oslc:Property ;
+:title a oslc:Property ;
     oslc:name "title" ;
     oslc:propertyDefinition dcterms:title   ;
     oslc:occurs oslc:Exactly-one;
     dcterms:description "Title of the resource represented as rich text in XHTML content."^^rdf:XMLLiteral ;
     oslc:valueType rdf:XMLLiteral .
 
-<#shortTitle>  a                 oslc:Property ;
+:shortTitle  a                 oslc:Property ;
         oslc:name                "shortTitle" ;
         oslc:occurs              oslc:Zero-or-one ;
         oslc:propertyDefinition  oslc:shortTitle ;
@@ -155,7 +165,7 @@ service provider when a resource is created. Not typically intended for end-user
         dcterms:title            "Short title" .
 
 # RDF Properties
-<#type> a oslc:Property ;
+:type a oslc:Property ;
     oslc:name "type" ;
     oslc:range rdfs:Class ;
     oslc:propertyDefinition rdf:type  ;
@@ -165,7 +175,7 @@ service provider when a resource is created. Not typically intended for end-user
     oslc:representation oslc:Reference .
 
 #OSLC Properties
-<#serviceProvider> a oslc:Property ;
+:serviceProvider a oslc:Property ;
     oslc:name "serviceProvider" ;
     oslc:propertyDefinition oslc:serviceProvider  ;
     oslc:range oslc:ServiceProvider ;
@@ -176,7 +186,7 @@ specifications, which could result in multiple values for this property."""^^rdf
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
 
-<#instanceShape> a oslc:Property ;
+:instanceShape a oslc:Property ;
     oslc:name "instanceShape" ;
     oslc:propertyDefinition oslc:instanceShape  ;
     oslc:range oslc:ResourceShape ;
@@ -189,7 +199,7 @@ state of the resource and other factors and thus should not be cached."""^^rdf:X
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
 
-<#label> a oslc:Property ;
+:label a oslc:Property ;
     oslc:name "label" ;
     oslc:propertyDefinition rdfs:label ;
     oslc:occurs oslc:Exactly-one;
@@ -197,7 +207,7 @@ state of the resource and other factors and thus should not be cached."""^^rdf:X
 in drop down lists and in tables where a link of this type is involved."""^^rdf:XMLLiteral ;
     oslc:valueType xsd:string .
 
-<#comment> a oslc:Property ;
+:comment a oslc:Property ;
     oslc:name "comment" ;
     oslc:propertyDefinition rdfs:comment ;
     oslc:occurs oslc:Zero-or-one;
@@ -209,18 +219,18 @@ type that could be used in hover help or other areas of the UI where the user wa
 
 # Standard link type properties that are in common use
 
-<#derives> a oslc:Property ;
+:derives a oslc:Property ;
     oslc:name "derives" ;
     oslc:propertyDefinition jazz_am:derives  ;
     oslc:range oslc:Any ;
     oslc:occurs oslc:Zero-or-many;
-    dcterms:description """The resource that derives from another resource originated from or is 
-significantly influenced by the referenced resource. For example a model element derives from a 
+    dcterms:description """The resource that derives from another resource originated from or is
+significantly influenced by the referenced resource. For example a model element derives from a
 requirement."""^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
 
-<#elaborates> a oslc:Property ;
+:elaborates a oslc:Property ;
     oslc:name "elaborates" ;
     oslc:propertyDefinition jazz_am:elaborates  ;
     oslc:range oslc:Any ;
@@ -229,17 +239,17 @@ requirement."""^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
 
-<#refine> a oslc:Property ;
+:refine a oslc:Property ;
     oslc:name "refine" ;
     oslc:propertyDefinition jazz_am:refine  ;
     oslc:range oslc:Any ;
     oslc:occurs oslc:Zero-or-many;
-    dcterms:description """TThe target is a refinement of the source. (e.g. a use case scenario 
+    dcterms:description """TThe target is a refinement of the source. (e.g. a use case scenario
 might be a refinement of a textual requirement that describes the interaction)."""^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
 
-<#external> a oslc:Property ;
+:external a oslc:Property ;
     oslc:name "external" ;
     oslc:propertyDefinition jazz_am:external  ;
     oslc:range oslc:Any ;
@@ -248,22 +258,22 @@ might be a refinement of a textual requirement that describes the interaction)."
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
 
-<#satisfy> a oslc:Property ;
+:satisfy a oslc:Property ;
     oslc:name "satisfy" ;
     oslc:propertyDefinition jazz_am:satisfy  ;
     oslc:range oslc:Any ;
     oslc:occurs oslc:Zero-or-many;
-    dcterms:description """The model element satisfies the requirement (e.g. The use case 
+    dcterms:description """The model element satisfies the requirement (e.g. The use case
 satisfies a functional requirement)."""^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
 
-<#trace> a oslc:Property ;
+:trace a oslc:Property ;
     oslc:name "trace" ;
     oslc:propertyDefinition jazz_am:trace  ;
     oslc:range oslc:Any ;
     oslc:occurs oslc:Zero-or-many;
-    dcterms:description """The model element has a trace to the requirement (e.g. An attribute 
+    dcterms:description """The model element has a trace to the requirement (e.g. An attribute
 or its value are traced to a requirement)."""^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .

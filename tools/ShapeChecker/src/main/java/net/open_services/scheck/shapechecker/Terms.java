@@ -26,13 +26,17 @@ import static net.open_services.scheck.annotations.IssueSeverity.*;
     uri="http://open-services.net/ns/scheck#",
     prefix="scheck",
     domain="ShapeChecker Result Vocabulary.",
-    description="A vocabulary for terms used in the result model of the OSLC Shape and Vocabulary checker.")
+    description="A vocabulary for terms used in the result model of the OSLC Shape and Vocabulary checker.",
+    additionalStatements=
+		{
+				"scheck:additionalProperty scheck:severity, scheck:singular, scheck:plural",
+			    "dcterms:source <https://oslc-op.github.io/oslc-specs/tools/ShapeChecker/src/main/java/net/open_services/scheck/shapechecker/Terms.java>"
+		})
 public final class Terms
 {
-    private static final String checkerNS          = "http://open-services.net/ns/scheck#";
+    private static final String checkerNS         = "http://open-services.net/ns/scheck#";
 
-    private static Map<String, Resource> issueMap  = new HashMap<>();
-
+    private static Map<String, Resource> termMap  = new HashMap<>();
 
     /**
      * No instantiation.
@@ -47,21 +51,32 @@ public final class Terms
      */
     public static Optional<Resource> findIssue(String name)
     {
-        return Optional.ofNullable(Terms.issueMap.get(name));
+        return Optional.ofNullable(Terms.termMap.get(name));
+    }
+
+
+    private static void addTerm(String local, Resource resource)
+    {
+        if (termMap.put(local, resource) != null)
+        {
+        	throw new RuntimeException("Duplicate term name found: "+local);
+        }
     }
 
 
     private static Resource resource(String local)
     {
         Resource resource = ResourceFactory.createResource(checkerNS + local);
-        issueMap.put(local, resource);
+        addTerm(local, resource);
         return resource;
     }
 
 
     private static Property property(String local)
     {
-        return ResourceFactory.createProperty(checkerNS, local);
+        Property property = ResourceFactory.createProperty(checkerNS, local);
+        addTerm(local, property);
+		return property;
     }
 
 
@@ -106,7 +121,7 @@ public final class Terms
     public static final Resource BadOccurs        = resource("BadOccurs");
 
     /** Error class for a vs:term_status with an unknown value. */
-    @SCIssue(issueSeverity=Error,description="The vs:term_status property must be either \\\"stable\\\" or \\\"archaic\\\"; \\\"unstable\\\" or \\\"testing\\\" are bad practice in published vocabularies.")
+    @SCIssue(issueSeverity=Error,description="The vs:term_status property must be either \"stable\" or \"archaic\"; \"unstable\" or \"testing\" are bad practice in published vocabularies.")
     public static final Resource BadTermStatus    = resource("BadTermStatus");
 
     /** Error class for an unknown vocabulary term type. */
@@ -121,13 +136,17 @@ public final class Terms
     @SCIssue(issueSeverity=Error,description="This property name, definition, or oslc:describes is not unique.")
     public static final Resource Duplicate        = resource("Duplicate");
 
-    /** Error class for a duplicate property value. */
+    /** Error class for a duplicate label. */
     @SCIssue(issueSeverity=Warning,description="This label is not unique.")
     public static final Resource DuplicateLabel   = resource("DuplicateLabel");
 
     /** Error class for a duplicate language-tagged string. */
     @SCIssue(issueSeverity=Error,description="Duplicate language on string literal.")
     public static final Resource DuplicateLangString = resource("DuplicateLangString");
+
+    /** Error class for embedded whitespace after newline in comment or description. */
+    @SCIssue(issueSeverity=Warning,description="White space after embedded newline - misuse of triple quotes?")
+    public static final Resource EmbeddedWhitespace = resource("EmbeddedWhitespace");
 
     /** Error class for inappropriate use of the oslc:maxSize property. */
     @SCIssue(issueSeverity=Error,description="The property oslc:maxSize appplies only to string or XMLLiteral value types.")
@@ -169,13 +188,25 @@ public final class Terms
     @SCIssue(issueSeverity=Error,description="This property should appear at most once.")
     public static final Resource MoreThanOne      = resource("MoreThanOne");
 
+    /** Error class for multiple ResourceShapeConstraints resource in an OSLC Spec. */
+    @SCIssue(issueSeverity=Error,description="More than one ResourceShapesConstraints found.")
+    public static final Resource MultipleResourceShapeConstraints = resource("MultipleResourceShapeConstraints");
+
     /** Error class for a term not defined by an ontology. */
     @SCIssue(issueSeverity=Warning,description="This subject does not appear to be part of an ontology or one of its terms.")
     public static final Resource NoOntology       = resource("NoOntology");
 
+    /** Error class for a missing ResourceShapeConstraints resource in an OSLC Spec. */
+    @SCIssue(issueSeverity=Error,description="This specification requires a ResourceShapesConstraints resource with appropriate metadata.")
+    public static final Resource NoResourceShapeConstraints = resource("NoResourceShapeConstraints");
+
     /** Error class for a property not defined by a shape. */
     @SCIssue(issueSeverity=Warning,description="This property definition or other subject does not appear to be part of a defined shape.")
     public static final Resource NoShape          = resource("NoShape");
+
+    /** Error class for a shapes file that does not contain any shapes. */
+    @SCIssue(issueSeverity=Error,description="This file does not contain any shapes.")
+    public static final Resource NoShapesInFile   = resource("NoShapesInFile");
 
     /** Error class for an resource not found. */
     @SCIssue(issueSeverity=Warning,description="This resource is not defined in this document.")
@@ -192,6 +223,11 @@ public final class Terms
     /** Error class for a literal property that should be a resource. */
     @SCIssue(issueSeverity=Error,description="A resource value is expected here, not a literal.")
     public static final Resource NotResource      = resource("NotResource");
+
+    /** Error class for a vocabulary file that does not contain any vocabularies. */
+    @SCIssue(issueSeverity=Error,description="This file does not contain any vocabularies.")
+    public static final Resource NoVocabsInFile   = resource("NoVocabsInFile");
+
 
     /** Error class for a redundant (unknown, unexpected) property of some node. */
     @SCIssue(issueSeverity=Warning,description="This property is unexpected.")
@@ -280,4 +316,9 @@ public final class Terms
     @SCXCheck(severity=IssueSeverity.Warning,singular="vocabulary",plural="vocabularies",
             description="given, but not referenced in the given shapes:")
     public static final Property unusedVocabulary = property("unusedVocabulary");
+
+
+    /** Predicate for additional property allowed on vocabulary terms. */
+    @SCTerm(type=TermType.Property,description="An additional property allowed on terms in this vocabulary")
+    public static final Property additionalProperty = property("additionalProperty");
 }

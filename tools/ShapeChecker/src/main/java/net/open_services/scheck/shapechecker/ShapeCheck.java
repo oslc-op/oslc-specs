@@ -77,7 +77,7 @@ public class ShapeCheck
         // Look for the optional properties
         node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
         node.checkLangString(DCTerms.description, Occurrence.ZeroOrOne,
-            desc -> NodeCheck.checkPeriod(desc));
+            desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
 
@@ -110,7 +110,6 @@ public class ShapeCheck
      * @param shape the shape in which the property appears
      * @param propDefNode the property definition to be checked
      */
-    @javax.annotation.CheckReturnValue
     private void checkPropDef(URI document, Resource shape, RDFNode propDefNode)
     {
         Resource propDef = null;
@@ -139,9 +138,9 @@ public class ShapeCheck
             return;
         }
         node.checkLangString(DCTerms.description, Occurrence.ExactlyOne,
-            desc -> NodeCheck.checkPeriod(desc));
+            desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(OSLC.name, null, Occurrence.ExactlyOne,
-            literal -> checkUnique(names,literal));
+            literal -> {setChecksName(propDefNode,propResult,literal); return checkUnique(names,literal); });
         node.checkURI(OSLC.occurs, Occurrence.ExactlyOne,
             uri -> Occurrence.isValidURI(uri) ? null : Terms.BadOccurs);
         node.checkURI(OSLC.propertyDefinition, Occurrence.ExactlyOne,
@@ -187,6 +186,25 @@ public class ShapeCheck
 
 
     /**
+     * Change the sc:checks reference to use the name of this property,
+     * if this property is defined by a blank node. Otherwise we leave
+     * the check reference to be the URI of the non-blank property.
+     *
+     * @param propDefNode the property definition node
+     * @param propResult the sc:InnerResult node for this property
+     * @param literal the name for this property
+     */
+    private static void setChecksName(RDFNode propDefNode, Resource propResult, String literal)
+	{
+    	if (propDefNode.isAnon())
+    	{
+    		propResult.removeAll(Terms.checks);
+            propResult.addProperty(Terms.checks, literal);
+    	}
+	}
+
+
+	/**
      * Add a dcterms:reference to the given check result;
      * this is used to record references to types and properties so
      * their occurrences in vocabularies can be cross-checked, and
@@ -229,7 +247,6 @@ public class ShapeCheck
      * @param propDef the property definition whose type is being checked
      * @param propResult the {@link ResultModel} resource to which to add errors
      */
-    @javax.annotation.CheckReturnValue
     public void checkValueType(Resource propDef,Resource propResult)
     {
         Resource valueType = OSLC.Any;
@@ -299,7 +316,6 @@ public class ShapeCheck
      * @param propDef the property definition whose type is being checked
      * @param propResult the {@link ResultModel} resource to which to add errors
      */
-    @javax.annotation.CheckReturnValue
     private void checkAllowedValues(Resource propDef, Resource propResult)
     {
         StmtIterator it = shapeModel.listStatements(propDef, OSLC.allowedValues, (RDFNode)null);

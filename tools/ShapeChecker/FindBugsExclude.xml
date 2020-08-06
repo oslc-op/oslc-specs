@@ -1,4 +1,7 @@
-<FindBugsFilter>
+  <FindBugsFilter
+              xmlns="https://github.com/spotbugs/filter/3.0.0"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
   <Match>
     <Or>
         <Bug code="FCCD" />
@@ -20,15 +23,24 @@
     <Bug pattern="SE_BAD_FIELD" />
   </Match>
   <Match>
-    <Class name="net.open_services.scheck.shapechecker.HttpHandler" />
+      <Class name="net.open_services.scheck.shapechecker.HttpHandler" />
     <Method name="responseInterceptor" />
     <Bug pattern="UP_UNUSED_PARAMETER" />
+  </Match>
+  <Match>
+    <Or>
+        <Class name="net.open_services.scheck.shapechecker.VocabularyCheck" />
+        <Class name="net.open_services.scheck.shapechecker.ShapesDocCheck" />
+    </Or>
+    <Method name="&lt;init&gt;" />
+    <Bug pattern="STT_TOSTRING_STORED_IN_FIELD" />
   </Match>
   <Match>
     <Class name="net.open_services.scheck.shapechecker.Terms" />
     <Bug code="PMB" />
   </Match>
-  <Match classregex=".*Test">
+  <Match>
+    <Class name="~.*Test" />
     <Or>
         <Bug pattern="UVA_USE_VAR_ARGS" />
         <Bug pattern="CLI_CONSTANT_LIST_INDEX" />

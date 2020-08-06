@@ -16,6 +16,8 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
+import net.open_services.scheck.annotations.IssueSeverity;
+
 
 /**
  * A set of methods to print a {@link ResultModel}.
@@ -27,6 +29,7 @@ public class ResultModelPrinter
     private ResultModel     resultModel;
     private Model           vocabulary;
     private boolean         printCrossCheck;
+    private IssueSeverity	threshold;
 
 
     /**
@@ -34,13 +37,15 @@ public class ResultModelPrinter
      * @param resultModel the ResultModel to print
      * @param printStream the output stream
      * @param printCrossCheck true iff the cross-check results are to be shown
+     * @param threshold issues lower than this severity will not be printed
      */
-    public ResultModelPrinter(ResultModel resultModel, PrintStream printStream, boolean printCrossCheck)
+    public ResultModelPrinter(ResultModel resultModel, PrintStream printStream, boolean printCrossCheck, IssueSeverity threshold)
     {
         this.printStream     = printStream;
         this.resultModel     = resultModel;
         this.printCrossCheck = printCrossCheck;
         this.vocabulary      = resultModel.getResultVocabModel();
+        this.threshold       = threshold;
     }
 
 
@@ -145,44 +150,55 @@ public class ResultModelPrinter
         else if (level == 0 || issueCount > 0)
         {
             // We print a section header if its the top level,
-            // or if there are issues found in that section
-            printStream.print(prefix);
-            if (level == 0)
-            {
-                // We print the number of issues only on the section header,
-                // and not for intermediate result levels.
-                printStream.printf(", with %d %s (%d info, %d warnings, %d errors)%n",
-                    issueCount, issueCount==1 ? "issue" : "issues",
-                    infoCount, warnCount, errorCount);
-            }
+            // or if there are issues found in that section and those issues are at or above the threshold
+
+        	if (level == 0
+        		 || (threshold == IssueSeverity.Info && issueCount > 0)
+        		 || (threshold == IssueSeverity.Warning && (warnCount > 0 || errorCount > 0))
+        		 || (threshold == IssueSeverity.Error && errorCount > 0))
+        	{
+	            printStream.print(prefix);
+	            if (level == 0)
+	            {
+	                // We print the number of issues only on the section header,
+	                // and not for intermediate result levels.
+	                printStream.printf(", with %d %s (%d info, %d warnings, %d errors)%n",
+	                    issueCount, issueCount==1 ? "issue" : "issues",
+	                    infoCount, warnCount, errorCount);
+	            }
+        	}
         }
     }
 
 
     private void printIssue(int level,Resource issueRes)
     {
-        Resource subjectRes = issueRes.getPropertyResourceValue(Terms.subject);
         Resource type = issueRes.getPropertyResourceValue(RDF.type);
-        Statement badValueSt = issueRes.getProperty(Terms.value);
-        String severity = lookupSeverity(type);
-        String prefix = pad(level);
+        IssueSeverity severity = lookupSeverity(type);
 
-        printStream.printf("%s%s on %s: %s",
-            prefix,
-            severity,
-            subjectRes.getURI(),
-            vocabulary.getProperty(type, RDFS.comment).getString());
+        if (severity.compareTo(threshold) >= 0)
+    	{
+            Resource subjectRes = issueRes.getPropertyResourceValue(Terms.subject);
+            Statement badValueSt = issueRes.getProperty(Terms.value);
+            String prefix = pad(level);
+
+            printStream.printf("%s%s on %s: %s",
+	            prefix,
+	            severity,
+	            subjectRes.getURI(),
+	            unescape(vocabulary.getProperty(type, RDFS.comment).getString()));
 
 
-        if (badValueSt != null)
-        {
-            RDFNode badValue = badValueSt.getObject();
-            String badValStr = badValue.isResource() ? badValue.asResource().getURI()
-                : badValue.asLiteral().getLexicalForm();
+	        if (badValueSt != null)
+	        {
+	            RDFNode badValue = badValueSt.getObject();
+	            String badValStr = badValue.isResource() ? badValue.asResource().getURI()
+	                : badValue.asLiteral().getLexicalForm();
 
-            printStream.printf(" (bad value %s)", badValStr);
-        }
-        printStream.println();
+	            printStream.printf(" (bad value %s)", badValStr);
+	        }
+	        printStream.println();
+    	}
     }
 
 
@@ -203,42 +219,50 @@ public class ResultModelPrinter
         StmtIterator sti = summary.listProperties(property);
         if (sti.hasNext())
         {
-            Iterable<Statement> it = (Iterable<Statement>)() -> sti;
-            List<String> resURIs = StreamSupport.stream(it.spliterator(),false)
-                .map(st->st.getResource().getURI())
-                .sorted()
-                .collect(Collectors.toList());
-            int size = resURIs.size();
-            String message = getVocabProp(property, RDFS.comment);
-            String singular = getVocabProp(property, Terms.singular);
-            String plural = getVocabProp(property, Terms.plural);
-            String severity = lookupSeverity(property);
+            IssueSeverity severity = lookupSeverity(property);
 
-            printStream.printf("%n%s: %s %s%n",
-                severity,
-                size==1 ? "This "+singular+" was" : "These "+size+" "+plural+" were",
-                message);
-            resURIs.stream().forEachOrdered(s -> printStream.printf("   %s%n",s));
+            if (severity.compareTo(threshold) >= 0)
+        	{
+                Iterable<Statement> it = (Iterable<Statement>)() -> sti;
+                List<String> resURIs = StreamSupport.stream(it.spliterator(),false)
+                        .map(st->st.getResource().getURI())
+                        .sorted()
+                        .collect(Collectors.toList());
+
+                int size = resURIs.size();
+                String message = getVocabProp(property, RDFS.comment);
+                String singular = getVocabProp(property, Terms.singular);
+                String plural = getVocabProp(property, Terms.plural);
+
+                printStream.printf("%n%s: %s %s%n",
+	                severity,
+	                size==1 ? "This "+singular+" was" : "These "+size+" "+plural+" were",
+	                message);
+	            resURIs.stream().forEachOrdered(s -> printStream.printf("   %s%n",s));
+           	}
         }
     }
 
 
-    private String lookupSeverity(Resource res)
+    @javax.annotation.CheckReturnValue
+    private IssueSeverity lookupSeverity(Resource res)
     {
-        return vocabulary
+        return IssueSeverity.findSeverity(vocabulary
             .getProperty(res,Terms.severity)
             .getResource()
             .getURI()
-            .replaceFirst(".*#","");
+            .replaceFirst(".*#",""));
     }
 
 
+    @javax.annotation.CheckReturnValue
     private String getVocabProp(Property term, Property predicate)
     {
         return vocabulary.getProperty(term, predicate).getString();
     }
 
 
+    @javax.annotation.CheckReturnValue
     private static String wrap(String msg)
     {
         StringBuilder sb = new StringBuilder(msg);
@@ -254,8 +278,60 @@ public class ResultModelPrinter
     }
 
 
+    @javax.annotation.CheckReturnValue
     private static String pad(int level)
     {
         return level == 0 ? "" : String.format("%"+level*3+"s"," ");
     }
+
+
+    @javax.annotation.CheckReturnValue
+	private static String unescape(String s)
+	{
+		StringBuilder result = new StringBuilder(s.length());
+		int i = 0;
+		int n = s.length();
+		while (i < n)
+		{
+			char charAt = s.charAt(i);
+			if (charAt != '&')
+			{
+				result.append(charAt);
+				i++;
+			}
+			else
+			{
+				if (s.startsWith("&amp;", i))
+				{
+					result.append('&');
+					i += 5;
+				}
+				else if (s.startsWith("&apos;", i))
+				{
+					result.append('\'');
+					i += 6;
+				}
+				else if (s.startsWith("&quot;", i))
+				{
+					result.append('"');
+					i += 6;
+				}
+				else if (s.startsWith("&lt;", i))
+				{
+					result.append('<');
+					i += 4;
+				}
+				else if (s.startsWith("&gt;", i))
+				{
+					result.append('>');
+					i += 4;
+				}
+				else
+				{
+					i++;
+				}
+			}
+		}
+		return result.toString();
+	}
 }

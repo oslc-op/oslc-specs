@@ -1,525 +1,485 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset='utf-8'/>
-<script src='https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js' async class='remove'></script>
-<script class='remove'>
-  var respecConfig = {
-      specStatus:           "WD",
-      edDraftURI:           "trs-guidance.html",
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://sspeiche.github.io/respec/builds/oasis/respec-oasis-common.js" async class="remove"></script>
+    <script class="remove">
+      var respecConfig = {
+        specStatus: "WD",
+        edDraftURI: "trs-guidance.html",
 
-      // the specification's short name, as in http://www.w3.org/TR/short-name/
-      shortName:            "OSLC 3.0 Tracked Resource Set Guidance",
+        // the specification's short name, as in http://www.w3.org/TR/short-name/
+        shortName: "OSLC 3.0 Tracked Resource Set Guidance",
 
-      // if your specification has a subtitle that goes below the main
-      // formal title, define it here
-      // subtitle   :  "an excellent document",
+        // if your specification has a subtitle that goes below the main
+        // formal title, define it here
+        // subtitle   :  "an excellent document",
 
-      // if you wish the publication date to be other than the last modification, set this
-      // publishDate:  "2009-08-06",
+        // if you wish the publication date to be other than the last modification, set this
+        // publishDate:  "2009-08-06",
 
-      // if the specification's copyright date is a range of years, specify
-      // the start date here:
-      // copyrightStart: "2005"
+        // if the specification's copyright date is a range of years, specify
+        // the start date here:
+        // copyrightStart: "2005"
 
-      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
-      // and its maturity status
-      // previousPublishDate:  "1977-03-15",
-      // previousMaturity:  "WD",
+        // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+        // and its maturity status
+        // previousPublishDate:  "1977-03-15",
+        // previousMaturity:  "WD",
 
-      // if there a publicly available Editor's Draft, this is the link
-      // edDraftURI:           "http://berjon.com/",
+        // if there a publicly available Editor's Draft, this is the link
+        // edDraftURI:           "http://berjon.com/",
 
-      // if this is a LCWD, uncomment and set the end of its review period
-      // lcEnd: "2009-08-05",
+        // if this is a LCWD, uncomment and set the end of its review period
+        // lcEnd: "2009-08-05",
 
-      // editors, add as many as you like
-      // only "name" is required
-      editors:  [
+        // editors, add as many as you like
+        // only "name" is required
+        editors: [
           {
-              name : "Jim Amsden",
-              mailto : "jamsden@us.ibm.com",
-              company : "IBM",
-              companyURL : "http://www.ibm.com/"
-          }
-      ],
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/",
+          },
+        ],
 
-      previousURI: "http://open-services.net/wiki/core/TrackedResourceSet-2.0/",
-      prevED: "http://open-services.net/wiki/core/TrackedResourceSet-2.0/",
+        previousURI: "http://open-services.net/wiki/core/TrackedResourceSet-2.0/",
+        prevED: "http://open-services.net/wiki/core/TrackedResourceSet-2.0/",
 
-      localBiblio:  {
-                "OSLCUIPreview20": {
-                        title:    "OSLC Core 2.0 - UI Preview",
-                        href:     "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
-                        authors:  [
-                                "S. Bosworth"
-                        ],
-                        status:   "Finalized",
-                        publisher:  "http://open-services.net"
-                 }
-        }
-  };
-</script>
-<title>OSLC Tracked Resource Set Guidance</title>
-</head>
-<body>
-
-<section id="abstract">
-    <p>This document discusses best practices and recommendations for implement and use
-        OSLC Tracked Resource Sets.</p>
-</section>
-
-<section class="informative" id="introduction">
-
-<section id="sotd"></section>
-
-section id='generalGuidance' class='appendix informative'>
-  <h2>General Guidance</h2>
-  <p>
-    The following sections provide some general guidance on how to servers provide and clients can consume Tracked Resource Sets.
-  </p>
-  <section id='localReplica' class='informative'>
-    <h2>Building a Local Replica</h2>
-    <p>
-      This section describes one (relatively straightforward) way that a Client
-      can use the Tracked Resource Set protocol to build and maintain its own local
-      replica of a Server’s Resource Set.
-    </p>
-    <section id='initializationProcedure' class='informative'>
-      <h2>Initialization procedure</h2>
+        localBiblio: {
+          OSLCUIPreview20: {
+            title: "OSLC Core 2.0 - UI Preview",
+            href: "http://open-services.net/bin/view/Main/OslcCoreUiPreview",
+            authors: ["S. Bosworth"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+        },
+      };
+    </script>
+    <title>OSLC Tracked Resource Set Guidance</title>
+  </head>
+  <body>
+    <section id="abstract">
       <p>
-        A Client wishing to determine the complete collection of Resources in a Server’s Resource Set,
-        so that it can build its local replica of the Resource Set, proceeds as follows:
-      </p>
-      <ol>
-        <li>Send a GET request to the Tracked Resource Set URI to retrieve the Tracked Resource Set representation to learn the URI of the Base.</li>
-        <li>Use GET to retrieve successive pages of the Base, adding each of the member Resources to the Client’s local replica of the Resource Set.</li>
-        <li>Invoke the Incremental Update procedure (below). The sync point event
-          is the <code>trs:cutoffEvent</code> property (on the first page of the
-          Base). A clever Client might run this step in parallel with the previous
-          one in an effort to prevent the case where the Client can’t catch up to
-          the current state of the Resource Set using the Change Log (after initial
-          processing) because initial processing takes too long.</li>
-      </ol>
-      <p>
-        The overall work to build the local replica of the Resource Set is linear
-        in the size of the Base plus the number of Change Events that occurred after
-        the base cutoff event. The Server can help Clients building new local
-        replicas of its Resource Set by providing as recent a Base as possible,
-        because that means the Client will have to process fewer Change Events. It
-        is entirely up to the Server how often it computes a new Base. It is also up
-        to the Server how it computes the members of a Base, whether by enumerating
-        its Resource Set directly (e.g., by querying an underlying database), or
-        perhaps by coalescing its internal change log entries into a previous
-        base.
+        This document discusses best practices and recommendations for implement and use OSLC Tracked Resource Sets.
       </p>
     </section>
-    <section id='incrementalUpdateProcedure' class='informative'>
-      <h2>Incremental update procedure</h2>
+
+    <section class="informative" id="introduction">
+      <section id="sotd"></section>
+
+      section id='generalGuidance' class='appendix informative'>
+      <h2>General Guidance</h2>
       <p>
-        Suppose now that a Client has a local replica of the Server’s Resource Set that is accurate
-        as of a particular sync point event known to the Client.
-        A Client wishing to update its local replica of the Server’s Resource Set acts as follows:
+        The following sections provide some general guidance on how to servers provide and clients can consume Tracked
+        Resource Sets.
       </p>
-      <ol>
-        <li>Send a GET request to the Tracked Resource Set URI to retrieve the
-          Tracked Resource Set representation to learn its current Change Log.</li>
-        <li>Search through the chain of Change Logs from newest to oldest to find
-          the sync point event. The incremental update fails if the Client is unable
-          to locate the sync point (i.e., it gets to the end of the log).</li>
-        <li>Process all Change Events after the sync point event, from oldest to
-          newest, making corresponding changes to the Client’s local replica of the
-          Resource Set. Record the latest event processed as the new sync point
-          event. A clever Client might record (some number of) recently processed
-          events for possible future undo in the event of a server rollback.</li>
-      </ol>
-      <p>
-        When the procedure succeeds, the Client will have updated its own local
-        replica of the Server’s Resource Set to be an accurate reflection of the set
-        of resources as described by the retrieved representation of the Tracked
-        Resource Set. Of course, the Server’s actual Resource Set may have undergone
-        additional changes since then. While the Client may never catch up to the
-        Server, it can at least keep its local replica of the Resource Set almost up
-        to date. By choosing the interval at which it polls for updates, a Client
-        controls how long the two are allowed to drift apart. The overall work to
-        maintain the local replica of the Resource Set is linear in the length of
-        the Change Event stream. In the (hopefully rare) situation that the Client
-        fails to find its sync point event, one of two things is likely to have
-        happened on the Server: either the Server has truncated its Change Log, or
-        the Server has been rolled back to an earlier state.
-      </p>
-      <p>
-        If the Client had been retaining a local record of previously processed
-        events, the Client may be able to detect a Server rollback if it notices the
-        successor event of some previously processed event has been removed or changed
-        to one with a different identifier than before. In this case, the Client can
-        undo changes to its local replica back to that sync point, and then pick up
-        processing from there.
-      </p>
-      <p>
-        Once the Incremental Update procedure fails, it is unlikely to succeed in
-        the future. The Client has reached an impasse. The Client’s only way forward
-        is to discard its local replica and start over.
-      </p>
-    </section>
-  </section>
-  <section id='providerGuidance' class='informative'>
-    <h2>General Guidance for TRS Servers</h2>
-    <p>
-      There are a number of possible ways that a lifecycle tool could go about
-      exposing its linked lifecycle data. Here is some general guidance:
-    </p>
-    <ul>
-      <li>
-        <p class="ednote" title="TBD">
-          <strong>Editor: These seem unwarranted reactions to a percieved  usability
-          problem. (img)</strong>
+      <section id="localReplica" class="informative">
+        <h2>Building a Local Replica</h2>
+        <p>
+          This section describes one (relatively straightforward) way that a Client can use the Tracked Resource Set
+          protocol to build and maintain its own local replica of a Server’s Resource Set.
         </p>
-        A TRS Server should restrict itself to a small number of Tracked
-        Resource Sets. When configuring a TRS Client, an administrator will
-        typically have to select Tracked Resource Sets one at a time.</li>
-      <li>A TRS Server should restrict itself to a static set of Tracked Resource
-        Sets. When a Server Tracked Resource Set gets created dynamically, the
-        administrator would be required to update the configurations of affected
-        Clients.</li>
-      <li>A Server’s Tracked Resource Sets should contain pairwise-disjoint sets
-        of Tracked Resources. That is, a resource should not appear as a Resource in
-        more than one Tracked Resource Set. A Server should document any overlap
-        between its Tracked Resource Sets. (Some Clients are unable to work with
-        overlapping Tracked Resource Sets.)</li>
-      <li>A Server’s Resources should be linked data resources under the control
-        of the Server itself, rather than linked data resources of some other
-        lifecycle tool. In other words, a lifecycle tool should expose its own
-        resources, not those of others.</li>
-      <li>The RDF content of a Server's Resources should be statements about
-        linked data resources under the control of the Server itself, rather than
-        statements about linked data resources of some other lifecycle tool. In
-        other words, the subjects of a lifecycle tool claims should be its own
-        resources, as opposed to resources of some other lifecycle tool.</li>
-      <li>A Tracked Resource may be one of the Server's regular linked lifecycle
-        data resources, or it may be a resource containing an RDF data graph used
-        specifically for exposing some linked data in a Tracked Resource Set.</li>
-      <li>A Server should expose all of its linked lifecycle data via Tracked
-        Resources in one of its Tracked Resource Sets. Any information that is held
-        back will be unavailable to Clients.</li>
-      <li>A Server’s combined RDF dataset should not repeat the same RDF
-        statements.</li>
-      <li>A Serv’s combined RDF dataset should not contain contradictory RDF
-        statements.</li>
-      <li>It is recommended that a Server report changes to its linked lifecycle
-        data (including resource creations, deletions, and modifications) within 1
-        second of the changes being committed. Changes are reported via the Server's
-        Tracked Resource Set Change Log. This helps ensure that Clients are able to
-        obtain a live feed of changes in nearly real-time.</li>
-      <li>It is recommended that a Server’s Tracked Resource Set include a Base
-        not older than 7 days. This helps ensure that Clients are able to initially
-        determine the resources in the set without having to process Change Events
-        older than 7 days.</li>
-      <li>It is recommended that a Server’s Tracked Resource Set Change Log retain
-        Change Events for at least 7 days. This helps ensure that there are
-        sufficient Change Events to allow a Client to catch up after a lengthy
-        downtime or network outage.</li>
-    </ul>
-  </section>
-  <section id='consumerGuidance' class='informative'>
-    <h2>General Guidance for TRS Clients</h2>
-    <p>
-      A TRS Client does is akin to what a Web crawler does, and most of the same
-      considerations apply.
-    </p>
-    <p>
-      A Client retrieves the TRS, Change Logs, and Base Resources, as well as
-      some or all the Tracked Resources contained in the TRS. Except for the TRS
-      Resource URI itself, the Client is blindly retrieving a succession of URIs
-      that the Server includes in the Tracked Resource Set. An insufficiently wary
-      Client can come to grief when it interacts with an imperfect or untrustworthy
-      Server.
-    </p>
-    <p>
-      Most of the risks are always present: networks connecting Client to Server
-      may experience delays and outages; and Server implementations may be
-      imperfect (bugs in code, database corruptions). Moreover, when the Server
-      is untrusted - when there is a concern the Server could attempt
-      something nefarious - the Client needs to take extra steps to prevent
-      itself from being misused or abused.
-    </p>
-    <p>
-      Here are risks and general guidance for Clients:
-    </p>
-    <ul>
-      <li>The size and rate of change of a Server's resource set reflects the
-        amount of linked data that a Server has to make available and how often that
-        data changes. These vary considerably and are often difficult to estimate in
-        advance. A Client that is maintaining a copy of a Server's Tracked Resources
-        should establish reasonable limits and monitor the size and rate of change
-        so that a misbehaving Server does not cause the Client to spend an
-        unreasonable amount of effort (network communication and storage) in doing
-        so. This should include caps on the number and representation sizes of
-        resources (including TRS Change Logs and TRS Base pages, for example).</li>
-      <li>Since the Client is retrieving resources of various kinds over the
-        network from the Server, which takes time and network connections, the
-        Client should do so in a way that does not prevent it from doing other
-        useful work while waiting for responses. The Client should be tolerant of
-        failures due to network failures and outages, and carry over
-        important work until the blockage has been removed. On the other hand, the
-        Client should not allow its queue of work to grow without bound since that
-        may make it difficult for the Client to clear the backlog. The Client
-        should also be polite to the Server, and avoid making multiple requests
-        per second and/or downloading large files that might make it hard for the
-        Server to keep up with its normal workload.</li>
-      <li>A Server’s Resources should be linked data resources under the control
-        of the Server itself, rather than linked data resources of some other
-        lifecycle tool. A Client that does not trust a Server in this regard should
-        mitigate the risk by keeping a server whitelist for each Server and refusing
-        to retrieve the Resources of a given Server when the server is not on the
-        whitelist. Without something like this, a Client can be tricked into
-        retrieving and indexing resources that it should not, such as other
-        resources located on a different server that the Client also happens to
-        have access to.</li>
-      <li>The RDF content of a Tracked Resource should be statements about linked
-        data resources under the control of the Server itself, rather than
-        statements about linked data resources of some other lifecycle tool. In
-        other words, the subjects of a lifecycle tool claims should be its own
-        resources, as opposed to resources of some other lifecycle tool. A Client
-        that does not trust a Server in this regard should mitigate the risk by
-        keeping a content whitelist for each Server and rejecting the RDF content of
-        Tracked Resources of a given Server when the URIs of subjects are not all on
-        the content whitelist. Without something like this, a Server can affect
-        a Client with arbitrary claims which may interfere with or contradict
-        authoritative claims made by the legitimate owner.</li>
-    </ul>
-  </section>
-  <section id='accGuidance' class='informative'>
-    <h2>Access Context Guidance</h2>
-    <p>
-      There are several things to consider when deciding how a lifecycle tool can
-      make use of Access Contexts. Before suggesting possible designs, here are some
-      characteristics that will help ensure a lifecycle tool will be useful to
-      administrators tasked with configuring access to the Tracked Resources that
-      have been retreived by a TRS Client:
-    </p>
-    <ul>
-      <li><b>Optional</b>. A Server should only use Access Contexts if there are
-        reasons why an administrator might want to impose differential access in
-        Clients.</li>
-      <li><b>Understandable</b>. An administrator should be able to intuit from
-        the Access Context name and description what kinds of resources are in
-        it.</li>
-      <li><b>Useful collections</b>. An Access Context should contain resources
-        that can be treated similarly.  Same security classification. An Access
-        Context should contain resources with the same security classification.</li>
-      <li><b>Reasonable number</b>. The list of Access Contexts should not be so
-        long as to overwhelm the administrator.</li>
-      <li><b>Stable</b>. The set of Access Contexts
-        should be more or less static. Changes to the Access Context list will
-        generally require the administrator to update configurations of
-        Clients.</li>
-      <li><b>Centralized</b>. A Server should host a single Access Context List
-        resource enumerating the Access Contexts used in any of its Tracked
-        Resources, unless there are reasons to do otherwise.</li>
-    </ul>
-    <p>
-      The following recipes suggest some of the designs that are possible.
-    </p>
-    <p>
-      <b>Recipe 1</b>: Your tool has top-level objects called workspaces. New
-      workspaces are created infrequently, and only by administrators. Each linked
-      data resource is associated with a single workspace. Teams of users work in
-      the context of a single workspace. All the resources in a workspace have the
-      same security classification.
-    </p>
-    <p>
-      Your tool should treat each workspace as a separate Tracked Resource Set,
-      and not use Access Contexts.
-    </p>
-    <p>
-      An administrator can always control access to the linked data in a Client
-      on an TRS by TRS basis, and grant users access to linked data from some
-      workspaces but not others.
-    </p>
-    <p>
-      <b>Recipe 2</b>: Your tool has top-level objects called projects. New
-      projects are created infrequently, and only by administrators. Each linked
-      data resource is associated with a single project. Teams of users work in the
-      context of a set of projects. All the resources in a project have the same
-      security classification.
-    </p>
-    <p>
-      Your tool should treat all projects as part of a single Resource Set, and
-      automatically create Access Contexts in 1-1 correspondence with projects,
-      taking on the name and description of the project.
-    </p>
-    <p>
-      An administrator can control access to the linked data in an Client on a
-      project by project basis, and grant users access to linked data from some
-      projects but not others.
-    </p>
-    <p>
-      <b>Recipe 3</b>: Your tool has resources that can be tagged as containing
-      confidential customer information. Teams of users work in the context of your
-      tool. In the customer’s organization, only some employees are allowed access
-      to confidential customer information.
-    </p>
-    <p>
-      Your tool should have a single Tracked Resource Set, and automatically
-      create an Access Context named “Confidential Customer Data” and assigns all
-      tagged resources to this Access Context. Other resources are left “loose”;
-      i.e., not included in any Access Context.
-    </p>
-    <p>
-      An administrator for a Client can control access to the confidential
-      customer information separately from the regular linked data.
-    </p>
-    <p>
-      <b>Recipe 4</b>: Your tool has many resources. Teams of users work in the
-      context of your tool. The customer’s organization has strict policies on what
-      information can be shown to which employees.
-    </p>
-    <p>
-      Your tool should have a single Tracked Resource Set. Your tool should let
-      an administrator define a set of custom Access Contexts. Your tool should let
-      users (or possibly just administrators) associate resources with these Access
-      Contexts.
-    </p>
-    <p>
-      An administrator can control access to the linked data in a Client based on
-      these custom Access Contexts.
-    </p>
-  </section>
-  <section id='patchGuidance' class='informative'>
-    <h2>TRS Patch Guidance</h2>
-    <p>
-      The following sections provide general guidlines on using the TRS Patch capability.
-    </p>
-    <section id='patchServerGuidance' class='informative'>
-      <h3>TRS Patch Guidance for Servers</h3>
-      <p>
-        When the state of a Tracked Resource changes, the Server adds
-        a <code>trs:Modification</code> Change Event to a Change Log. The Change
-        Event describes a transition between two definite representations states of
-        the Tracked Resource. In principle, the entity tags of the two states, and
-        the LD patch between the two RDF representations, are all well-defined. This
-        much is true whether or not the Server chooses to embed those pieces of
-        information in the Change Event.
-      </p>
-      <p>
-        The decision as to whether to provide an LD Patch for
-        a <code>trs:Modification</code> Change Event should be made on a
-        case-by-case basis. Just because one Change Event for a resource includes an
-        LD Patch, that does not mean that all Change Events for the same resource
-        should also include an LD Patch.
-      </p>
-      <p>
-        Server developers should remember that a Client wishing to discover the
-        current state of a resource can always do so using HTTP GET to retrieve the
-        resource. Including an LD Patch in a Change Event is an optional
-        embellishment that allows some Client under the right circumstances to
-        determine the new current state of a resource instead of re-retrieving the
-        resource. It is up to the Server to decide whether including an LD patch is
-        likely to be worthwhile.
-      </p>
-      <p>
-        However, whenever a <code>trs:Modification</code> Change Event includes
-        a <code>trspatch:rdfPatch</code>, it should also include
-        accurate <code>trspatch:beforeETag</code> and <code>trspatch:afterETag</code> properties. Without all 3 pieces of
-        information, a Client is unlikely to be able to do better than
-        re-retrieving the resource to discover its updated state.
-      </p>
-      <p>
-        When the RDF representation of the resource contains a large number of
-        RDF triples and the number of rows in the LD Patch is small, including the
-        LD patch in the Change Event is recommended, and may improve overall system
-        performance by allowing Clients to avoid having to re-retrieve the
-        resource to discover its updated state. Similiarly, whenever
-        a <code>trs:Creation</code> Change Event includes
-        a <code>trspatch:rdfPatch</code>, it should also include
-        a <code>trspatch:createdFrom</code> along with
-        accurate <code>trspatch:beforeETag</code> and <code>trspatch:afterETag</code> properties.
-      </p>
-      <p>
-        Conversely, when the number of affected RDF triples is large, the size of
-        the LD Patch becomes significant. Including the LD Patch in the Change Event
-        is not recommended because it bloats the size of Change Events in the Change
-        Log, which may negatively impact performance. Omitting the LD patch from the
-        Change Event is likely to give better overall performance.
-      </p>
+        <section id="initializationProcedure" class="informative">
+          <h2>Initialization procedure</h2>
+          <p>
+            A Client wishing to determine the complete collection of Resources in a Server’s Resource Set, so that it
+            can build its local replica of the Resource Set, proceeds as follows:
+          </p>
+          <ol>
+            <li>
+              Send a GET request to the Tracked Resource Set URI to retrieve the Tracked Resource Set representation to
+              learn the URI of the Base.
+            </li>
+            <li>
+              Use GET to retrieve successive pages of the Base, adding each of the member Resources to the Client’s
+              local replica of the Resource Set.
+            </li>
+            <li>
+              Invoke the Incremental Update procedure (below). The sync point event is the
+              <code>trs:cutoffEvent</code> property (on the first page of the Base). A clever Client might run this step
+              in parallel with the previous one in an effort to prevent the case where the Client can’t catch up to the
+              current state of the Resource Set using the Change Log (after initial processing) because initial
+              processing takes too long.
+            </li>
+          </ol>
+          <p>
+            The overall work to build the local replica of the Resource Set is linear in the size of the Base plus the
+            number of Change Events that occurred after the base cutoff event. The Server can help Clients building new
+            local replicas of its Resource Set by providing as recent a Base as possible, because that means the Client
+            will have to process fewer Change Events. It is entirely up to the Server how often it computes a new Base.
+            It is also up to the Server how it computes the members of a Base, whether by enumerating its Resource Set
+            directly (e.g., by querying an underlying database), or perhaps by coalescing its internal change log
+            entries into a previous base.
+          </p>
+        </section>
+        <section id="incrementalUpdateProcedure" class="informative">
+          <h2>Incremental update procedure</h2>
+          <p>
+            Suppose now that a Client has a local replica of the Server’s Resource Set that is accurate as of a
+            particular sync point event known to the Client. A Client wishing to update its local replica of the
+            Server’s Resource Set acts as follows:
+          </p>
+          <ol>
+            <li>
+              Send a GET request to the Tracked Resource Set URI to retrieve the Tracked Resource Set representation to
+              learn its current Change Log.
+            </li>
+            <li>
+              Search through the chain of Change Logs from newest to oldest to find the sync point event. The
+              incremental update fails if the Client is unable to locate the sync point (i.e., it gets to the end of the
+              log).
+            </li>
+            <li>
+              Process all Change Events after the sync point event, from oldest to newest, making corresponding changes
+              to the Client’s local replica of the Resource Set. Record the latest event processed as the new sync point
+              event. A clever Client might record (some number of) recently processed events for possible future undo in
+              the event of a server rollback.
+            </li>
+          </ol>
+          <p>
+            When the procedure succeeds, the Client will have updated its own local replica of the Server’s Resource Set
+            to be an accurate reflection of the set of resources as described by the retrieved representation of the
+            Tracked Resource Set. Of course, the Server’s actual Resource Set may have undergone additional changes
+            since then. While the Client may never catch up to the Server, it can at least keep its local replica of the
+            Resource Set almost up to date. By choosing the interval at which it polls for updates, a Client controls
+            how long the two are allowed to drift apart. The overall work to maintain the local replica of the Resource
+            Set is linear in the length of the Change Event stream. In the (hopefully rare) situation that the Client
+            fails to find its sync point event, one of two things is likely to have happened on the Server: either the
+            Server has truncated its Change Log, or the Server has been rolled back to an earlier state.
+          </p>
+          <p>
+            If the Client had been retaining a local record of previously processed events, the Client may be able to
+            detect a Server rollback if it notices the successor event of some previously processed event has been
+            removed or changed to one with a different identifier than before. In this case, the Client can undo changes
+            to its local replica back to that sync point, and then pick up processing from there.
+          </p>
+          <p>
+            Once the Incremental Update procedure fails, it is unlikely to succeed in the future. The Client has reached
+            an impasse. The Client’s only way forward is to discard its local replica and start over.
+          </p>
+        </section>
+      </section>
+      <section id="providerGuidance" class="informative">
+        <h2>General Guidance for TRS Servers</h2>
+        <p>
+          There are a number of possible ways that a lifecycle tool could go about exposing its linked lifecycle data.
+          Here is some general guidance:
+        </p>
+        <ul>
+          <li>
+            <p class="ednote" title="TBD">
+              <strong>Editor: These seem unwarranted reactions to a percieved usability problem. (img)</strong>
+            </p>
+            A TRS Server should restrict itself to a small number of Tracked Resource Sets. When configuring a TRS
+            Client, an administrator will typically have to select Tracked Resource Sets one at a time.
+          </li>
+          <li>
+            A TRS Server should restrict itself to a static set of Tracked Resource Sets. When a Server Tracked Resource
+            Set gets created dynamically, the administrator would be required to update the configurations of affected
+            Clients.
+          </li>
+          <li>
+            A Server’s Tracked Resource Sets should contain pairwise-disjoint sets of Tracked Resources. That is, a
+            resource should not appear as a Resource in more than one Tracked Resource Set. A Server should document any
+            overlap between its Tracked Resource Sets. (Some Clients are unable to work with overlapping Tracked
+            Resource Sets.)
+          </li>
+          <li>
+            A Server’s Resources should be linked data resources under the control of the Server itself, rather than
+            linked data resources of some other lifecycle tool. In other words, a lifecycle tool should expose its own
+            resources, not those of others.
+          </li>
+          <li>
+            The RDF content of a Server's Resources should be statements about linked data resources under the control
+            of the Server itself, rather than statements about linked data resources of some other lifecycle tool. In
+            other words, the subjects of a lifecycle tool claims should be its own resources, as opposed to resources of
+            some other lifecycle tool.
+          </li>
+          <li>
+            A Tracked Resource may be one of the Server's regular linked lifecycle data resources, or it may be a
+            resource containing an RDF data graph used specifically for exposing some linked data in a Tracked Resource
+            Set.
+          </li>
+          <li>
+            A Server should expose all of its linked lifecycle data via Tracked Resources in one of its Tracked Resource
+            Sets. Any information that is held back will be unavailable to Clients.
+          </li>
+          <li>A Server’s combined RDF dataset should not repeat the same RDF statements.</li>
+          <li>A Serv’s combined RDF dataset should not contain contradictory RDF statements.</li>
+          <li>
+            It is recommended that a Server report changes to its linked lifecycle data (including resource creations,
+            deletions, and modifications) within 1 second of the changes being committed. Changes are reported via the
+            Server's Tracked Resource Set Change Log. This helps ensure that Clients are able to obtain a live feed of
+            changes in nearly real-time.
+          </li>
+          <li>
+            It is recommended that a Server’s Tracked Resource Set include a Base not older than 7 days. This helps
+            ensure that Clients are able to initially determine the resources in the set without having to process
+            Change Events older than 7 days.
+          </li>
+          <li>
+            It is recommended that a Server’s Tracked Resource Set Change Log retain Change Events for at least 7 days.
+            This helps ensure that there are sufficient Change Events to allow a Client to catch up after a lengthy
+            downtime or network outage.
+          </li>
+        </ul>
+      </section>
+      <section id="consumerGuidance" class="informative">
+        <h2>General Guidance for TRS Clients</h2>
+        <p>
+          A TRS Client does is akin to what a Web crawler does, and most of the same considerations apply.
+        </p>
+        <p>
+          A Client retrieves the TRS, Change Logs, and Base Resources, as well as some or all the Tracked Resources
+          contained in the TRS. Except for the TRS Resource URI itself, the Client is blindly retrieving a succession of
+          URIs that the Server includes in the Tracked Resource Set. An insufficiently wary Client can come to grief
+          when it interacts with an imperfect or untrustworthy Server.
+        </p>
+        <p>
+          Most of the risks are always present: networks connecting Client to Server may experience delays and outages;
+          and Server implementations may be imperfect (bugs in code, database corruptions). Moreover, when the Server is
+          untrusted - when there is a concern the Server could attempt something nefarious - the Client needs to take
+          extra steps to prevent itself from being misused or abused.
+        </p>
+        <p>
+          Here are risks and general guidance for Clients:
+        </p>
+        <ul>
+          <li>
+            The size and rate of change of a Server's resource set reflects the amount of linked data that a Server has
+            to make available and how often that data changes. These vary considerably and are often difficult to
+            estimate in advance. A Client that is maintaining a copy of a Server's Tracked Resources should establish
+            reasonable limits and monitor the size and rate of change so that a misbehaving Server does not cause the
+            Client to spend an unreasonable amount of effort (network communication and storage) in doing so. This
+            should include caps on the number and representation sizes of resources (including TRS Change Logs and TRS
+            Base pages, for example).
+          </li>
+          <li>
+            Since the Client is retrieving resources of various kinds over the network from the Server, which takes time
+            and network connections, the Client should do so in a way that does not prevent it from doing other useful
+            work while waiting for responses. The Client should be tolerant of failures due to network failures and
+            outages, and carry over important work until the blockage has been removed. On the other hand, the Client
+            should not allow its queue of work to grow without bound since that may make it difficult for the Client to
+            clear the backlog. The Client should also be polite to the Server, and avoid making multiple requests per
+            second and/or downloading large files that might make it hard for the Server to keep up with its normal
+            workload.
+          </li>
+          <li>
+            A Server’s Resources should be linked data resources under the control of the Server itself, rather than
+            linked data resources of some other lifecycle tool. A Client that does not trust a Server in this regard
+            should mitigate the risk by keeping a server whitelist for each Server and refusing to retrieve the
+            Resources of a given Server when the server is not on the whitelist. Without something like this, a Client
+            can be tricked into retrieving and indexing resources that it should not, such as other resources located on
+            a different server that the Client also happens to have access to.
+          </li>
+          <li>
+            The RDF content of a Tracked Resource should be statements about linked data resources under the control of
+            the Server itself, rather than statements about linked data resources of some other lifecycle tool. In other
+            words, the subjects of a lifecycle tool claims should be its own resources, as opposed to resources of some
+            other lifecycle tool. A Client that does not trust a Server in this regard should mitigate the risk by
+            keeping a content whitelist for each Server and rejecting the RDF content of Tracked Resources of a given
+            Server when the URIs of subjects are not all on the content whitelist. Without something like this, a Server
+            can affect a Client with arbitrary claims which may interfere with or contradict authoritative claims made
+            by the legitimate owner.
+          </li>
+        </ul>
+      </section>
+      <section id="accGuidance" class="informative">
+        <h2>Access Context Guidance</h2>
+        <p>
+          There are several things to consider when deciding how a lifecycle tool can make use of Access Contexts.
+          Before suggesting possible designs, here are some characteristics that will help ensure a lifecycle tool will
+          be useful to administrators tasked with configuring access to the Tracked Resources that have been retreived
+          by a TRS Client:
+        </p>
+        <ul>
+          <li>
+            <b>Optional</b>. A Server should only use Access Contexts if there are reasons why an administrator might
+            want to impose differential access in Clients.
+          </li>
+          <li>
+            <b>Understandable</b>. An administrator should be able to intuit from the Access Context name and
+            description what kinds of resources are in it.
+          </li>
+          <li>
+            <b>Useful collections</b>. An Access Context should contain resources that can be treated similarly. Same
+            security classification. An Access Context should contain resources with the same security classification.
+          </li>
+          <li>
+            <b>Reasonable number</b>. The list of Access Contexts should not be so long as to overwhelm the
+            administrator.
+          </li>
+          <li>
+            <b>Stable</b>. The set of Access Contexts should be more or less static. Changes to the Access Context list
+            will generally require the administrator to update configurations of Clients.
+          </li>
+          <li>
+            <b>Centralized</b>. A Server should host a single Access Context List resource enumerating the Access
+            Contexts used in any of its Tracked Resources, unless there are reasons to do otherwise.
+          </li>
+        </ul>
+        <p>
+          The following recipes suggest some of the designs that are possible.
+        </p>
+        <p>
+          <b>Recipe 1</b>: Your tool has top-level objects called workspaces. New workspaces are created infrequently,
+          and only by administrators. Each linked data resource is associated with a single workspace. Teams of users
+          work in the context of a single workspace. All the resources in a workspace have the same security
+          classification.
+        </p>
+        <p>
+          Your tool should treat each workspace as a separate Tracked Resource Set, and not use Access Contexts.
+        </p>
+        <p>
+          An administrator can always control access to the linked data in a Client on an TRS by TRS basis, and grant
+          users access to linked data from some workspaces but not others.
+        </p>
+        <p>
+          <b>Recipe 2</b>: Your tool has top-level objects called projects. New projects are created infrequently, and
+          only by administrators. Each linked data resource is associated with a single project. Teams of users work in
+          the context of a set of projects. All the resources in a project have the same security classification.
+        </p>
+        <p>
+          Your tool should treat all projects as part of a single Resource Set, and automatically create Access Contexts
+          in 1-1 correspondence with projects, taking on the name and description of the project.
+        </p>
+        <p>
+          An administrator can control access to the linked data in an Client on a project by project basis, and grant
+          users access to linked data from some projects but not others.
+        </p>
+        <p>
+          <b>Recipe 3</b>: Your tool has resources that can be tagged as containing confidential customer information.
+          Teams of users work in the context of your tool. In the customer’s organization, only some employees are
+          allowed access to confidential customer information.
+        </p>
+        <p>
+          Your tool should have a single Tracked Resource Set, and automatically create an Access Context named
+          “Confidential Customer Data” and assigns all tagged resources to this Access Context. Other resources are left
+          “loose”; i.e., not included in any Access Context.
+        </p>
+        <p>
+          An administrator for a Client can control access to the confidential customer information separately from the
+          regular linked data.
+        </p>
+        <p>
+          <b>Recipe 4</b>: Your tool has many resources. Teams of users work in the context of your tool. The customer’s
+          organization has strict policies on what information can be shown to which employees.
+        </p>
+        <p>
+          Your tool should have a single Tracked Resource Set. Your tool should let an administrator define a set of
+          custom Access Contexts. Your tool should let users (or possibly just administrators) associate resources with
+          these Access Contexts.
+        </p>
+        <p>
+          An administrator can control access to the linked data in a Client based on these custom Access Contexts.
+        </p>
+      </section>
+      <section id="patchGuidance" class="informative">
+        <h2>TRS Patch Guidance</h2>
+        <p>
+          The following sections provide general guidlines on using the TRS Patch capability.
+        </p>
+        <section id="patchServerGuidance" class="informative">
+          <h3>TRS Patch Guidance for Servers</h3>
+          <p>
+            When the state of a Tracked Resource changes, the Server adds a <code>trs:Modification</code> Change Event
+            to a Change Log. The Change Event describes a transition between two definite representations states of the
+            Tracked Resource. In principle, the entity tags of the two states, and the LD patch between the two RDF
+            representations, are all well-defined. This much is true whether or not the Server chooses to embed those
+            pieces of information in the Change Event.
+          </p>
+          <p>
+            The decision as to whether to provide an LD Patch for a <code>trs:Modification</code> Change Event should be
+            made on a case-by-case basis. Just because one Change Event for a resource includes an LD Patch, that does
+            not mean that all Change Events for the same resource should also include an LD Patch.
+          </p>
+          <p>
+            Server developers should remember that a Client wishing to discover the current state of a resource can
+            always do so using HTTP GET to retrieve the resource. Including an LD Patch in a Change Event is an optional
+            embellishment that allows some Client under the right circumstances to determine the new current state of a
+            resource instead of re-retrieving the resource. It is up to the Server to decide whether including an LD
+            patch is likely to be worthwhile.
+          </p>
+          <p>
+            However, whenever a <code>trs:Modification</code> Change Event includes a <code>trspatch:rdfPatch</code>, it
+            should also include accurate <code>trspatch:beforeETag</code> and
+            <code>trspatch:afterETag</code> properties. Without all 3 pieces of information, a Client is unlikely to be
+            able to do better than re-retrieving the resource to discover its updated state.
+          </p>
+          <p>
+            When the RDF representation of the resource contains a large number of RDF triples and the number of rows in
+            the LD Patch is small, including the LD patch in the Change Event is recommended, and may improve overall
+            system performance by allowing Clients to avoid having to re-retrieve the resource to discover its updated
+            state. Similiarly, whenever a <code>trs:Creation</code> Change Event includes a
+            <code>trspatch:rdfPatch</code>, it should also include a <code>trspatch:createdFrom</code> along with
+            accurate <code>trspatch:beforeETag</code> and <code>trspatch:afterETag</code> properties.
+          </p>
+          <p>
+            Conversely, when the number of affected RDF triples is large, the size of the LD Patch becomes significant.
+            Including the LD Patch in the Change Event is not recommended because it bloats the size of Change Events in
+            the Change Log, which may negatively impact performance. Omitting the LD patch from the Change Event is
+            likely to give better overall performance.
+          </p>
+        </section>
+        <section id="patchClientGuidance" class="informative">
+          <h3>TRS Patch Guidance for Clients</h3>
+          <p>
+            A typical Client is tracking the state of some or all Tracked Resources in a Resource Set. When the Client
+            first discovers the Resource, whether through a <code>trs:Creation</code> Change Event in the Change Log or
+            an entry in the Base, the Client uses HTTP GET to retrieve the current state of the Resource and gets back
+            its RDF representation. When the response includes an entity tag for the resource in its current state, as
+            it will when the Index Resource is a LDP-RS, the Client remembers both the RDF representation and entity tag
+            as the state of that Index Resource.
+          </p>
+          <p>
+            When the Client processes a <code>trs:Modification</code> Change Event for the Resource in the Change Log,
+            it learns that the Resource has changed state. This means that the Client’s remembered RDF representation
+            and entity tag for the Resource are no longer accurate, which cues the Client to discard the remembered RDF
+            representation and re-retrieve the Resource. However, when the Change Event includes a TRS Patch, the Client
+            may have a second option. When the <code>trspatch:beforeETag</code> value matches the Client’s remembered
+            entity tag, the Client can apply the <code>trspatch:rdfPatch</code> to its remembered RDF representation to
+            compute a replacement RDF representation, which can be remembered along with the
+            <code>trspatch:afterETag</code> value as the entity tag. When this happens, the Client can process the
+            <code>trs:Modification</code> Change Event for the Resource without a network request. It is clearly
+            advantageous for a Client to behave this way whenever possible. On the other hand, if the
+            <code>trspatch:beforeETag</code> value does not match the Client’s remembered entity tag, the Client cannot
+            apply the <code>trspatch:rdfPatch</code>, and should treat the Change Event as if the TRS Patch were absent.
+          </p>
+          <p>
+            Similarly, when the Client processes a <code>trs:Creation</code> Change Event for the Resource in the Change
+            Log of the Tracked Resource Set, the Client learns of the existence of a new Resource. This cues the Client
+            to retrieve the new Resource. However, when the Change Event includes a TRS Patch, the Client may have a
+            second option. When the Clienthas previously retrieved and remembered the resource identified by
+            <code>trspatch:createdFrom</code> in the state with entity tag matching <code>trspatch:beforeETag</code>,
+            the Client can apply the <code>trspatch:rdfPatch</code> to the Client’s remembered RDF representation to
+            compute an RDF representation of the new Resource, which can be remembered along with the
+            <code>trspatch:afterETag</code> value as the entity tag. When this happens, the Client can process the
+            <code>trs:Modification</code> Change Event for the Resource without having to retrieve the new Resource. It
+            is clearly advantageous for a Clientto behave this way whenever possible. On the other hand, if the
+            <code>trspatch:beforeETag</code> value does not match the Client’s remembered entity tag, the Client cannot
+            apply the <code>trspatch:rdfPatch</code> and should treat the Change Event as if the TRS Patch were absent.
+          </p>
+          <p>
+            Risk-wise, TRS Patches provide a way for a Server to tamper with the RDF representations of another server’s
+            resources in a Client without the other server’s involvement. The mitigations covered in General Guidance
+            for Clients, above, will address this risk as well. The Clients’s server whitelist for an untrusted Tracked
+            Resource Set should be used to vet <code>trspatch:createdFrom</code> URIs, and its content whitelist should
+            be used to vet subjects in the results of applying TRS patches.
+          </p>
+        </section>
+      </section>
     </section>
-    <section id='patchClientGuidance' class='informative'>
-      <h3>TRS Patch Guidance for Clients</h3>
-      <p>
-        A typical Client is tracking the state of some or all Tracked Resources
-        in a Resource Set. When the Client first discovers the Resource, whether
-        through a <code>trs:Creation</code> Change Event in the Change Log or an
-        entry in the Base, the Client uses HTTP GET to retrieve the current state of
-        the Resource and gets back its RDF representation. When the response
-        includes an entity tag for the resource in its current state, as it will
-        when the Index Resource is a LDP-RS, the Client remembers both the RDF
-        representation and entity tag as the state of that Index Resource.
-      </p>
-      <p>
-        When the Client processes a <code>trs:Modification</code> Change Event
-        for the Resource in the Change Log, it learns that the Resource has changed
-        state. This means that the Client’s remembered RDF representation and entity
-        tag for the Resource are no longer accurate, which cues the Client to
-        discard the remembered RDF representation and re-retrieve the
-        Resource. However, when the Change Event includes a TRS Patch, the Client
-        may have a second option. When the <code>trspatch:beforeETag</code> value
-        matches the Client’s remembered entity tag, the Client can apply
-        the <code>trspatch:rdfPatch</code> to its remembered RDF representation to
-        compute a replacement RDF representation, which can be remembered along with
-        the <code>trspatch:afterETag</code> value as the entity tag. When this
-        happens, the Client can process the <code>trs:Modification</code> Change
-        Event for the Resource without a network request. It is clearly advantageous
-        for a Client to behave this way whenever possible. On the other hand, if
-        the <code>trspatch:beforeETag</code> value does not match the Client’s
-        remembered entity tag, the Client cannot apply
-        the <code>trspatch:rdfPatch</code>, and should treat the Change Event as if
-        the TRS Patch were absent.
-      </p>
-      <p>
-        Similarly, when the Client processes a <code>trs:Creation</code> Change
-        Event for the Resource in the Change Log of the Tracked Resource Set, the
-        Client learns of the existence of a new Resource. This cues the Client to
-        retrieve the new Resource. However, when the Change Event includes a TRS
-        Patch, the Client may have a second option. When the Clienthas previously
-        retrieved and remembered the resource identified
-        by <code>trspatch:createdFrom</code> in the state with entity tag
-        matching <code>trspatch:beforeETag</code>, the Client can apply
-        the <code>trspatch:rdfPatch</code> to the Client’s remembered RDF
-        representation to compute an RDF representation of the new Resource, which
-        can be remembered along with the <code>trspatch:afterETag</code> value as
-        the entity tag. When this happens, the Client can process
-        the <code>trs:Modification</code> Change Event for the Resource without
-        having to retrieve the new Resource. It is clearly advantageous for a
-        Clientto behave this way whenever possible. On the other hand, if
-        the <code>trspatch:beforeETag</code> value does not match the Client’s
-        remembered entity tag, the Client cannot apply
-        the <code>trspatch:rdfPatch</code> and should treat the Change Event as if
-        the TRS Patch were absent.
-      </p>
-      <p>
-        Risk-wise, TRS Patches provide a way for a Server to tamper with the RDF
-        representations of another server’s resources in a Client without the other
-        server’s involvement. The mitigations covered in General Guidance for
-        Clients, above, will address this risk as well. The Clients’s server
-        whitelist for an untrusted Tracked Resource Set should be used to
-        vet <code>trspatch:createdFrom</code> URIs, and its content whitelist should
-        be used to vet subjects in the results of applying TRS patches.
-      </p>
+    <section class="appendix informative" id="history">
+      <h2>Change History</h2>
+      <p>Below is a summary of some of the changes in this draft</p>
+
+      <ul>
+        <li>2015-05-05 Changed Consumer to Client, changed to a committee note</li>
+        <li>2014-09-04 Initial draft, extracted from OSLC Resource Preview 3.0 specification working draft. (SP)</li>
+      </ul>
     </section>
-  </section>
-</section>
-<section class="appendix informative" id="history">
-<h2>Change History</h2>
-<p>Below is a summary of some of the changes in this draft</p>
-
-<ul>
-    <li>2015-05-05 Changed Consumer to Client, changed to a committee note
-    <li>2014-09-04 Initial draft, extracted from OSLC Resource Preview 3.0
-        specification working draft. (SP)</li>
-</ul>
-</section>
-
-</body>
+  </body>
 </html>
-

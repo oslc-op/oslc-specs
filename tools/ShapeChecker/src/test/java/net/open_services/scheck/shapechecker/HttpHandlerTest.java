@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  */
 public class HttpHandlerTest
 {
-    private HttpHandler httpHandler = new HttpHandler();
+    private HttpHandler httpHandler = new HttpHandler(0,null);
 
     /**
      * Test removeFragment method.

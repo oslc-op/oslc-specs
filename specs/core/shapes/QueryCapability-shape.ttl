@@ -18,7 +18,8 @@
 @prefix dcterms: <http://purl.org/dc/terms/>.
 @prefix oslc: <http://open-services.net/ns/core#> .
 
-@base <http://open-services.net/ns/core/shapes/3.0/QueryCapability-shape.ttl> .
+@prefix : <http://open-services.net/ns/core/shapes/3.0/#> .
+@base <http://open-services.net/ns/core/shapes/3.0/#> .
 
 
 <#QueryCapability>  a oslc:ResourceShape ;
@@ -26,33 +27,25 @@
     dcterms:description "A Query Capability describes a query capability, capable of querying resources via HTTP GET or POST." ;
     oslc:describes oslc:QueryCapability ;
     oslc:property
-        <#dcterms-title>,
-        <#oslc-label>,
-        <#oslc-queryBase>,
-        <#oslc-resourceShape>,
-        <#oslc-resourceType>,
-        <#oslc-usage>
-.
-
-<#dcterms-title> a oslc:Property ;
+[ a oslc:Property ;
 	oslc:name "title" ;
 	oslc:propertyDefinition dcterms:title ;
 	oslc:occurs oslc:Exactly-one;
 	dcterms:description "Title string that could be used for display."^^rdf:XMLLiteral ;
 	oslc:valueType rdf:XMLLiteral ;
 	oslc:readOnly true
-.
-
-<#oslc-label> a oslc:Property;
+],
+[
+ a oslc:Property;
 	oslc:name "label" ;
 	oslc:propertyDefinition oslc:label ;
 	oslc:occurs oslc:Zero-or-one;
 	dcterms:description "Very short label for use in menu items."^^rdf:XMLLiteral ;
 	oslc:valueType <http://www.w3.org/2001/XMLSchema#string> ;
 	oslc:readOnly true
-.
-
-<#oslc-queryBase> a oslc:Property ;
+],
+[
+ a oslc:Property ;
 	oslc:name "queryBase" ;
 	oslc:propertyDefinition oslc:queryBase ;
 	oslc:occurs oslc:Exactly-one;
@@ -60,9 +53,9 @@
 	oslc:valueType oslc:Resource ;
 	oslc:representation oslc:Reference ;
 	oslc:readOnly true
-.
-
-<#oslc-resourceShape> a oslc:Property ;
+],
+[
+ a oslc:Property ;
 	oslc:name "resourceShape" ;
 	oslc:propertyDefinition oslc:resourceShape ;
 	oslc:range oslc:ResourceShape ;
@@ -71,9 +64,9 @@
 	oslc:valueType oslc:Resource ;
 	oslc:representation oslc:Reference ;
 	oslc:readOnly true
-.
-
-<#oslc-resourceType> a oslc:Property ;
+],
+[
+ a oslc:Property ;
 	oslc:name "resourceType" ;
 	oslc:propertyDefinition oslc:resourceType ;
 	oslc:range rdfs:Class ;
@@ -82,9 +75,9 @@
 	oslc:valueType oslc:Resource ;
 	oslc:representation oslc:Reference ;
 	oslc:readOnly true
-.
-
-<#oslc-usage> a oslc:Property ;
+],
+[
+ a oslc:Property ;
 	oslc:name "usage" ;
 	oslc:propertyDefinition oslc:usage ;
 	oslc:occurs oslc:Zero-or-many;
@@ -92,6 +85,4 @@
 	oslc:valueType oslc:Resource ;
 	oslc:representation oslc:Reference ;
 	oslc:readOnly true
-.
-
-
+].

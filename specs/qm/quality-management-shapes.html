@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>OSLC Quality Management Version 2.1. Part 3: Constraints</title>
+    <meta
+      name="description"
+      content="This specification defines resource shapes for the OSLC Quality Management domain."
+    />
+
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.17/builds/respec-oasis-common.min.js"
+      async
+      class="remove"
+    ></script>
+    <!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
+    <script class="remove">
+      var status = "WD";
+      var revision = 3;
+
+      var wdBase = "https://oslc-op.github.io/oslc-specs/specs/qm/";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/qm/v2.1/";
+      var thisBase = wdBase;
+      if ("WD" !== status) {
+        var thisBase = oasisBase + status.toLowerCase() + revision.toString().padStart(2, "0") + "/";
+      }
+
+      var respecConfig = {
+        shortName: "quality-management-shapes",
+        specStatus: status,
+        revision: revision.toString().padStart(2, "0"),
+        // publishDate:  "2019-11-14",
+        previousPublishDate: "2019-11-14",
+        previousMaturity: "PSD",
+
+        thisVersion: thisBase + "quality-management-shapes.html",
+        prevVersion: null,
+        latestVersion: oasisBase + "quality-management-shapes.html",
+        latestSpecVersion: "https://open-services.net/spec/qm/latest",
+        edDraftURI: "https://open-services.net/spec/qm/latest-draft",
+
+        // Other parts of multi-part spec
+        additionalArtifacts: [
+          { title: "OSLC Quality Management Version 2.1. Part 1: Specification", href: "quality-management-spec.html" },
+          {
+            title: "OSLC Quality Management Version 2.1. Part 2: Vocabulary",
+            href: "quality-management-vocab.html",
+          },
+          {
+            title: "OSLC Quality Management Version 2.1. Part 3: Constraints (this document)",
+            href: "quality-management-shapes.html",
+          },
+          {
+            title: "OSLC Quality Management Version 2.1. Part 4: Machine Readable Vocabulary Terms",
+            href: "quality-management-vocab.ttl",
+          },
+          {
+            title: "OSLC Quality Management Version 2.1. Part 5: Machine Readable Constraints",
+            href: "quality-management-shapes.ttl",
+          },
+        ],
+
+        relatedWork: [
+          {
+            title: "Open Services for Lifecycle Collaboration Quality Management Specification Version 2.0",
+            href: "https://archive.open-services.net/bin/view/Main/QmSpecificationV2",
+          },
+        ],
+
+        localBiblio: {
+          OSLCActions: {
+            title: "Open Services for Lifecycle Collaboration Actions Specification Version 2.0",
+            href: "https://archive.open-services.net/wiki/core/Actions-2.0/index.html",
+            authors: ["Martin Pain", "Steve Speicher"],
+            status: "Finalization",
+            publisher: "https://open-services.net",
+          },
+          OSLCCM: {
+            title: "Open Services for Lifecycle Collaboration Change Management Specification Version 2.0",
+            href: "https://archive.open-services.net/bin/view/Main/CmSpecificationV2",
+            authors: ["Steve Speicher"],
+            status: "Final",
+            publisher: "https://open-services.net",
+          },
+          OSLCRM: {
+            title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
+            href: "https://archive.open-services.net/bin/view/Main/RmSpecificationV2",
+            authors: ["Ian Green"],
+            status: "Final",
+            publisher: "https://open-services.net",
+          },
+          OSLCQM: {
+            title: "Open Services for Lifecycle Collaboration Quality Management Specification Version 2.0",
+            href: "https://archive.open-services.net/bin/view/Main/QmSpecificationV2",
+            authors: ["Paul McMahan"],
+            status: "Final",
+            publisher: "https://open-services.net",
+          },
+          OSLCCore3: {
+            title: "OSLC Core Overview v3.0",
+            href:
+              "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part1-overview/oslc-core-v3.0-csprd03-part1-overview.html",
+            status: "Committee Specification Public Review Draft",
+            authors: ["Steve Speicher", "Jim Amsden"],
+            publisher: "OASIS",
+          },
+        },
+
+        // the document's citation label
+        citationLabel: "OSLC-qm-2.1-Part3",
+        license: "cc-by-4",
+
+        additionalLicenses: [
+          {
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+          },
+        ],
+        namespaces: [
+          {
+            href: "http://open-services.net/ns/qm#",
+            prefix: "oslc",
+          },
+        ],
+
+        editors: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com",
+          },
+          {
+            name: "Andrii Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se/en",
+          },
+          {
+            name: "Gray Bachelor",
+            mailto: "gray_bachelor@uk.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com",
+          },
+        ],
+
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-op",
+
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Andrii Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se/en",
+          },
+        ],
+      };
+    </script>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid #666;
+        border-collapse: collapse;
+      }
+      table th,
+      table td {
+        padding: 5px; /* Apply cell padding */
+      }
+
+      hr {
+        border: none;
+        border-top: 1px double #666;
+        color: #666;
+        overflow: visible;
+        height: 0px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section id="abstract">
+      <p>This specification defines resource shapes for the OSLC Quality Management domain.</p>
+    </section>
+
+    <section id="toc"></section>
+    <section id="sotd"></section>
+
+    <section id="introduction">
+      <h1>Introduction</h1>
+
+      <section id="overview" class="informative">
+        <h2>Overview</h2>
+        <p>
+          This specification defines resource shapes for OSLC Quality Management resources. The intent is to define
+          resources needed to support common integration scenarios and not to provide a comprehensive definition of
+          quality management artefacts. The resource formats may not match exactly the native models supported by
+          quality management service providers, but are intended to be compatible with them. The approach to supporting
+          these scenarios is to delegate operations, as driven by service provider contributed user interfaces, as much
+          as possible and not require a service provider to expose its complete data model and application logic.
+        </p>
+
+        <figure>
+          <img src="oslc_qm_resources.png" />
+          <figcaption>OSLC Quality Management Version 2.1 resource relationship overview</figcaption>
+        </figure>
+      </section>
+
+      <section id="terminology">
+        <h2>Terminology</h2>
+        <p>
+          Terminology is based on OSLC Core Overview [[!OSLCCore3]], W3C Linked Data Platform [[!LDP]], W3C's
+          Architecture of the World Wide Web [[WEBARCH]], Hyper-text Transfer Protocol [[!HTTP11]].
+        </p>
+        <!--
+<dl>
+    <dt class='loc-heading'>Term-xxx</dt>
+    <dd>...</dd>
+</dl>
+-->
+      </section>
+
+      <section id="references"><h3>References</h3></section>
+
+      <section id="conventions">
+        <p>
+          In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>,
+          <code>dcterms</code> and <code>foaf</code> defined in the
+          <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html"
+            >OSLC Core specification</a
+          >, OSLC qm defines the namespace URI of <code>http://open-services.net/ns/qm#</code> with a namespace prefix
+          of <code>oslc_qm</code>
+        </p>
+
+        <p>This specification also uses these namespace prefix definitions:</p>
+
+        <ul>
+          <li>oslc_cm : <code>http://open-services.net/ns/cm#</code> [[OSLCCM]]</li>
+          <li>oslc_rm : <code>http://open-services.net/ns/rm#</code> [[OSLCRM]]</li>
+        </ul>
+      </section>
+    </section>
+
+    <section id="resourceDefinitions">
+      <h2>Quality Management Resource Constraints</h2>
+
+      <section id="TestPlanShape">
+        <h3 id="resource_testplan">Resource: TestPlanShape</h3>
+
+        <p>Test Plan defines the overall process and strategy for testing a system</p>
+
+        <div
+          title="Shape for oslc_qm:TestPlan"
+          data-include="./quality-management-shapes.ttl#TestPlanShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="TestScriptShape">
+        <h3 id="resource_testscript">Resource: TestScriptShape</h3>
+
+        <p>Test Script defines a program or list of steps used to conduct a test.</p>
+
+        <div
+          title="Shape for oslc_qm:TestScript"
+          data-include="./quality-management-shapes.ttl#TestScriptShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="TestCaseShape">
+        <h3 id="resource_testcase">Resource: TestCaseShape</h3>
+
+        <p>
+          Test Case defines the criteria which determine whether a system exhibits the correct behavior under a specific
+          set of circumstances.
+        </p>
+
+        <div
+          title="Shape for oslc_qm:TestCase"
+          data-include="./quality-management-shapes.ttl#TestCaseShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="TestResultShape">
+        <h3 id="resource_testresult">Resource: TestResultShape</h3>
+
+        <p>Test Result describes the outcome of attempting to execute a test.</p>
+
+        <div
+          title="Shape for oslc_qm:TestResult"
+          data-include="./quality-management-shapes.ttl#TestResultShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="TestExecutionRecordShape">
+        <h3 id="resource_testexecutionrecord">Resource: TestExecutionRecordShape</h3>
+
+        <p>Test Execution Record is a plan for execution of a test."</p>
+
+        <div
+          title="Shape for oslc_qm:TestExecutionRecord"
+          data-include="./quality-management-shapes.ttl#TestExecutionRecordShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+    </section>
+
+    <section id="conformance">
+      <h2>Conformance</h2>
+      <p>
+        Quality Management servers MUST follow the constraints defined here where required, and with the meanings
+        defined here.
+      </p>
+      <p>Quality Management servers MAY provide additional constraints for specific purposes.</p>
+    </section>
+  </body>
+</html>

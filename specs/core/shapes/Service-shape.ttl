@@ -18,24 +18,17 @@
 @prefix dcterms: <http://purl.org/dc/terms/>.
 @prefix oslc: <http://open-services.net/ns/core#> .
 
-@base <http://open-services.net/ns/core/shapes/3.0/Service-shape.ttl> .
+@prefix : <http://open-services.net/ns/core/shapes/3.0/#> .
+@base <http://open-services.net/ns/core/shapes/3.0/#> .
 
 
 <#Service>  a oslc:ResourceShape ;
     dcterms:title "Service" ;
-    dcterms:description """An LDPC whose properties describe specific services offered by a server, 
+    dcterms:description """An LDPC whose properties describe specific services offered by a server,
         and the URIs to use for those services in the context of that ServiceProvider.""" ;
     oslc:describes oslc:Service ;
-    oslc:property 
-        <#oslc-service-domain>,
-        <#oslc-creationFactory>,
-        <#oslc-queryCapability>,
-        <#oslc-selectionDialog>,
-        <#oslc-creationDialog>,
-        <#oslc-usage>
-.
-
-<#oslc-service-domain> a oslc:Property ;
+    oslc:property
+[ a oslc:Property ;
 	oslc:name "domain" ;
 	oslc:propertyDefinition oslc:domain ;
 	oslc:occurs oslc:Exactly-one;
@@ -43,9 +36,9 @@
 	oslc:valueType oslc:Resource ;
 	oslc:representation oslc:Reference ;
 	oslc:readOnly true
-.
-
-<#oslc-creationFactory> a oslc:Property ;
+],
+[
+ a oslc:Property ;
 	oslc:name "creationFactory" ;
 	oslc:propertyDefinition oslc:creationFactory ;
 	oslc:range oslc:CreationFactory ;
@@ -54,9 +47,9 @@
 	oslc:valueType oslc:AnyResource ;
 	oslc:representation oslc:Inline ;
 	oslc:readOnly true
-.
-
-<#oslc-queryCapability> a oslc:Property ;
+],
+[
+ a oslc:Property ;
 	oslc:name "queryCapability" ;
 	oslc:propertyDefinition oslc:queryCapability ;
 	oslc:range oslc:QueryCapability ;
@@ -65,9 +58,9 @@
 	oslc:valueType oslc:AnyResource ;
 	oslc:representation oslc:Inline ;
 	oslc:readOnly true
-.
-
-<#oslc-selectionDialog> a oslc:Property ;
+],
+[
+ a oslc:Property ;
 	oslc:name "selectionDialog" ;
 	oslc:propertyDefinition oslc:selectionDialog ;
 	oslc:range oslc:Dialog ;
@@ -76,9 +69,9 @@
 	oslc:valueType oslc:AnyResource ;
 	oslc:representation oslc:Inline ;
 	oslc:readOnly true
-.
-
-<#oslc-creationDialog> a oslc:Property ;
+],
+[
+ a oslc:Property ;
 	oslc:name "creationDialog" ;
 	oslc:propertyDefinition oslc:creationDialog ;
 	oslc:range oslc:Dialog ;
@@ -87,16 +80,16 @@
 	oslc:valueType oslc:AnyResource ;
 	oslc:representation oslc:Inline ;
 	oslc:readOnly true
-.
-
-<#oslc-usage> a oslc:Property ;
+],
+[
+ a oslc:Property ;
 	oslc:name "usage" ;
 	oslc:propertyDefinition oslc:usage ;
 	oslc:occurs oslc:Zero-or-many;
-	dcterms:description """An identifier URI for the domain specified usage of 
+	dcterms:description """An identifier URI for the domain specified usage of
 		this resource. If a resource has multiple uses, it may designate the primary or default one that should be used with a property value of oslc:default."""^^rdf:XMLLiteral ;
 	oslc:valueType oslc:Resource ;
 	oslc:representation oslc:Reference ;
 	oslc:readOnly true
-.
+].
 

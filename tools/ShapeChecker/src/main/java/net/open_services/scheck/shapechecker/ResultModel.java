@@ -1,14 +1,8 @@
 package net.open_services.scheck.shapechecker;
 
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 
@@ -39,7 +33,8 @@ import org.apache.jena.vocabulary.RDF;
  *    # There is one of these for each vocabulary and shape URL provided
  *    a sc:VocabularyResult | sc:ShapesResult ;
  *    dcterms:source fileOrUrl ;
- *    sc:checks vocabUri ; # for sc:VocabularyResult only
+ *    dcterms:title "title or similar name of vocab or shapes resource" ??? TODO DO I WANT THIS?
+ *    sc:checks Uri ; #resultModel always the same as dcterms:source - TODO so why have both?
  *    sc:issueCount [
  *       # The total numbers of issues reported against this vocabulary or shape, added by post-processing.
  *       sc:infoCount nnn ; sc:warnCount nnn ; sc:errorCount nnn
@@ -47,7 +42,7 @@ import org.apache.jena.vocabulary.RDF;
  *    sc:result [
  *       # There is one of these for each ontology, vocabulary term, shape
  *       a OntologyResult|TermResult|ShapeResult|PropertyResult ;
- *       sc:checks subjectUri ;
+ *       sc:checks subjectUri ; #resultModel the URI of the thing being checked (ontology, vocabulary term, shape)
  *       dcterms:references uri ; # for each other resource mentioned by a property definition
  *       sc:result [
  *          # There is a nested sc:result for each property definition in a shape
@@ -111,6 +106,7 @@ public class ResultModel
      * Get the result model.
      * @return the result model
      */
+    @javax.annotation.CheckReturnValue
     public Model getModel()
     {
         return resultModel;
@@ -121,19 +117,10 @@ public class ResultModel
      * Get the vocabulary model.
      * @return the vocabulary model
      */
+    @javax.annotation.CheckReturnValue
     public Model getResultVocabModel()
     {
         return resultVocabModel;
-    }
-
-
-    /**
-     * Get the summary resource in the result model.
-     * @return the result model
-     */
-    public Resource getSummaryResource()
-    {
-        return summaryResource;
     }
 
 
@@ -172,7 +159,7 @@ public class ResultModel
      */
     public void suppressIssue(String name)
     {
-        Terms.findIssue(name).ifPresent(r -> suppressedIssues.add(r));
+    	Terms.findIssue(name).ifPresent(r -> suppressedIssues.add(r));
     }
 
 
@@ -246,25 +233,48 @@ public class ResultModel
     }
 
 
-    /**
+	/**
      * Get the summary resource.
      * @return the summary resource
      */
+    @javax.annotation.CheckReturnValue
     public Resource getSummary()
     {
         return summaryResource;
     }
 
+
     /**
+     * Description of addSummaryIssue.
+     * @param type the type of the issue
+     * @param resource the resource (vocabulary, shape, term) for the issue
+     */
+    public void addSummaryIssue(Property type, Resource resource)
+	{
+		if (!suppressedIssues.contains(type))
+		{
+			getSummary().addProperty(type, resource);
+		}
+	}
+
+
+	/**
      * Add counts of each issue severity.
+     * @param debug the current debug level
      * @return the number of errors found.
      */
-    public int summarizeIssues()
+    @javax.annotation.CheckReturnValue
+    public int summarizeIssues(int debug)
     {
         resultVocabModel = ModelFactory.createDefaultModel()
                 .read(ResultModel.class.getClassLoader().getResourceAsStream("SCVocabulary.ttl"),
                     "http://open-services.net/ns/scheck#",
                     "TURTLE");
+        if (debug > 3)
+        {
+            System.err.println("\nVocabulary model:");
+            Models.write(resultVocabModel, System.err);
+        }
         return new IssueSummarizer(this).countIssues();
     }
 }
