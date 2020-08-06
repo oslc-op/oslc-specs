@@ -53,7 +53,7 @@
             company: "KTH",
             companyURL: "https://www.kth.se/en"
           }
-	],
+    ],
 
         // name of the OP
         wg : "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
@@ -591,7 +591,15 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
         </li>
       </ol>
       <p>
-        During this version resolution, overrides from change set configurations MUST be taken into account. If a change
+        During this version resolution, overrides for entire configurations MUST be taken into account.
+        If a contribution is marked as an override and the overriding configuration is earlier in the ordered set
+        of all recursive contributions than the overridden configuration,
+        the overridden configuration and all its contributions MUST be ignored in their entirety.
+        Servers MAY report an error if an overriding configuration is later in the ordered set
+        of all recursive contributions than the overridden configuration.
+      </p>
+      <p>
+        Overrides from change set configurations MUST also be taken into account. If a change
         set removes a selection for a versioned resource in the overridden configuration, and no other selection is
         provided for that resource in some other configuration, then the request MUST fail with a 404 Resource not
         found. If a change set replaces a selection for a versioned resource in the overridden configuration, and no
