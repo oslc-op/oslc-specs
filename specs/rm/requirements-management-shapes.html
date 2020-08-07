@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="This specification defines resource shapes for the Requirements Management domain."
+    />
+    <title>OSLC Requirements Management Version 2.1. Part 3: Constraints</title>
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.18/builds/respec-oasis-common.min.js"
+      async
+      class="remove"
+    ></script>
+    <script class="remove">
+      var status = "WD"; //Change to "PS" once it is time to publish the PS
+      var revision = 1;
+
+      var wdBase = "https://oslc-op.github.io/oslc-specs/specs/rm/";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/rm/v2.1/";
+      var thisBase = wdBase;
+      if ("WD" !== status) {
+        var thisBase = oasisBase + status.toLowerCase() + revision.toString().padStart(2, "0") + "/";
+      }
+
+      var respecConfig = {
+        // === Revision-specific ===
+
+        // the specification's short name with version but no dots
+        shortName: "requirements-management-shapes",
+        specStatus: status,
+        revision: revision.toString().padStart(2, "0"),
+        //publishDate: "2020-xx-xx", //Set date once it is time to publish the PS
+        previousPublishDate: "2019-10-01",
+        previousMaturity: "PSD",
+
+        prevVersion: null,
+        latestVersion: oasisBase + "requirements-management-shapes.html",
+
+        thisVersion: thisBase + "requirements-management-shapes.html",
+        latestSpecVersion: "https://open-services.net/spec/rm/latest",
+        edDraftURI: "https://open-services.net/spec/rm/latest-draft",
+
+        // Other parts of multi-part spec
+        additionalArtifacts: [
+          {
+            title: "OSLC Requirements Management Version 2.1. Part 1: Specification",
+            href: "requirements-management-spec.html",
+          },
+          {
+            title: "OSLC Requirements Management Version 2.1. Part 2: Vocabulary",
+            href: "requirements-management-vocab.html",
+          },
+          {
+            title: "OSLC Requirements Management Version 2.1. Part 3: Constraints (this document)",
+            href: "requirements-management-shapes.html",
+          },
+          {
+            title: "OSLC Requirements Management Version 2.1. Part 4: Machine-readable Vocabulary Terms",
+            href: "requirements-management-vocab.ttl",
+          },
+          {
+            title: "OSLC Requirements Management Version 2.1. Part 5: Machine-readable Constraints",
+            href: "requirements-management-shapes.ttl",
+          },
+        ],
+
+        relatedWork: [
+          {
+            title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
+            href: "http://open-services.net/bin/view/Main/RmSpecificationV2",
+          },
+        ],
+
+        localBiblio: {
+          OSLCCore2: {
+            title: "OSLC Core 2.0",
+            href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCCore3: {
+            title: "OSLC Core 3.0",
+            href: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Project Specification",
+            publisher: "OASIS",
+          },
+          OSLCCore3LinkGuidance: {
+            title: "OSLC Core 3.0: Link Guidance",
+            href: "https://oslc-op.github.io/oslc-specs/notes/link-guidance.html",
+            authors: ["Jim Amsden"],
+            status: "Project Note Draft",
+            publisher: "OASIS",
+          },
+          OSLCRM: {
+            title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
+            href: "http://open-services.net/bin/view/Main/RmSpecificationV2",
+            authors: ["Ian Green"],
+            status: "Final",
+            publisher: "http://open-services.net",
+          },
+          OSLCQM: {
+            title: "Open Services for Lifecycle Collaboration Quality Management Specification Version 2.0",
+            href: "http://open-services.net/bin/view/Main/QmSpecificationV2",
+            authors: ["Paul McMahan"],
+            status: "Final",
+            publisher: "http://open-services.net",
+          },
+        },
+
+        citationLabel: "OSLC-RM-2.1-Part3",
+        maxTocLevel: 2,
+        namespaces: [{ href: "http://open-services.net/ns/rm#", prefix: "oslc_rm" }],
+        license: "cc-by-4",
+        additionalLicenses: [
+          {
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+          },
+        ],
+        editors: [
+          {
+            name: "Mark Schulte",
+            mailto: "mark.d.schulte@boeing.com",
+            company: "The Boeing Company",
+            companyURL: "http://www.boeing.com",
+          },
+          {
+            name: "Jad El-khoury",
+            mailto: "jad@kth.se",
+            company: "KTH The Royal Institute of Technology",
+            companyURL: "http://www.kth.se",
+          },
+        ],
+
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-op",
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Andrii Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se",
+          },
+        ],
+      };
+    </script>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid #666;
+        border-collapse: collapse;
+      }
+      table th,
+      table td {
+        padding: 5px; /* Apply cell padding */
+      }
+
+      hr {
+        border: none;
+        border-top: 1px double #666;
+        color: #666;
+        overflow: visible;
+        height: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="abstract">
+      <p>This specification defines resource shapes for the OSLC Requirements Management domain.</p>
+    </section>
+
+    <section id="toc"></section>
+    <section id="sotd"></section>
+
+    <section id="introduction" class="informative">
+      <h2>Introduction</h2>
+
+      <p>
+        This specification defines resource shapes for the OSLC Requirements Management resources. The intent is to
+        define resources needed to support common integration scenarios and not to provide a comprehensive definition of
+        a Requirement. The resource formats may not match exactly the native models supported by requirement management
+        service providers, but are intended to be compatible with them. The approach to supporting these scenarios is to
+        delegate operations, as driven by service provider contributed user interfaces, as much as possible and not
+        require a service provider to expose its complete data model and application logic.
+      </p>
+
+      <section id="terminology" class="informative">
+        <h1>Terminology</h1>
+        <p>
+          Terminology is based on OSLC Core Overview [[!OSLCCore3]], W3C Linked Data Platform [[!LDP]], W3C's
+          Architecture of the World Wide Web [[WEBARCH]], Hyper-text Transfer Protocol [[!HTTP11]]. Terminology for this
+          specification is defined in part 1 of the multi-part specification.
+        </p>
+        <!--
+<dl>
+    <dt class='loc-heading'>Term-xxx</dt>
+    <dd>...</dd>
+</dl>
+-->
+      </section>
+
+      <section id="references"><h3>References</h3></section>
+
+      <section id="conventions">
+        <p>
+          In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>,
+          <code>dcterms</code> and <code>foaf</code> defined in the
+          <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html"
+            >OSLC Core specification</a
+          >, OSLC RM defines the namespace URI of <code>http://open-services.net/ns/rm#</code> with a namespace prefix
+          of <code>oslc_rm</code>
+        </p>
+      </section>
+    </section>
+    <section id="conformance">
+      <h2>Conformance</h2>
+      <p>
+        Requirements Management servers MUST use the vocabulary terms defined here where required, and with the meanings
+        defined here.
+      </p>
+      <p>
+        Requirements Management servers MAY augment this vocabulary with additional classes, properties, and
+        individuals.
+      </p>
+    </section>
+
+    <section id="resourceDefinitions">
+      <h2>Requirements Management Resource Constraints</h2>
+
+      <section id="RequirementShape">
+        <h3>Resource: RequirementShape</h3>
+        <p>
+          The constraints on the Requirement resource properties are defined in the tables below. Requirement resource
+          properties are not limited to the ones defined in this specification. Service providers may provide additional
+          properties. It is strongly recommended that any additional properties be defined in XML namespaces distinct
+          from those defined by OSLC in these specifications. Requirement creation through a Creation Factory resource
+          in the Service Description is REQUIRED by this specification.
+        </p>
+        <p>
+          Any <strong>resource</strong> asserted to be of <code>rdf:type</code>
+          <code>http://open-services.net/ns/rm#Requirement</code> MUST conform to the constraints and meaning of
+          properties defined below. Notice that partial representations of a requirement resource are admitted by this
+          specification (for example, in query results, or where <code>oslc.properties</code> has been used), and such
+          partial representations will in general not conform to these constraints.
+        </p>
+
+        <div
+          title="Shape for oslc_rm:Requirement"
+          data-include="./requirements-management-shapes.ttl#RequirementShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="RequirementCollectionShape">
+        <h3>Resource: RequirementCollectionShape</h3>
+        <p>
+          The constraints on the RequirementCollection vocaubluary resource properties are defined in the tables below.
+          RequirementCollection resource properties are not limited to the ones defined in this specification, service
+          providers may provide additional properties. It is strongly recommended that any additional properties be
+          defined in XML namespaces distinct from those defined by OSLC in these specifications. RequirementCollection
+          creation through a Creation Factory resource in the Service Description is OPTIONAL in this specification.
+        </p>
+        <p>
+          Any <strong>resource</strong> asserted to be of <code>rdf:type</code>
+          <code>http://open-services.net/ns/rm#RequirementCollection</code> MUST conform to the constraints and meaning
+          of properties defined below. Notice that partial representations of a requirement collection resource are
+          admitted by this specification (for example, in query results, or where <code>oslc.properties</code> has been
+          used), and such partial representations will in general not conform to these constraints.
+        </p>
+
+        <div
+          title="Shape for oslc_rm:RequirementCollection"
+          data-include="./requirements-management-shapes.ttl#RequirementCollectionShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+    </section>
+
+    <section id="relationshipProperties" class="informative">
+      <h2>Relationship Properties</h2>
+      <p>
+        For compatibility with OSLC Core 2.0 [[!OSLCCore2]], RM servers MAY accept relationship properties. This is
+        however no longer recommended practice, since the necessary reification of relationship can have entailment and
+        inferencing issues. OSLC Core 3.0 Link Guidance [[!OSLCCore3LinkGuidance]] details an alternative approach,
+        where a separate resource is created to represent the relationship and its properties.
+      </p>
+
+      <p>The following relationship properties are defined by this specification:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixed Name</th>
+            <th>Occurs</th>
+            <th>Read-only</th>
+            <th>Value-type</th>
+            <th>Representation</th>
+            <th>Range</th>
+            <th colspan="2">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>dcterms:title</code></td>
+            <td>zero-or-one</td>
+            <td>unspecified</td>
+            <td>XMLLiteral</td>
+            <td>n/a</td>
+            <td>n/a</td>
+            <td colspan="2">
+              Title (reference: Dublin Core) of the link represented as rich text in XHTML content. SHOULD include only
+              content that is valid inside an XHTML &lt;span&gt; element.
+            </td>
+          </tr>
+          <tr>
+            <td><code>dcterms:creator</code></td>
+            <td>zero-or-many</td>
+            <td>unspecified</td>
+            <td>Resource or Local Resource</td>
+            <td>Either Reference or Inline</td>
+            <td><code>any</code></td>
+            <td colspan="2">
+              Creator(s) of resource (reference: Dublin Core). It is likely that the target resource will be a
+              <code>foaf:Person</code> but that is not necessarily the case.
+            </td>
+          </tr>
+          <tr>
+            <td><code>dcterms:contributor</code></td>
+            <td>zero-or-many</td>
+            <td>unspecified</td>
+            <td>Resource or Local Resource</td>
+            <td>Either Reference or Inline</td>
+            <td><code>any</code></td>
+            <td colspan="2">
+              Creator(s) of resource (reference: Dublin Core). It is likely that the target resource will be a
+              <code>foaf:Person</code> but that is not necessarily the case.
+            </td>
+          </tr>
+          <tr>
+            <td><code>dcterms:created</code></td>
+            <td>zero-or-one</td>
+            <td>True</td>
+            <td>DateTime</td>
+            <td>n/a</td>
+            <td>n/a</td>
+            <td colspan="2">Timestamp of link creation (reference: Dublin Core).</td>
+          </tr>
+          <tr>
+            <td><code>dcterms:modified</code></td>
+            <td>zero-or-one</td>
+            <td>True</td>
+            <td>DateTime</td>
+            <td>n/a</td>
+            <td>n/a</td>
+            <td colspan="2">
+              Timestamp last latest link modification (reference: Dublin Core).
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <section id="relationshipLabels" class="informative">
+        <h3>Relationship labels</h3>
+        <p>
+          When an RM relationship property is to be presented in a user interface, it may be helpful to provide an
+          informative and useful textual label for that relationship instance. (This in addition to the relationship
+          property URI and the object resource URI, which are also candidates for presentation to a user.) To this end,
+          OSLC Servers MAY suppport a <code>dcterms:title</code> link property in RM resource representations where a
+          relationship property is permitted, using the anchor approach outlined in the OSLC Core Links Guidance.
+        </p>
+
+        <p>
+          Servers and Clients should be aware that the <code>dcterms:title</code> of a link is unrelated to the
+          dcterms:title of the object resource. Indeed, links may carry other properties with names in common to the
+          object of the link, but there is no specified relationship between these property values.
+        </p>
+      </section>
+    </section>
+  </body>
+</html>

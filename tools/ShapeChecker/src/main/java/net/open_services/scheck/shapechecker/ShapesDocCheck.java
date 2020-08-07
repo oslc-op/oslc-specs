@@ -5,14 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
 
 /**
@@ -23,11 +19,13 @@ public class ShapesDocCheck
 {
     private HttpHandler httpHandler;
     private URI         document;
+    private Resource    docRes;
     private Model       shapeModel;
     private Model       shapeCopy;
     private ResultModel resultModel;
     private Resource    shapesResult;
     private Set<String> describes = new HashSet<>();
+    private boolean		checkConstraints = false;
 
 
     /**
@@ -36,18 +34,21 @@ public class ShapesDocCheck
      * @param document The document URI
      * @param httpHandler An HttpHandler to check for reachability of URI references
      * @param resultModel The model to which any results should be added
+     * @param checkConstraints true if this shapes document must have a ResourceShapeConstraints resource
      */
-    public ShapesDocCheck(URI document, HttpHandler httpHandler, ResultModel resultModel)
+    public ShapesDocCheck(URI document, HttpHandler httpHandler, ResultModel resultModel, boolean checkConstraints)
     {
         this.document = document;
         this.resultModel = resultModel;
         this.httpHandler = httpHandler;
+        this.checkConstraints = checkConstraints;
         String docURI = document.toString();
+        docRes = resultModel.getModel().createResource(docURI);
         shapeModel = ModelFactory.createDefaultModel().read(docURI, "TURTLE");
         shapeCopy = ModelFactory.createDefaultModel().add(shapeModel);
         shapesResult = resultModel.createOuterResult(Terms.ShapesResult);
-        shapesResult.addProperty(DCTerms.source,resultModel.getModel().createResource(docURI));
-        shapesResult.addLiteral(DCTerms.extent, shapeModel.size());
+        shapesResult.addProperty(Terms.checks,docRes);
+        shapesResult.addProperty(DCTerms.source,docRes);
     }
 
 
@@ -56,7 +57,16 @@ public class ShapesDocCheck
      */
     public void checkShapes()
     {
+    	// First, check properties of this file or collection of shapes
+    	checkShapesDoc();
+
         StmtIterator it = shapeModel.listStatements(null, RDF.type, OSLC.ResourceShape);
+        if (!it.hasNext())
+        {
+            resultModel.createIssue(shapesResult, Terms.NoShapesInFile, docRes);
+            return;
+        }
+
         while (it.hasNext())
         {
             Statement st = it.next();
@@ -89,4 +99,67 @@ public class ShapesDocCheck
             it.remove();
         }
     }
+
+
+    private void checkShapesDoc()
+    {
+    	Resource shapesUri;
+
+    	// Find one ResourceShapeConstraints resource
+    	if ((shapesUri = findResourceShapeConstraints()) != null)
+    	{
+	        // Check mandatory properties of the shapes collection
+	        NodeCheck node = new NodeCheck(shapesUri, httpHandler, shapeModel, shapeCopy, resultModel, shapesResult);
+	        node.checkLiteral(DCTerms.title, null, Occurrence.ExactlyOne, null);
+	        node.checkNode(DCTerms.license, Occurrence.ExactlyOne);
+	        node.checkLiteral(DCTerms.hasVersion, null, Occurrence.ExactlyOne, null);
+	        node.checkSuppressibleURI(DCTerms.source, Occurrence.ExactlyOne, false, false,
+	            uri -> uri.matches(".*\\.ttl") ? null : Terms.SourceNotTurtle);
+	        node.checkSuppressibleURI(DCTerms.isPartOf, Occurrence.ExactlyOne, false, false, null);
+
+	        // Check optional properties of the shapes collection
+	        node.checkLiteral(DCTerms.description, null, Occurrence.ZeroOrOne,
+	            desc -> NodeCheck.checkSentence(desc));
+	        node.checkLiteral(DCTerms.modified, null, Occurrence.ZeroOrOne, null);
+	        node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
+	        node.checkSuppressibleURI(DCTerms.publisher, Occurrence.ZeroOrMany,false, false, null);
+	        node.checkLiteral(RDFS.label, null, Occurrence.ZeroOrOne, null);
+	        node.checkLiteral(DCTerms.issued, null, Occurrence.ZeroOrOne, null);
+	        node.checkLiteral(DCTerms.dateCopyrighted, null, Occurrence.ZeroOrOne, null);
+
+	        // Check that the shape collection has no other properties
+	        StmtIterator it = shapeCopy.listStatements(shapesUri, null, (RDFNode)null);
+	        while (it.hasNext())
+	        {
+	            Statement st = it.next();
+	            resultModel.createIssue(shapesResult, Terms.Redundant, st.getPredicate());
+	            it.remove();
+	        }
+
+    	}
+    }
+
+
+	private Resource findResourceShapeConstraints()
+	{
+        StmtIterator it = shapeModel.listStatements(null, RDF.type, OSLC.ResourceShapeConstraints);
+
+        if (!it.hasNext())
+        {
+            if (checkConstraints)
+        	{
+            	resultModel.createIssue(shapesResult, Terms.NoResourceShapeConstraints, docRes);
+        	}
+            return null;
+        }
+
+        Statement st = it.next();
+        shapeCopy.remove(st);
+
+        if (it.hasNext())
+        {
+            resultModel.createIssue(shapesResult, Terms.MultipleResourceShapeConstraints, docRes);
+        }
+        return st.getSubject();
+	}
 }

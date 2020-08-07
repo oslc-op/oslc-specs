@@ -12,9 +12,11 @@ public enum IssueSeverity
     /** Warning severity. */
     Warning,
 
-    /** Error severity (the highest). */
-    Error;
+    /** Error severity (the highest real level). */
+    Error,
 
+    /** A special value for the reporting threshold, to show the summary only. */
+    None;
 
     /**
      * Get an IssueSeverity enum value from its name.

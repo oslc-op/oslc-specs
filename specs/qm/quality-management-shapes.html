@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>OSLC Quality Management Version 2.1. Part 2: Vocabulary</title>
+    <title>OSLC Quality Management Version 2.1. Part 3: Constraints</title>
     <meta
       name="description"
-      content="This specification defines a vocabulary for the OSLC Quality Management domain."
+      content="This specification defines resource shapes for the OSLC Quality Management domain."
     />
 
     <script
@@ -26,16 +26,16 @@
       }
 
       var respecConfig = {
-        shortName: "quality-management-vocab",
+        shortName: "quality-management-shapes",
         specStatus: status,
         revision: revision.toString().padStart(2, "0"),
         // publishDate:  "2019-11-14",
         previousPublishDate: "2019-11-14",
         previousMaturity: "PSD",
 
-        thisVersion: thisBase + "quality-management-vocab.html",
+        thisVersion: thisBase + "quality-management-shapes.html",
         prevVersion: null,
-        latestVersion: oasisBase + "quality-management-vocab.html",
+        latestVersion: oasisBase + "quality-management-shapes.html",
         latestSpecVersion: "https://open-services.net/spec/qm/latest",
         edDraftURI: "https://open-services.net/spec/qm/latest-draft",
 
@@ -43,11 +43,11 @@
         additionalArtifacts: [
           { title: "OSLC Quality Management Version 2.1. Part 1: Specification", href: "quality-management-spec.html" },
           {
-            title: "OSLC Quality Management Version 2.1. Part 2: Vocabulary (this document)",
+            title: "OSLC Quality Management Version 2.1. Part 2: Vocabulary",
             href: "quality-management-vocab.html",
           },
           {
-            title: "OSLC Quality Management Version 2.1. Part 3: Constraints",
+            title: "OSLC Quality Management Version 2.1. Part 3: Constraints (this document)",
             href: "quality-management-shapes.html",
           },
           {
@@ -107,7 +107,7 @@
         },
 
         // the document's citation label
-        citationLabel: "OSLC-qm-2.1-Part2",
+        citationLabel: "OSLC-qm-2.1-Part3",
         license: "cc-by-4",
 
         additionalLicenses: [
@@ -164,6 +164,17 @@
       };
     </script>
     <style>
+      table,
+      th,
+      td {
+        border: 1px solid #666;
+        border-collapse: collapse;
+      }
+      table th,
+      table td {
+        padding: 5px; /* Apply cell padding */
+      }
+
       hr {
         border: none;
         border-top: 1px double #666;
@@ -176,7 +187,7 @@
 
   <body>
     <section id="abstract">
-      <p>This specification defines a vocabulary for the OSLC Quality Management domain.</p>
+      <p>This specification defines resource shapes for the OSLC Quality Management domain.</p>
     </section>
 
     <section id="toc"></section>
@@ -188,7 +199,7 @@
       <section id="overview" class="informative">
         <h2>Overview</h2>
         <p>
-          This specification defines a vocabulary for OSLC Quality Management resources. The intent is to define
+          This specification defines resource shapes for OSLC Quality Management resources. The intent is to define
           resources needed to support common integration scenarios and not to provide a comprehensive definition of
           quality management artefacts. The resource formats may not match exactly the native models supported by
           quality management service providers, but are intended to be compatible with them. The approach to supporting
@@ -237,32 +248,95 @@
       </section>
     </section>
 
-    <section id="qmVocab">
-      <h2>Quality Management Vocabulary Terms</h2>
-      <p>
-        This specification defines the **root** superclass, and a number of specific, commonly occurring subclasses,
-        properties and values. Servers may define additional **root** subclasses and provide additional properties as
-        needed.
-      </p>
-      <div
-        title="RDF Vocabulary for OSLC Quality Management Domain"
-        data-include="./quality-management-vocab.ttl"
-        data-oninclude="vocabToSpec"
-        data-include-sync="true"
-        data-include-replace="true"
-        data-include-format="html"
-      ></div>
+    <section id="resourceDefinitions">
+      <h2>Quality Management Resource Constraints</h2>
+
+      <section id="TestPlanShape">
+        <h3 id="resource_testplan">Resource: TestPlanShape</h3>
+
+        <p>Test Plan defines the overall process and strategy for testing a system</p>
+
+        <div
+          title="Shape for oslc_qm:TestPlan"
+          data-include="./quality-management-shapes.ttl#TestPlanShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="TestScriptShape">
+        <h3 id="resource_testscript">Resource: TestScriptShape</h3>
+
+        <p>Test Script defines a program or list of steps used to conduct a test.</p>
+
+        <div
+          title="Shape for oslc_qm:TestScript"
+          data-include="./quality-management-shapes.ttl#TestScriptShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="TestCaseShape">
+        <h3 id="resource_testcase">Resource: TestCaseShape</h3>
+
+        <p>
+          Test Case defines the criteria which determine whether a system exhibits the correct behavior under a specific
+          set of circumstances.
+        </p>
+
+        <div
+          title="Shape for oslc_qm:TestCase"
+          data-include="./quality-management-shapes.ttl#TestCaseShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="TestResultShape">
+        <h3 id="resource_testresult">Resource: TestResultShape</h3>
+
+        <p>Test Result describes the outcome of attempting to execute a test.</p>
+
+        <div
+          title="Shape for oslc_qm:TestResult"
+          data-include="./quality-management-shapes.ttl#TestResultShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="TestExecutionRecordShape">
+        <h3 id="resource_testexecutionrecord">Resource: TestExecutionRecordShape</h3>
+
+        <p>Test Execution Record is a plan for execution of a test."</p>
+
+        <div
+          title="Shape for oslc_qm:TestExecutionRecord"
+          data-include="./quality-management-shapes.ttl#TestExecutionRecordShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
     </section>
 
     <section id="conformance">
       <h2>Conformance</h2>
       <p>
-        Quality Management servers MUST use the vocabulary terms defined here where required, and with the meanings
+        Quality Management servers MUST follow the constraints defined here where required, and with the meanings
         defined here.
       </p>
-      <p>
-        Quality Management servers MAY augment this vocabulary with additional classes, properties, and individuals.
-      </p>
+      <p>Quality Management servers MAY provide additional constraints for specific purposes.</p>
     </section>
   </body>
 </html>
