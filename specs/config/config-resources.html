@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title>OSLC Configuration Management 1.0 Part 3: Configuration Specification</title>
     <!--script src='https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@master/builds/respec-oasis-common.min.js' async class='remove'/ -->
-    <script src='file:///Users/ndjc/git/tab-respec/builds/respec-oasis-common.js' async class='remove'></script>
+    <script src="file:///Users/ndjc/git/tab-respec/builds/respec-oasis-common.js" async class="remove"></script>
     <script class="remove">
       var status = "WD";
       var rev = "01";
@@ -25,10 +25,12 @@
         maxTocLevel: 3,
 
         license: "cc-by-4",
-        additionalLicenses : [{
-          licenseName : "Apache License 2.0",
-          licenseURI : "https://www.apache.org/licenses/LICENSE-2.0",
-        }],
+        additionalLicenses: [
+          {
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+          },
+        ],
 
         // chairs and editors, add as many as you like
         // only "name" is required
@@ -41,23 +43,24 @@
           },
         ],
 
-        chairs : [
+        chairs: [
           {
-            name : "Jim Amsden",
-            mailto : "jamsden@us.ibm.com",
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
             company: "IBM",
-            companyURL: "http://www.ibm.com/"
-          }, {
-            name : "Andrii Berezovskyi",
+            companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Andrii Berezovskyi",
             mailto: "andriib@kth.se",
             company: "KTH",
-            companyURL: "https://www.kth.se/en"
-          }
-    ],
+            companyURL: "https://www.kth.se/en",
+          },
+        ],
 
         // name of the OP
-        wg : "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
-        wgShortName:  "oslc-op",
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-op",
 
         //publishDate:  "2018-10-09",
         //previousPublishDate:  "2011-08-15",
@@ -68,7 +71,6 @@
         latestVersion: oasisBase + "oslc-config-mgt.html",
         latestSpecVersion: "https://open-services.net/spec/config/latest",
         edDraftURI: "https://open-services.net/spec/config/latest-draft",
-
 
         // Namespaces defined by this spec
         namespaces: [{ href: "http://open-services.net/ns/config#" }],
@@ -85,22 +87,22 @@
         ],
 
         localBiblio: {
-          "OSLCCore2": {
-          title: "OSLC Core Specification 2.0",
-          href: "https://archive.open-services.net/bin/view/Main/OslcCoreSpecification",
-          authors: ["Dave Johnson", "S. Speicher"],
-          status: "Finalized",
-          publisher: "https://open-services.net/",
+          OSLCCore2: {
+            title: "OSLC Core Specification 2.0",
+            href: "https://archive.open-services.net/bin/view/Main/OslcCoreSpecification",
+            authors: ["Dave Johnson", "S. Speicher"],
+            status: "Finalized",
+            publisher: "https://open-services.net/",
+          },
+          OSLCCore3: {
+            title: "OSLC Core Version 3.0. Part 1: Overview",
+            href: "https://open-services.net/spec/core/latest",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
         },
-          "OSLCCore3": {
-          title: "OSLC Core Version 3.0. Part 1: Overview",
-          href: "https://open-services.net/spec/core/latest",
-          authors: ["Jim Amsden", "S. Speicher"],
-          status: "Project Specification Draft",
-          publisher: "OASIS",
-        },
-      }
-    };
+      };
     </script>
   </head>
   <body>
@@ -252,11 +254,12 @@
       <p>A client requests a specific configuration context in one of two ways:</p>
       <ul>
         <li>
-          When performing a GET on a concept URI, add a <code>Configuration-Context</code> header, passing the URI of a
-          configuration resource as the value:
+          When performing a GET on a concept URI, add a <code>configuration-context</code> header, passing the URI of a
+          configuration resource as the value. Note that http headers are case-insensitive in HTTP/1 [[!RFC7230]], and
+          MUST be encoded in lower case for HTTP/2 [[!RFC7540]]:
           <pre class="example">
 GET /resources/conceptResourceA HTTP/1.1
-  Configuration-Context: http://example.com/configurations/myConfiguration1</pre
+  configuration-context: http://example.com/configurations/myConfiguration1</pre
           >
         </li>
         <li>
@@ -267,7 +270,7 @@ GET /resources/conceptResourceA?oslc_config.context=%3Chttp%3A//example.com/conf
           >
         </li>
       </ul>
-      <p>TBD - define syntax of Configuration-Context header by referring to IETF RFC.</p>
+      <p>TBD - define syntax of configuration-context header by referring to IETF RFC.</p>
       <p>Syntax of the query string for configuration context:</p>
       <pre class="indent">?oslc_config.context=<em>uri_ref_esc</em></pre>
       <p>
@@ -280,15 +283,15 @@ GET /resources/conceptResourceA?oslc_config.context=%3Chttp%3A//example.com/conf
         reject requests that contain two or more different configuration contexts passed in query strings.
       </p>
       <p>
-        Where the Configuration-Context header is used on a request, a server SHOULD include in the response a header
-        <code>Vary=Configuration-Context</code> so that different configuration contexts do not use a previously cached
-        response.
+        Where the <code>configuration-context</code> header is used on a request, a server SHOULD include in the
+        response a header <code>vary=configuration-context</code> so that different configuration contexts do not use a
+        previously cached response.
       </p>
       <p>
-        A request SHOULD contain only a single occurrence of the <code>Configuration-Context</code> header, and MUST NOT
-        contain multiple Configuration-Context headers referencing different values. A server SHOULD treat multiple
-        identical <code>Configuration-Context</code> headers as it would a single header, and MUST treat multiple
-        <code>Configuration-Context</code> headers with different configuration values as an error.
+        A request SHOULD contain only a single occurrence of the <code>configuration-context</code> header, and MUST NOT
+        contain multiple <code>configuration-context</code> headers referencing different values. A server SHOULD treat
+        multiple identical <code>configuration-context</code> headers as it would a single header, and MUST treat
+        multiple <code>configuration-context</code> headers with different configuration values as an error.
       </p>
       <p>
         If a configuration context is passed on a request for a non-versioned resource, the server MUST NOT treat that
@@ -348,9 +351,9 @@ GET /resources/conceptResourceA?oslc_config.context=%3Chttp%3A//example.com/conf
           implied as the starting point for the stream
         </li>
       </ul>
-      <p>Servers SHOULD support the Prefer header for GET on LDPCs specifying PreferMinimalContainer:</p>
+      <p>Servers SHOULD support the <code>prefer</code> header for GET on LDPCs specifying PreferMinimalContainer:</p>
       <pre class="example">
-Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalContainer"</pre
+prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalContainer"</pre
       >
       <p>
         allowing a client to retrieve properties about the LDPC, including any
@@ -465,10 +468,10 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
         <p>
           A new baseline of a stream is created by POSTing to the <code>oslc_config:baselines</code> container for that
           stream. If the server determines that a suitable baseline already exists, the server MAY return a 303 with a
-          Location header referring to that existing baseline; for an existing baseline to be suitable it MUST be for
-          the same component, MUST have the same <code>oslc_config:branch</code> value, if any, MUST select the same
-          version resources, each contribution MUST be a suitable baseline for the corresponding stream contribution,
-          and there must be no additional or missing contributions.
+          <code>location</code> header referring to that existing baseline; for an existing baseline to be suitable it
+          MUST be for the same component, MUST have the same <code>oslc_config:branch</code> value, if any, MUST select
+          the same version resources, each contribution MUST be a suitable baseline for the corresponding stream
+          contribution, and there must be no additional or missing contributions.
         </p>
         <p>
           Where a new baseline is created, that new baseline inherits (MUST copy) the following properties of the
@@ -522,9 +525,12 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
           Any properties required on new streams or baselines not defined by this standard MUST be described in resource
           shapes referenced by <code>oslc:resourceShape</code> properties on the container.
         </p>
-        <p>Servers SHOULD support the Prefer header for GET on those LDPCs specifying PreferMinimalContainer:</p>
+        <p>
+          Servers SHOULD support the <code>prefer</code> header for GET on those LDPCs specifying
+          PreferMinimalContainer:
+        </p>
         <pre class="example">
-Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalContainer"</pre
+prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalContainer"</pre
         >
         <p>
           allowing a client to retrieve properties about the LDPC, including any
@@ -591,20 +597,18 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
         </li>
       </ol>
       <p>
-        During this version resolution, overrides for entire configurations MUST be taken into account.
-        If a contribution is marked as an override and the overriding configuration is earlier in the ordered set
-        of all recursive contributions than the overridden configuration,
-        the overridden configuration and all its contributions MUST be ignored in their entirety.
-        Servers MAY report an error if an overriding configuration is later in the ordered set
-        of all recursive contributions than the overridden configuration.
+        During this version resolution, overrides for entire configurations MUST be taken into account. If a
+        contribution is marked as an override and the overriding configuration is earlier in the ordered set of all
+        recursive contributions than the overridden configuration, the overridden configuration and all its
+        contributions MUST be ignored in their entirety. Servers MAY report an error if an overriding configuration is
+        later in the ordered set of all recursive contributions than the overridden configuration.
       </p>
       <p>
-        Overrides from change set configurations MUST also be taken into account. If a change
-        set removes a selection for a versioned resource in the overridden configuration, and no other selection is
-        provided for that resource in some other configuration, then the request MUST fail with a 404 Resource not
-        found. If a change set replaces a selection for a versioned resource in the overridden configuration, and no
-        other selection is provided for that resource in some other configuration, the request MUST return the version
-        in the change set selection.
+        Overrides from change set configurations MUST also be taken into account. If a change set removes a selection
+        for a versioned resource in the overridden configuration, and no other selection is provided for that resource
+        in some other configuration, then the request MUST fail with a 404 Resource not found. If a change set replaces
+        a selection for a versioned resource in the overridden configuration, and no other selection is provided for
+        that resource in some other configuration, the request MUST return the version in the change set selection.
       </p>
       <p>Implementations SHOULD provide documentation on their version resolution behavior.</p>
     </section>
