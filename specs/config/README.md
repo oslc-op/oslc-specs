@@ -1,4 +1,4 @@
-## OSLC Configuration Management Read Me
+# OSLC Configuration Management Read Me
 
 This directory contains the source files for the OSLC Configuration Management Specification, which is one of the work products of the OASIS OSLC Open Project.
 
