@@ -4,7 +4,7 @@
 # and fails if any one of them fails; this is better than stopping after
 # the first failure, and masking other errors.
 
-SPECDIR=`dirname $0`/specs
+SPECDIR=${1-$PWD}/specs
 let Errors=0
 
 for domain in core config qm rm query
