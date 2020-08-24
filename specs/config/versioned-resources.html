@@ -1,144 +1,279 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta charset="utf-8" />
-<title>OSLC Configuration Management 1.0 Part 2: Versioned Resources</title>
-<script src='https://raw.githack.com/oasis-tcs/tab-respec/master/builds/respec-oasis-common.js' async class='remove'></script>
-<script class="remove">
-  var respecConfig = {
-      specStatus:             "WD",
-      conformanceLabelPrefix: "CONFIG",
-      thisVersion:            "https://raw.githack.com/oslc-op/oslc-specs/master/specs/config/oslc-config-mgt.html",
-      prevVersion:            "http://tools.oasis-open.org/version-control/svn/oslc-ccm/trunk/specs/config-mgt/oslc-config-mgt.html",
-      copyrightStart:         "2013",
-      shortName:              "oslc-config-mgmt-vr",
-      citationLabel:          "OSLC-ConfigMgmt-v1.0-vr",
-      revision:               "01",
-      license:                "cc-by-4",
-      label:                  "config-mgmt-draft",
-
-      // chairs and editors, add as many as you like
-      // only "name" is required
-      editors:  [
+  <head>
+    <meta charset="utf-8" />
+    <title>OSLC Configuration Management 1.0 Part 2: Versioned Resources</title>
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.19/builds/respec-oasis-common.min.js"
+      async
+      class="remove"
+    ></script>
+    <script class="remove">
+      var filePath = "/versioned-resources.html";
+      var status = "WD";
+      var wdBase = "https://oslc-op.github.io/oslc-specs/specs/config";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/config/v1.0";
+      var rev = "01";
+      var thisBase = wdBase;
+      if (status != "WD") {
+        thisBase = oasisBase + "/" + status.toLowerCase() + rev;
+      }
+      var respecConfig = {
+        shortName: "oslc-config-mgmt-vr",
+        citationLabel: "OSLC-ConfigMgmt-v1.0-vr",
+        specStatus: status,
+        revision: rev,
+        conformanceLabelPrefix: "CONFIG",
+        noConformanceTable: 1,
+        thisVersion: thisBase + filePath,
+        prevVersion:
+          "http://tools.oasis-open.org/version-control/svn/oslc-ccm/trunk/specs/config-mgt/oslc-config-mgt.html",
+        copyrightStart: "2013",
+        maxTocLevel: 3,
+        license: "cc-by-4",
+        additionalLicenses: [
           {
-              name:       "Nick Crossley"
-          ,   mailto:     "nick_crossley@us.ibm.com"
-          ,   company:    "IBM"
-          ,   companyURL: "http://ibm.com/"
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
           },
-      ],
+        ],
 
-      // Namespaces defined by this spec
-      namespaces : [ { href: "http://open-services.net/ns/config#"} ],
+        //publishDate:  "YYYY-MM-DD",
+        //previousPublishDate:  "YYYY-MM-DD",
+        //previousMaturity:  "WD",
 
-      additionalArtifacts : [
-         { title: "OSLC Configuration Management 1.0 Part 1: Overview", href: "oslc-config-mgt.html" },
-         { title: "OSLC Configuration Management 1.0 Part 2: Versioned Resources  (this document)", href: "versioned-resources.html" },
-         { title: "OSLC Configuration Management 1.0 Part 3: Configuration Specification", href: "config-resources.html" },
-         { title: "OSLC Configuration Management 1.0 Part 4: RDF Vocabulary", href: "config-vocab.html" },
-         ],
+        // chairs and editors, add as many as you like
+        // only "name" is required
+        editors: [
+          {
+            name: "Nick Crossley",
+            mailto: "nick_crossley@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://ibm.com/",
+          },
+        ],
 
-      localBiblio : {
-        "TRS": {
-            title:     "OSLC Tracked Resource Set",
-            href:      "http://open-services.net/wiki/core/TrackedResourceSet-2.0/",
-            authors:   [ "Steve Speicher", "Frank Budinsky", "Vivek Garg" ],
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Andrii Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se/en",
+          },
+        ],
+
+        // Namespaces defined by this spec
+        namespaces: [{ href: "http://open-services.net/ns/config#" }],
+
+        // Other parts of multi-part spec
+        additionalArtifacts: [
+          { title: "OSLC Configuration Management 1.0 Part 1: Overview", href: "oslc-config-mgt.html" },
+          {
+            title: "OSLC Configuration Management 1.0 Part 2: Versioned Resources  (this document)",
+            href: "versioned-resources.html",
+          },
+          {
+            title: "OSLC Configuration Management 1.0 Part 3: Configuration Specification",
+            href: "config-resources.html",
+          },
+          { title: "OSLC Configuration Management 1.0 Part 4: RDF Vocabulary", href: "config-vocab.html" },
+        ],
+
+        localBiblio: {
+          OSLCCore3: {
+            title: "OSLC Core 3.0",
+            href: "http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+            authors: ["Jim Amsden"],
+            publisher: "OASIS",
+          },
+          TRS: {
+            title: "OSLC Tracked Resource Set",
+            href: "http://open-services.net/wiki/core/TrackedResourceSet-2.0/",
+            authors: ["Steve Speicher", "Frank Budinsky", "Vivek Garg"],
             publisher: "http://open-services.net",
+          },
         },
-        "ILDP": {
-            title:     "OSLC Indexable Linked Data Provider Specification",
-            href:      "http://open-services.net/wiki/core/IndexableLinkedDataProvider-2.0/",
-            authors:   [ "Jim des Rivieres" ],
-            publisher: "http://open-services.net",
-        },
-      },
- };
-</script>
-</head>
-<body>
-<section id='abstract'>
-  <p>This part of the OSLC Configuration Management Specification defines the representation and behavior of versioned resources.</p>
-</section>
-<section id="toc"></section>
-<section id='sotd'></section>
-<section id='intro' class='informative'>
-  <h2>Introduction</h2>
-  <section id='conventions'></section>
-  <section id='references'>
-    <h3>References</h3>
-  </section>
-</section>
-<hr />
-<section id="sotd">Editor's working draft.</section>
-<section id="version-intro" class="informative">
-<h2>Concept and Version Resources</h2>
-  <p>This part of the OSLC Configuration Management Specification defines the representation and behavior of versioned resources - resources that have multiple versions.</p>
-  <p>As described in <a href="oslc-config-mgt.html#concepts">OSLC Configuration Management - Concept resources, version resources, and configuration contexts</a>,
-  the major &ldquo;Artifacts&rdquo; or &ldquo;Entities&rdquo; in OSLC domains are <strong><em>concept resources</em></strong>.</p>
-  <p>The state (including the properties) of a concept resource can vary over time, or for other reasons.
-    A <strong><em>versioned resource</em></strong> is a concept resource that keeps track of different states;
-    a <strong><em>version resource</em></strong> is one specific state of a versioned resource.</p>
-  <p>Versioned resources are typically used in configurations -
-    where they are often called <em>configuration items</em>.</p>
-</section>
-<section id="version-resources">
-<h2>Version Resources</h2>
-  <p>A version resource defines a particular version of the state of a concept resource.
-    Not every past state is necessarily kept. A server MAY elide or discard states.</p>
-  <p>A version resource URI identifies a specific version of a concept resource with no further configuration context required.</p>
-  <p>A version resource MUST have a type of <code>oslc_config:VersionResource</code>.</p>
-  <p>A version resource MUST be related to its concept resource using the <code>dcterms:isVersionOf</code> property.</p>
-  <p>Version resources SHOULD be compliant with the <a href="http://www.w3.org/TR/ldp/">Linked Data Platform 1.0</a>.</p>
-  <p>Version resources SHOULD have an <code>oslc_config:versionId</code> property.</p>
-  <p>Servers MAY provide other properties that distinguish between major changes or revisions,
-    and minor changes or iterations.</p>
-</section>
-<section id="version-shapes">
-  <h2>Version Resource Shapes</h2>
-  <div title="Shape for oslc_config:VersionResource"
-        data-include="versioned-shapes.ttl#VersionResource"
+      };
+    </script>
+  </head>
+  <body>
+    <section id="abstract">
+      <p>
+        This part of the OSLC Configuration Management Specification defines the representation and behavior of
+        versioned resources.
+      </p>
+    </section>
+    <section id="toc"></section>
+    <section id="sotd"></section>
+    <section id="intro" class="informative">
+      <h2>Introduction</h2>
+      <section id="conventions"></section>
+      <section id="references">
+        <h3>References</h3>
+      </section>
+    </section>
+    <hr />
+    <section id="sotd">Editor's working draft.</section>
+    <section id="version-intro" class="informative">
+      <h2>Concept and Version Resources</h2>
+      <p>
+        This part of the OSLC Configuration Management Specification defines the representation and behavior of
+        versioned resources - resources that have multiple versions.
+      </p>
+      <p>
+        As described in
+        <a href="oslc-config-mgt.html#concepts"
+          >OSLC Configuration Management - Concept resources, version resources, and configuration contexts</a
+        >, the major &ldquo;Artifacts&rdquo; or &ldquo;Entities&rdquo; in OSLC domains are
+        <strong><em>concept resources</em></strong
+        >.
+      </p>
+      <p>
+        The state (including the properties) of a concept resource can vary over time, or for other reasons. A
+        <strong><em>versioned resource</em></strong> is a concept resource that keeps track of different states; a
+        <strong><em>version resource</em></strong> is one specific state of a versioned resource.
+      </p>
+      <p>
+        Versioned resources are typically used in configurations - where they are often called
+        <em>configuration items</em>.
+      </p>
+    </section>
+    <section id="version-resources">
+      <h2>Version Resources</h2>
+      <p class="conformance">
+        A version resource defines a particular version of the state of a concept resource. Not every past state is
+        necessarily kept. A server MAY elide or discard states.
+      </p>
+      <p>
+        A version resource URI identifies a specific version of a concept resource with no further configuration context
+        required.
+      </p>
+      <p class="conformance">A version resource MUST have a type of <code>oslc_config:VersionResource</code>.</p>
+      <p class="conformance">
+        A version resource MUST be related to its concept resource using the <code>dcterms:isVersionOf</code> property.
+      </p>
+      <p class="conformance">
+        Version resources SHOULD be compliant with the <a href="http://www.w3.org/TR/ldp/">Linked Data Platform 1.0</a>.
+      </p>
+      <p class="conformance">Version resources SHOULD have an <code>oslc_config:versionId</code> property.</p>
+      <p class="conformance">
+        Servers MAY provide other properties that distinguish between major changes or revisions, and minor changes or
+        iterations.
+      </p>
+    </section>
+    <section id="version-shapes">
+      <h2>Version Resource Shapes</h2>
+      <div
+        title="Shape for oslc_config:VersionResource"
+        data-include="config-shapes.ttl#VersionResourceShape"
         data-oninclude="shapeToSpec"
         data-include-sync="true"
         data-include-replace="true"
-        data-include-format="html">
-  </div>
-</section>
-<section id="vitemoperations">
-  <h2>Supported Operations on Versioned Resources</h2>
-  <p>A versioned resource server MUST support the following operations on version resources:</p>
-  <ul>
-    <li>HEAD: Retrieve information about a specific version resource.</li>
-    <li>GET: Retrieve the state of a specific version resource.</li>
-    <li>OPTIONS: Get information about the available operations on a version resource.</li>
-  </ul>
-  <p>A versioned resource server MAY support the following operations on version resources:</p>
-  <ul>
-    <li>PUT: Update the state of a specific version resource;
-    this operation MAY succeed by creating a new version,
-    or MAY succeed without creating a new version
-    for servers that offer version resources with mutable state.
-    A PUT operation on a version resource MAY fail, since version resources may be immutable, or have many immutable properties.</li>
-    <li>DELETE: Delete the specified version resource.
-    Deletion of immutable versions, or versions used in configurations, MAY fail or MAY require specific privileges.</li>
-  </ul>
-</section>
-<section id="vdelegateduis">
-  <h2>Delegated UIs</h2>
-  <p>A versioned resource server MAY provide delegated user interface dialogs for creation of new concept resources or new version resources.</p>
-  <p>A versioned resource server SHOULD provide delegated user interface dialogs for selection of concept resources.
-  A versioned resource server MAY provide delegated user interface dialogs for selection of version resources, but such selection is typically performed in a configuration context to find the appropriate version.</p>
-</section>
-<section id="vcompact">
-  <h2>Compact Rendering</h2>
-  <p>A versioned resource server SHOULD implement compact rendering, both for concept resources and version resources.
-    See <a href="config-resources.html#compact">Compact Rendering</a> for the handling of configuration context in such rendering.</p>
-</section>
-<section id="vtrs">
-  <h2>Tracked Resource Sets</h2>
-  <p>A versioned resource server MAY publish version resources in a Tracked Resource Set;
-  the URIs in the base and change log MUST be the version resource URIs, not the concept resource URIs.
-  All Tracked Resource Sets for version resources MUST be compliant with [[!TRS]],
-  and servers providing such Tracked Resource Sets SHOULD follow the guidance in [[!ILDP]].</p>
-</section>
-</body>
+        data-include-format="html"
+      ></div>
+    </section>
+    <section id="vitemoperations">
+      <h2>Supported Operations on Versioned Resources</h2>
+      <p class="conformance">A versioned resource server MUST support the following operations on version resources:</p>
+      <ul>
+        <li>HEAD: Retrieve information about a specific version resource.</li>
+        <li>GET: Retrieve the state of a specific version resource.</li>
+        <li>OPTIONS: Get information about the available operations on a version resource.</li>
+      </ul>
+      <p class="conformance">A versioned resource server MAY support the following operations on version resources:</p>
+      <ul>
+        <li class="conformance">
+          PUT: Update the state of a specific version resource; this operation MAY succeed by creating a new version, or
+          MAY succeed without creating a new version for servers that offer version resources with mutable state. A PUT
+          operation on a version resource MAY fail, since version resources may be immutable, or have many immutable
+          properties.
+        </li>
+        <li class="conformance">
+          DELETE: Delete the specified version resource. Deletion of immutable versions, or versions used in
+          configurations, MAY fail or MAY require specific privileges.
+        </li>
+      </ul>
+    </section>
+    <section id="vdelegateduis">
+      <h2>Delegated UIs</h2>
+      <p class="conformance">
+        A versioned resource server MAY provide delegated user interface dialogs for creation of new concept resources
+        or new version resources.
+      </p>
+      <p class="conformance">
+        A versioned resource server SHOULD provide delegated user interface dialogs for selection of concept resources.
+        A versioned resource server MAY provide delegated user interface dialogs for selection of version resources, but
+        such selection is typically performed in a configuration context to find the appropriate version.
+      </p>
+    </section>
+    <section id="vcompact">
+      <h2>Compact Rendering</h2>
+      <p class="conformance">
+        A versioned resource server SHOULD implement compact rendering, both for concept resources and version
+        resources. See <a href="config-resources.html#compact">Compact Rendering</a> for the handling of configuration
+        context in such rendering.
+      </p>
+    </section>
+    <section id="vtrs">
+      <h2>Tracked Resource Sets</h2>
+      <p class="conformance">
+        A versioned resource server MAY publish version resources in a Tracked Resource Set; the URIs in the base and
+        change log MUST be the version resource URIs, not the concept resource URIs. All Tracked Resource Sets for
+        version resources MUST be compliant with [[!TRS]].
+      </p>
+    </section>
+    <section id="conformance">
+      <h2>Conformance</h2>
+      <section id="conformance-core">
+        <h3>Conformance to OSLC Core</h3>
+        <p class="conformance">
+          This specification is based on [[!OSLCCore3]]. OSLC Configuration Management Servers servers MUST be compliant
+          with the Core specification, MUST follow all the mandatory requirements in the normative sections of each part
+          of this specification, and SHOULD follow all the guidelines and recommendations in both these specifications.
+        </p>
+      </section>
+      <section>
+        <h3>Parts of this Specification</h3>
+        <p>
+          The OSLC Configuration Management Specification consists of the following parts.
+        </p>
+        <dl class="spaced">
+          <dt><a href="oslc-config-mgt.html">Overview</a></dt>
+          <dd class="conformance">
+            <a href="oslc-config-mgt.html">Part 1</a> of this specification provides an overview of OSLC Configuration
+            Management. OSLC Servers that implement versioned resources or configurations MUST implement all of the
+            mandatory requirements specified in the normative sections of part 1 of this multi-part specification, and
+            SHOULD follow all the guidelines and recommendations in that part.
+          </dd>
+          <dt>Versioned Resource Specification (this document)</dt>
+          <dd class="conformance">
+            <a href="versioned-resources.html">Part 2</a> of this specification defines the representation and behavior
+            of versioned resources. OSLC Servers that implement versioned resources MUST implement all of the mandatory
+            requirements specified in the normative sections of part 2 of this multi-part specification, and SHOULD
+            follow all the guidelines and recommendations in that part.
+          </dd>
+          <dt><a href="config-resources.html">Configuration Specification</a></dt>
+          <dd class="conformance">
+            <a href="config-resources.html">Part 3</a> of this specification defines the representation and behavior of
+            components and configurations of resources in those components. OSLC Servers that implement configurations
+            MUST implement all of the mandatory requirements specified in the normative sections of part 3 of this
+            multi-part specification, and SHOULD follow all the guidelines and recommendations in that part.
+          </dd>
+          <dt><a href="config-vocab.html">RDF Vocabulary</a></dt>
+          <dd class="conformance">
+            <a href="config-resources.html">Part 4</a> of this specification defines a vocabulary of RDF terms for
+            versions and configuration management. OSLC Servers that implement versioned resources or configurations
+            MUST use the vocabulary terms defined there where required, and with the meanings defined there. OSLC
+            Servers MAY augment this vocabulary with additional terms.
+          </dd>
+        </dl>
+      </section>
+    </section>
+  </body>
 </html>
