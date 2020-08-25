@@ -21,10 +21,27 @@ jobs:
       - checkout
       - run:
           name: Install prettier
-          command: npm install --global prettier
+          command: npm install --global prettier@2.0.5
       - run:
-          name: Check spec formatting
-          command: ./.circleci/prettier-main.sh .
+          name: Check Core spec formatting
+          command: prettier --check specs/core/
+          when: always
+      - run:
+          name: Check Config Mgt spec formatting
+          command: prettier --check specs/config/
+          when: always
+      - run:
+          name: Check QM spec formatting
+          command: prettier --check specs/qm/
+          when: always
+      - run:
+          name: Check RM spec formatting
+          command: prettier --check specs/rm/
+          when: always
+      - run:
+          name: Check Query spec formatting
+          command: prettier --check specs/query/
+          when: always
 workflows:
   spec-check:
     jobs:
