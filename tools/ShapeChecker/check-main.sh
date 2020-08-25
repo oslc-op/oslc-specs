@@ -7,7 +7,7 @@
 SCDIR=`dirname $0`
 let Errors=0
 
-for domain in core cm qm rm am
+for domain in core config cm qm rm am
 do
 	echo "Running $SCDIR/check-$domain.sh"
     $SCDIR/check-$domain.sh
