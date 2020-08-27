@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="This part of the OSLC Configuration Management Specification defines the representation and behavior of components and configurations of resources in those components (typically referred to as configurations of components, or just configurations)."
+    />
     <title>OSLC Configuration Management 1.0 Part 3: Configuration Specification</title>
     <script
       src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.19/builds/respec-oasis-common.min.js"
@@ -49,7 +53,7 @@
             name: "Nick Crossley",
             mailto: "nick_crossley@us.ibm.com",
             company: "IBM",
-            companyURL: "http://ibm.com/",
+            companyURL: "https://ibm.com/",
           },
         ],
 
@@ -58,7 +62,7 @@
             name: "Jim Amsden",
             mailto: "jamsden@us.ibm.com",
             company: "IBM",
-            companyURL: "http://www.ibm.com/",
+            companyURL: "https://www.ibm.com/",
           },
           {
             name: "Andrii Berezovskyi",
@@ -99,7 +103,7 @@
           },
           OSLCQuery: {
             title: "OSLC Query Version 3.0",
-            href: "http://open-services.net/specifications/query/oslc-query.html",
+            href: "https://open-services.net/specifications/query/oslc-query.html",
             authors: ["Jim Amsden", "S. Padgett", "S. Speicher", "David Honey"],
             status: "Public Review Draft Project Specification",
             publisher: "OASIS",
@@ -129,7 +133,7 @@
     <section id="discovery">
       <h2>Service Discovery</h2>
       <p class="conformance">
-        A configuration server SHOULD implement [[OSLCCore3]] ServiceProvider and Service resources, where an
+        A configuration server SHOULD implement [[!OSLCCore3]] ServiceProvider and Service resources, where an
         <code>oslc:domain</code> property has the value <code>http://open-services.net/ns/config#</code>.
       </p>
       <p class="conformance">
@@ -144,13 +148,12 @@
     <section id="componentcontainer">
       <h2>Component Container</h2>
       <p class="conformance">
-        Configuration Management servers MUST provide a single
-        <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container (LDPC)</a> for all components in that
-        server.
+        Configuration Management servers MUST provide a single Linked Data Platform Container ([[!LDP]]) for all
+        components in that server.
       </p>
       <p class="conformance">
-        This component container MUST be advertised as an [[OSLCCore3]] Creation Factory in the Service resource for the
-        configuration server.
+        This component container MUST be advertised as an [[!OSLCCore3]] Creation Factory in the Service resource for
+        the configuration server.
       </p>
       <p class="conformance">
         This creation factory SHOULD provide a resource shape describing the shape of components that can be created; if
@@ -264,7 +267,7 @@
           configuration resource as the value.
           <pre class="example">
 GET /resources/conceptResourceA HTTP/1.1
-Configuration-Context: http://example.com/configurations/myConfiguration1</pre
+Configuration-Context: https://example.com/configurations/myConfiguration1</pre
           >
         </li>
         <li>
@@ -280,7 +283,7 @@ GET /resources/conceptResourceA?oslc_config.context=%3Chttp%3A//example.com/conf
       <pre class="indent">?oslc_config.context=<em>uri_ref_esc</em></pre>
       <p>
         The <em>uri_ref_esc</em> is an angle bracket-delimited URI reference in which &gt; and \ are \-escaped, as
-        defined in [[OSLCCore3]].
+        defined in [[!OSLCCore3]].
       </p>
       <p class="conformance">A server MUST support both these methods of passing configuration context.</p>
       <p class="conformance">
@@ -696,7 +699,9 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
       <p>Syntax:</p>
       <pre class="indent">?oslc_config.parentConfiguration=<em>uri_ref_esc</em></pre>
       <p>Example:</p>
-      <pre class="example">?oslc_config.parentConfiguration=%3Chttp://example.com/configurations/globalConfig12%3E</pre>
+      <pre class="example">
+?oslc_config.parentConfiguration=%3Chttps://example.com/configurations/globalConfig12%3E</pre
+      >
       <p class="conformance">
         Tools providing versioned resources using configuration management systems SHOULD provide delegated user
         interface dialogs for selection of versioned resources in the context of a configuration, and MAY provide
@@ -705,7 +710,9 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
     </section>
     <section id="compact">
       <h2>Compact Rendering</h2>
-      <p class="conformance">Configuration servers SHOULD implement [[OSLCCore3]] UI Previews and compact rendering.</p>
+      <p class="conformance">
+        Configuration servers SHOULD implement [[!OSLCCore3]] UI Previews and compact rendering.
+      </p>
       <p class="conformance">
         Where implemented, clients MUST pass any required <a href="#configcontext">configuration context</a> on the
         initial request for a compact resource, and the configuration server MUST return a compact resource honoring
@@ -734,7 +741,7 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
     <section id="queries">
       <h2>Query Support</h2>
       <p class="conformance">
-        Configuration servers MAY support [[OSLCQuery]] for configurations and components. If OSLC Query is provided,
+        Configuration servers MAY support [[!OSLCQuery]] for configurations and components. If OSLC Query is provided,
         queries for the following properties using <code>oslc.where</code> and <code>oslc.select</code> SHOULD be
         supported:
       </p>
@@ -749,16 +756,16 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
       </ul>
       <p class="conformance">Query for other properties MAY be supported.</p>
       <p>
-        For example, this is a query for baselines of a given stream <code>http://example.com/configs/stream123</code>,
+        For example, this is a query for baselines of a given stream <code>https://example.com/configs/stream123</code>,
         with tag 'stellar', created after July 1st 2014:
       </p>
       <pre class="example">
-http://example.com/configs?oslc.where=oslc_config:baselineOfStream=&lt;http://example.com/configs/stream123&gt; and
+https://example.com/configs?oslc.where=oslc_config:baselineOfStream=&lt;https://example.com/configs/stream123&gt; and
      dc_terms:modified&gt;=&quot;2014-07-01T00:00:00&quot; and dcterms_subject=&quot;stellar&quot;</pre
       >
       <p>Since some of those character must be encoded, the request would be issued as:</p>
       <pre class="example">
-http://example.com/configs?oslc.where=oslc_config%3AbaselineOfStream%3D%3Chttp%3A%2F%2Fexample.com%2Fconfigs%2Fstream123%3E%20and
+https://example.com/configs?oslc.where=oslc_config%3AbaselineOfStream%3D%3Chttps%3A%2F%2Fexample.com%2Fconfigs%2Fstream123%3E%20and
      %20dc_terms%3Amodified%3E%3D%222014-07-01T00%3A00%3A00%22%20and%20dcterms_subject%3D%22stellar%22</pre
       >
     </section>
