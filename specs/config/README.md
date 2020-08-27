@@ -12,15 +12,15 @@ Configuration Management Technical Committee. Those previous drafts may be found
 
 The following files in this directory are part of the specification:
 
--   config-resources.html
--   config-shapes.ttl
--   config-vocab.html
--   config-vocab.ttl
--   oslc-config-mgt.html
--   versoned-resources.html
+- config-resources.html
+- config-shapes.ttl
+- config-vocab.html
+- config-vocab.ttl
+- oslc-config-mgt.html
+- versoned-resources.html
 
 The following files are additional material of interest, but not part of the specification.
 Some files may become Project Notes or similar documents.
 
--   README.md (this file)
--   motivation.html
+- README.md (this file)
+- motivation.html
