@@ -37,7 +37,7 @@ In order to preview the specifications in your local workspace, you should run a
 local webserver (it is inadvisable to disable the security protections against
 running AJAX requests on local filesystem). With Python 3 installed:
 
-    cd docs/
+    cd specs/
     python3 -m http.server 8000 --bind 127.0.0.1
 
 Now you can browse all specs via <http://localhost:8000/>. For an even better
