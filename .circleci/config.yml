@@ -11,8 +11,29 @@ jobs:
           command: cd tools/ShapeChecker && ./gradlew --console=plain installDist
           condition: always()
       - run:
-          name: Check shapes & vocabs for  primary domains
-          command: cd tools/ShapeChecker && ./check-main.sh
+          name: Check shapes & vocabs for Core
+          command: cd tools/ShapeChecker && ./scripts/check-core.sh
+          when: always
+      - run:
+          name: Check shapes & vocabs for Config Mgt
+          command: cd tools/ShapeChecker && ./scripts/check-config.sh
+          when: always
+      - run:
+          name: Check shapes & vocabs for AM
+          command: cd tools/ShapeChecker && ./scripts/check-am.sh
+          when: always
+      - run:
+          name: Check shapes & vocabs for CM
+          command: cd tools/ShapeChecker && ./scripts/check-cm.sh
+          when: always
+      - run:
+          name: Check shapes & vocabs for QM
+          command: cd tools/ShapeChecker && ./scripts/check-qm.sh
+          when: always
+      - run:
+          name: Check shapes & vocabs for RM
+          command: cd tools/ShapeChecker && ./scripts/check-cm.sh
+          when: always
   prettier:
     working_directory: ~/oslc-specs
     docker:
@@ -27,8 +48,20 @@ jobs:
           command: prettier --check specs/core/
           when: always
       - run:
+          name: Check Query spec formatting
+          command: prettier --check specs/query/
+          when: always
+      - run:
           name: Check Config Mgt spec formatting
           command: prettier --check specs/config/
+          when: always
+       - run:
+          name: Check AM spec formatting
+          command: prettier --check specs/am/
+          when: always
+      - run:
+          name: Check CM spec formatting
+          command: prettier --check specs/cm/
           when: always
       - run:
           name: Check QM spec formatting
@@ -37,10 +70,6 @@ jobs:
       - run:
           name: Check RM spec formatting
           command: prettier --check specs/rm/
-          when: always
-      - run:
-          name: Check Query spec formatting
-          command: prettier --check specs/query/
           when: always
 workflows:
   spec-check:
