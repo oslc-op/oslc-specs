@@ -2,6 +2,7 @@ package net.open_services.scheck.shapechecker;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.jena.rdf.model.*;
@@ -90,9 +91,15 @@ public class CrossCheck
 
     /**
      * Check consistency of the vocabs and shapes.
+     * @param shapesWanted  a set of shapes that should have been defined, but were not
      */
-    public void check()
+    public void check(Set<String> shapesWanted)
     {
+        for (String uri : shapesWanted)
+        {
+            resultModel.addSummaryIssue(Terms.undefinedShape, uri);
+        }
+
         for (Map.Entry<Resource,Boolean> vocab : vocabs.entrySet())
         {
             if (!vocab.getValue())
@@ -119,7 +126,7 @@ public class CrossCheck
     }
 
 
-	/**
+    /**
      * Print a list of all vocabulary terms defined.
      */
     public void printVocabTerms()

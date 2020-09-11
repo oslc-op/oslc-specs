@@ -29,7 +29,7 @@ public class ResultModelPrinter
     private ResultModel     resultModel;
     private Model           vocabulary;
     private boolean         printCrossCheck;
-    private IssueSeverity	threshold;
+    private IssueSeverity   threshold;
 
 
     /**
@@ -152,21 +152,21 @@ public class ResultModelPrinter
             // We print a section header if its the top level,
             // or if there are issues found in that section and those issues are at or above the threshold
 
-        	if (level == 0
-        		 || (threshold == IssueSeverity.Info && issueCount > 0)
-        		 || (threshold == IssueSeverity.Warning && (warnCount > 0 || errorCount > 0))
-        		 || (threshold == IssueSeverity.Error && errorCount > 0))
-        	{
-	            printStream.print(prefix);
-	            if (level == 0)
-	            {
-	                // We print the number of issues only on the section header,
-	                // and not for intermediate result levels.
-	                printStream.printf(", with %d %s (%d info, %d warnings, %d errors)%n",
-	                    issueCount, issueCount==1 ? "issue" : "issues",
-	                    infoCount, warnCount, errorCount);
-	            }
-        	}
+            if (level == 0
+                || (threshold == IssueSeverity.Info && issueCount > 0)
+                || (threshold == IssueSeverity.Warning && (warnCount > 0 || errorCount > 0))
+                || (threshold == IssueSeverity.Error && errorCount > 0))
+            {
+                printStream.print(prefix);
+                if (level == 0)
+                {
+                    // We print the number of issues only on the section header,
+                    // and not for intermediate result levels.
+                    printStream.printf(", with %d %s (%d info, %d warnings, %d errors)%n",
+                        issueCount, issueCount==1 ? "issue" : "issues",
+                        infoCount, warnCount, errorCount);
+                }
+            }
         }
     }
 
@@ -177,28 +177,28 @@ public class ResultModelPrinter
         IssueSeverity severity = lookupSeverity(type);
 
         if (severity.compareTo(threshold) >= 0)
-    	{
+        {
             Resource subjectRes = issueRes.getPropertyResourceValue(Terms.subject);
             Statement badValueSt = issueRes.getProperty(Terms.value);
             String prefix = pad(level);
 
             printStream.printf("%s%s on %s: %s",
-	            prefix,
-	            severity,
-	            subjectRes.getURI(),
-	            unescape(vocabulary.getProperty(type, RDFS.comment).getString()));
+                prefix,
+                severity,
+                subjectRes.getURI(),
+                unescape(vocabulary.getProperty(type, RDFS.comment).getString()));
 
 
-	        if (badValueSt != null)
-	        {
-	            RDFNode badValue = badValueSt.getObject();
-	            String badValStr = badValue.isResource() ? badValue.asResource().getURI()
-	                : badValue.asLiteral().getLexicalForm();
+            if (badValueSt != null)
+            {
+                RDFNode badValue = badValueSt.getObject();
+                String badValStr = badValue.isResource() ? badValue.asResource().getURI()
+                    : badValue.asLiteral().getLexicalForm();
 
-	            printStream.printf(" (bad value %s)", badValStr);
-	        }
-	        printStream.println();
-    	}
+                printStream.printf(" (bad value %s)", badValStr);
+            }
+            printStream.println();
+        }
     }
 
 
@@ -207,6 +207,7 @@ public class ResultModelPrinter
         if (printCrossCheck)
         {
             // Process the cross-check results
+            printResList(summary,Terms.undefinedShape);
             printResList(summary,Terms.undefinedTerm);
             printResList(summary,Terms.unusedVocabulary);
             printResList(summary,Terms.unusedTerm);
@@ -222,10 +223,11 @@ public class ResultModelPrinter
             IssueSeverity severity = lookupSeverity(property);
 
             if (severity.compareTo(threshold) >= 0)
-        	{
+            {
                 Iterable<Statement> it = (Iterable<Statement>)() -> sti;
                 List<String> resURIs = StreamSupport.stream(it.spliterator(),false)
-                        .map(st->st.getResource().getURI())
+                        .map(
+                            st -> st.getObject().isLiteral() ? st.getString() : st.getResource().getURI())
                         .sorted()
                         .collect(Collectors.toList());
 
@@ -235,11 +237,11 @@ public class ResultModelPrinter
                 String plural = getVocabProp(property, Terms.plural);
 
                 printStream.printf("%n%s: %s %s%n",
-	                severity,
-	                size==1 ? "This "+singular+" was" : "These "+size+" "+plural+" were",
-	                message);
-	            resURIs.stream().forEachOrdered(s -> printStream.printf("   %s%n",s));
-           	}
+                    severity,
+                    size==1 ? "This "+singular+" was" : "These "+size+" "+plural+" were",
+                    message);
+                resURIs.stream().forEachOrdered(s -> printStream.printf("   %s%n",s));
+            }
         }
     }
 
@@ -286,52 +288,52 @@ public class ResultModelPrinter
 
 
     @javax.annotation.CheckReturnValue
-	private static String unescape(String s)
-	{
-		StringBuilder result = new StringBuilder(s.length());
-		int i = 0;
-		int n = s.length();
-		while (i < n)
-		{
-			char charAt = s.charAt(i);
-			if (charAt != '&')
-			{
-				result.append(charAt);
-				i++;
-			}
-			else
-			{
-				if (s.startsWith("&amp;", i))
-				{
-					result.append('&');
-					i += 5;
-				}
-				else if (s.startsWith("&apos;", i))
-				{
-					result.append('\'');
-					i += 6;
-				}
-				else if (s.startsWith("&quot;", i))
-				{
-					result.append('"');
-					i += 6;
-				}
-				else if (s.startsWith("&lt;", i))
-				{
-					result.append('<');
-					i += 4;
-				}
-				else if (s.startsWith("&gt;", i))
-				{
-					result.append('>');
-					i += 4;
-				}
-				else
-				{
-					i++;
-				}
-			}
-		}
-		return result.toString();
-	}
+    private static String unescape(String s)
+    {
+        StringBuilder result = new StringBuilder(s.length());
+        int i = 0;
+        int n = s.length();
+        while (i < n)
+        {
+            char charAt = s.charAt(i);
+            if (charAt != '&')
+            {
+                result.append(charAt);
+                i++;
+            }
+            else
+            {
+                if (s.startsWith("&amp;", i))
+                {
+                    result.append('&');
+                    i += 5;
+                }
+                else if (s.startsWith("&apos;", i))
+                {
+                    result.append('\'');
+                    i += 6;
+                }
+                else if (s.startsWith("&quot;", i))
+                {
+                    result.append('"');
+                    i += 6;
+                }
+                else if (s.startsWith("&lt;", i))
+                {
+                    result.append('<');
+                    i += 4;
+                }
+                else if (s.startsWith("&gt;", i))
+                {
+                    result.append('>');
+                    i += 4;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
+        return result.toString();
+    }
 }

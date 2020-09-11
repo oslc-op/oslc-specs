@@ -30,10 +30,12 @@ public class ShapeCheck
     private Set<String> describes;
     private Set<String> names;
     private Set<String> predicates;
+    private Set<String> shapes;
 
 
     /**
      * Construct a new ShapeCheck.
+     * @param shapes a set of shape URIs that we have already seen
      * @param describes a set of types for which we have already seen shapes
      * @param httpHandler an HttpHandler to check for reachability of URI references
      * @param shapeModel a model containing the shape statements
@@ -41,9 +43,10 @@ public class ShapeCheck
      * @param resultModel the model to which any results should be added
      * @param shapesResult a node in the resultModel for the results for all shapes in a document
      */
-    public ShapeCheck(Set<String> describes, HttpHandler httpHandler,
+    public ShapeCheck(Set<String> shapes, Set<String> describes, HttpHandler httpHandler,
             Model shapeModel, Model shapeCopy, ResultModel resultModel, Resource shapesResult)
     {
+        this.shapes = shapes;
         this.describes = describes;
         this.httpHandler = httpHandler;
         this.shapeModel = shapeModel;
@@ -159,8 +162,9 @@ public class ShapeCheck
         node.checkNode(OSLC.defaultValue, Occurrence.ZeroOrOne, null,
             uri -> {recordReference(propResult, uri); return null; });
 
-        // TODO - add this shape to a list of shapes that must be defined and/or checked
-        node.checkURI(OSLC.valueShape, Occurrence.ZeroOrOne, null);
+        // Add this shape to a list of shapes that must be defined and/or checked
+        node.checkURI(OSLC.valueShape, Occurrence.ZeroOrOne,
+            uri -> {recordShape(uri); return null; });
 
         // Special check for value type
         checkValueType(propDef,propResult);
@@ -195,16 +199,16 @@ public class ShapeCheck
      * @param literal the name for this property
      */
     private static void setChecksName(RDFNode propDefNode, Resource propResult, String literal)
-	{
-    	if (propDefNode.isAnon())
-    	{
-    		propResult.removeAll(Terms.checks);
+    {
+        if (propDefNode.isAnon())
+        {
+            propResult.removeAll(Terms.checks);
             propResult.addProperty(Terms.checks, literal);
-    	}
-	}
+        }
+    }
 
 
-	/**
+    /**
      * Add a dcterms:reference to the given check result;
      * this is used to record references to types and properties so
      * their occurrences in vocabularies can be cross-checked, and
@@ -215,6 +219,16 @@ public class ShapeCheck
     private static void recordReference(final Resource resultNode, String uri)
     {
         resultNode.addProperty(DCTerms.references, ResourceFactory.createResource(uri));
+    }
+
+
+    /**
+     * Add a shape to the set of shapes that should be defined.
+     * @param shapeUri the URI of a shape that should be defined
+     */
+    private void recordShape(String shapeUri)
+    {
+        shapes.add(shapeUri);
     }
 
 
