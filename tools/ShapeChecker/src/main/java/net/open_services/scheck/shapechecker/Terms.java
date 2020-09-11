@@ -28,10 +28,10 @@ import static net.open_services.scheck.annotations.IssueSeverity.*;
     domain="ShapeChecker Result Vocabulary.",
     description="A vocabulary for terms used in the result model of the OSLC Shape and Vocabulary checker.",
     additionalStatements=
-		{
-				"scheck:additionalProperty scheck:severity, scheck:singular, scheck:plural",
-			    "dcterms:source <https://oslc-op.github.io/oslc-specs/tools/ShapeChecker/src/main/java/net/open_services/scheck/shapechecker/Terms.java>"
-		})
+        {
+                "scheck:additionalProperty scheck:severity, scheck:singular, scheck:plural",
+                "dcterms:source <https://oslc-op.github.io/oslc-specs/tools/ShapeChecker/src/main/java/net/open_services/scheck/shapechecker/Terms.java>"
+        })
 public final class Terms
 {
     private static final String checkerNS         = "http://open-services.net/ns/scheck#";
@@ -59,7 +59,7 @@ public final class Terms
     {
         if (termMap.put(local, resource) != null)
         {
-        	throw new RuntimeException("Duplicate term name found: "+local);
+            throw new RuntimeException("Duplicate term name found: "+local);
         }
     }
 
@@ -76,7 +76,7 @@ public final class Terms
     {
         Property property = ResourceFactory.createProperty(checkerNS, local);
         addTerm(local, property);
-		return property;
+        return property;
     }
 
 
@@ -301,6 +301,11 @@ public final class Terms
     /** Predicate for the a plural crosscheck object. */
     @SCTerm(type=TermType.Property,description="The plural for a cross-check artifact.")
     public static final Property plural         = property("plural");
+
+    /** Crosscheck predicate for an undefined shape. */
+    @SCXCheck(severity=IssueSeverity.Error,singular="shape",plural="shapes",
+            description="referenced in the given shapes, but not defined:")
+    public static final Property undefinedShape    = property("undefinedShape");
 
     /** Crosscheck predicate for an undefined term. */
     @SCXCheck(severity=IssueSeverity.Error,singular="term",plural="terms",
