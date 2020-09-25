@@ -72,6 +72,7 @@ public class IssueSummarizer
         IssueCounter summaryCounts = issueCounters.pop();
 
         // Process the cross-check results
+        addCrossChecks(summaryCounts,summary,Terms.undefinedShape);
         addCrossChecks(summaryCounts,summary,Terms.undefinedTerm);
         addCrossChecks(summaryCounts,summary,Terms.unusedVocabulary);
         addCrossChecks(summaryCounts,summary,Terms.unusedTerm);

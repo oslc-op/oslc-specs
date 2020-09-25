@@ -159,7 +159,7 @@ public class ResultModel
      */
     public void suppressIssue(String name)
     {
-    	Terms.findIssue(name).ifPresent(r -> suppressedIssues.add(r));
+        Terms.findIssue(name).ifPresent(r -> suppressedIssues.add(r));
     }
 
 
@@ -233,7 +233,7 @@ public class ResultModel
     }
 
 
-	/**
+    /**
      * Get the summary resource.
      * @return the summary resource
      */
@@ -245,20 +245,34 @@ public class ResultModel
 
 
     /**
-     * Description of addSummaryIssue.
+     * Add a summary issue with a resource as the object.
      * @param type the type of the issue
      * @param resource the resource (vocabulary, shape, term) for the issue
      */
     public void addSummaryIssue(Property type, Resource resource)
-	{
-		if (!suppressedIssues.contains(type))
-		{
-			getSummary().addProperty(type, resource);
-		}
-	}
+    {
+        if (!suppressedIssues.contains(type))
+        {
+            getSummary().addProperty(type, resource);
+        }
+    }
 
 
-	/**
+    /**
+     * Add a summary issue with a literal as the object.
+     * @param type the type of the issue
+     * @param object the string literal for the issue
+     */
+    public void addSummaryIssue(Property type, String object)
+    {
+        if (!suppressedIssues.contains(type))
+        {
+            getSummary().addProperty(type, object);
+        }
+    }
+
+
+    /**
      * Add counts of each issue severity.
      * @param debug the current debug level
      * @return the number of errors found.
