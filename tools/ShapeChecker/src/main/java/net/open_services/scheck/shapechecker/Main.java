@@ -19,15 +19,17 @@ import net.open_services.scheck.util.GlobExpander;
  */
 public class Main
 {
-	private List<URI>		vocabularies		= new ArrayList<>();
-	private List<URI>		shapes				= new ArrayList<>();
-	private Set<Pattern>	skipURIPatterns		= new HashSet<>();
-	private int				debug				= 0;
-	private boolean			verbose				= false;
-	private boolean			crossCheck			= true;
-	private boolean			checkConstraints	= false;
-	private IssueSeverity	threshold			= IssueSeverity.Info;
-	private CrossCheck		crossChecker;
+    private List<URI>     vocabularies     = new ArrayList<>();
+    private List<URI>     shapes           = new ArrayList<>();
+    private Set<String>   shapesWanted     = new HashSet<>();
+    private Set<String>   shapesSeen       = new HashSet<>();
+    private Set<Pattern>  skipURIPatterns  = new HashSet<>();
+    private int           debug            = 0;
+    private boolean       verbose          = false;
+    private boolean       crossCheck       = true;
+    private boolean       checkConstraints = false;
+    private IssueSeverity threshold        = IssueSeverity.Info;
+    private CrossCheck    crossChecker;
 
 
     /**
@@ -59,7 +61,7 @@ public class Main
     private void run(String... args)
     {
         ResultModel resultModel   = new ResultModel(args);
-        boolean		failedToParse = false;
+        boolean        failedToParse = false;
 
         if (!checkUsage(args,resultModel))
         {
@@ -124,7 +126,7 @@ public class Main
                 {
                     System.out.println("Parsing "+shape);
                 }
-                new ShapesDocCheck(shape, httpHandler, resultModel, checkConstraints).checkShapes();
+                new ShapesDocCheck(shape, shapesSeen, shapesWanted, httpHandler, resultModel, checkConstraints).checkShapes();
             }
             catch (RiotNotFoundException e)
             {
@@ -139,14 +141,16 @@ public class Main
             }
         }
 
-        // Check that terms and defined and used
-        if ((verbose || crossCheck) && !vocabularies.isEmpty())
+        // Check that terms are defined and used
+        if (verbose || crossCheck)
         {
             crossChecker = new CrossCheck(resultModel);
             crossChecker.buildMaps();
+            shapesWanted.removeAll(shapesSeen);
+
             if (crossCheck && !shapes.isEmpty())
             {
-                crossChecker.check();
+                crossChecker.check(shapesWanted);
             }
         }
 
@@ -201,9 +205,9 @@ public class Main
                     index++;
                     debug++;
                     if (debug==1)
-                	{
-                    	System.err.println("Arguments: "+String.join(" ",args));
-                	}
+                    {
+                        System.err.println("Arguments: "+String.join(" ",args));
+                    }
                 }
                 else if (args[index].equals("-C") || args[index].equals("--constraints"))
                 {
@@ -229,14 +233,14 @@ public class Main
                     index++;
                     String arg = args[index++];
                     try
-					{
-						threshold = IssueSeverity.findSeverity(arg);
-					}
-					catch (IllegalArgumentException e)
-					{
-						System.err.println("Invalid severity threshold "+arg);
-	                    return false;
-					}
+                    {
+                        threshold = IssueSeverity.findSeverity(arg);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        System.err.println("Invalid severity threshold "+arg);
+                        return false;
+                    }
                 }
                 else if (args[index].equals("-v") || args[index].equals("--vocab"))
                 {
