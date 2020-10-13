@@ -85,7 +85,8 @@ public class ShapesDocCheck
                 shapeModel,
                 shapeCopy,
                 resultModel,
-                shapesResult);
+                shapesResult,
+                checkConstraints);
             Resource shapeResource = st.getSubject();
             shapeCheck.checkShape(document, shapeResource);
             shapesSeen.add(shapeResource.getURI());

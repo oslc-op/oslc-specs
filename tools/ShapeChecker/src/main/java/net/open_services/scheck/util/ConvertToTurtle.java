@@ -29,7 +29,8 @@ public final class ConvertToTurtle
     {
         for (String arg : args)
         {
-            if (!(new File(arg).exists()))
+            File file = new File(arg);
+            if (!(file.exists()))
             {
                 System.err.println("File not found: "+arg);
                 continue;
@@ -37,7 +38,7 @@ public final class ConvertToTurtle
 
             String newName = arg.replaceAll("\\.(xml|rdf)$","") + ".ttl";
             System.out.println("Converting "+arg+" to "+newName);
-            Model model = ModelFactory.createDefaultModel().read(arg);
+            Model model = ModelFactory.createDefaultModel().read(file.toURI().toString());
             try (OutputStream os = Files.newOutputStream(Paths.get(newName)))
             {
                 model.write(os, "TURTLE");
