@@ -31,6 +31,7 @@ public class ShapeCheck
     private Set<String> names;
     private Set<String> predicates;
     private Set<String> shapes;
+    private boolean     checkConstraints = false;
 
 
     /**
@@ -42,9 +43,11 @@ public class ShapeCheck
      * @param shapeCopy a reducing model containing as-yet unprocessed statements about the shape
      * @param resultModel the model to which any results should be added
      * @param shapesResult a node in the resultModel for the results for all shapes in a document
+     * @param checkConstraints true if we are checking stronger constraints for OSLC spec shapes
      */
     public ShapeCheck(Set<String> shapes, Set<String> describes, HttpHandler httpHandler,
-            Model shapeModel, Model shapeCopy, ResultModel resultModel, Resource shapesResult)
+            Model shapeModel, Model shapeCopy, ResultModel resultModel,
+            Resource shapesResult, boolean checkConstraints)
     {
         this.shapes = shapes;
         this.describes = describes;
@@ -52,6 +55,7 @@ public class ShapeCheck
         this.shapeModel = shapeModel;
         this.shapeCopy = shapeCopy;
         this.resultModel = resultModel;
+        this.checkConstraints = checkConstraints;
         shapeResult = resultModel.createInnerResult(shapesResult, Terms.ShapeResult);
 
         names = new HashSet<>();
@@ -78,8 +82,8 @@ public class ShapeCheck
             uri -> {recordReference(shapeResult, uri); return checkUnique(describes,uri); });
 
         // Look for the optional properties
-        node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
-        node.checkLangString(DCTerms.description, Occurrence.ZeroOrOne,
+        node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, Terms.MissingError, null);
+        node.checkLangString(DCTerms.description, Occurrence.ZeroOrOne, Terms.MissingWarn,
             desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         node.checkSuppressibleURI(RDFS.seeAlso, Occurrence.ZeroOrMany, false, false, null);
@@ -141,6 +145,7 @@ public class ShapeCheck
             return;
         }
         node.checkLangString(DCTerms.description, Occurrence.ExactlyOne,
+            checkConstraints ? Terms.MissingError : Terms.MissingWarn,
             desc -> NodeCheck.checkSentence(desc));
         node.checkLiteral(OSLC.name, null, Occurrence.ExactlyOne,
             literal -> {setChecksName(propDefNode,propResult,literal); return checkUnique(names,literal); });
@@ -152,7 +157,7 @@ public class ShapeCheck
             uri -> uri.equals(OSLC.Property.getURI()) ? null : Terms.WrongType);
 
         // Check the optional properties of the property definition
-        node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, null);
+        node.checkLangString(DCTerms.title, Occurrence.ZeroOrOne, Terms.MissingError, null);
         node.checkLiteral(OSLC.readOnly, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         node.checkLiteral(OSLC.hidden, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
         node.checkLiteral(OSLC.isMemberProperty, XSDDatatype.XSDboolean, Occurrence.ZeroOrOne, null);
@@ -245,7 +250,7 @@ public class ShapeCheck
     {
         if (valueSet.contains(value))
         {
-            return Terms.Duplicate;
+            return valueSet.equals(names) ? Terms.DuplicateLabel : Terms.Duplicate;
         }
         else
         {
