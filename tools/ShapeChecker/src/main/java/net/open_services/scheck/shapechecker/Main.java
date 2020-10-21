@@ -175,7 +175,7 @@ public class Main
         {
             System.out.println();
         }
-        new ResultModelPrinter(resultModel,System.out,crossCheck, threshold).print();
+        new ResultModelPrinter(resultModel,System.out,crossCheck,threshold).print();
 
         // Print list of vocabulary terms if requested
         if (verbose && crossChecker != null)
