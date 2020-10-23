@@ -8,6 +8,7 @@ import org.apache.jena.rdf.model.RDFVisitor;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
 
+import static net.open_services.scheck.util.PrintUtils.prefix;
 
 /**
  * Print a Turtle-appropriate representation of an RDF node.
@@ -16,54 +17,54 @@ import org.apache.jena.vocabulary.RDF;
  */
 public class TurtlePrintVisitor implements RDFVisitor
 {
-	@Override
-	public String visitBlank(Resource r, AnonId id)
-	{
-		throw new UnsupportedOperationException("RDFVisitor.visitBlank not yet implemented");
-	}
+    @Override
+    public String visitBlank(Resource r, AnonId id)
+    {
+        throw new UnsupportedOperationException("RDFVisitor.visitBlank not yet implemented");
+    }
 
-	@Override
-	public String visitURI(Resource r, String uri)
-	{
-		return "<" + uri + ">";
-	}
+    @Override
+    public String visitURI(Resource r, String uri)
+    {
+        return prefix(uri);
+    }
 
-	@Override
-	public String visitLiteral(Literal l)
-	{
+    @Override
+    public String visitLiteral(Literal l)
+    {
         RDFDatatype dt = l.getDatatype();
 
         // Plain literals are strings
         if (dt == null || dt.equals(XSDDatatype.XSDstring))
         {
-        	return enquote(l);
+            return enquote(l);
         }
         else if (dt.getURI().equals(RDF.langString.getURI()))
         {
-        	String lang = l.getLanguage();
-        	return enquote(l) + (lang.isEmpty() ? "" : "@"+lang);
+            String lang = l.getLanguage();
+            return enquote(l) + (lang.isEmpty() ? "" : "@"+lang);
         }
         else if (dt.equals(RDF.dtXMLLiteral))
         {
-        	return enquote(l) + "^^rdf:XMLLiteral";
+            return enquote(l) + "^^rdf:XMLLiteral";
         }
         else
         {
-        	return l.getLexicalForm();
+            return l.getLexicalForm();
         }
-	}
+    }
 
-	private static String enquote(Literal l)
-	{
-		return "\""+l.getString()
-			.replace("\\", "\\\\")
-	        .replace("\t", "\\t")
-	        .replace("\b", "\\b")
-	        .replace("\n", "\\n")
-	        .replace("\r", "\\r")
-	        .replace("\f", "\\f")
-	        .replace("\"", "\\\"")
-	        + "\"";
-	}
+    private static String enquote(Literal l)
+    {
+        return "\""+l.getString()
+            .replace("\\", "\\\\")
+            .replace("\t", "\\t")
+            .replace("\b", "\\b")
+            .replace("\n", "\\n")
+            .replace("\r", "\\r")
+            .replace("\f", "\\f")
+            .replace("\"", "\\\"")
+            + "\"";
+    }
 
 }

@@ -1,6 +1,9 @@
 package net.open_services.scheck.util;
 
+import static net.open_services.scheck.util.PrintUtils.addPrefix;
+import static net.open_services.scheck.util.PrintUtils.prefix;
 import static net.open_services.scheck.util.PrintUtils.printObject;
+import static net.open_services.scheck.util.PrintUtils.printPrefixes;
 import static net.open_services.scheck.util.PrintUtils.turtleCollector;
 
 import java.net.URISyntaxException;
@@ -67,15 +70,22 @@ public final class PrintVocabs
     {
         for (String arg : args)
         {
-            try
+            if (arg.startsWith("@prefix"))
             {
-                GlobExpander.checkFileOrURI(arg)
-                    .stream()
-                    .forEach(uri -> vocabModel.read(uri.toString(), "TURTLE"));
+                addPrefix(arg);
             }
-            catch (URISyntaxException e)
+            else
             {
-                System.err.println("Bad URI "+arg);
+                try
+                {
+                    GlobExpander.checkFileOrURI(arg)
+                        .stream()
+                        .forEach(uri -> vocabModel.read(uri.toString(), "TURTLE"));
+                }
+                catch (URISyntaxException e)
+                {
+                    System.err.println("Bad URI "+arg);
+                }
             }
         }
     }
@@ -83,6 +93,7 @@ public final class PrintVocabs
 
     private void printVocabs()
     {
+        System.out.print(printPrefixes());
         stmtStream(vocabModel.listStatements(null, RDF.type, OWL.Ontology))
             .map(Statement::getSubject)
             .sorted((a,b)->a.getURI().compareTo(b.getURI()))
@@ -99,10 +110,10 @@ public final class PrintVocabs
 
     private void printVocab(Resource vocab)
     {
-        System.out.printf("<%s>%n\ta %s",vocab.getURI(),"owl:Ontology");
+        System.out.printf("%s%n\ta %s",prefix(vocab.getURI()),"owl:Ontology");
         System.out.print(Stream.of(
-            	RDFS.label,
-            	DCTerms.title,
+                RDFS.label,
+                DCTerms.title,
                 DCTerms.description,
                 DCTerms.dateCopyrighted,
                 DCTerms.license,
@@ -123,7 +134,7 @@ public final class PrintVocabs
 
     private void printVocabTerm(Resource term)
     {
-    	System.out.printf("%n<%s>",term.getURI());
+        System.out.printf("%n%s",prefix(term.getURI()));
         System.out.println(Stream.of(
                 RDF.type,
                 OWL.sameAs,
@@ -132,16 +143,16 @@ public final class PrintVocabs
                 RDFS.range,
                 RDFS.domain,
                 RDFS.isDefinedBy,
-            	RDFS.label,
+                RDFS.label,
                 OSLC.inverseLabel,
-            	RDFS.comment,
+                RDFS.comment,
                 VS_TERM_STATUS,
                 OSLC.hidden,
                 RDF.value,
                 OSLC.impactType,
                 SKOS.narrower,
                 SKOS.broader,
-        		RDFS.seeAlso)
+                RDFS.seeAlso)
             .map(pred->printObject(vocabModel,term,pred))
             .filter(s->!s.isEmpty())
             .map(s->"\t"+s)
