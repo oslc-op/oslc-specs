@@ -1,7 +1,7 @@
 var specConfig = {
   status: "PS",
   revision: "01",
-  publishDate: "2020-06-19",
+  publishDate: "2020-09-17",
   previousPublishDate: "2019-12-20",
   previousMaturity: "PSD",
 };

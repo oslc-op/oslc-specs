@@ -201,9 +201,10 @@ public class NodeCheck
      *
      * @param property the property whose literal values should be checked
      * @param occurs the valid occurrences for the property
+     * @param missingIssue the issue to be raised if the property is missing
      * @param validator a function to perform extra validation
      */
-    public void checkLangString(Property property, Occurrence occurs, Function<String,Resource> validator)
+    public void checkLangString(Property property, Occurrence occurs, Resource missingIssue, Function<String,Resource> validator)
     {
         int count = 0;
         Set<String> langTags = new HashSet<>();
@@ -259,7 +260,7 @@ public class NodeCheck
         }
         if (count == 0 && !occurs.isOptional())
         {
-            resultModel.createIssue(resultNode, Terms.MissingError, property);
+            resultModel.createIssue(resultNode, missingIssue, property);
         }
     }
 
