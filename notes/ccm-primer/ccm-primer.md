@@ -1,5 +1,8 @@
 ---
 title: Configuration and Change Management 3.0 Primer
+abstract: 
+  Configuration and Change Management 3.0 Primer
+  is an OSLC OP Project Note
 ---
 
 # Outline
