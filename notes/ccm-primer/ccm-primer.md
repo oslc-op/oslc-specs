@@ -48,8 +48,10 @@ In most (if not all) versioning systems, each individual artefact is attributd w
 * local: where each artefact has its own versioning sequence, such as v1, v2, v3, etc. 
 * global: where artects share a single versioning sequence. 2 artefcats that have the same version number implies that the versions were created as part of the same commit.
 
-## OSLC version representation 
-An OSLC representation of the above artefact Requirement_a would consist of two RDF resources: a Version Resource, and a Concept Resource:
+## REST methods on resource versions  
+
+### GET on version resource
+let's assume for now that the client (somehow) got hold of the URL for a specific version resource URL. When a client performs a GET request, the received response is 
 
 ```
 :conceptResourceA-v23
@@ -63,33 +65,15 @@ An OSLC representation of the above artefact Requirement_a would consist of two 
     dcterms:description "A description of requirement A - as it appears in the state with the URI :conceptResourceA-v23" ;
     oslc_rm:refines <conceptResourceB-v24> .
 ```
+
+This OSLC representation of the Requirement_a artefact would consist of two RDF resources: a Version Resource, and a Concept Resource:
 
 Content to develop:
 * Give here a short explanation on the difference between Concept Resource and Version Resource.
 * explain the properties prov:wasRevisionOf, oslc_config:versionId.
 * explain how resources should link to each other. Should it be Version or Concept resource? this can be examplified using oslc_rm:refines in artefacts above.
-
-## REST methods on resource versions  
-
-### GET on version resource
-let's assume for now that the client (somehow) got hold of the URL for a specific version resource URL. When a client performs a GET request, the response is 
-
-```
-:conceptResourceA-v23
-    a oslc_config:VersionResource ;
-    dcterms:isVersionOf :conceptResourceA;
-    prov:wasRevisionOf : conceptResourceA-v22.
-:conceptResourceA
-    a oslc_rm:requirement ;
-    oslc_config:versionId "v23" ;
-    dcterms:title "Requirement A" ;
-    dcterms:description "A description of requirement A - as it appears in the state with the URI :conceptResourceA-v23" ;
-    oslc_rm:refines <conceptResourceB-v24> .
-```
-
-The response contains two RDF resources. 
-The client can then navigate to the previous versions by following the prov:wasRevisionOf property.
-The client can also navigate to the concept resource by making a GET request to the dcterms:isVersionOf property.
+* The client can then navigate to the previous versions by following the prov:wasRevisionOf property.
+* The client can also navigate to the concept resource by making a GET request to the dcterms:isVersionOf property.
 
 ### GET on concept resource
 
