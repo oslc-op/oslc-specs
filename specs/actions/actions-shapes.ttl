@@ -1,0 +1,154 @@
+# Copyright 2020 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+@prefix :      <http://open-services.net/ns/core/actions/shapes/3.0#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ldp:   <http://www.w3.org/ns/ldp#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix oslc:  <http://open-services.net/ns/core#> .
+@prefix oslc_actions:  <http://open-services.net/ns/core/actions#> .
+
+:
+  a oslc:ResourceShapeConstraints ;
+  dcterms:title "The OSLC Actions Constraints" ;
+  dcterms:description "Constraints on vocabulary terms defined in the OSLC Actions namespace."^^rdf:XMLLiteral ;
+  rdfs:label "The OSLC Actions Constraints" ;
+  dcterms:publisher <https://open-services.net/about/> ;
+  dcterms:issued "2020-09-17"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  dcterms:license <http://www.apache.org/licenses/LICENSE-2.0> .
+#  dcterms:source <https://docs.oasis-open-projects.org/oslc-op/core/v3.0/ps01/core-shapes.ttl> ;
+#  dcterms:isPartOf <https://docs.oasis-open-projects.org/oslc-op/core/v3.0/ps01/oslc-core.html> ;
+#  dcterms:hasVersion "PS01" .
+
+
+
+:ActionShape  a  oslc:ResourceShape ;
+        oslc:describes  oslc_actions:Action ;
+        dcterms:title   "Action shape."^^rdf:XMLLiteral ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "title" ;
+                          oslc:occurs              oslc:Exactly-one ;
+                          oslc:valueType           rdf:XMLLiteral ;
+                          oslc:propertyDefinition  dcterms:title ;
+                          dcterms:description      "Title suitable in a div."^^rdf:XMLLiteral
+                        ] ;
+
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "description" ;
+                          oslc:occurs              oslc:Zero-or-one ;
+                          oslc:propertyDefinition  dcterms:description ;
+                          oslc:valueType           rdf:XMLLiteral ;
+                          dcterms:description      "Descriptive text about resource represented as rich text in XHTML content."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property  [ a                        oslc:Property ;
+                         oslc:name                "type" ;
+                         oslc:occurs              oslc:Zero-or-many ;
+                         oslc:propertyDefinition  rdf:type ;
+                         oslc:range               rdfs:Class ;
+                         oslc:representation      oslc:Reference ;
+                         oslc:valueType           oslc:Resource ;
+                         dcterms:description      "The resource type."^^rdf:XMLLiteral
+                       ] ;
+        oslc:property  [ a                        oslc:Property ;
+                         oslc:name                "binding" ;
+                         oslc:occurs              oslc:Zero-or-many ;
+                         oslc:propertyDefinition  oslc_actions:binding ;
+                         oslc:range               oslc:Any ;
+                         oslc:representation      oslc:Either ;
+                         oslc:valueType           oslc:AnyResource ;
+                         dcterms:description      "Instructions for executing the action. It is likely that the target resource will be an http:Request, oslc-automation:AutomationRequest, or oslc:Dialog, but that is not necessarily the case. Multiple occurrences of this property MUST be different ways of achieving the same operation; they are semantically the same, but achieved through different data or technologies or at different times."^^rdf:XMLLiteral
+                       ] ;
+        oslc:property  [ a                        oslc:Property ;
+                         oslc:name                "executes" ;
+                         oslc:occurs              oslc:Zero-or-one ;
+                         oslc:propertyDefinition  oslc_actions:executes ;
+                         oslc:range               oslc:Any ;
+                         oslc:representation      oslc:Either ;
+                         oslc:valueType           oslc:AnyResource ;
+                         dcterms:description      "Link to the future action, if any, that a currently available action realizes. It is likely that the target resource will be an oslc:Action, but that is not necessarily the case. See future actions for example uses."^^rdf:XMLLiteral
+                       ] .
+
+
+
+
+
+:ExtendedActionShape  a  oslc:ResourceShape ;
+        dcterms:title   "Extended Action shape."^^rdf:XMLLiteral ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "action" ;
+                          oslc:occurs              oslc:Zero-or-many ;
+                          oslc:valueType           oslc:Any ;
+			  oslc:range		   oslc:Any ;
+                         oslc:representation      oslc:Either ;
+                          oslc:propertyDefinition  oslc_actions:action ;
+                          dcterms:description      " 	An action that the provider asserts is available for execution by clients at the time the representation was formed. In a distributed system, clients can lose race conditions that result in an 'available'-appearing action's execution requests being rejected. It is likely that the target resource will be an oslc:Action, but that is not necessarily the case; when it is an oslc:Action, it will have at least one binding since this predicate's definition requires that the action be available when the response is formed."^^rdf:XMLLiteral
+                        ] .
+
+:RequestShape  a  oslc:ResourceShape ;
+        dcterms:title   "Request"^^rdf:XMLLiteral ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "type" ;
+                          oslc:occurs              oslc:One-or-many ;
+                          oslc:valueType           oslc:Resource ;
+			  oslc:range		   oslc:Any ;
+                          oslc:representation      oslc:Reference ;
+                          oslc:propertyDefinition  rdf:type ;
+                          dcterms:description      "The resource type. At least one type MUST be http:Request."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "requestURI" ;
+                          oslc:occurs              oslc:Exactly-one ;
+                          oslc:valueType           oslc:Resource ;
+			  oslc:range		   oslc:Any ;
+                          oslc:representation      oslc:Reference ;
+                          oslc:propertyDefinition  http:requestURI ;
+                          dcterms:description      " 	An action that the provider asserts is available for execution by clients at the time the representation was formed. In a distributed system, clients can lose race conditions that result in an 'available'-appearing action's execution requests being rejected. It is likely that the target resource will be an oslc:Action, but that is not necessarily the case; when it is an oslc:Action, it will have at least one binding since this predicate's definition requires that the action be available when the response is formed."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "mthd" ;
+                          oslc:occurs              oslc:Exactly-one ;
+                          oslc:valueType           oslc:Resource ;
+			  oslc:range		   oslc:Any ;
+                          oslc:representation      oslc:Reference ;
+                          oslc:propertyDefinition  http:mthd ;
+                          dcterms:description      "HTTP method for the request. The target resource SHOULD come from the http-methods vocabulary. Many clients are likely to support only widely used methods such as POST."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "httpVersion" ;
+                          oslc:occurs              oslc:Exactly-one ;
+                          oslc:valueType           xsd:string ;
+                          oslc:propertyDefinition  http:httpVersion ;
+                          dcterms:description      "HTTP protocol version for the request. Providers would be wise to support HTTP 1.1 (value: '1.1') in order to achieve interoperability in practice."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "body" ;
+                          oslc:occurs              oslc:Exactly-one ;
+			  oslc:valueType	   oslc:AnyResource ;
+			  oslc:representation      oslc:Either ;
+                          oslc:valueType           xsd:string ;
+                          oslc:propertyDefinition  http:body ;
+                          dcterms:description      "HTTP protocol version for the request. Providers would be wise to support HTTP 1.1 (value: '1.1') in order to achieve interoperability in practice."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "body" ;
+                          oslc:occurs              oslc:Exactly-one ;
+			  oslc:valueType	   oslc:AnyResource ;
+			  oslc:representation      oslc:Either ;
+                          oslc:valueType           xsd:string ;
+                          oslc:propertyDefinition  http:body ;
+                          dcterms:description      "HTTP protocol version for the request. Providers would be wise to support HTTP 1.1 (value: '1.1') in order to achieve interoperability in practice."^^rdf:XMLLiteral
+                        ] .
