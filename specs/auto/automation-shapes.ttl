@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dcterms:    <http://purl.org/dc/terms/> .
 @prefix oslc:  <http://open-services.net/ns/core#> .
 
 @prefix oslc_auto: <http://open-services.net/ns/auto#> .
@@ -105,7 +105,8 @@
         a                    oslc:ResourceShape ;
         oslc:describes       oslc_auto:ParameterInstance ;
         dcterms:title        "ParameterInstance" ;
-        dcterms:description  "A resource representing an individual input or output parameter instance for an Automation Request or Result. Automation Requests and Results may have 0 or more parameter instances."^^rdf:XMLLiteral ;
+        dcterms:description  """A resource representing an individual input or output parameter instance for an automation request or result. 
+Automation requests or results may have zero or more parameter instances."""^^rdf:XMLLiteral ;
         oslc:property        
                 :name,
                 :description,
@@ -154,7 +155,7 @@
         oslc:representation      oslc:Reference ;
         oslc:name                "binding" ;
         oslc:occurs              oslc:One-or-many ;
-        oslc:propertyDefinition  oslc:binding ;
+        oslc:propertyDefinition  oslc_auto:binding ;
         oslc:range               oslc:Any ;
         oslc:readOnly            true ;
         oslc:valueType           oslc:Resource ;
@@ -198,7 +199,7 @@
         oslc:propertyDefinition  dcterms:contributor ;
         oslc:range               oslc:Any ;
         oslc:valueType           oslc:AnyResource ;
-        dcterms:description      "Contributor or contributors to resource (reference: Dublin Core). It is likely that the target resource will be an  foaf:Person but that is not necessarily the case. When the service provider or its agents is the contributor to the resource, a  foaf:Agent could be used."^^rdf:XMLLiteral .
+        dcterms:description      "Contributor or contributors to resource. It is likely that the target resource will be an foaf:Person but that is not necessarily the case. When the service provider or its agents is the contributor to the resource, a foaf:Agent could be used."^^rdf:XMLLiteral .
 
 :futureAction
         a               oslc:Property ;
@@ -241,23 +242,13 @@
         oslc:valueType           xsd:string ;
         dcterms:description      "Very short label for use in menu items."^^rdf:XMLLiteral .
 
-:inputParameter
-        a             oslc:Property ;
-        oslc:representation      oslc:Either ;
-        oslc:name                "inputParameter" ;
-        oslc:occurs              oslc:Zero-or-many ;
-        oslc:propertyDefinition  oslc_auto:inputParameter ;
-        oslc:range               oslc_auto:ParameterInstance ;
-        oslc:valueType           oslc:AnyResource ;
-        dcterms:description      "Parameters provided when Automation Requests are created. These include parameters provided by the creator of the Automation Request (whether by delegated UI or HTTP POST) and MAY include additional parameters added by the service provider during Automation Request creation. See the definition of the oslc_auto:parameterDefinition attribute of the Automation Plan for additional guidance on determining which parameters are required. Creators of Automation Requests MAY provide parameters beyond those defined in the Automation Plan without guarantee the service provider will recognize or honor them. It is expected that this attribute is write-able on Automation Request creation and read-only thereafter."^^rdf:XMLLiteral .
-
 :description
         a                oslc:Property ;
         oslc:name                "description" ;
         oslc:occurs              oslc:Zero-or-one ;
         oslc:propertyDefinition  dcterms:description ;
         oslc:valueType           rdf:XMLLiteral ;
-        dcterms:description      "Descriptive text (reference: Dublin Core) about resource represented as rich text in XHTML content. SHOULD include only content that is valid and suitable inside an XHTML <div> element."^^rdf:XMLLiteral .
+        dcterms:description      "Descriptive text about resource represented as rich text in XHTML content."^^rdf:XMLLiteral .
 
 :hintHeight
         a                 oslc:Property ;
@@ -290,7 +281,7 @@
         a                        oslc:Property ;
         oslc:representation      oslc:Reference ;
         oslc:name                "producedByAutomationRequest" ;
-        oslc:occurs              oslc:Zero-to-one ;
+        oslc:occurs              oslc:Zero-or-one ;
         oslc:propertyDefinition  oslc_auto:producedByAutomationRequest ;
         oslc:range               oslc:Any ;
         oslc:readOnly            false ;
@@ -324,7 +315,7 @@
         oslc:propertyDefinition  dcterms:creator ;
         oslc:range               oslc:Any ;
         oslc:valueType           oslc:AnyResource ;
-        dcterms:description      "Creator or creators of resource (reference: Dublin Core). It is likely that the target resource will be an  foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
+        dcterms:description      "Creator or creators of resource. It is likely that the target resource will be an foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
 
 :contribution
         a               oslc:Property ;
@@ -372,16 +363,6 @@
         oslc:valueType           oslc:AnyResource ;
         dcterms:description      "Used to indicate the desired state of the Automation Request based on values defined by the service provider. It is expected that this will be a resource reference to a definition of a valid automation request state on the service provider."^^rdf:XMLLiteral .
 
-:creator
-        a                 oslc:Property ;
-        oslc:representation      oslc:Either ;
-        oslc:name                "creator" ;
-        oslc:occurs              oslc:Zero-or-many ;
-        oslc:propertyDefinition  dcterms:creator ;
-        oslc:range               oslc:Any ;
-        oslc:valueType           oslc:AnyResource ;
-        dcterms:description      "Creator or creators of the resource (reference: Dublin Core). It is likely that the target resource will be a foaf:Person, but that is not necessarily the case. The resource should represent the entity on whose behalf the automation is being created. When the provider itself or its agent is the initiator of the automation (perhaps in the case of a scheduled automation), an additional foaf:Agent resource could be used."^^rdf:XMLLiteral .
-
 :name
         a                       oslc:Property ;
         oslc:name                "name" ;
@@ -389,16 +370,6 @@
         oslc:propertyDefinition  oslc:name ;
         oslc:valueType           xsd:string ;
         dcterms:description      "The name of the parameter instance."^^rdf:XMLLiteral .
-
-:contributor
-        a                oslc:Property ;
-        oslc:representation      oslc:Either ;
-        oslc:name                "contributor" ;
-        oslc:occurs              oslc:Zero-or-many ;
-        oslc:propertyDefinition  dcterms:contributor ;
-        oslc:range               oslc:Any ;
-        oslc:valueType           oslc:AnyResource ;
-        dcterms:description      "Contributor or contributors to resource (reference: Dublin Core). It is likely that the target resource will be an  foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
 
 :usage
         a                      oslc:Property ;
