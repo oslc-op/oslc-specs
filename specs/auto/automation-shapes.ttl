@@ -20,6 +20,7 @@
 
 @prefix oslc_auto: <http://open-services.net/ns/auto#> .
 @prefix : <http://open-services.net/ns/auto/shapes/2.1#> . 
+
 :
   a oslc:ResourceShapeConstraints ;
   dcterms:title "OSLC Automation (AUTO) Constraints" ;
@@ -56,8 +57,7 @@
 :AutomationRequestShape
         a                    oslc:ResourceShape ;
         oslc:describes       oslc_auto:AutomationRequest ;
-        oslc:name            "AutomationRequest" ;
-        dcterms:title        "Statement of need." ;
+        dcterms:title        "AutomationRequest" ;
         dcterms:description  "A resource representing the intention to execute an Automation Plan. The Automation Request contains the information required to request that the provider execute an Automation Plan."^^rdf:XMLLiteral ;
         oslc:property        
                 :inputParameter,
@@ -78,13 +78,12 @@
 :AutomationResultShape
         a                    oslc:ResourceShape ;
         oslc:describes       oslc_auto:AutomationResult ;
-        oslc:name            "AutomationResult" ;
-        dcterms:title        "Statement of need." ;
+        dcterms:title        "AutomationResult" ;
         dcterms:description  "A resource representing the intermediate and final execution state of an Automation Request, along with contributions to the result."^^rdf:XMLLiteral ;
         oslc:property        
                 :desiredState,
                 :instanceShape,
-                :ar-creator,
+                :creator,
                 :contribution,
                 :state,
                 :identifier,
@@ -93,10 +92,10 @@
                 :modified,
                 :outputParameter,
                 :subject,
-                :ar-contributor,
+                :contributor,
                 :producedByAutomationRequest,
                 :serviceProvider,
-                :ar-inputParameter,
+                :inputParameter,
                 :progress,
                 :verdict,
                 :reportsOnAutomationPlan,
@@ -105,8 +104,7 @@
 :ParameterInstanceShape
         a                    oslc:ResourceShape ;
         oslc:describes       oslc_auto:ParameterInstance ;
-        oslc:name            "ParameterInstance" ;
-        dcterms:title        "Statement of need." ;
+        dcterms:title        "ParameterInstance" ;
         dcterms:description  "A resource representing an individual input or output parameter instance for an Automation Request or Result. Automation Requests and Results may have 0 or more parameter instances."^^rdf:XMLLiteral ;
         oslc:property        
                 :name,
@@ -119,8 +117,7 @@
 :DialogShape
         a              oslc:ResourceShape ;
         oslc:describes       oslc:dialog ;
-        oslc:name            "Dialog" ;
-        dcterms:title        "Statement of need." ;
+        dcterms:title        "Dialog" ;
         dcterms:description  "Dialogs in general are defined by OSLC Core 2.0, and this specification defines two specific types of dialogs: the immediate-execution creation dialog, which can be used to allow a user to interactively create a new Automation request which is immediately available for execution, and the deferred-execution creation dialog, which creates a new Automation Request that is not immediately available for execution, but which requires further work on the part of the consumer."^^rdf:XMLLiteral ;
         oslc:property        
                 :hintWidth,
@@ -143,7 +140,7 @@
 
 :resourceType
         a               oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "resourceType" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  oslc:resourceType ;
@@ -154,14 +151,14 @@
 
 :binding
         a                    oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "binding" ;
         oslc:occurs              oslc:One-or-many ;
         oslc:propertyDefinition  oslc:binding ;
         oslc:range               oslc:Any ;
         oslc:readOnly            true ;
         oslc:valueType           oslc:Resource ;
-        dcterms:description      "A resource providing instructions that a client can follow to immediately execute the action, when the client is ready to do so. In this context (a deferred execution creation dialog), each binding is likely to be an immediate-execution binding, used during the execution phase of the deferred execution dialog interaction pattern first defined in OSLC Automation 2.1. It is likely that the target resource will be one of the following, but that is not necessarily the case: http:Request , oslc:CreationFactory , oslc:Dialog. This property is only used by the deferred-execution creation dialog. This is new for 2.1: END"^^rdf:XMLLiteral .
+        dcterms:description      "A resource providing instructions that a client can follow to immediately execute the action, when the client is ready to do so. In this context (a deferred execution creation dialog), each binding is likely to be an immediate-execution binding, used during the execution phase of the deferred execution dialog interaction pattern first defined in OSLC Automation 2.1. It is likely that the target resource will be one of the following, but that is not necessarily the case: http:Request , oslc:CreationFactory , oslc:Dialog. This property is only used by the deferred-execution creation dialog. This is new for 2.1: END."^^rdf:XMLLiteral .
 
 :modified
         a                   oslc:Property ;
@@ -170,11 +167,11 @@
         oslc:propertyDefinition  dcterms:modified ;
         oslc:readOnly            true ;
         oslc:valueType           xsd:dateTime ;
-        dcterms:description      "Timestamp of latest resource modification (reference: Dublin Core)"^^rdf:XMLLiteral .
+        dcterms:description      "Timestamp of latest resource modification (reference: Dublin Core)."^^rdf:XMLLiteral .
 
 :outputParameter
         a            oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "outputParameter" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  oslc_auto:outputParameter ;
@@ -184,7 +181,7 @@
 
 :reportsOnAutomationPlan
         a                        oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "reportsOnAutomationPlan" ;
         oslc:occurs              oslc:Exactly-one ;
         oslc:propertyDefinition  oslc_auto:reportsOnAutomationPlan ;
@@ -193,9 +190,9 @@
         oslc:valueType           oslc:Resource ;
         dcterms:description      "Automation Plan which the Automation Result reports on. It is likely that the target resource will be an  oslc_auto:AutomationPlan but that is not necessarily the case."^^rdf:XMLLiteral .
 
-:ar-contributor
+:contributor
         a             oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "contributor" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  dcterms:contributor ;
@@ -205,7 +202,7 @@
 
 :futureAction
         a               oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "futureAction" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  oslc:futureAction ;
@@ -215,7 +212,7 @@
 
 :instanceShape
         a              oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "instanceShape" ;
         oslc:occurs              oslc:Zero-or-one ;
         oslc:propertyDefinition  oslc:instanceShape ;
@@ -224,9 +221,9 @@
         oslc:valueType           oslc:Resource ;
         dcterms:description      "Resource Shape that provides hints as to resource property value-types and allowed values."^^rdf:XMLLiteral .
 
-:ar-inputParameter
+:inputParameter
         a          oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "inputParameter" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  oslc_auto:inputParameter ;
@@ -246,7 +243,7 @@
 
 :inputParameter
         a             oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "inputParameter" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  oslc_auto:inputParameter ;
@@ -273,7 +270,7 @@
 
 :usesExecutionEnvironment
         a                        oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "usesExecutionEnvironment" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  oslc_auto:usesExecutionEnvironment ;
@@ -291,7 +288,7 @@
 
 :producedByAutomationRequest
         a                        oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "producedByAutomationRequest" ;
         oslc:occurs              oslc:Zero-to-one ;
         oslc:propertyDefinition  oslc_auto:producedByAutomationRequest ;
@@ -302,7 +299,7 @@
 
 :parameterDefinition
         a                        oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "parameterDefinition" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  oslc_auto:parameterDefinition ;
@@ -317,11 +314,11 @@
         oslc:propertyDefinition  dcterms:created ;
         oslc:readOnly            true ;
         oslc:valueType           xsd:dateTime ;
-        dcterms:description      "Timestamp of resource creation (reference: Dublin Core)"^^rdf:XMLLiteral .
+        dcterms:description      "Timestamp of resource creation (reference: Dublin Core)."^^rdf:XMLLiteral .
 
 :creator
         a                    oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "creator" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  dcterms:creator ;
@@ -331,7 +328,7 @@
 
 :contribution
         a               oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "contribution" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  oslc_auto:contribution ;
@@ -358,7 +355,7 @@
 
 :verdict
         a                    oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "verdict" ;
         oslc:occurs              oslc:One-or-many ;
         oslc:propertyDefinition  oslc_auto:verdict ;
@@ -367,6 +364,7 @@
 
 :desiredState
         a               oslc:Property ;
+        oslc:representation      oslc:Either ;
         oslc:name                "desiredState" ;
         oslc:occurs              oslc:Zero-or-one ;
         oslc:propertyDefinition  oslc_auto:desiredState ;
@@ -374,9 +372,9 @@
         oslc:valueType           oslc:AnyResource ;
         dcterms:description      "Used to indicate the desired state of the Automation Request based on values defined by the service provider. It is expected that this will be a resource reference to a definition of a valid automation request state on the service provider."^^rdf:XMLLiteral .
 
-:ar-creator
+:creator
         a                 oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "creator" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  dcterms:creator ;
@@ -394,7 +392,7 @@
 
 :contributor
         a                oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "contributor" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  dcterms:contributor ;
@@ -404,7 +402,7 @@
 
 :usage
         a                      oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "usage" ;
         oslc:occurs              oslc:One-or-many ;
         oslc:propertyDefinition  oslc:usage ;
@@ -424,7 +422,7 @@
 
 :type
         a                       oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "type" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  rdf:type ;
@@ -433,7 +431,7 @@
 
 :serviceProvider
         a            oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "serviceProvider" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  oslc:serviceProvider ;
@@ -444,7 +442,7 @@
 
 :dialog
         a                     oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "dialog" ;
         oslc:occurs              oslc:Exactly-one ;
         oslc:propertyDefinition  oslc:dialog ;
@@ -470,7 +468,7 @@
 
 :state
         a                      oslc:Property ;
-        oslc:Representation      oslc:Either ;
+        oslc:representation      oslc:Either ;
         oslc:name                "state" ;
         oslc:occurs              oslc:One-or-many ;
         oslc:propertyDefinition  oslc_auto:state ;
@@ -480,7 +478,7 @@
 
 :executesAutomationPlan
         a                        oslc:Property ;
-        oslc:Representation      oslc:Reference ;
+        oslc:representation      oslc:Reference ;
         oslc:name                "executesAutomationPlan" ;
         oslc:occurs              oslc:Exactly-one ;
         oslc:propertyDefinition  oslc_auto:executesAutomationPlan ;
