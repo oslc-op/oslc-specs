@@ -126,7 +126,7 @@ Automation requests or results may have zero or more parameter instances."""^^rd
                 :resourceType,
                 :binding,
                 :label,
-                :dl-title,
+                :title,
                 :hintHeight,
                 :usage.     
 
@@ -294,7 +294,7 @@ Automation requests or results may have zero or more parameter instances."""^^rd
         oslc:name                "parameterDefinition" ;
         oslc:occurs              oslc:Zero-or-many ;
         oslc:propertyDefinition  oslc_auto:parameterDefinition ;
-        oslc:range               oslc:property ;
+        oslc:range               oslc:Property ;
         oslc:valueType           oslc:AnyResource ;
         dcterms:description      "The definition of a parameter for this Automation Plan. parameterDefinitions are either a local (inline) or referenced resource and use the attributes (the range) of the  oslc:Property resource with one exception. When used in the context of an oslc_auto:parameterDefinition, the cardinality of oslc:propertyDefinition becomes zero-or-one instead of exactly-one. Automation consumers creating Automation Requests MUST use the oslc:occurs attribute of the parameterDefinition, if present, to determine if a given parameter is required when creating the Automation Request. If the oslc:occurs attribute indicates the parameter is required (exactly-one or one-or-more), the service provider must guarantee the named parameter will be present in the Automation Result either as an oslc_auto:inputParmeter when unmodified during execution, or as an oslc_auto:outputParameter when modified during execution."^^rdf:XMLLiteral .
 
@@ -325,15 +325,6 @@ Automation requests or results may have zero or more parameter instances."""^^rd
         oslc:propertyDefinition  oslc_auto:contribution ;
         oslc:valueType           oslc:AnyResource ;
         dcterms:description      "A result contribution associated with this automation result. It is recommended that the contribution be an inline resource which can be retrieved with the automation result. The recommended attributes beyond the contribution itself are dcterms:title, dcterms:description and dcterms:type to provide a description of the contribution which would be appropriate for display in a simple UI for an automation result."^^rdf:XMLLiteral .
-
-:dl-title
-        a                   oslc:Property ;
-        oslc:name                "title" ;
-        oslc:occurs              oslc:Exactly-one ;
-        oslc:propertyDefinition  dcterms:title ;
-        oslc:readOnly            true ;
-        oslc:valueType           rdf:XMLLiteral ;
-        dcterms:description      "Title string that could be used for display."^^rdf:XMLLiteral .
 
 :progress
         a                        oslc:Property ;
