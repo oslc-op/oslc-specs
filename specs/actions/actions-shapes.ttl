@@ -21,6 +21,9 @@
 @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 @prefix oslc:  <http://open-services.net/ns/core#> .
 @prefix oslc_actions:  <http://open-services.net/ns/actions#> .
+@prefix http:  <http://www.w3.org/2011/http#> .
+@prefix http_methods:  <http://www.w3.org/2011/http-methods#> .
+@prefix oslc-automation:  <http://open-services.net/ns/auto#> .
 
 :
   a oslc:ResourceShapeConstraints ;
@@ -116,7 +119,7 @@
 			  oslc:range		   oslc:Any ;
                           oslc:representation      oslc:Reference ;
                           oslc:propertyDefinition  http:requestURI ;
-                          dcterms:description      " 	An action that the provider asserts is available for execution by clients at the time the representation was formed. In a distributed system, clients can lose race conditions that result in an 'available'-appearing action's execution requests being rejected. It is likely that the target resource will be an oslc:Action, but that is not necessarily the case; when it is an oslc:Action, it will have at least one binding since this predicate's definition requires that the action be available when the response is formed."^^rdf:XMLLiteral
+                          dcterms:description      "An action that the provider asserts is available for execution by clients at the time the representation was formed. In a distributed system, clients can lose race conditions that result in an 'available'-appearing action's execution requests being rejected. It is likely that the target resource will be an oslc:Action, but that is not necessarily the case; when it is an oslc:Action, it will have at least one binding since this predicate's definition requires that the action be available when the response is formed."^^rdf:XMLLiteral
                         ] ;
         oslc:property   [ a                        oslc:Property ;
                           oslc:name                "mthd" ;
@@ -137,7 +140,6 @@
         oslc:property   [ a                        oslc:Property ;
                           oslc:name                "body" ;
                           oslc:occurs              oslc:Exactly-one ;
-			  oslc:valueType	   oslc:AnyResource ;
 			  oslc:representation      oslc:Either ;
                           oslc:valueType           xsd:string ;
                           oslc:propertyDefinition  http:body ;
@@ -146,9 +148,71 @@
         oslc:property   [ a                        oslc:Property ;
                           oslc:name                "body" ;
                           oslc:occurs              oslc:Exactly-one ;
-			  oslc:valueType	   oslc:AnyResource ;
+			  oslc:valueType	   oslc:Resource ;
 			  oslc:representation      oslc:Either ;
                           oslc:valueType           xsd:string ;
                           oslc:propertyDefinition  http:body ;
                           dcterms:description      "HTTP protocol version for the request. Providers would be wise to support HTTP 1.1 (value: '1.1') in order to achieve interoperability in practice."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "usage" ;
+                          oslc:occurs              oslc:Zero-or-many ;
+			  oslc:valueType	   oslc:Resource ;
+			  oslc:representation      oslc:Reference ;
+                          oslc:range               oslc:Any ;
+                          oslc:propertyDefinition  oslc:usage ;
+                          dcterms:description      "Expected usage pattern for the resource. A value of oslc:default can also be used when multiple bindings are present on a single action to hints to clients which is preferred."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "finalStatusLocation" ;
+                          oslc:occurs              oslc:Exactly-one ;
+			  oslc:valueType	   oslc:Resource ;
+			  oslc:representation      oslc:Reference ;
+                          oslc:range               oslc:Any ;
+                          oslc:propertyDefinition  oslc:finalStatusLocation ;
+                          dcterms:description      "Expected usage pattern for the resource. A value of oslc:default can also be used when multiple bindings are present on a single action to hints to clients which is preferred."^^rdf:XMLLiteral
                         ] .
+
+
+:resultsShape  a  oslc:ResourceShape ;
+        dcterms:title   "results"^^rdf:XMLLiteral ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "verdict" ;
+                          oslc:occurs              oslc:One-or-many ;
+                          oslc:valueType           oslc:Resource ;
+			  oslc:range		   oslc:Any ;
+                          oslc:representation      oslc:Reference ;
+                          oslc:propertyDefinition  rdf:type ;
+                          dcterms:description      "Providers need to expose at least one standard URI for interoperability, but they can expose other more specific ones if needed as long as all URIs on a single result are semantically compatible. It is likely that the target resource will be one of the following, but that is not necessarily the case: oslc-automation:failed, oslc-automation:passed, oslc-automation:canceled."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "label" ;
+                          oslc:occurs              oslc:Exactly-one ;
+                          oslc:valueType           oslc:Resource ;
+			  oslc:range		   oslc:Any ;
+                          oslc:representation      oslc:Reference ;
+                          oslc:propertyDefinition  oslc-automation:verdict ;
+                          dcterms:description      "Short label describing the result (verdict) of the action dialog, for example from an immediate execution action dialog."^^rdf:XMLLiteral
+                        ] .
+
+
+:ParameterInstanceShape  a  oslc:ResourceShape ;
+        dcterms:title   "results"^^rdf:XMLLiteral ;
+        oslc:property   [ a                        oslc:Property ;
+                          oslc:name                "value" ;
+                          oslc:occurs              oslc:Exactly-one ;
+                          oslc:valueType           oslc:AnyResource ;
+			  oslc:range		   oslc:Any ;
+                          oslc:representation      oslc:Either ;
+                          oslc:propertyDefinition  rdf:value ;
+                          dcterms:description      "The value of the parameter, either a resource or a typed literal. Untyped literals can be used in place of string-typed literals."^^rdf:XMLLiteral
+                        ] ;
+        oslc:property  [ a                        oslc:Property ;
+                         oslc:name                "type" ;
+                         oslc:occurs              oslc:One-or-many ;
+                         oslc:propertyDefinition  rdf:type ;
+                         oslc:range               oslc:Any ;
+                         oslc:representation      oslc:Reference ;
+                         oslc:valueType           oslc:Resource ;
+                         dcterms:description      "The resource type. At least one type MUST be oslc-automation:ParameterInstance."^^rdf:XMLLiteral
+                       ] .
