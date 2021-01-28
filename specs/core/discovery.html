@@ -83,6 +83,20 @@
             status: "Finalized",
             publisher: "http://open-services.net",
           },
+          "WELL-KNOWN": {
+            title: "RFC 8615: Well-Known Uniform Resource Identifiers (URIs)",
+            href: "https://tools.ietf.org/html/rfc8615",
+            authors: ["M. Nottingham"],
+            status: "Proposed Standard",
+            publisher: "IETF",
+          },
+          "ROOT-SERVICES": {
+            title: "Root Services Specification",
+            href: "https://jazz.net/wiki/bin/view/Main/RootServicesSpec",
+            authors: ["J. des Rivieres", "S. Speicher"],
+            status: "Approved",
+            publisher: "IBM",
+          },
           OpenIDConnect: {
             title: "OpenID Connect",
             href: "http://openid.net/connect/",
@@ -416,6 +430,40 @@
         <p>
           This is also to avoid the complexity on server implementations that would be needed to provide such additional
           content.
+        </p>
+      </section>
+
+      <section id="wellKnown">
+        <h2>Well-known URI Bootstrapping</h2>
+
+        <p class="conformance">
+          An OSLC Server MAY serve a Root Services document at the
+          <code>/.well-known/oslc/rootservices.xml</code> URI [[!WELL-KNOWN]] if the Server provides access to such a
+          document. The Root Services document SHALL conform to the [[!ROOT-SERVICES]] specification. If no specific
+          content type is requested, or if the requested content type is <code>application/xml</code> or
+          <code>application/rdf+xml</code>, the server SHALL return the Root Services document using the RDF/XML-ABBREV
+          format. Servers MAY return other formats in response to other requested content types.
+        </p>
+
+        <p class="conformance">
+          An OSLC Server SHOULD serve a Service Provider Catalog at the
+          <code>/.well-known/oslc/sp-catalog</code> URI if the Server provides access to such a document.
+        </p>
+
+        <p class="conformance">
+          An OSLC Server MAY serve an LDP Container at the
+          <code>/.well-known/oslc/ldpc</code> URI if the Server provides access to such a document.
+        </p>
+
+        <p class="conformance">
+          An OSLC Server MAY use an HTTP redirect to a URI that satisfies the conformance clauses listed above in
+          response to any request under
+          <code>/.well-known/oslc/</code> URIs.
+        </p>
+
+        <p class="conformance">
+          An OSLC Server SHALL NOT serve documents on any vendor-specific URIs under
+          <code>/.well-known/oslc/</code> not defined in any official OSLC specification.
         </p>
       </section>
 
