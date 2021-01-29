@@ -122,6 +122,14 @@
             href: "https://jazz.net/wiki/bin/view/LinkedData/BestPractices",
             publisher: "jazz.net",
           },
+          CORS: {
+            title: "Fetch standard",
+            authors: ["WHATWG contributors"],
+            href:
+              "https://fetch.spec.whatwg.org/commit-snapshots/d070ea245c6eb66cf4196324f063dc6ab608d9e6/#http-cors-protocol",
+            status: "Living Standard",
+            publisher: "WHATWG",
+          },
         },
 
         // ===== Spec settings =====
@@ -684,6 +692,27 @@
             header. If the server gets an Accept header for some non-RDF content type, say ATOM, that it does not
             support, then it SHOULD return 406 Unacceptable.
           </p>
+
+          <p>
+            <span class="conformance"
+              >OSLC servers SHOULD support the CORS protocol [[!CORS]] in order to allow browser-based OSLC clients to
+              interact with the server.</span
+            >
+            In addition to following the general practice, server implementers are recommended to apply the
+            recommendations listed below:
+          </p>
+          <ul>
+            <li class="conformance">
+              OSLC servers SHOULD use the <code>Access-Control-Allow-Headers</code> header [[!CORS]] to allow the use of
+              the <code>Content-Type</code> header in OSLC requests. Despite the <code>Content-Type</code> header being
+              a CORS-safelisted request header, it needs to be explicitly allowed in order to expand the range of its
+              permitted values and allow OSLC clients to send RDF contents to the server.
+            </li>
+            <li class="conformance">
+              OSLC servers SHOULD use the <code>Access-Control-Allow-Headers</code> header [[!CORS]] to allow the use of
+              the <code>OSLC-Core-Version</code> header in OSLC requests.
+            </li>
+          </ul>
         </section>
 
         <section id="commonVocabulary">
@@ -1300,13 +1329,7 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
             </td>
           </tr>
           <tr>
-            <td>01</td>
-            <td>04 April 2017</td>
-            <td>Jim Amsden</td>
-            <td>CS was approved and published.</td>
-          </tr>
-          <tr>
-            <td>03</td>
+            <td>CSD03</td>
             <td>31 May 2018</td>
             <td>Jim Amsden</td>
             <td>
@@ -1316,10 +1339,21 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
             </td>
           </tr>
           <tr>
-            <td>04</td>
-            <td>26 June 2019</td>
+            <td>PSD04</td>
+            <td>20 December 2019</td>
             <td>Jim Amsden</td>
             <td>Added conformance section and migrated to Open Project</td>
+          </tr>
+          <tr>
+            <td>PS01</td>
+            <td>17 September 2020</td>
+            <td>Jim Amsden</td>
+            <td>
+              Added vocabulary and constraints documents to additional content. Recommendations on URI patterns for
+              published shapes now includes fragments. See Milestone
+              <a href="https://github.com/oslc-op/oslc-specs/milestone/12">Core v3.0 PS 01</a> for additional
+              information.
+            </td>
           </tr>
         </table>
       </section>

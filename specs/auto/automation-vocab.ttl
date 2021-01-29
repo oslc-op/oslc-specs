@@ -1,189 +1,229 @@
+# Copyright 2020 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rddl:  <http://www.rddl.org/> .
+@prefix vann:        <http://purl.org/vocab/vann/> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix oslc_auto:    <http://open-services.net/ns/auto#> .
 
-<http://open-services.net/ns/auto#queued>
-        rdfs:comment      "Primarily used to indicate an automation request or result is queued for additional\n\t\t    actions by the service provider." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "queued" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
-
-<http://open-services.net/ns/auto#pass>
-        rdfs:comment      "Used to indicate an automation result represents a successful execution." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "pass" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
-
-<http://open-services.net/ns/auto#canceled>
-        rdfs:comment      "Used to indicate that an automation request or result has been canceled." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "canceled" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
-
-<http://open-services.net/ns/auto#state>
-        a                 rdf:Property ;
-        rdfs:comment      "Used to indicate the state of the automation request based on values defined\n\t\t    by the service provider. Most often a read-only property. It is expected that this will\n\t\t    be a resource reference to a definition of a valid automation request state on the service provider." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "state" ;
-        rdfs:range        <http://open-services.net/ns/auto#AutomationResult> , <http://open-services.net/ns/auto#AutomationRequest> ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationResult> , <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationRequest> .
-
-<http://open-services.net/ns/auto#AutomationPlan>
-        a                 rdfs:Class ;
-        rdfs:comment      "The Automation Plan resource" ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "AutomationPlan" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationPlan> .
-
-<http://open-services.net/ns/auto#initialParameter>
-        a                 rdf:Property ;
-        rdfs:comment      "Parameters provided when Automation Requests are created. These include parameters provided \n\t\t   by the creator of the Automation Request (whether by delegated UI or HTTP POST) and MAY include \n\t\t   additional parameters added by the service provider during Automation Request creation. See the \n\t\t   definition of the oslc_auto:parameterDefinition attribute of the Automation Plan for additional guidance \n\t\t   on determining which parameters are required. Creators of Automation Requests MAY provide parameters beyond \n\t\t   those defined in the Automation Plan without guarantee the service provider will recognize or honor them. \n\t\t   It is expected that this attribute is write-able on Automation Request creation and read-only thereafter." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "inputParameter" ;
-        rdfs:range        <http://open-services.net/ns/auto#AutomationResult> , <http://open-services.net/ns/auto#AutomationRequest> ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationResult> , <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationRequest> .
-
-<http://open-services.net/ns/auto#complete>
-        rdfs:comment      "Used to indicate that an automation request or result is complete." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "complete" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
-
-<http://open-services.net/ns/auto#parameterDefinition>
-        a                 rdf:Property ;
-        rdfs:comment      "The definition of a parameter for this Automation Plan. parameterDefinitions are either\n\t\t   a local (inline) or referenced resource and use the attributes (the range) of the oslc:Property\n\t\t   resource with one exception. When used in the context of an oslc_auto:parameterDefinition, the \n\t\t   cardinality of oslc:propertyDefinition becomes zero-or-one instead of exactly-one. Automation consumers \n\t\t   creating Automation Requests MUST use the oslc:occurs attribute of the parameterDefinition, if \n\t\t   present, to determine if a given parameter is required when creating the Automation Request. \n\t\t   If the oslc:occurs attribute indicates the parameter is required (exactly-one or one-or-more), the \n\t\t   service provider must guarantee the named parameter will be present in the Automation Result either \n\t\t   as an oslc_auto:inputParmeter when unmodified during execution, or as an oslc_auto:outputParameter \n\t\t   when modified during execution." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "parameterDefinition" ;
-        rdfs:range        <http://open-services.net/ns/auto#AutomationPlan> ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationPlan> .
-
-<http://open-services.net/ns/auto#hasContribution>
-        a                 rdf:Property ;
-        rdfs:comment      "A result contribution associated with this automation result. It is recommended that the\n\t\t    contribution be an inline resource which can be retrieved with the automation result. The recommended\n\t\t    attributes beyond the contribution itself are dcterms:title, dcterms:description and dcterms:type to\n\t\t    provide a description of the contribution which would be appropriate for display in a simple UI for \n\t\t    an automation result." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "hasContribution" ;
-        rdfs:range        <http://open-services.net/ns/auto#AutomationResult> ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationResult> .
-
-<http://open-services.net/ns/auto#AutomationResult>
-        a                 rdfs:Class ;
-        rdfs:comment      "The Automation Result resource" ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "AutomationResult" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationResult> .
-
-<http://open-services.net/ns/auto/auto.rdf>
-        rddl:nature  rdfs: .
-
-<http://open-services.net/ns/auto#desiredState>
-        a                 rdf:Property ;
-        rdfs:comment      "Used to indicate the desired state of the automation request based on values defined\n\t\t    by the service provider. " ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "desiredState" ;
-        rdfs:range        <http://open-services.net/ns/auto#AutomationResult> , <http://open-services.net/ns/auto#AutomationRequest> ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationResult> , <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationRequest> .
-
-<http://open-services.net/ns/auto#ParameterInstance>
-        a                 rdfs:Class ;
-        rdfs:comment      "The Automation Parameter Instance resource" ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "ParameterInstance" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_ParameterInstance> .
-
-<http://open-services.net/ns/auto#canceling>
-        rdfs:comment      "Used to indicate the service provider is in the process of canceling an automation request or result." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "canceling" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
-
-<http://open-services.net/ns/auto#new>
-        rdfs:comment      "Used to indicate an automation request or result has just been created in the service\n\t\t    provider and has not yet been acted upon." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "new" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
-
-<http://open-services.net/ns/auto#verdict>
-        a                 rdf:Property ;
-        rdfs:comment      "Used to indicate the verdict of the automation result based on values defined by the service\n\t\t    provider. Most often a read-only property. It is expected that this will be a resource reference to a \n\t\t    definition of a valid automation result verdict on the service provider." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "verdict" ;
-        rdfs:range        <http://open-services.net/ns/auto#AutomationResult> ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationResult> .
-
-<http://open-services.net/ns/auto#producedByAutomationRequest>
-        a                 rdf:Property ;
-        rdfs:comment      "Automation Request which produced the Automation Result. It is likely that the target resource\n\t\t    will be an oslc_auto:AutomationResult but that is not necessarily the case." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "producedByAutomationRequest" ;
-        rdfs:range        <http://open-services.net/ns/auto#AutomationResult> ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationResult> .
-
-<http://open-services.net/ns/auto#error>
-        rdfs:comment      "Used to indicate an automation result has completed but did not run successfully due\n\t\t   to some error. This could be a timeout, automation coding error, network problem or other error\n\t\t   which prevented the automation from running successfully to a pass, warning or fail verdict." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "error" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
-
-<http://open-services.net/ns/auto#fail>
-        rdfs:comment      "Used to indicate an automation result represents a failed execution." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "fail" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
-
-<http://open-services.net/ns/auto#unavailable>
-        rdfs:comment      "Used to indicate an automation result is in a state where a final verdict such as\n\t\t   oslc:auto_pass or oslc_auto:fail is not yet available. Usually used when the result is in a\n\t\t   state other than oslc_auto:complete." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "unavailable" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
-
-<http://open-services.net/ns/auto#AutomationRequest>
-        a                 rdfs:Class ;
-        rdfs:comment      "The Automation Request resource" ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "AutomationRequest" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationRequest> .
-
-<http://open-services.net/ns/auto#>
+oslc_auto:
         a                    owl:Ontology ;
-        rdfs:label           "Automation" ;
-        rdfs:seeAlso         <http://open-services.net/ns/auto/auto.rdf> , <http://open-services.net/bin/view/Main/AutoSpecificationV2> , <http://open-services.net/bin/view/Main/AutomationHome> ;
-        dcterms:description  "\n      All vocabulary URIs defined in the OSLC Automation namespace.\n    "^^rdf:XMLLiteral ;
-        dcterms:title        "The OSLC Automation Vocabulary" .
+        dcterms:description  "All vocabulary URIs defined in the OSLC Automation namespace."^^rdf:XMLLiteral ;
+        dcterms:title        "The OSLC Automation Vocabulary" ;
+        rdfs:label "OSLC Automation (AUTO) Vocabulary" ;
+        vann:preferredNamespacePrefix "oslc_auto" ;
+        dcterms:publisher <https://open-services.net/about/> ;
+        #dcterms:issued "2020-09-17"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        dcterms:license <http://www.apache.org/licenses/LICENSE-2.0> ;
+        dcterms:source <https://docs.oasis-open-projects.org/oslc-op/auto/v2.1/psd01/automation-vocab.ttl> ;
+        dcterms:isPartOf <https://docs.oasis-open-projects.org/oslc-op/auto/v2.1/psd01/automation-spec.html> ;
+        dcterms:hasVersion "WD01" .
 
-<http://open-services.net/ns/auto#reportsOnAutomationPlan>
-        a                 rdf:Property ;
-        rdfs:comment      "Automation Plan which the Automation Result reports on. It is likely that the target resource\n\t\t    will be an oslc_auto:AutomationPlan but that is not necessarily the case." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "reportsOnAutomationPlan" ;
-        rdfs:range        <http://open-services.net/ns/auto#AutomationResult> ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationResult> .
+oslc_auto:State
+        a rdfs:Class ;
+        rdfs:isDefinedBy oslc_auto: ;
+        rdfs:label "State" ;
+        rdfs:comment "Defines the possible oslc_auto:state property values." .
 
-<http://open-services.net/ns/auto#inProgress>
+oslc_auto:new
+        a oslc_auto:State ;
+        rdfs:comment      "Used to indicate an automation request or result has just been created in the service  provider and has not yet been acted upon." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "new" .
+
+oslc_auto:queued
+        a oslc_auto:State ;
+        rdfs:comment      """Primarily used to indicate an automation request or result is queued for additional actions by the service provider.""" ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "queued" .
+
+oslc_auto:inProgress
+        a oslc_auto:State ;
         rdfs:comment      "Used to indicate an automation request or result is active in the service provider." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "inProgress" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "inProgress" .
 
-<http://open-services.net/ns/auto#additionalParameter>
+oslc_auto:canceling
+        a oslc_auto:State ;
+        rdfs:comment      "Used to indicate the service provider is in the process of canceling an automation request or result." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "canceling" .
+
+oslc_auto:canceled
+        a oslc_auto:State ;
+        rdfs:comment      "Used to indicate that an automation request or result has been canceled." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "canceled" .
+
+oslc_auto:complete
+        a oslc_auto:State ;
+        rdfs:comment      "Used to indicate that an automation request or result is complete." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "complete" .
+
+oslc_auto:state
         a                 rdf:Property ;
-        rdfs:comment      "Automation Result output parameters are parameters associated with the result other than the\n\t\t   oslc_auto:inputParameter resources. These could be parameters added during automation execution by the\n\t\t   service provider or external agents. They could also be copies of input parameters with values changed\n\t\t   during execution." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "outputParameter" ;
-        rdfs:range        <http://open-services.net/ns/auto#AutomationResult> ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationResult> .
+        rdfs:comment      "Used to indicate the state of the automation request based on values defined  by the service provider. Most often a read-only property. It is expected that this will  be a resource reference to a definition of a valid automation request state on the service provider." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "state" .
 
-<http://open-services.net/ns/auto#executesAutomationPlan>
+oslc_auto:AutomationPlan
+        a                 rdfs:Class ;
+        rdfs:comment      "The Automation Plan resource." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "AutomationPlan" .
+
+oslc_auto:inputParameter
         a                 rdf:Property ;
-        rdfs:comment      "Automation Plan run by the Automation Request. It is likely that the target resource will be an\n\t\t    oslc_auto:AutomationPlan but that is not necessarily the case. " ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "executesAutomationPlan" ;
-        rdfs:range        <http://open-services.net/ns/auto#AutomationRequest> ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2#Resource_AutomationRequest> .
+        rdfs:comment      "Parameters provided when Automation Requests are created. These include parameters provided  by the creator of the Automation Request (whether by delegated UI or HTTP POST) and MAY include  additional parameters added by the service provider during Automation Request creation. See the  definition of the oslc_auto:parameterDefinition attribute of the Automation Plan for additional guidance  on determining which parameters are required. Creators of Automation Requests MAY provide parameters beyond  those defined in the Automation Plan without guarantee the service provider will recognize or honor them.  It is expected that this attribute is write-able on Automation Request creation and read-only thereafter." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "inputParameter" .
 
-<http://open-services.net/ns/auto#warning>
-        rdfs:comment      "Used to indicate an automation result represents an execution which encountered conditions\n\t\t   which prevented successful execution but did not result in a failed execution." ;
-        rdfs:isDefinedBy  <http://open-services.net/ns/auto#> ;
-        rdfs:label        "warning" ;
-        rdfs:seeAlso      <http://open-services.net/bin/view/Main/AutoSpecificationV2> .
+oslc_auto:parameterDefinition
+        a                 rdf:Property ;
+        rdfs:comment      "The definition of a parameter for this Automation Plan. parameterDefinitions are either a local (inline) or referenced resource and use the attributes (the range) of the oslc:Property resource with one exception. When used in the context of an oslc_auto:parameterDefinition, the  cardinality of oslc:propertyDefinition becomes zero-or-one instead of exactly-one. Automation consumers  creating Automation Requests MUST use the oslc:occurs attribute of the parameterDefinition, if  present, to determine if a given parameter is required when creating the Automation Request.  If the oslc:occurs attribute indicates the parameter is required (exactly-one or one-or-more), the  service provider must guarantee the named parameter will be present in the Automation Result either  as an oslc_auto:inputParmeter when unmodified during execution, or as an oslc_auto:outputParameter  when modified during execution." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "parameterDefinition" .
+
+oslc_auto:usesExecutionEnvironment
+        a                 rdf:Property ;
+        rdfs:comment      """A resource representing the environment(s) which this Automation Plan can be executed in. The execution environment resource could represent a grouping of 
+environmental details such as operating system, database, browser, compiler, etc. See also the execution environments section.""" ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "usesExecutionEnvironment" .
+
+oslc_auto:futureAction
+        a                 rdf:Property ;
+        rdfs:comment      """A resource representing actions that will become available on Automation Results that result from execution of this Plan. The resource is likely to be of type oslc:Action, 
+but it can be of any type. Automation defines oslc_auto:TeardownAction as one kind of future action.""" ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "futureAction" .
+
+oslc_auto:contribution
+        a                 rdf:Property ;
+        rdfs:comment      "A result contribution associated with this automation result. It is recommended that the  contribution be an inline resource which can be retrieved with the automation result. The recommended  attributes beyond the contribution itself are dcterms:title, dcterms:description and dcterms:type to  provide a description of the contribution which would be appropriate for display in a simple UI for   an automation result." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "hasContribution" .
+
+oslc_auto:AutomationResult
+        a                 rdfs:Class ;
+        rdfs:comment      "The Automation Result resource." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "AutomationResult" .
+
+oslc_auto:desiredState
+        a                 rdf:Property ;
+        rdfs:comment      "Used to indicate the desired state of the automation request based on values defined  by the service provider." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "desiredState" .
+
+oslc_auto:ParameterInstance
+        a                 rdfs:Class ;
+        rdfs:comment      "The Automation Parameter Instance resource." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "ParameterInstance" .
+
+oslc_auto:Verdict
+        a rdfs:Class ;
+        rdfs:isDefinedBy oslc_auto: ;
+        rdfs:label "Verdict" ;
+        rdfs:comment "Defines the possible oslc_auto:verdict property values." .
+
+
+oslc_auto:verdict
+        a                 rdf:Property ;
+        rdfs:comment      "Used to indicate the verdict of the automation result based on values defined by the service provider. Most often a read-only property. It is expected that this will be a resource reference to a   definition of a valid automation result verdict on the service provider." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "verdict" .
+
+oslc_auto:producedByAutomationRequest
+        a                 rdf:Property ;
+        rdfs:comment      "Automation Request which produced the Automation Result. It is likely that the target resource will be an oslc_auto:AutomationResult but that is not necessarily the case." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "producedByAutomationRequest" .
+
+oslc_auto:error
+        a oslc_auto:Verdict ;
+        rdfs:comment      "Used to indicate an automation result has completed but did not run successfully due to some error. This could be a timeout, automation coding error, network problem or other error which prevented the automation from running successfully to a pass, warning or fail verdict." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "error" .
+
+oslc_auto:passed
+        a oslc_auto:Verdict ;
+        rdfs:comment      "Used to indicate an automation result represents a passed execution." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "passed" .
+
+oslc_auto:failed
+        a oslc_auto:Verdict ;
+        rdfs:comment      "Used to indicate an automation result represents a failed execution." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "fail" .
+
+oslc_auto:unavailable
+        a oslc_auto:Verdict ;
+        rdfs:comment      "Used to indicate an automation result is in a state where a final verdict such as oslc:auto_pass or oslc_auto:fail is not yet available. Usually used when the result is in a state other than oslc_auto:complete." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "unavailable" .
+
+oslc_auto:AutomationRequest
+        a                 rdfs:Class ;
+        rdfs:comment      "The Automation Request resource." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "AutomationRequest" .
+
+
+oslc_auto:reportsOnAutomationPlan
+        a                 rdf:Property ;
+        rdfs:comment      """Automation Plan which the Automation Result reports on. It is likely that the target resource 
+will be an oslc_auto:AutomationPlan but that is not necessarily the case.""" ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "reportsOnAutomationPlan" .
+
+oslc_auto:progress
+          a                 rdf:Property ;
+          rdfs:comment      "A percentage (0-100) of completion." ;
+          rdfs:isDefinedBy  oslc_auto: ;
+          rdfs:label        "progress"  .
+
+oslc_auto:outputParameter
+        a                 rdf:Property ;
+        rdfs:comment      "Automation Result output parameters are parameters associated with the result other than the oslc_auto:inputParameter resources. These could be parameters added during automation execution by the service provider or external agents. They could also be copies of input parameters with values changed during execution." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "outputParameter" .
+
+oslc_auto:executesAutomationPlan
+        a                 rdf:Property ;
+        rdfs:comment      "Automation Plan run by the Automation Request. It is likely that the target resource will be an  oslc_auto:AutomationPlan but that is not necessarily the case." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "executesAutomationPlan" .
+
+oslc_auto:warning
+        a oslc_auto:Verdict ;
+        rdfs:comment      "Used to indicate an automation result represents an execution which encountered conditions which prevented successful execution but did not result in a failed execution." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "warning" .
+
+oslc_auto:binding
+        a                 rdf:Property ;
+        rdfs:comment      "A resource providing instructions that a client can follow to immediately execute the action, when the client is ready to do so. In this context (a deferred execution creation dialog), each binding is likely to be an immediate-execution binding, used during the execution phase of the deferred execution dialog interaction pattern." ;
+        rdfs:isDefinedBy  oslc_auto: ;
+        rdfs:label        "binding" .
+
+
+
