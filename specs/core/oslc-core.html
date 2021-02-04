@@ -130,6 +130,13 @@
             status: "Living Standard",
             publisher: "WHATWG",
           },
+          ABNF: {
+            title: "Augmented BNF for Syntax Specifications: ABNF",
+            href: "https://tools.ietf.org/html/rfc5234",
+            authors: ["D. Crocker", "P. Overell"],
+            status: "Internet Standard",
+            publisher: "IETF",
+          },
         },
 
         // ===== Spec settings =====
@@ -1163,16 +1170,34 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
 
         <p>
           OSLC Core and domain specifications will each be versioned independently, and may specify version numbers.
-          Existing OSLC 2.0 clients and servers use the OSLC-Core-Version header described in
+          Existing OSLC 2.0 clients and servers use the OSLC-Core-Version header consistent with the description in
           <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Specification_Versioning"
             >OSLC Core 2.0 Specification Versioning</a
           >
+          <b>TODO merge that in fully here in this spec, make normative</b>
           to indicate what OSLC version they expect or support. But exposing version numbers in OSLC implementations
           could lead to interoperability issues. Ultimately each domain will decide its compatibility needs. OSLC Core
           3.0 does not introduce any changes that would break existing OSLC 2.0 clients. Because of this, there is no
           need for OSLC Core 3.0 to require servers or clients to utilize an OSLC-Core-Version header with a value of
           3.0.
         </p>
+
+        <div>
+          <p class="conformance">
+            The <code>OSLC-Core-Version</code> header SHALL conform to the following ABNF grammar [[!ABNF]]:
+          </p>
+
+          <pre>
+SP = " "
+HTAB = %x09
+WSP = SP / HTAB
+DIGIT = %x30-39
+
+header = oslc-version
+oslc-version = "OSLC-Core-Version:" *WSP 1*DIGIT "." 1*DIGIT
+</pre
+          >
+        </div>
 
         <p>
           If an OSLC 2.0 client accesses an OSLC 3.0 server, the 3.0 server will always respond to the client in a
@@ -1278,7 +1303,7 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
         </p>
 
         <p><b>Participants</b>:</p>
-        <p style="margin-left: 40px;">
+        <p style="margin-left: 40px">
           James Amsden, IBM (Chair)<br />
           Nick Crossley, IBM<br />
           Jad El-khoury, KTH Royal Institute of Technology<br />
@@ -1302,28 +1327,28 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
             <td
               width="103"
               valign="top"
-              style="width: 77.4pt; border: solid windowtext 1pt; padding: 0in 5.4pt 0in 5.4pt;"
+              style="width: 77.4pt; border: solid windowtext 1pt; padding: 0in 5.4pt 0in 5.4pt"
             >
               <b>Revision</b>
             </td>
             <td
               width="96"
               valign="top"
-              style="width: 1in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+              style="width: 1in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt"
             >
               <b>Date</b>
             </td>
             <td
               width="144"
               valign="top"
-              style="width: 1.5in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+              style="width: 1.5in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt"
             >
               <b>Editor</b>
             </td>
             <td
               width="295"
               valign="top"
-              style="width: 221.4pt; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
+              style="width: 221.4pt; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt"
             >
               <b>Changes Made</b>
             </td>
