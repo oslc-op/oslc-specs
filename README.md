@@ -22,7 +22,7 @@ Configuration Management, and all the various OSLC domain specifications.
 | [Automation 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/auto/automation-spec.html) | Domain spec for automation of sequences of actions on OSLC resources. | Jim |
 | [Actions 2.0 WD](https://oslc-op.github.io/oslc-specs/specs/actions/actions-spec.html) | TBD. | Ian |
 
-Project Notes:
+## Project Notes
 
 | Title | Description |Responsible|
 |-------|-------------|------|
@@ -30,6 +30,8 @@ Project Notes:
 | [Summary of changes in OSLC Core 3.0](https://hackmd.io/ojZYshcATLyZ7ziowDnsCw) | TBD | Andrew |
 | [OSLC Core 3.0 Link Guidance](https://oslc-op.github.io/oslc-specs/notes/link-guidance/link-guidance.html) | TBD | Jim |
 
+
+## Old specs
 
 Specs that are not actively developed (help needed!):
 
