@@ -1,9 +1,9 @@
 var specConfig = {
-  status: "PS",
-  revision: "01",
-  publishDate: "2020-09-17",
-  previousPublishDate: "2019-12-20",
-  previousMaturity: "PSD",
+  status: "WD",
+  revision: "02",
+  publishDate: null,
+  previousPublishDate: "2020-09-17",
+  previousMaturity: "PS",
 };
 
 var wdBase = "https://oslc-op.github.io/oslc-specs/specs/core/";
