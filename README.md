@@ -20,6 +20,7 @@ Configuration Management, and all the various OSLC domain specifications.
 | [Tracked Resource Set 3.0 WD](https://oslc-op.github.io/oslc-specs/specs/trs/tracked-resource-set.html) | Allows servers to expose a set of resources whose state can be tracked by clients. **WD WIP** | Nick |
 | [AM 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/am/architecture-management-spec.html) | **PSD WIP** | Jim |
 | [Automation 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/auto/automation-spec.html) | Domain spec for automation of sequences of actions on OSLC resources. | Jim |
+| [Actions 2.0 WD](https://oslc-op.github.io/oslc-specs/specs/actions/actions-spec.html) | TBD. | Ian |
 
 Project Notes:
 
