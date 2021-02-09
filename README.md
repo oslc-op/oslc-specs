@@ -14,7 +14,7 @@ Configuration Management, and all the various OSLC domain specifications.
 - [OP minutes](https://github.com/oslc-op/oslc-admin/tree/master/minutes)
 - [website issues](https://github.com/oslc-op/website/issues) (+[conneg](https://github.com/oslc-op/website-content-negotiation/issues))
 
-## Spec table
+### Spec table
 
 | Title | Description |Responsible|
 |-------|-------------|------|
