@@ -9,6 +9,13 @@ Configuration Management, and all the various OSLC domain specifications.
 
 ## Quick links
 
+- [OASIS tickets](https://github.com/oasis-open-projects/administration/issues)
+- [Handbook](https://github.com/oslc-op/oslc-specs/wiki/Publication-guidelines)
+- [OP minutes](https://github.com/oslc-op/oslc-admin/tree/master/minutes)
+- [website issues](https://github.com/oslc-op/website/issues) (+[conneg](https://github.com/oslc-op/website-content-negotiation/issues))
+
+## Spec table
+
 | Title | Description |Responsible|
 |-------|-------------|------|
 | **[Query 3.0 PS01](https://oslc-op.github.io/oslc-specs/specs/query/oslc-query.html)** | Defines a simple, implementation independent selection and projection query capability. | David |
