@@ -1,9 +1,9 @@
 var specConfig = {
-  status: "PS",
-  revision: "01",
-  publishDate: "2020-09-17",
-  previousPublishDate: "2019-12-20",
-  previousMaturity: "PSD",
+  status: "WD",
+  revision: "02",
+  publishDate: null,
+  previousPublishDate: "2020-09-17",
+  previousMaturity: "PS",
 };
 
 var wdBase = "https://oslc-op.github.io/oslc-specs/specs/core/";
@@ -21,3 +21,22 @@ if (specConfig.status != "WD") {
     var thisBase = scriptBase;
   }
 }
+
+//temp fix, see https://github.com/oasis-tcs/tab-respec/pull/48
+(function () {
+  "use strict";
+
+  function waitForRespec() {
+    if (typeof respecEvents !== "undefined") {
+      // we don't know if our code will run first or the end-all handler
+      respecEvents.sub("end-all", function () {
+        document.getElementById(window.location.hash.substring(1)).scrollIntoView();
+      });
+      document.getElementById(window.location.hash.substring(1)).scrollIntoView();
+    } else {
+      setTimeout(waitForRespec, 100);
+    }
+  }
+
+  waitForRespec();
+})();

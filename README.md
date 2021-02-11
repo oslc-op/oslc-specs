@@ -9,6 +9,13 @@ Configuration Management, and all the various OSLC domain specifications.
 
 ## Quick links
 
+- [OASIS tickets](https://github.com/oasis-open-projects/administration/issues)
+- [Handbook](https://github.com/oslc-op/oslc-specs/wiki/Publication-guidelines)
+- [OP minutes](https://github.com/oslc-op/oslc-admin/tree/master/minutes)
+- [website issues](https://github.com/oslc-op/website/issues) (+[conneg](https://github.com/oslc-op/website-content-negotiation/issues))
+
+### Spec table
+
 | Title | Description |Responsible|
 |-------|-------------|------|
 | **[Query 3.0 PS01](https://oslc-op.github.io/oslc-specs/specs/query/oslc-query.html)** | Defines a simple, implementation independent selection and projection query capability. | David |
@@ -20,13 +27,18 @@ Configuration Management, and all the various OSLC domain specifications.
 | [Tracked Resource Set 3.0 WD](https://oslc-op.github.io/oslc-specs/specs/trs/tracked-resource-set.html) | Allows servers to expose a set of resources whose state can be tracked by clients. **WD WIP** | Nick |
 | [AM 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/am/architecture-management-spec.html) | **PSD WIP** | Jim |
 | [Automation 2.1 WD](https://oslc-op.github.io/oslc-specs/specs/auto/automation-spec.html) | Domain spec for automation of sequences of actions on OSLC resources. | Jim |
+| [Actions 2.0 WD](https://oslc-op.github.io/oslc-specs/specs/actions/actions-spec.html) | TBD. | Ian |
 
-Project Notes:
+### Project Notes
 
 | Title | Description |Responsible|
 |-------|-------------|------|
-| [CCM 3.0 Primer](https://oslc-op.github.io/oslc-specs/notes/ccm-primer/ccm-primer.html) | TBD | Ian |
+| [OSLC Configuration Management 3.0 Primer](https://github.com/oslc-op/oslc-specs/wiki/Configuration-Management-3.0-Primer) | TBD | David |
+| [Summary of changes in OSLC Core 3.0](https://hackmd.io/ojZYshcATLyZ7ziowDnsCw) | TBD | Andrew |
+| [OSLC Core 3.0 Link Guidance](https://oslc-op.github.io/oslc-specs/notes/link-guidance/link-guidance.html) | TBD | Jim |
+| [TRS 3.0 Primer](https://github.com/oslc-op/oslc-specs/wiki/TRS-3.0-Primer) | TBD | David |
 
+### Old specs
 
 Specs that are not actively developed (help needed!):
 
