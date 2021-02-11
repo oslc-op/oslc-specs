@@ -103,9 +103,9 @@
         The Tracked Resource Set protocol allows a server to expose a set of resources in a way that allows clients to
         discover the exact set of resources in the set, to track additions to and removals from the set, and to track
         state changes to the resources in the set. The protocol does not assume that clients will dereference the
-        resources, but they may. The protocol is suitable for dealing with large sets containing a large number of
-        resources, as well as highly active resource sets that undergo continual change. The protocol is HTTP-based and
-        follows RESTful principles.
+        resources, but they could do so. The protocol is suitable for dealing with large sets containing a large number
+        of resources, as well as highly active resource sets that undergo continual change. The protocol is HTTP-based
+        and follows RESTful principles.
       </p>
     </section>
     <section id="toc"></section>
@@ -113,9 +113,9 @@
     <section id="conformance">
       <h2>Conformance</h2>
       <p class="conformance">
-        This specification is based on [[!OSLCCore3]]. OSLC Configuration Management Servers servers MUST be compliant
-        with the Core specification, MUST follow all the mandatory requirements in the normative sections of each part
-        of this specification, and SHOULD follow all the guidelines and recommendations in both these specifications.
+        This specification is based on [[!OSLCCore3]]. OSLC Tracked Resource Set Servers servers MUST be compliant with
+        the Core specification, MUST follow all the mandatory requirements in the normative sections of each part of
+        this specification, and SHOULD follow all the guidelines and recommendations in both these specifications.
       </p>
     </section>
     <section id="intro" class="informative">
@@ -137,7 +137,6 @@
         <h3>Still to do</h3>
         <ul>
           <li>Search for and deal with TBDs</li>
-          <li>Edit to make all uses of RFC2119 words use the rfc2119 style</li>
         </ul>
       </section>
       <section id="terminology" class="informative">
@@ -202,18 +201,18 @@
       <p>
         A TRS Server maintains one or more Tracked Resource Sets. The TRS Server decides which particular resources are
         in a particular Tracked Resource Set at any moment; both the Tracked Resource Sets and the linked data contents
-        of each Tracked Resource may vary over time. An HTTP GET request sent to the Tracked Resource Set URI returns a
+        of each Tracked Resource can vary over time. An HTTP GET request sent to the Tracked Resource Set URI returns a
         representation of the state of the Tracked Resource Set characterized in terms of a Base and a Change Log. The
         Base is a Linked Data Platform (LDP) Container providing a point-in-time enumeration of the Tracked Resource
         members of the Tracked Resource Set; The Change Log provides a (possibly empty) time-ordered series of
         adjustments describing changes to the Tracked Resources. When the Base is empty, the Change Log describes a
-        history of how the Tracked Resource Set has grown and evolved since its inception. A TRS Server may periodically
-        update the Base of a TRS and truncate the Change Log to avoid excessively large Change Logs. Clients may read
+        history of how the Tracked Resource Set has grown and evolved since its inception. A TRS Server can periodically
+        update the Base of a TRS and truncate the Change Log to avoid excessively large Change Logs. Clients can read
         the Base and poll the Change Log to derive and maintain an up to date picture of the state of all the Tracked
         Resources in a Tracked Resource Set.
       </p>
       <p>
-        The Change Log portion may contain earlier Change Event entries that would be accounted for by the Base portion.
+        The Change Log portion can contain earlier Change Event entries that would be accounted for by the Base portion.
         A “cutoff” property of the Base identifies the point in the Change Log at which processing of Change Events can
         be cut off because older changes are already covered by the Base portion. TRS Clients use the Base to establish
         the resources to track, and the Change Log to address changes to those resources. TRS Clients are responsible
@@ -231,7 +230,9 @@
         including the URI of each of the Server's Tracked Resource Set resources and designated Access Context List
         resources.
       </p>
-      <p>A Server MAY provide multiple Tracked Resource Sets, and MAY make its Tracked Resource Sets discoverable.</p>
+      <p class="conformance">
+        A Server MAY provide multiple Tracked Resource Sets, and MAY make its Tracked Resource Sets discoverable.
+      </p>
       <p>
         The RDF <code>trs:trackedResourceSet</code> property can be used to declare the whereabouts of a Tracked
         Resource Set resource. The Tracked Resource Set resource is the object.
@@ -249,15 +250,16 @@
     </section>
     <section id="general-behavior">
       <h2>General Behavior></h2>
-      <p class='conformance'>
+      <p class="conformance">
         The TRS Server MUST support GET requests conformant with [[OSLCCore2]] or [[OSLCCore3]] for Tracked Resource
         Sets, Base resources, and Change Logs.
-        </p><p class='conformance'>The RDF returned for Tracked Resource Sets, Base resources, Change Logs, MUST conform to the shapes
-        and constraints in the following section.
-        </p><p class='conformance'>The TRS Server  SHOULD support ETags, caching, and conditional GETs for those
-        resources.
       </p>
-      <p class='conformance'>
+      <p class="conformance">
+        The RDF returned for Tracked Resource Sets, Base resources, Change Logs, MUST conform to the shapes and
+        constraints in the following section.
+      </p>
+      <p class="conformance">The TRS Server SHOULD support ETags, caching, and conditional GETs for those resources.</p>
+      <p class="conformance">
         Servers providing the tracked resources referenced by a Tracked Resource Set MUST also support GET requests
         conformant with [[OSLCCore2]] or [[OSLCCore3]] and SHOULD support ETags, caching, and conditional GETs for those
         resources.
@@ -334,53 +336,59 @@
     </section>
     <section id="change-logs">
       <h2>Change Logs and Change Events</h2>
-      <p class='conformance'>
+      <p class="conformance">
         A Server MUST refer to a given Tracked Resource using the exact same URI in the Base membership property and
         every Change Event (<code>trs:changed</code> reference) for that resource.
       </p>
       <p>
         A Change Log represents a series of changes to the corresponding Tracked Resource Set over some period of time.
-        <span class='conformance'>The Change Log MUST contain a sufficient sequence of Change Events such that processing the Base and the Change
-        Log gives a consistent and complete picture of the Tracked Resources at the end of that period of time.</span>
-        The
-        Change Log does not necessarily identify <em>every</em> change of internal state before or during that period of
-        time.
+        <span class="conformance"
+          >The Change Log MUST contain a sufficient sequence of Change Events such that processing the Base and the
+          Change Log gives a consistent and complete picture of the Tracked Resources at the end of that period of
+          time.</span
+        >
+        The Change Log does not necessarily identify <em>every</em> change of internal state before or during that
+        period of time.
       </p>
-      <p class='conformance'>
+      <p class="conformance">
         A Server MAY batch up internal changes and add Change Events to the Change Log in a single transaction at some
         interval.
       </p>
-      <p class='conformance'>
+      <p class="conformance">
         A Server MUST eventually report a resource modification event if a GET on that resource would return a
         semantically different response from previously.
       </p>
-      <p class='conformance'>
+      <p class="conformance">
         A Server MAY report a modification event even in cases where there would be no significant difference in
         response.
       </p>
-      <p class='conformance'>
+      <p class="conformance">
         When a resource is modified two or more times in rapid succession, a Server MAY elide such modifications by
         reporting only a single modification event in the Change Log.
       </p>
-      <p class='conformance'>
+      <p class="conformance">
         When a resource is created and deleted in rapid succession, a Server MAY omit all Change Events for that
         resource.
       </p>
       <p>
         Because of the highly dynamic nature of the Resource Set and the difficulty of enumerating an exact set of
-        resources at a precise point in time, a Server MAY produce a Base that is only an approximation of the Tracked
-        Resource Set membership. A Base might omit mention of a Resource that ought to have been included or include a
-        Resource that ought to have been omitted. For each such inconsistency in the Base, the Server MUST at some point
-        include a corrective Change Event in the Change Log more recent than the base cutoff event. The corrective
-        Change Event corrects the picture for that Resource, allowing a client to compute the correct set of Tracked
-        Resources.
+        resources at a precise point in time,
+        <span class="conformance"
+          >a Server MAY produce a Base that is only an approximation of the Tracked Resource Set membership</span
+        >. A Base might omit mention of a Resource that ought to have been included or include a Resource that ought to
+        have been omitted.
+        <span class="conformance"
+          >For each such inconsistency in the Base, the Server MUST at some point include a corrective Change Event in
+          the Change Log more recent than the base cutoff event</span
+        >. The corrective Change Event corrects the picture for that Resource, allowing a client to compute the correct
+        set of Tracked Resources.
       </p>
       <p class="note">
         A corrective Change Event might not appear in the Change Log that was retrieved when the client dereferenced the
         Tracked Resource Set URI; the client might only see a corrective Change Event when it processes the Change Log
         resource obtained by dereferencing the Tracked Resource Set URI on later occasions.
       </p>
-      <p class='conformance'>
+      <p class="conformance">
         Similarly, a TRS Server MAY report unnecessary Change Events such as a creation event for a Resource that is
         already a member of the Resource Set, or a deletion event for a Resource that is not a member of the Resource
         Set.
@@ -391,12 +399,16 @@
       <h2>Change Log Segmentation</h2>
       <p>
         Often, the number of Change Events in the Change Log will grow to the point where it is not reasonable to
-        contain all the Change Events in a single HTTP response. In this case, the most recent Change Events MUST be
-        included in the Tracked Resource Set itself, and earlier events MAY be segmented into separate Change Log
-        resources referenced from the <code>trs:previous</code> property. There can be any number of such Change Log
-        segments, each one containing earlier and earlier events.
+        contain all the Change Events in a single HTTP response. In this case,
+        <span class="conformance"
+          >the most recent Change Events MUST be included in the Tracked Resource Set itself</span
+        >, and
+        <span class="conformance"
+          >earlier events MAY be segmented into separate Change Log resources referenced from the
+          <code>trs:previous</code> property</span
+        >. There can be any number of such Change Log segments, each one containing earlier and earlier events.
       </p>
-      <p>
+      <p class="conformance">
         Just as the most recent Change Events MUST be included in the HTTP response for the Change Log in the Tracked
         Resource Set resource itself, TRS Servers MUST include the Change Events for each Change Log segment in the HTTP
         response for the Change Log segment.
@@ -411,49 +423,62 @@
     <section id="paged-base">
       <h2>Paged Base</h2>
       <p>
-        Often, the number of member Resources in the Base will grow to the point where it is not reasonable to contain
-        all the Resources in a single HTTP response. In this case, the base member Resources may be segmented into
-        separate resources. There can be any number of such base member Resource segments, each one containing a subset
-        of all base member Resource segments
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Often, the number of member Resources in the Base will grow to the point where
+        it is not reasonable to contain all the Resources in a single HTTP response. In this case, the base member
+        Resources can be segmented into separate resources. There can be any number of such base member Resource
+        segments, each one containing a subset of all base member Resource segments
       </p>
     </section>
     <section id="rebase">
       <h2>Truncating Change Logs, and Rebasing</h2>
       <p>
-        A chain of Change Logs MAY continue all the way back to the inception of the Tracked Resource Set and contain
-        Change Events for every change made since then.
-        However, to avoid maintaining this ever growing list of Change
-        Logs indefinitely, a Server MAY truncate the Change Log at a suitable point in the chain. This can be
-        accomplished by deleting the oldest segments of the Change Log and/or by removing
+        <span class="conformance"
+          >A chain of Change Logs MAY continue all the way back to the inception of the Tracked Resource Set and contain
+          Change Events for every change made since then.</span
+        >
+        However, to avoid maintaining this ever growing list of Change Logs indefinitely,
+        <span class="conformance">a Server MAY truncate the Change Log at a suitable point in the chain</span>. This can
+        be accomplished by deleting the oldest segments of the Change Log and/or by removing
         <code>trs:previous</code> links that reference them, and/or by removing obsolete Change Events from the end of
         the Change Log.
       </p>
       <p class="note">
-        TRS Servers may therefore return HTTP status code 404 (Not found) when navigating the "previous" reference from
+        TRS Servers can therefore return HTTP status code 404 (Not found) when navigating the "previous" reference from
         a final or stale Change Log segment; clients should interpret this as indicating that they have reached the end
         of the change log.
       </p>
       <p>
-        To ensure that a new Client can always get started, the Change Log MUST contain the base cutoff event of the
-        corresponding Base, and all Change Events more recent than it. Thus the Server is only allowed to truncate
-        Change Events older than the base cutoff event. When the Base has no base cutoff event (i.e., the Base
-        enumerates the Resource Set at the start of time), the Change Log MUST contain all Change Events back to the
-        start of time; i.e., no truncation is allowed.
+        To ensure that a new Client can always get started,
+        <span class="conformance">the Change Log MUST contain the base cutoff event of the corresponding Base</span>,
+        and all Change Events more recent than it. Thus the Server is only allowed to truncate Change Events older than
+        the base cutoff event.
+        <span class="conformance"
+          >When the Base has no base cutoff event (i.e., the Base enumerates the Resource Set at the start of time), the
+          Change Log MUST contain all Change Events back to the start of time; i.e., no truncation is allowed</span
+        >.
       </p>
       <p class="note">
-        While servers must preserve the cutoff event in the truncated change log, the same is not true of any earlier
-        events that a client might have already processed. For this reason, a client should not assume that it will find
-        a change event that it has previously processed: that change event might have been truncated.
+        While servers preserve the cutoff event in the truncated change log, the same is not true of any earlier events
+        that a client might have already processed. For this reason, a client should not assume that it will find a
+        change event that it has previously processed: that change event might have been truncated.
       </p>
       <p>
-        To allow truncation of long Change Logs, a TRS Server MAY calculate a new base set at any time, with a new
-        cutoff event in the Change Log. When doing this, TRS Servers SHOULD take care to handle clients that are
-        currently processing the older Base and Change Log:
+        To allow truncation of long Change Logs,
+        <span class="conformance"
+          >a TRS Server MAY calculate a new base set at any time, with a new cutoff event in the Change Log</span
+        >. When doing this,
+        <span class="conformance"
+          >TRS Servers SHOULD take care to handle clients that are currently processing the older Base and Change
+          Log</span
+        >:
       </p>
       <ul>
-        <li>
-          When calculating a new Base, the TRS Server SHOULD retain a minimum of seven days worth of Change Events
-          before the new cutoff event.
+        <li class="conformance">
+          When calculating a new Base, the TRS Server SHOULD retain Change Events before the new cutoff event that a
+          reasonable client might still be processing. This specification does not impose specific constraints over the
+          length of time for which a TRS base must remain readable, the size of pages in the base or change log, nor
+          what the degree of overlap should be between a base and a corresponding change log. These are quality of
+          implementation issues, and should be described in the server documentation.
         </li>
         <li class="red">
           TBD:
@@ -466,43 +491,40 @@
     </section>
     <section id="trs-patch">
       <h2>TRS Patch</h2>
-      <p class="ednote" title="TBD">
-        <strong>Editor: Why is this non-normative? (img)</strong>
-      </p>
-      <p class="ednote" title="TBD">
-        <strong
-          >Editor: need some words here motivating the need for TRS Patch. Version 432 motivated using Indexable
-          provider, which i think we agreed was not appropriate. (img)</strong
-        >
-      </p>
-      <p>
-        For a Resource that changes frequently, a typical Client may retrieve the same Resource over and over again.
-        When the representation of the Resource is large and the differences between adjacent representations can be
-        described compactly, including additional information in the trs:Modification Change Event can allow the Client
-        to determine the Resource’s current representation and thereby avoid having to retrieve the Resource.
-      </p>
-      <p>
-        Similiarly, in versioned worlds each change to a versioned resource may result in the creation of a new Resource
-        representing an immutable version of the resource. The typical Client retrieves each such Resource as it is
-        created. The state of the new Resource is often quite similar to the state of a Resource corresponding to a
-        previous version. When the state of one Resource is similar to that of another Resource and the differences
-        between the two can be described compactly, including additional information in the trs:Creation Change Event
-        can allow the Client to determine the new Resource’s resultant state from the potentially-known state of a
-        previously-retrieved Resource and thereby avoid having to retrieve the new Resource.
-      </p>
       <p>
         This section describes an extension to Change Events allowing them to carry detailed information about
         modifications to resources with an RDF representation.
       </p>
+      <section id="patch-motivation">
+        <h3>Use cases for Patch Events - TBD - needs better wording and organization</h3>
+        <p>
+          For a Resource that changes frequently, a typical Client might otherwise need to retrieve the same Resource
+          over and over again. When the representation of the Resource is large and the differences between adjacent
+          representations can be described compactly, including additional information in the trs:Modification Change
+          Event can allow the Client to determine the Resource’s current representation and thereby avoid having to
+          retrieve the Resource.
+        </p>
+        <p>
+          Similiarly, in versioned worlds each change to a versioned resource could result in the creation of a new
+          Resource representing an immutable version of the resource. The typical Client retrieves each such Resource as
+          it is created. The state of the new Resource is often quite similar to the state of a Resource corresponding
+          to a previous version. When the state of one Resource is similar to that of another Resource and the
+          differences between the two can be described compactly, including additional information in the trs:Creation
+          Change Event can allow the Client to determine the new Resource’s resultant state from the potentially-known
+          state of a previously-retrieved Resource and thereby avoid having to retrieve the new Resource.
+        </p>
+      </section>
       <section id="createdFrom">
-        <p class="normalText">
+        <p>
+          <em>Editor - move this to the shape table</em>
           The <code>trspatch:createdFrom</code> property, when present, identifies the antecedent resource. If omitted,
           the antecedent resource is the resource referenced in the <code>trs:changed</code> property. The antecedent
           resource is the one that supplies the “before” state.
         </p>
       </section>
       <section id="rdfPatch">
-        <p class="normalText">
+        <p>
+          <em>Editor - move this to the shape table</em>
           The <code>trspatch:rdfPatch</code> property, when present, describes a patch applied to the antecedent
           resource’s representation. The result of applying the patch describes the representation of the resource
           referenced in the <code>trs:changed</code> property. The <code>trspatch:rdfPatch</code> property is used with
@@ -512,14 +534,16 @@
         </p>
       </section>
       <section id="beforeEtag">
-        <p class="normalText">
+        <p>
+          <em>Editor - move this to the shape table</em>
           The <code>trspatch:beforeETag</code> property, when present, gives the initial HTTP entity tag of the
           antecedent resource. This is the entity-tag value that would be returned in the HTTP ETag response header if
           the antecedent resource is retrieved immediately before the change.
         </p>
       </section>
       <section id="afterEtag">
-        <p class="normalText">
+        <p>
+          <em>Editor - move this to the shape table</em>
           The <code>trspatch:afterETag</code> property, when present, gives the final HTTP entity tag of the resource
           referenced in the trs:changed property. For a <code>trs:Modification</code> (<code>trs:Creation</code>) Change
           Event, this is the entity tag of the resource immediately after it was modified (created, respectively). This
@@ -535,38 +559,19 @@
         Note also that the <code>trspatch:beforeETag</code> and <code>trspatch:afterETag</code> properties are
         meaningful for any kind of resource, not just ones with RDF representations.
       </p>
-      <section id="ldPatch" class="informative">
-        <h2>LD Patch</h2>
-        <p class="ednote" title="TBD">
-          <strong>Editor: the LD Patch spec has moved up to working group note 28 july 2015. (img)</strong>
+      <section id="trsPatch">
+        <h2>TRS Patch</h2>
+        <p class="conformance">
+          TBD - needs rewording to be more normative. A TRS patch consists of a sequence of rows. A row with ‘A’ (or
+          ‘D’) in the first column describes the addition (deletion) of one RDF triple from the resource’s RDF data
+          graph. The subject, predicate, and object of the triples are described in columns 2-4 in the form of absolute
+          URI references enclosed between ‘&lt;’ and ‘&gt;’. Each row is delimited by a ‘.’ and MAY have white space
+          between the various terms in a row, including newlines.
         </p>
-        <p class="ednote" title="TBD">
-          <strong>Editor: the meaning of "temporarily" below is not clear. (img)</strong>
-        </p>
-        <p>
-          The Linked Data Patch (LD Patch) specification is currently under development by the W3C LDP WG. Our intention
-          is to adopt the syntax and semantics of LD patches from the LD Patch specification rather than specifying our
-          own. However, the LD Patch effort is only just beginning, and the First Public Working Draft was published on
-          18 September 2014.
-        </p>
-        <p>
-          In an effort to insulate Servers from changes to the LD Patch specification while it is being refined, this
-          document proposes that Servers temporarily limit themselves to generating LD patches in a limited subset which
-          we call Core format. Core format is extremely simple (no prefixes, no variables, and no Binds) but perfectly
-          adequate for describing patches to graphs not involving blank nodes. (Core format is based on an early (and
-          unofficial) precursor called RDF Patch.)
-        </p>
-        <p>
-          A Core format patch consists of a sequence of rows. A row with ‘A’ (or ‘D’) in the first column describes the
-          addition (deletion) of one RDF triple from the resource’s RDF data graph. The subject, predicate, and object
-          of the triples are described in columns 2-4 in the form of absolute URI references enclosed between ‘&lt;’ and
-          ‘&gt;’. Each row is delimited by a ‘.’ and may have white space between the various terms in a row, including
-          newlines.
-        </p>
-        <p>
-          Example of a Core format patch that deletes one RDF triple (subject <code>http://example.com/bob</code>,
-          predicate <code>http://xmlns.com/foaf/0.1/knows</code>, object <code>https://example.com/alice</code>) and
-          adds another an RDF triple (subject <code>https://example.com/fred</code>, predicate
+        <p class="informative">
+          Example of a TRS patch that deletes one RDF triple (subject <code>http://example.com/bob</code>, predicate
+          <code>http://xmlns.com/foaf/0.1/knows</code>, object <code>https://example.com/alice</code>) and adds another
+          an RDF triple (subject <code>https://example.com/fred</code>, predicate
           <code>http://http://xmlns.com/foaf/0.1/member</code>, object <code>http://example.com/old-timers</code>):
         </p>
         <pre class="example">

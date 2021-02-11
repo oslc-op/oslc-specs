@@ -9,16 +9,16 @@
       class="remove"
     ></script>
     <script class="remove">
-        var filePath = "/oslc-trs-guidance.html";
-        var status = "PND";
-        var wdBase = "https://oslc-op.github.io/oslc-specs/specs/trs";
-        var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/trs/v3.0";
-        var rev = "01";
-        var thisBase = wdBase;
-        if (status != "WD") {
+      var filePath = "/oslc-trs-guidance.html";
+      var status = "PND";
+      var wdBase = "https://oslc-op.github.io/oslc-specs/specs/trs";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/trs/v3.0";
+      var rev = "01";
+      var thisBase = wdBase;
+      if (status != "WD") {
         thisBase = oasisBase + "/" + status.toLowerCase() + rev;
-        }
-        var respecConfig = {
+      }
+      var respecConfig = {
         shortName: "oslc-trs-guidance",
         citationLabel: "OSLC-TRS-GUIDANCE-v3.0",
         specStatus: status,
@@ -30,73 +30,95 @@
         maxTocLevel: 3,
         license: "cc-by-4",
         additionalLicenses: [
-            {
+          {
             licenseName: "Apache License 2.0",
             licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
-            },
+          },
         ],
 
         editors: [
-            {
+          {
             name: "Nick Crossley",
             mailto: "nick_crossley@us.ibm.com",
             company: "IBM",
             companyURL: "http://www.ibm.com",
-            },
+          },
         ],
 
         chairs: [
-            {
+          {
             name: "Jim Amsden",
             mailto: "jamsden@us.ibm.com",
             company: "IBM",
             companyURL: "http://www.ibm.com/",
-            },
-            {
+          },
+          {
             name: "Andrii Berezovskyi",
             mailto: "andriib@kth.se",
             company: "KTH",
             companyURL: "https://www.kth.se/en",
-            },
+          },
         ],
 
         // Namespaces defined by this spec
         namespaces: [{ href: "http://open-services.net/ns/core/acc#", prefix: "acc" }],
 
         localBiblio: {
-            OSLCCore2: {
+          OSLCCore2: {
             title: "OSLC Core 2.0",
             href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
             authors: ["S. Speicher", "D. Johnson"],
             status: "Finalized",
             publisher: "http://open-services.net",
-            },
-            OSLCCore3: {
+          },
+          OSLCCore3: {
             title: "OSLC Core 3.0",
             href: "http://tools.oasis-open.org/version-control/svn/oslc-core/specs/oslc-core-v3.html",
             authors: ["Steve Speicher", "Jim Amsden"],
             publisher: "OASIS",
-            },
-            OSLCTRS2: {
+          },
+          OSLCTRS2: {
             title: "Tracked Resource Set Specification Version 2.0",
             href: "http://open-services.net/wiki/core/TrackedResourceSet-2.0/",
             authors: ["Steve Speicher", "Frank Budinsky", "Vivek Garg"],
             status: "Finalized Draft",
             publisher: "http://open-services.net",
-            },
+          },
         },
-        };
+      };
     </script>
   </head>
   <body>
     <section id="abstract">
       <p>
-        This document contains material for a TRS tutorial -
-        it is fragmented, contains repetition, and is not yet ready for publication.
+        This document contains material for a TRS tutorial - it is fragmented, contains repetition, and is not yet ready
+        for publication.
       </p>
     </section>
     <section id="toc"></section>
     <section id="sotd"></section>
+    <section id="timescales">
+      <h2>Timescales and event frequency</h2>
+      <p>
+        In order to provide adequate response to client requests, a TRS server needs to allow those clients sufficient
+        time to read the base, the change log, and process the set of tracked resources. However, the data volumes and
+        timescales involved in TRS processing are likely to vary between servers for different applications. A server
+        representing Amazon transactions might have many events per second, while a server representing exhibits at a
+        museum might have a few events per month. The cost of processing a single event is also likely to vary between
+        applications; reading a new or modified resource with 5 RDF properties will take less time than reading one with
+        5,000 properties.
+      </p>
+      <p>
+        For these reasons, the TRS specification does not impose specific constraints over the length of time for which
+        a TRS base must remain readable, nor what the degree of overlap should be between a base and a corresponding
+        change log. A server implementing TRS must consider, and should document, the quality of service it will provide
+        in terms of the size of pages in the base or change log, how long base pages are kept, how long change events
+        are kept, and the minimum period for which change events behind the latest base cutoff are kept.
+      </p>
+      <p class="note">
+        In the primer, include examples such as 7/14/21 days from current docs ...
+      </p>
+    </section>
     <section id="patch-motivation" class="informative">
       <h2>Motivation and Use Cases for Patch Events</h2>
       <p>
