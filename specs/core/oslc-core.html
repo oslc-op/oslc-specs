@@ -1173,36 +1173,27 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
             requiring all services to be upgraded simultaneously.
           </p>
 
+          <p>
+            This section introduces a capability for the clients and servers to pass an OSLC version. However, exposing
+            version numbers in OSLC implementations could lead to interoperability issues. Ultimately each domain needs
+            to decide its compatibility needs.
+          </p>
+
           <p></p>
         </section>
 
         <section id="versionCompatibility_header" class="normative">
           <h3>Versioning support in clients and servers</h3>
-          <p>
-            <span class="conformance"
-              >OSLC Core and domain specifications are versioned independently, and MAY specify version numbers.</span
-            >
-            <span class="conformance"
-              >Existing OSLC 2.0 clients and servers SHOULD use the <code>OSLC-Core-Version</code> header consistent
-              with the description in
-              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Specification_Versioning"
-                >OSLC Core 2.0 Specification Versioning</a
-              >
-              to indicate what OSLC version they expect or support.</span
-            >
-            But exposing version numbers in OSLC implementations could lead to interoperability issues. Ultimately each
-            domain will decide its compatibility needs
-            <b style="color: red;"
-              >I think this needs more normative language and I cannot see how Core can force constraints on other
-              specs.</b
-            >. OSLC Core 3.0 does not introduce any changes that would break existing OSLC 2.0 clients. Because of this,
-            there is no need for OSLC Core 3.0 to require servers or clients to utilize an
-            <code>OSLC-Core-Version</code> header with a value of 3.0.
-          </p>
 
           <div>
-            <p class="conformance">
-              The <code>OSLC-Core-Version</code> header SHALL conform to the following ABNF grammar [[!ABNF]]:
+            <p>
+              <span class="conformance"
+                >OSLC clients and servers SHOULD use the <code>OSLC-Core-Version</code> header to indicate what OSLC
+                version they expect or support.</span
+              >.
+              <span class="conformance"
+                >The <code>OSLC-Core-Version</code> header SHALL conform to the following ABNF grammar [[!ABNF]]:</span
+              >
             </p>
 
             <pre>
@@ -1216,6 +1207,20 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
   </pre
             >
           </div>
+
+          <p>
+            <b style="color: red;">I think this makes no sense and shall be removed.</b>
+            <span class="conformance"
+              >OSLC Core and domain specifications are versioned independently, and MAY specify version numbers.</span
+            >
+          </p>
+
+          <p class="conformance">
+            <b style="color: red;">Reworded to use RFC keywords and allow vendors to get clear guidance.</b>
+            OSLC Core 3.0 does not introduce any changes that would break existing OSLC 2.0 clients. Because of this,
+            OSLC Core 3.0 clients and servers MAY continue to utilize the
+            <code>OSLC-Core-Version</code> header with the value of "2.0".
+          </p>
 
           <p>
             <span class="conformance"
