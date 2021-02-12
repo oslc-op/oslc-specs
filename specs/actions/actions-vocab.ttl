@@ -1,0 +1,63 @@
+# Copyright 2020 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#>.
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix oslc_actions: <http://open-services.net/ns/actions#> .
+
+oslc:
+  a owl:Ontology ;
+  dcterms:title "The OSLC Actions Vocabulary" ;
+  dcterms:description "All vocabulary URIs defined in the OSLC Actions namespace."^^rdf:XMLLiteral ;
+  rdfs:label "The OSLC Actions Vocabulary" ;
+  vann:preferredNamespacePrefix "oslc_actions" ;
+  dcterms:publisher <https://open-services.net/about/> ;
+  dcterms:issued "2020-09-17"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  dcterms:license <http://www.apache.org/licenses/LICENSE-2.0> .
+#  dcterms:source <https://docs.oasis-open-projects.org/oslc-op/core/v3.0/ps01/core-vocab.ttl> ;
+#  dcterms:isPartOf <https://docs.oasis-open-projects.org/oslc-op/core/v3.0/ps01/oslc-core.html> ;
+#  dcterms:hasVersion "PS01" .
+	
+
+# ********** Resource Types (Classes) **********
+
+oslc_actions:Action
+  a rdfs:Class ;
+  rdfs:isDefinedBy oslc_actions: ;
+  rdfs:label "Action" ;
+  rdfs:comment "The Action resource." .
+
+oslc_actions:action
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_actions: ;
+  rdfs:label "action" ;
+  rdfs:comment "An action that the provider asserts is available for execution by clients <em>at the time the representation was formed</em>. In a distributed system, clients can lose race conditions that result in an &quot;available&quot;-appearing action's execution requests being rejected. It is likely that the target resource will be an oslc:Action, but that is not necessarily the case; when it is an oslc:Action, it will have at least one binding since this predicate's definition requires that the action be available when the response is formed."^^rdf:XMLLiteral .
+
+oslc_actions:binding
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_actions: ;
+  rdfs:label "binding" ;
+  rdfs:comment "Instructions for executing the action. It is likely that the target resource will be an http:Request, oslc-automation:AutomationRequest, or oslc:Dialog, but that is not necessarily the case."^^rdf:XMLLiteral .
+
+oslc_actions:executes
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_actions: ;
+  rdfs:label "executes" ;
+  rdfs:comment "Link to the future action, if any, that a currently available action realizes. It is likely that the target resource will be an oslc:Action, but that is not necessarily the case."^^rdf:XMLLiteral .
+

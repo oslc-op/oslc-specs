@@ -2,15 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>OSLC Automation Version 2.1 Part 2: Vocabulary</title>
-    <meta name="description" content="This specification defines a vocabulary for the OSLC Automation domain." />
+    <title>OSLC Automation Version 2.1 Part 3: Constraints</title>
+    <meta name="description" content="Specifies the standard constraints on the OSLC Automation vocabulary terms." />
     <script
       src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.22/builds/respec-oasis-common.min.js"
       async
       class="remove"
     ></script>
     <script class="remove">
-      var filePath = "/automation-vocab.html";
+      var filePath = "/automation-shapes.html";
       var wdBase = "https://oslc-op.github.io/oslc-specs/specs/auto";
       var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/auto/v2.1";
 
@@ -26,8 +26,8 @@
         specStatus: specStatus,
         revision: revision,
 
-        shortName: "automation-vocab",
-        citationLabel: "OSLC-AUTO-v2.1-Part2",
+        shortName: "automation-shapes",
+        citationLabel: "OSLC-AUTO-v2.1-Part3",
 
         conformanceLabelPrefix: "AUTO",
         noConformanceTable: true,
@@ -89,8 +89,8 @@
 
         additionalArtifacts: [
           { title: "OSLC Automation Version 2.1 Part 1: Specification", href: "automation-spec.html" },
-          { title: "OSLC Automation Version 2.1 Part 2: Vocabulary (this document)", href: "automation-vocab.html" },
-          { title: "OSLC Automation Version 2.1 Part 3: Constraints", href: "automation-shapes.html" },
+          { title: "OSLC Automation Version 2.1 Part 2: Vocabulary", href: "automation-vocab.html" },
+          { title: "OSLC Automation Version 2.1 Part 3: Constraints (this document)", href: "automation-shapes.html" },
           { title: "OSLC Automation Version 2.1 Machine Readable Vocabulary Terms", href: "automation-vocab.ttl" },
           {
             title: "OSLC Automation Version 2.1 Machine Readable Vocabulary Constraints",
@@ -169,7 +169,10 @@
 
   <body>
     <section id="abstract">
-      <p>This specification defines a vocabulary and resource shapes for the OSLC Automation domain.</p>
+      <p>
+        OSLC Automation Version 2.1 Part 3: Constraints defines constraints on the OSLC Automation RDF vocabulary terms
+        and resources using OSLC ResourceShapes.
+      </p>
     </section>
 
     <section id="toc"></section>
@@ -179,11 +182,23 @@
       <h2>Introduction</h2>
 
       <p>
-        This specification defines vocabulary terms for OSLC Automation resources. The intent is to define resources
-        needed to support common integration scenarios that require potentially long running services that manage other
-        OSLC resources.
+        RDF vocabularies define the terms and resources for a domain of interest, life-cycle management in the case of
+        OSLC Automation. These vocabularies are often specified in an open manner, without providing information such as
+        property domain and range assertions, cardinalities, etc. This helps keep the vocabulary applicable for a wide
+        range of uses and furthering integration with other vocabularies.
       </p>
 
+      <p>
+        However, it is often desirable to closed down a vocabulary with specific constraints to facilitate using the
+        vocabulary for a specific purpose. This document specifies the constraints for using the OSLC Automation
+        vocabulary in OSLC. Different sets of constraints may be applied to a vocabulary in order to tailor its use,
+        without overly constraining the vocabulary for other usages.
+      </p>
+
+      <p>
+        These constraints apply to the core vocabulary defined in
+        <a href="automation-vocab.html">OSLC Automation Version 2.1. Part 2: Vocabulary</a>.
+      </p>
       <section id="terminology" class="informative">
         <h2>Terminology</h2>
         <p>
@@ -191,6 +206,12 @@
           Architecture of the World Wide Web [[WEBARCH]], Hyper-text Transfer Protocol [[!HTTP11]]. Terminology for this
           specification is defined in part 1 of the multi-part specification.
         </p>
+        <!--
+      <dl>
+          <dt class='loc-heading'>Term-xxx</dt>
+          <dd>...</dd>
+      </dl>
+-->
       </section>
 
       <section id="references"><h3>References</h3></section>
@@ -202,8 +223,8 @@
           <code>dcterms</code> and <code>foaf</code> defined in the
           <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html"
             >OSLC Core specification</a
-          >, OSLC Automation defines the namespace URI of <code>http://open-services.net/ns/auto#</code> with a
-          namespace prefix of <code>oslc_am</code>
+          >, OSLC AM defines the namespace URI of <code>http://open-services.net/ns/am#</code> with a namespace prefix
+          of <code>oslc_am</code>
         </p>
 
         <p>This specification also uses these namespace prefix definitions:</p>
@@ -215,23 +236,7 @@
       </section>
     </section>
 
-    <section id="autoVocab">
-      <h2>Automation Vocabulary Terms</h2>
-      <p>
-        This specification defines the <em>root</em> superclasses, properties and values. Servers may define additional
-        subclasses and provide additional properties as needed.
-      </p>
-      <div
-        title="RDF Vocabulary for OSLC Automation Domain"
-        data-include="./automation-vocab.ttl"
-        data-oninclude="vocabToSpec"
-        data-include-sync="true"
-        data-include-replace="true"
-        data-include-format="html"
-      ></div>
-    </section>
-
-    <section id="resourceDefinitions">
+    <section id="resourceConstraints">
       <h2>Automation Resource Definitions</h2>
 
       <p>
@@ -277,14 +282,70 @@
         request to the subset required. See [[!OSLCCore2]] Selective Property Values in OSLC Core Specification.
       </p>
 
-      <div
-        title="RDF Vocabulary for OSLC Automation Domain"
-        data-include="./automation-vocab.ttl"
-        data-oninclude="vocabToSpec"
-        data-include-sync="true"
-        data-include-replace="true"
-        data-include-format="html"
-      ></div>
+      <section id="AutomationPlanShape">
+        <h3>Resource: AutomationPlan</h3>
+
+        <div
+          title="Shape for oslc_auto:AutomationPlan"
+          data-include="./automation-shapes.ttl#AutomationPlanShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="AutomationRequestShape">
+        <h3>Resource: AutomationRequest</h3>
+
+        <div
+          title="Shape for oslc_auto:AutomationRequest"
+          data-include="./automation-shapes.ttl#AutomationRequestShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="AutomationResultShape">
+        <h3>Resource: AutomationResult</h3>
+
+        <div
+          title="Shape for oslc_auto:AutomationResult"
+          data-include="./automation-shapes.ttl#AutomationResultShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="ParameterInstanceShape">
+        <h3>Resource: ParameterInstance</h3>
+
+        <div
+          title="Shape for oslc_auto:ParameterInstance"
+          data-include="./automation-shapes.ttl#ParameterInstanceShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="DialogShape">
+        <h3>Resource: Dialog</h3>
+
+        <div
+          title="Shape for oslc:Dialog"
+          data-include="./automation-shapes.ttl#DialogShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
     </section>
 
     <section id="relationshipLabels" class="informative">
@@ -307,13 +368,10 @@
     <section id="conformance">
       <h2>Conformance</h2>
       <p>
-        Architecture Management servers MUST use the vocabulary terms defined here where required, and with the meanings
+        Architecture Management servers MUST follow the constraints defined here where required, and with the meanings
         defined here.
       </p>
-      <p>
-        Architecture Management servers MAY augment this vocabulary with additional classes, properties, and
-        individuals.
-      </p>
+      <p>Architecture Management servers MAY provide additional constraints for specific purposes.</p>
     </section>
   </body>
 </html>
