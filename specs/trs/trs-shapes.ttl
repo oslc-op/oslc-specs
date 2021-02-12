@@ -27,13 +27,11 @@
     a                       oslc:Property ;
     oslc:name               "type" ;
     oslc:propertyDefinition rdf:type ;
-    oslc:occurs             oslc:Zero-or-many ;
+    oslc:occurs             oslc:One-or-many ;
     oslc:representation     oslc:Reference ;
     oslc:valueType          oslc:Resource ;
     oslc:range              rdfs:Class ;
-    dcterms:description     """A resource type URI.
-Clients can infer a resource type of <code>trs:TrackedResourceSet</code>,
-but there is no requirement for servers to materialize this triple in the RDF representation."""^^rdf:XMLLiteral .
+    dcterms:description     """A resource type URI. {{A tracked resource set MUST have at least the resource type `trs:TrackedResourceSet`}}."""^^rdf:XMLLiteral .
 
 <#base>
     a                       oslc:Property ;
@@ -44,7 +42,7 @@ but there is no requirement for servers to materialize this triple in the RDF re
     oslc:valueType          oslc:Resource ;
     oslc:range              ldp:DirectContainer ;
     oslc:readOnly           true ;
-    dcterms:description     """An enumeration of the resources in the Tracked Resource Set. This SHOULD be a reference to a separate resource, not returned inline with the Tracked Resource Set itself."""^^rdf:XMLLiteral .
+    dcterms:description     """An enumeration of the resources in the Tracked Resource Set. {{This SHOULD be a reference to a separate resource, not returned inline with the Tracked Resource Set itself.}}"""^^rdf:XMLLiteral .
 
 <#changeLog>
     a                       oslc:Property ;
@@ -56,9 +54,9 @@ but there is no requirement for servers to materialize this triple in the RDF re
     oslc:range              trs:ChangeLog ;
     oslc:readOnly           true ;
     dcterms:description     """A Change Log providing a time series of incremental adjustments to the Tracked Resource Set.
-The Tracked Resource Set representation MUST contain the triples for the referenced Change Log
+{{The Tracked Resource Set representation MUST contain the triples for the referenced Change Log
 (i.e., via a blank node, or an inline named resource),
-including the Change Events for the first page of changes."""^^rdf:XMLLiteral .
+including the Change Events for the first page of changes.}}"""^^rdf:XMLLiteral .
 
 <#Base>
     a                       oslc:ResourceShape ;
@@ -92,7 +90,7 @@ including the Change Events for the first page of changes."""^^rdf:XMLLiteral .
     oslc:readOnly           true ;
     dcterms:description     """The URI of an entry in the Change Log after which changes might not be in the Base of the Tracked Resource Set.
 If this property is missing, or if it has the value <code>rdf:nil</code>, the Base enumerates the (possibly empty) Resource Set at the inception of the Tracked Resource Set, and the Change Log lists all changes since that inception.
-Otherwise, the identified Change Event MUST be in the Change Log - that is, there MUST NOT be a gap between the Base portion and the Change Log portion of a Tracked Resource Set representation.
+{{Otherwise, the identified Change Event MUST be in the Change Log}} - that is, {{there MUST NOT be a gap between the Base portion and the Change Log portion of a Tracked Resource Set representation}}.
 Conversely, the Change Log may contain earlier Change Event entries that would be accounted for by the Base. This <code>cutoffEvent</code> property of the Base identifies the point in the Change Log at which processing of Change Events can be cut off because older changes are already covered by the Base portion."""^^rdf:XMLLiteral .
 
 <#member>
@@ -136,9 +134,9 @@ but the actual predicate is indicated by <code>ldp:hasMemberRelation</code>."""^
     oslc:range              trs:Creation, trs:Modification, trs:Deletion ;
     oslc:readOnly           true ;
     dcterms:description     """An inline resource describing a change to a Tracked Resource.
-Change Events MUST have URIs (i.e., they cannot be blank nodes) to allow clients to recognize entries they have seen before.
-The URI is only used to identify an event (i.e., it need not be HTTP GETable) and therefore MAY be a URN.
-The URI of a Change Event MUST be guaranteed unique, even in the wake of a Server rollback where order numbers get reused."""^^rdf:XMLLiteral .
+{{Change Events MUST have URIs (i.e., they cannot be blank nodes) to allow clients to recognize entries they have seen before.}}
+{{The URI is only used to identify an event (i.e., it need not be HTTP GETable) and therefore MAY be a URN.}}
+{{The URI of a Change Event MUST be guaranteed unique, even in the wake of a Server rollback where order numbers get reused.}}"""^^rdf:XMLLiteral .
 
 <#previous>
     a                       oslc:Property ;
@@ -195,6 +193,6 @@ The URI of a Change Event MUST be guaranteed unique, even in the wake of a Serve
     oslc:occurs             oslc:Exactly-one;
     oslc:valueType          xsd:integer ;
     oslc:readOnly           true ;
-    dcterms:description     """A non-negative integer number indicating the sequence in time of the Change Event. The order value for newer events MUST be greater than previous ones - that is, higher values are for more recent events. There MAY be gaps in the sequence."""^^rdf:XMLLiteral .
+    dcterms:description     """A non-negative integer number indicating the sequence in time of the Change Event.}} {{There MAY be gaps in the sequence.}}"""^^rdf:XMLLiteral .
 
 
