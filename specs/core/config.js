@@ -21,22 +21,3 @@ if (specConfig.status != "WD") {
     var thisBase = scriptBase;
   }
 }
-
-//temp fix, see https://github.com/oasis-tcs/tab-respec/pull/48
-(function () {
-  "use strict";
-
-  function waitForRespec() {
-    if (typeof respecEvents !== "undefined") {
-      // we don't know if our code will run first or the end-all handler
-      respecEvents.sub("end-all", function () {
-        document.getElementById(window.location.hash.substring(1)).scrollIntoView();
-      });
-      document.getElementById(window.location.hash.substring(1)).scrollIntoView();
-    } else {
-      setTimeout(waitForRespec, 100);
-    }
-  }
-
-  waitForRespec();
-})();
