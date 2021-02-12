@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -10,17 +10,27 @@
     />
     <title>OSLC Actions</title>
     <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.18/builds/respec-oasis-common.min.js"
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.22/builds/respec-oasis-common.min.js"
       async=""
       class="remove"
     ></script>
-    <script type="text/javascript">
+    <script class="remove">
+      var status = "PSD";
+      var revision = 1;
+
+      var wdBase = "https://oslc-op.github.io/oslc-specs/specs/actions/";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/actions/v1.0/";
+      var thisBase = wdBase;
+      if ("WD" !== status) {
+        var thisBase = oasisBase + status.toLowerCase() + revision.toString().padStart(2, "0") + "/";
+      }
       var respecConfig = {
-        specStatus: "WD",
-        revision: "01",
-
+        shortName: "oslc-actions",
+        citationLabel: "OSLC-ACTIONS-v2.0",
+        specStatus: status,
+        revision: revision.toString().padStart(2, "0"),
+        publishDate: "2020-11-05",
         license: "cc-by-4",
-
         additionalLicenses: [
           {
             licenseName: "Apache License 2.0",
@@ -28,20 +38,13 @@
           },
         ],
 
-        // Only include h1 and h2 level
+        thisVersion: "actions-spec.html",
+        prevVersion: "",
+        latestVersion: oasisBase + "actions-spec.html",
+        latestSpecVersion: "https://open-services.net/spec/actions/latest",
+        edDraftURI: "https://open-services.net/spec/actions/latest-draft",
         maxTocLevel: 2,
-
-        shortName: "actions",
-        conformanceLabelPrefix: "Actions",
-
-        // if there a publicly available Editor's Draft, this is the link
-        edDraftURI: "https://raw.githack.com/oslc-op/oslc-specs/master/specs/core/actions.html",
-
-        // if this is a LCWD, uncomment and set the end of its review period
-        // lcEnd: "2009-08-05",
-
-        // includePermalinks: true,
-
+        conformanceLabelPrefix: "ACTIONS",
         chairs: [
           {
             name: "Jim Amsden",
@@ -75,6 +78,12 @@
         wgShortName: "oslc-op",
         wgURI: "https://github.com/oslc-op/oslc-specs",
 
+        relatedWork: [
+          {
+            title: "Open Services for Lifecycle Collaboration Automation Specification Version 2.1",
+            href: "http://open-services.net/wiki/automation/OSLC-Automation-Specification-Version-2.1/",
+          },
+        ],
         namespaces: [
           {
             href: "http://open-services.net/ns/core#",
@@ -82,7 +91,66 @@
           },
         ],
 
-        localBiblio: {},
+        localBiblio: {
+          OSLCCore2: {
+            title: "OSLC Core Specification 2.0",
+            href: "http://open-services.net/bin/view/Main/OslcCoreSpecification",
+            authors: ["S. Speicher", "D. Johnson"],
+            status: "Finalized",
+            publisher: "http://open-services.net",
+          },
+          OSLCCore3: {
+            title: "OSLC Core Overview v3.0",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/oslc-core.html",
+            status: "Project Specification",
+            authors: ["Steve Speicher", "Jim Amsden"],
+            publisher: "OASIS",
+          },
+          DublinCore1: {
+            title: "Dublin Core Metadata Element Set, Version 1.1",
+            href: "http://dublincore.org/documents/2010/10/11/dces/",
+            publisher: "Dublin Core",
+          },
+          FOAF: {
+            title: "Friend of a Friend (FOAF) v0.98",
+            href: "http://xmlns.com/foaf/spec/20100809.html",
+            authors: ["D. Brickley", "L. Miller"],
+            status: "Stable",
+          },
+          HTTP11: {
+            title: "Hyper-text Transfer Protocol (HTTP/1.1)",
+            href: "https://tools.ietf.org/html/rfc2616",
+            authors: ["R. Fielding", "J. Gettis", "J. Morgul"],
+            status: "STD 1",
+          },
+          XMLNamespaces: {
+            title: "Namespaces in XML 1.0 (Third Edition)",
+            href: "https://www.w3.org/TR/REC-xml-names/",
+            authors: ["T. Bray", "D. Hollander", "A. Layman"],
+            publisher: "https://www.w3.org",
+          },
+          OSLCActions: {
+            title: "OSLC Actions",
+            href: "https://raw.githack.com/oslc-op/oslc-specs/master/specs/actions/actions-spec.html",
+            authors: ["Martin Pain", "Samuel Padget"],
+            status: "Draft",
+            publisher: "OASIS",
+          },
+          OSLCRM: {
+            title: "OSLC Requirements Management Version 2.1. Part 1: Specification",
+            href: "https://open-services.net/spec/rm/latest",
+            authors: ["Ian Green", "Jad El-khoury"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+          OSLCQM: {
+            title: "OSLC Quality Management 2.1. Part 1: Specification",
+            href: "https://open-services.net/spec/qm/latest",
+            authors: ["Paul McMahan", "Jim Amsden", "Gray Bachelor"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+        },
       };
     </script>
   </head>
@@ -580,7 +648,7 @@
           Any resource MAY link to any number of Actions, using the <code>oslc:action</code> predicate as shown in the
           graphic below. The <code>oslc:action</code> predicate links to actions
           <em>available when the response is formed</em>. (In a distributed system, clients can lose race conditions
-          that result in an action that appears as "available" having its execution requests rejected. However, it is
+          that result in an action that appears as 'available' having its execution requests rejected. However, it is
           not expected that actions will change frequently.)
         </p>
       </section>
@@ -1546,197 +1614,14 @@
         <section id="action-properties">
           <h4>Action Properties</h4>
 
-          <table>
-            <thead>
-              <tr>
-                <th><em>Prefixed Name</em></th>
-
-                <th><em>Occurs</em></th>
-
-                <th><em>Read-only</em></th>
-
-                <th><em>Value-type</em></th>
-
-                <th><em>Representation</em></th>
-
-                <th><em>Range</em></th>
-
-                <th><em>Description</em></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td><em>OSLC Core:</em> Common Properties</td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://purl.org/dc/terms/title">dcterms:title</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Exactly-one">Exactly-one</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"> XMLLiteral</a>
-                </td>
-
-                <td>N/A</td>
-
-                <td>N/A</td>
-
-                <td>
-                  Title (reference: Dublin Core) of the resource, represented as rich text using XHTML content. SHOULD
-                  include only content that is valid and suitable inside an XHTML &lt;div&gt; element.
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://purl.org/dc/terms/description">dcterms:description</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Zero-or-one">Zero-or-one</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral"> XMLLiteral</a>
-                </td>
-
-                <td>N/A</td>
-
-                <td>N/A</td>
-
-                <td>
-                  Descriptive text (reference: Dublin Core) about the resource, represented as rich text using XHTML
-                  content. SHOULD include only content that is valid and suitable inside an XHTML &lt;div&gt; element.
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">rdf:type</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#One-or-many">One-or-many</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Resource">Resource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Reference">Reference</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>The resource type URIs. At least one type MUST be <code>oslc:Action</code>.</td>
-              </tr>
-
-              <tr>
-                <td><em>OSLC Core Actions:</em> Start of additional properties</td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://open-services.net/ns/core#binding">oslc:binding</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Zero-or-many">Zero-or-many</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#AnyResource">AnyResource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Either">Either</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>
-                  Instructions for executing the action. It is likely that the target resource will be an
-                  <code>http:Request</code>, <code>oslc-automation:AutomationRequest</code>, or
-                  <code>oslc:Dialog</code>, but that is not necessarily the case. Multiple occurrences of this property
-                  MUST be different ways of achieving the same operation; they are semantically the same, but achieved
-                  through different data or technologies or at different times.
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://open-services.net/ns/core#executes">oslc:executes</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Zero-or-one">Zero-or-one</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#AnyResource">AnyResource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Either">Either</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>
-                  Link to the future action, if any, that a currently available action realizes. It is likely that the
-                  target resource will be an <code>oslc:Action</code>, but that is not necessarily the case. See
-                  <a href="#future-actions">future actions</a> for example uses.
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div
+            title="Action Properties"
+            data-include="./actions-shapes.ttl#ActionShape"
+            data-oninclude="shapeToSpec"
+            data-include-sync="true"
+            data-include-replace="true"
+            data-include-format="html"
+          ></div>
         </section>
 
         <section id="action-subtypes">
@@ -1762,404 +1647,61 @@
           default.
         </p>
 
-        <p>
-          <font color="red"
-            >Automation WG proposes that this property be moved to Core's
-            <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixA">"common properties" appendix</a>
-            during the finalization phase.</font
-          >
-        </p>
+        <div
+          title="Action Properties"
+          data-include="./actions-shapes.ttl#ExtendedActionShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
 
-        <table>
-          <thead>
-            <tr>
-              <th><em>Prefixed Name</em></th>
-
-              <th><em>Occurs</em></th>
-
-              <th><em>Read-only</em></th>
-
-              <th><em>Value-type</em></th>
-
-              <th><em>Representation</em></th>
-
-              <th><em>Range</em></th>
-
-              <th><em>Description</em></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td><em>OSLC Core:</em> Common Properties</td>
-
-              <td></td>
-
-              <td></td>
-
-              <td></td>
-
-              <td></td>
-
-              <td></td>
-
-              <td></td>
-            </tr>
-
-            <tr>
-              <td>
-                <a href="http://open-services.net/ns/core#action">oslc:action</a>
-              </td>
-
-              <td>
-                <a href="http://open-services.net/ns/core#Zero-or-many">Zero-or-many</a>
-              </td>
-
-              <td>Unspecified</td>
-
-              <td>
-                <a href="http://open-services.net/ns/core#AnyResource">AnyResource</a>
-              </td>
-
-              <td>
-                <a href="http://open-services.net/ns/core#Either">Either</a>
-              </td>
-
-              <td>
-                <a href="http://open-services.net/ns/core#Any">Any</a>
-              </td>
-
-              <td>
-                An action that the provider asserts is available for execution by clients
-                <em>at the time the representation was formed</em>. In a distributed system, clients can lose race
-                conditions that result in an "available"-appearing action's execution requests being rejected. It is
-                likely that the target resource will be an <code>oslc:Action</code>, but that is not necessarily the
-                case;
-                <a
-                  href="http://open-services.net/wiki/core/Exposing-arbitrary-actions-on-RDF-resources/#executing-actions"
-                >
-                  when it is an <code>oslc:Action</code>, it will have at least one binding</a
-                >
-                since this predicate's definition requires that the action be available when the response is formed.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div
+          title="OSLC Action RDF Vocabulary"
+          data-include="./actions-vocab.ttl"
+          data-oninclude="vocabToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
       </section>
 
       <section id="resource-request">
         <h3>Resource: Request</h3>
-
-        <p>
-          Note: this resource is <strong>re-used</strong> by this specification, not defined by it. This specification
-          defines the resource shape (how the
-          <a href="http://www.w3.org/TR/HTTP-in-RDF10/#RequestClass">existing W3C vocabulary</a> is re-used and
-          extended).
-        </p>
-
-        <ul>
-          <li><strong>Name:</strong> <code>Request</code></li>
-
-          <li>
-            <strong>Description:</strong> A Request provides a representation of an HTTP request. (Reference: HTTP in
-            RDF)
-          </li>
-
-          <li>
-            <strong>Type URI:</strong>
-            <a href="http://www.w3.org/2011/http#Request"><code>http://www.w3.org/2011/http#Request</code></a>
-          </li>
-        </ul>
-
         <section id="request-properties">
           <h4>Request Properties</h4>
 
-          <table>
-            <thead>
-              <tr>
-                <th><em>Prefixed Name</em></th>
-
-                <th><em>Occurs</em></th>
-
-                <th><em>Read-only</em></th>
-
-                <th><em>Value-type</em></th>
-
-                <th><em>Representation</em></th>
-
-                <th><em>Range</em></th>
-
-                <th><em>Description</em></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td><em>OSLC Core:</em> Common Properties</td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">rdf:type</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#One-or-many">One-or-many</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Resource">Resource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Reference">Reference</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>The resource type URIs. At least one type MUST be <code>http:Request</code>.</td>
-              </tr>
-
-              <tr>
-                <td><em>HTTP in RDF:</em> Common properties</td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://www.w3.org/2011/http#requestURI">http:requestURI</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Exactly-one">Exactly-one</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Resource">Resource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Reference">Reference</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>HTTP Request-URI for the request. (Reference: HTTP 1.1)</td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://www.w3.org/2011/http#mthd">http:mthd</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Exactly-one">Exactly-one</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Resource">Resource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Reference">Reference</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>
-                  HTTP method for the request. The target resource SHOULD come from the
-                  <a href="http://www.w3.org/2011/http-methods">http-methods</a> vocabulary. Many clients are likely to
-                  support only widely used methods such as <a href="http://www.w3.org/2011/http-methods">POST</a>.
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://www.w3.org/2011/http#httpVersion">http:httpVersion</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Exactly-one">Exactly-one</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>String</td>
-
-                <td>N/A</td>
-
-                <td>N/A</td>
-
-                <td>
-                  HTTP protocol version for the request. Providers would be wise to support HTTP 1.1 (value: "1.1") in
-                  order to achieve interoperability in practice.
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://www.w3.org/2011/http#body">http:body</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Exactly-one">Exactly-one</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#AnyResource">AnyResource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Either">Either</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>
-                  Parameters executing the action. It is likely that the target resource will be a
-                  <code>oslc:ResourceShape</code>, <code>oslc-automation:ParameterInstance</code>, or an
-                  <code>oslc-automation:AutomationRequest</code> but that is not necessarily the case.
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://open-services.net/ns/core#usage">oslc:usage</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Zero-or-many">Zero-or-many</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Resource">Resource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Reference">Reference</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>
-                  Expected usage pattern for the resource. A value of <code>oslc:default</code> can also be used when
-                  multiple bindings are present on a single action to hints to clients which is preferred.
-                </td>
-              </tr>
-
-              <tr>
-                <td><em>OSLC Core Actions:</em> Start of additional properties</td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://open-services.net/ns/core#finalStatusLocation">oslc:finalStatusLocation</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Exactly-one">Exactly-one</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Resource">Resource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Reference">Reference</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>
-                  How a consumer determines the status of its desired result (whether or not it has been achieved),
-                  which possibly requires multiple message exchanges. It is likely that the value will be one of these
-                  URIs: <code>oslc:Dialog</code>, <code>oslc:ActionDialog</code>, <code>http:StatusCode</code>, or an
-                  <code>oslc-automation:AutomationResult</code>, but that is not necessarily the case.
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div
+            title="Request Properties"
+            data-include="./actions-shapes.ttl#RequestShape"
+            data-oninclude="shapeToSpec"
+            data-include-sync="true"
+            data-include-replace="true"
+            data-include-format="html"
+          ></div>
 
           <p>
-            The <a href="http://www.w3.org/TR/HTTP-in-RDF10/">HTTP Vocabulary in RDF 1.0 W3C Working Draft</a> defines
-            additional content for describing HTTP requests, beyond those listed above; only a subset of HTTP in RDF is
-            used by Core Actions to address known scenarios. Implementations that need additional content SHOULD re-use
-            the W3C vocabulary where possible instead of inventing their own, for example if specific headers are
-            required, but client interoperability may be limited.
+            Note: this resource is <strong>re-used</strong> by this specification, not defined by it. This specification
+            defines the resource shape (how the
+            <a href="http://www.w3.org/TR/HTTP-in-RDF10/#RequestClass">existing W3C vocabulary</a> is re-used and
+            extended).
           </p>
 
-          <blockquote>
-            <blockquote>
-              <p>
-                Non-normative note: We have talked to the W3C members involved in writing this vocabulary about
-                extending http:requestURI to allow to be a RDF link instead of a string literal whose (string) value
-                happens to be a URI. Currently no new work is being done on the vocabulary, but there were no objections
-                to the usage.
-              </p>
-            </blockquote>
-          </blockquote>
+          <ul>
+            <li><strong>Name:</strong> <code>Request</code></li>
+
+            <li>
+              <strong>Description:</strong> A Request provides a representation of an HTTP request. (Reference: HTTP in
+              RDF)
+            </li>
+
+            <li>
+              <strong>Type URI:</strong>
+              <a href="http://www.w3.org/2011/http#Request"><code>http://www.w3.org/2011/http#Request</code></a>
+            </li>
+          </ul>
         </section>
       </section>
-
       <section id="resource-results">
         <h3>Resource: results</h3>
 
@@ -2186,103 +1728,14 @@
           </li>
         </ul>
 
-        <table>
-          <thead>
-            <tr>
-              <th><strong>Prefixed Name</strong></th>
-
-              <th><strong>Occurs</strong></th>
-
-              <th><strong>Read-only</strong></th>
-
-              <th><strong>Value-type</strong></th>
-
-              <th><strong>Representation</strong></th>
-
-              <th><strong>Range</strong></th>
-
-              <th><strong>Description</strong></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>OSLC Core Actions Properties</td>
-
-              <td></td>
-
-              <td></td>
-
-              <td></td>
-
-              <td></td>
-
-              <td></td>
-
-              <td></td>
-            </tr>
-
-            <tr>
-              <td>
-                <a href="http://open-services.net/ns/auto#verdict"><code>oslc-automation:verdict</code></a>
-              </td>
-
-              <td>
-                <a href="http://open-services.net/ns/core#One-or-many">One-or-many</a>
-              </td>
-
-              <td>true</td>
-
-              <td>
-                <a href="http://open-services.net/ns/core#Resource">Resource</a>
-              </td>
-
-              <td>
-                <a href="http://open-services.net/ns/core#Reference">Reference</a>
-              </td>
-
-              <td>
-                <a href="http://open-services.net/ns/core#Any">Any</a>
-              </td>
-
-              <td>
-                URI of the verdict. Providers need to expose at least one standard URI for interoperability, but they
-                can expose other more specific ones if needed as long as all URIs on a single result are semantically
-                compatible. It is likely that the target resource will be one of the following, but that is not
-                necessarily the case:
-                <a href="http://open-services.net/ns/auto#failed"><code>oslc-automation:failed</code></a
-                >, <a href="http://open-services.net/ns/auto#passed"><code>oslc-automation:passed</code></a
-                >,
-                <a href="http://open-services.net/ns/auto#canceled"><code>oslc-automation:canceled</code></a>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <a href="http://open-services.net/ns/core#label"><code>oslc:label</code></a>
-              </td>
-
-              <td>
-                <a href="http://open-services.net/ns/core#Exactly-one">Exactly-one</a>
-              </td>
-
-              <td>true</td>
-
-              <td>
-                <a href="http://www.w3.org/2001/XMLSchema#string">String</a>
-              </td>
-
-              <td>N/A</td>
-
-              <td>N/A</td>
-
-              <td>
-                Short label describing the result (verdict) of the action dialog, for example from an
-                <a href="#pattern-immed-dialog">immediate execution action dialog</a>.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div
+          title="Request Properties"
+          data-include="./actions-shapes.ttl#resultsShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
       </section>
 
       <section id="Resource_ParameterInstance">
@@ -2305,102 +1758,17 @@
         <section id="parameterinstance-properties">
           <h4>ParameterInstance Properties</h4>
 
-          <table>
-            <thead>
-              <tr>
-                <th><em>Prefixed Name</em></th>
-
-                <th><em>Occurs</em></th>
-
-                <th><em>Read-only</em></th>
-
-                <th><em>Value-type</em></th>
-
-                <th><em>Representation</em></th>
-
-                <th><em>Range</em></th>
-
-                <th><em>Description</em></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td><em>OSLC Core:</em> Common Properties</td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-              </tr>
-
-              <tr>
-                <td>
-                  <a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">rdf:type</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#One-or-many">One-or-many</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Resource">Resource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Reference">Reference</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>
-                  The resource type URIs. At least one type MUST be <code>oslc-automation:ParameterInstance</code>.
-                </td>
-              </tr>
-
-              <tr>
-                <td><code>rdf:value</code></td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Exactly-one">Exactly-one</a>
-                </td>
-
-                <td>Unspecified</td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#AnyResource">AnyResource</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Either">Either</a>
-                </td>
-
-                <td>
-                  <a href="http://open-services.net/ns/core#Any">Any</a>
-                </td>
-
-                <td>
-                  The value of the parameter, either a resource or a typed literal. Untyped literals can be used in
-                  place of string-typed literals.
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div
+            title="Request Properties"
+            data-include="./actions-shapes.ttl#ParameterInstanceShape"
+            data-oninclude="shapeToSpec"
+            data-include-sync="true"
+            data-include-replace="true"
+            data-include-format="html"
+          ></div>
         </section>
       </section>
     </section>
-
     <section id="best-practices">
       <h2>Best Practices</h2>
 
