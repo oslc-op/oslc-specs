@@ -1188,11 +1188,15 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
           <div>
             <p>
               <span class="conformance"
-                >OSLC clients and servers SHOULD use the <code>OSLC-Core-Version</code> header to indicate what OSLC
-                version they expect or support <b style="color: red;">P-01 (In conflict with CORE-55).</b></span
+                >OSLC Clients and Servers SHOULD use the <code>OSLC-Core-Version</code> header to indicate what OSLC
+                version they expect or support.</span
               >.
               <span class="conformance"
-                >The <code>OSLC-Core-Version</code> header SHALL conform to the following ABNF grammar [[!ABNF]]:</span
+                >When returning an RDF response, an OSLC Server MUST return the <code>OSLC-Core-Version</code> header
+                set to the Core specification with which the representation complies.</span
+              >
+              <span class="conformance"
+                >The <code>OSLC-Core-Version</code> header consists of a major and minor version components and MUST conform to the following ABNF grammar [[!ABNF]]:</span
               >
             </p>
 
@@ -1206,65 +1210,64 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
   oslc-version = "OSLC-Core-Version:" *WSP 1*DIGIT "." 1*DIGIT
   </pre
             >
+
+            <p>
+              <span class="conformance">
+                 The major version component in the <code>OSLC-Core-Version</code> header MUST be greater or equal than "2".
+              </span>
+              <span class="conformance">
+                An OSLC Server SHOULD reject a request with the <code>OSLC-Core-Version: 1.0</code> header or another minor version with a response 400 Bad Request.
+             </span>
+            </p>
           </div>
 
           <p>
-            <b style="color: red;"
-              >P-02 I think this makes no sense and shall be removed. Also is repeated in §4.2.3.</b
+            <span class="conformance"
+              >If the <code>OSLC-Core-Version</code> header is present in the request and set to a version that an OSLC
+              Server can support, then the Server MUST return a representation that is complies with the specified
+              version.</span
             >
             <span class="conformance"
-              >OSLC Core and domain specifications are versioned independently, and MAY specify version numbers.</span
+              >If the <code>OSLC-Core-Version</code> header is present and indicates a specification version that the
+              Server cannot support, the Server SHOULD respond with what it determines is the most compatible version
+              that it can return.</span
+            >
+            <span class="conformance"
+              >If the <code>OSLC-Core-Version</code> header is not present then the Server SHOULD respond by returning a
+              resource that conforms to the earliest or most compatible (as determined by the implementation)
+              specification version's representation.</span
             >
           </p>
 
           <p class="conformance">
-            <b style="color: red;">P-03 Reworded to use RFC keywords and allow vendors to get clear guidance.</b>
-            OSLC Core 3.0 does not introduce any changes that would break existing OSLC 2.0 clients. Because of this,
-            OSLC Core 3.0 clients and servers MAY continue to utilize the
-            <code>OSLC-Core-Version</code> header with the value of "2.0".
+            OSLC Core 3.0 Servers that comply with OSLC Core 2.0 requirements MAY continue to identify themselves as
+            OSLC Core 2.0 servers with the <code>OSLC-Core-Version: 2.0</code> headers in the response.
+          </p>
+
+          <p>
+            <span class="conformance"
+              >If the <code>OSLC-Core-Version</code> header is not present, an OSLC Server MAY return an OSLC 1.0
+              response.</span
+            ><span class="conformance"
+              >OSLC Clients SHOULD supply the <code>OSLC-Core-Version: 2.0</code> header in the request to avoid an OSLC
+              1.0 response.</span
+            >
+            <b style="color: red;">P-14 Should this be 2.0 or newer?</b>
           </p>
 
           <p>
             <span class="conformance"
               >If an OSLC 2.0 client accesses an OSLC 3.0 server, the 3.0 server SHALL respond to the client in a manner
-              that is compatible with 2.0.</span
+              that is compatible with 2.0.
+              <b style="color: red;">P-15 This conflicts with the clause Core-47, which is much softer.</b></span
             >
             <span class="conformance"
               >The response MAY include additional headers and entity request or response body information defined by
-              OSLC Core 3.0.</span
-            >
-            This information will be simply ignored <b style="color: red;">P-04 or MAY be ignored?</b> by the 2.0
-            clients. There will be no missing or invalid information since OSLC Core 3.0 is designed to be compatible
-            with OSLC Core 2.0.
-          </p>
-
-          <p>For OSLC clients that access 2.0 servers:</p>
-          <b style="color: red;">P-05 I think this needs more normative language</b>
-          <ul>
-            <li>
-              OSLC 1.0 clients - get 1.0 responses by default from 2.0 servers and don't interoperate with 3.0 servers.
-            </li>
-            <li>
-              OSLC 2.0 clients - interact with 2.0 servers that may or may not implement 1.0 by using the
-              OSLC-Core-Version header.
-            </li>
-            <li>
-              OSLC 3.0 Clients - if they are accessing 2.0 servers that might return 1.0 responses without the header,
-              then they would have to provide the header as specified in
-              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Specification_Versioning"
-                >OSLC Core 2.0 Specification Versioning</a
-              >,
-            </li>
-          </ul>
-
-          <p>
-            OSLC Core 3.0 does not address compatibility with versions of OSLC prior to [[!OSLCCore2]].
-            <span class="conformance"
-              >Servers MAY follow
-              <a href="http://open-services.net/bin/view/Main/OslcCoreSpecification#Specification_Versioning"
-                >OSLC Core 2.0 Specification Versioning</a
-              >
-              in order to support compatibility with versions prior to 2.0.</span
+              OSLC Core 3.0
+              <b style="color: red;"
+                >P-16 I think this is redundant because of clause Core-21 or this text should be moved there to augment
+                the clause with a mirror Server clause.</b
+              >.</span
             >
           </p>
 
@@ -1279,69 +1282,15 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
         </section>
 
         <section>
-          <h3>Support for OSLC clients before OSLC Core 2.0</h3>
-
-          <p>
-            We anticipate that the OSLC Core and domain specifications will each be versioned independently and each
-            version will be assigned a version number, but we would like to avoid exposing version numbers in OSLC
-            implementations. There is one use case that requires version information to be exposed. We must ensure that
-            old OSLC "Version 1" clients continue to work.
-            <b style="color: red;">P-06 I don't think this is relevant any more.</b>
-          </p>
-
-          <p>
-            To enable OSLC Service specifications to evolve without breaking existing clients, we introduce an HTTP
-            Header, OSLC-Core-Version set to the Core specification version number "2.0". We expect clients that target
-            the Core to send this HTTP header. <b style="color: red;">P-07 Non-normative worded normative statement.</b>
-          </p>
-
-          <ol>
-            <li>
-              <b style="color: red;">P-08 I don't think this is pre 2.0 only but rather general</b>
-              <span class="conformance"
-                >If the <code>OSLC-Core-Version</code> header is present and set to a version that the service can
-                support, then the service MUST return a representation that is complies with the specified
-                version.</span
-              >
-            </li>
-            <li>
-              <b style="color: red;">P-09 I don't think this is pre 2.0 only but rather general</b>
-              <span class="conformance"
-                >If the <code>OSLC-Core-Version</code> header is present and indicates a specification version that the
-                service cannot support, the service SHOULD respond with what it determines is the most compatible
-                version that it can return.</span
-              >
-            </li>
-            <li>
-              <span class="conformance"
-                >If the <code>OSLC-Core-Version</code> header is not present then the OSLC Service SHOULD respond by
-                returning a resource that conforms to the earliest or most compatible (as determined by the
-                implementation) specification version's representation.</span
-              >
-              <span class="conformance"
-                >Services that never offered an OSLC Version 1 interface MAY ignore this restriction.</span
-              >
-            </li>
-            <li>
-              <b style="color: red;">P-10 I don't think this is pre 2.0 only but rather general.</b>
-              <b style="color: red;">P-11 I think 3.0 guidance saying a header is not necessary is violating this.</b>
-              <b style="color: red;">P-12 Nick TODO to clarify.</b>
-              <span class="conformance"
-                >When returning an OSLC Defined Resource, OSLC Services MUST return the
-                <code>OSLC-Core-Version</code> header set to the Core specification with which the representation
-                complies.</span
-              >
-              <b style="color: red;">P-13 What is an OSLC DEFINED Resource?</b>
-            </li>
-          </ol>
-        </section>
-
-        <section>
           <h3>Forward compatibility</h3>
-
+          <b style="color: red;"
+          >P-17 I think this whole section belongs in a PN for the future editors and not the spec.</b
           <p>
             A new version of an OSLC specification SHALL NOT introduce changes that will break old clients.
-            <span class="editor">I don't think this is phrase</span>
+            <b style="color: red;"
+              >P-18 A specification cannot make normative statements on other specifications, especially ones that do
+              not exist yet.</b
+            >
           </p>
 
           When specifying a new version of an OSLC specification the rule is this: Guidelines that SHOULD be followed
