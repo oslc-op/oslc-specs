@@ -36,12 +36,14 @@ import net.open_services.scheck.shapechecker.ShapeCheckException;
  */
 public final class CheckIndex
 {
-    private Model               vocabModel;
-    private HttpHandler         handler = new HttpHandler(0, null);
-    private URI                 indexFile = URI.create("https://jazz.net/ns/index.ttl");
-    private URI                 listFile;
-    private Map<String,Boolean> knownVocabs = new HashMap<>();
-    private Set<String>         titleSeen = new HashSet<>();
+    private Model                vocabModel;
+    private HttpHandler          handler;
+    private URI                  listFile;
+    private URI                  indexFile   = URI.create("https://jazz.net/ns/index.ttl");
+    private Map<String, Boolean> knownVocabs = new HashMap<>();
+    private Set<String>          titleSeen   = new HashSet<>();
+    private boolean              debug       = false;
+    private String               namespace;
 
 
     private CheckIndex()
@@ -52,8 +54,19 @@ public final class CheckIndex
 
     /**
      * Verify an index page against a list of known vocabularies.
-     * By default, the jazz.net/ns/index.ttl page is checked against standard input.
-     * @param args [-i index-page] [-l list-file]
+     * @param args [-i index-page] [-l list-file] [-n namespace]
+     * <ul>
+     * <li>The -i argument specifies an index page to check.
+     *     By default, the jazz.net/ns/index.ttl page is checked.</li>
+     * <li>The -l argument specifies a text file containing a list of known vocabularies,
+     *     one per line. By default, this list is read from standard input.</li>
+     * <li>The -n argument specifies a namespace to be checked.
+     *     If this argument is not specified, all vocabularies in the index are checked.
+     *     If the -n argument is specified, only vocabularies with namespaces within the
+     *     given namespace (starting with the same URI) are checked, and all others
+     *     are rejected with an error message.</li>
+     * <li>The -d argument enables diagnostic and progress messages.</li>
+     * </ul>
      */
     public static void main(String... args)
     {
@@ -70,6 +83,15 @@ public final class CheckIndex
     }
 
 
+    private void debug(String msg)
+    {
+        if (debug)
+        {
+            System.out.println(msg);
+        }
+    }
+
+
     @javax.annotation.CheckReturnValue
     private boolean checkUsage(String... args)
     {
@@ -80,8 +102,14 @@ public final class CheckIndex
         {
             try
             {
-                if (args.length <= index+1)
+                if (args[index].equals("-d"))
                 {
+                    index++;
+                    debug = true;
+                }
+                else if (args.length <= index+1)
+                {
+                    System.err.println("Missing value for argument "+args[index]);
                     return false;
                 }
                 else if (args[index].equals("-i"))
@@ -104,6 +132,11 @@ public final class CheckIndex
                     }
                     listFile = files.get(0);
                 }
+                else if (args[index].equals("-n"))
+                {
+                    index++;
+                    namespace = args[index++];
+                }
             }
             catch (URISyntaxException e1)
             {
@@ -117,6 +150,8 @@ public final class CheckIndex
             System.err.println("Unexpected argument "+args[index]);
             return false;
         }
+
+        handler = new HttpHandler(debug ? 2 : 0, null);
         return passed;
     }
 
@@ -137,7 +172,10 @@ public final class CheckIndex
         catch (RiotException e)
         {
             System.err.println("Cannot parse index file "+indexFile);
-            e.printStackTrace();
+            if (debug)
+            {
+                e.printStackTrace();
+            }
             return false;
         }
 
@@ -163,7 +201,10 @@ public final class CheckIndex
         catch (IOException e)
         {
             System.err.println("Cannot read list file "+listFile);
-            e.printStackTrace();
+            if (debug)
+            {
+                e.printStackTrace();
+            }
             return false;
         }
     }
@@ -185,11 +226,31 @@ public final class CheckIndex
         while (vocabs.hasNext())
         {
             Resource ontology = vocabs.next();
+            String vocabURI = ontology.getURI();
+            if (namespace != null && !vocabURI.startsWith(namespace))
+            {
+                System.err.println("Vocabulary with namespace "+vocabURI+" should not be included in the index");
+            }
+            else
+            {
+                try
+                {
+                    handler.checkValidReference(vocabURI, true);
+                }
+                catch (ShapeCheckException e)
+                {
+                    System.err.println("Vocabulary "+vocabURI+" not machine readable");
+                    if (debug)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
             StmtIterator titles = vocabModel.listStatements(ontology, DCTerms.title, (RDFNode)null);
             if (!titles.hasNext())
             {
-                System.err.println("Vocabulary at "+ontology.getURI()+" has no title");
+                System.err.println("Vocabulary at "+vocabURI+" has no title");
             }
             else
             {
@@ -215,7 +276,7 @@ public final class CheckIndex
                 case "text/html":
                     if (knownVocabs.containsKey(baseName))
                     {
-                        System.out.println("Matched "+baseName);
+                        debug("Matched "+baseName);
                         knownVocabs.put(baseName, true);
                     }
                     else
@@ -241,7 +302,7 @@ public final class CheckIndex
                         }
                         else
                         {
-                            System.out.println("Checking index reference to "+uri);
+                            debug("Checking index reference to "+uri);
                             handler.checkValidReference(uri.toString(), true);
                         }
                     }
