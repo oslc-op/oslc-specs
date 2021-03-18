@@ -1193,22 +1193,33 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
                 When returning an RDF response, an OSLC Server MUST return the <code>OSLC-Core-Version</code> header set
                 to the Core specification with which the representation complies.</span
               >
-              <span class="conformance">
-                The <code>OSLC-Core-Version</code> header consists of a major and minor version components and MUST
-                conform to the following ABNF grammar [[!ABNF]]:</span
-              >
             </p>
+            <div class="conformance">
+              <p>
+                The <code>OSLC-Core-Version</code> header consists of a major and minor version components and MUST
+                conform to the following ABNF grammar [[!ABNF]]:
+              </p>
 
-            <pre>
+              <pre>
   SP = " "
   HTAB = %x09
   WSP = SP / HTAB
   DIGIT = %x30-39
 
   header = oslc-version
-  oslc-version = "OSLC-Core-Version:" *WSP 1*DIGIT "." 1*DIGIT
+  MAJOR = 1*DIGIT
+  MINOR = 1*DIGIT
+  oslc-version = "OSLC-Core-Version:" *WSP MAJOR "." MINOR
   </pre
-            >
+              >
+            </div>
+
+            <div>
+              <p>Example:</p>
+              <pre>
+              OSLC-Core-Version: 3.0
+              </pre>
+            </div>
 
             <p>
               <span class="conformance">
@@ -1216,8 +1227,8 @@ GET http://example.com/blogs/entry/1?oslc.paging=true&amp;amp;pageSize=200&amp;a
                 "2".
               </span>
               <span class="conformance">
-                An OSLC Server SHOULD reject a request with the <code>OSLC-Core-Version: 1.0</code> header or another
-                minor version with a response 400 Bad Request.
+                An OSLC Server SHOULD reject a request with the <code>OSLC-Core-Version</code> header that has a major
+                version value below "2" with a response 400 Bad Request.
               </span>
             </p>
           </div>
