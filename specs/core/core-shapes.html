@@ -185,6 +185,203 @@
       <section id="conventions"></section>
     </section>
 
+    <section id="commonprops">
+      <h2>Common Properties</h2>
+      <p>
+        Unlike the rest of the Core specification, these properties change and grow as new common properties are added.
+        The properties that we list here are available for use in OSLC domain specifications when defining OSLC
+        resources, but this does not mean that they are required to be in OSLC resources. OSLC domain specifications
+        decide which properties are allowed and required for resources needed to realize their use cases. The OSLC
+        common properties include properties defined in other standard vocabularies including:
+      </p>
+
+      <ul>
+        <li><a href="http://xmlns.com/foaf/spec/">Friend of a Friend (FOAF)</a></li>
+        <li><a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core (dcterms)</a></li>
+        <li><a href="https://www.w3.org/TR/2004/REC-rdf-schema-20040210/">RDF Schema (rdfs)</a></li>
+      </ul>
+
+      <section id="CommonPropertiesShape" class="shapes">
+        <h2>Properties on Any Resource</h2>
+        <div
+          title="Common Properties"
+          data-include="./core-shapes.ttl#CommonPropertiesShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="PersonShape" class="shapes">
+        <h2>Person Properties</h2>
+        <div
+          title="Person Properties"
+          data-include="./core-shapes.ttl#PersonShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="comPropImplConform">
+        <h2>Implementation Conformance</h2>
+
+        <p id="nsRule">
+          <span class="conformance">
+            Changes to the OSLC Core Vocabulary MUST be approved by the OASIS OSLC Open Project.
+          </span>
+          The OSLC Core Vocabulary is assigned the namespace URI of the <code>http://open-services.net/ns/core#</code>.
+        </p>
+
+        <p id="nsRuleExtend">
+          <span class="conformance"
+            >Domain TCs and other extensions MUST contribute their vocabulary terms in a namespace which is assigned to
+            them as an authority.</span
+          >
+        </p>
+
+        <p id="vocabReuse">
+          <span class="conformance"
+            >OSLC Core, domain and other extensions SHOULD reuse existing vocabulary terms from stable vocabularies such
+            as [[!DC-TERMS]], RDF [[!rdf11-concepts]], RDF Schema [[!rdf-schema]], [[!FOAF]], [[skos-reference]] and
+            OSLC.</span
+          >
+          <span class="conformance"
+            >New vocabulary terms SHOULD only be created when there is no clear existing choice available.</span
+          >
+          See the [[!LDP]] <a href="http://www.w3.org/TR/ldp/#ldprs-gen-reusevocabsuchas">similar clause on reuse</a>.
+        </p>
+      </section>
+    </section>
+
+    <section id="discussion">
+      <h2>Discussion</h2>
+
+      <section id="DiscussionShape">
+        <h2>Shape: Discussion</h2>
+        <p>
+          It is common to collect a series of comments on a lifecycle resource, often referred to as a discussion. For
+          example: tasks, bug reports, requirements, assets and so on, are often collected across various types of
+          resources such as project. A project might reflect the planning of work to deliver a product that realizes the
+          requirements as validated through test cases and bug reports. Discussions allow users to collaborate with each
+          other for more efficient and effective delivery. This Discussion resource definition provides a minimal shape
+          describing the needed properties.
+        </p>
+
+        <div
+          title="RDF Shape for Discussion"
+          data-include="./core-shapes.ttl#DiscussionShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="CommentShape">
+        <h2>Shape: Comment</h2>
+        <p>
+          Used in conjunction with <a href="#DiscussionShape" title="Shape: Discussion">Shape: Discussion</a> to provide
+          a minimal resource definition for a collection of comments.
+        </p>
+
+        <div
+          title="RDF Shape for Comment"
+          data-include="./core-shapes.ttl#CommentShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+    </section>
+
+    <section id="errorresponses">
+      <h2>Errors</h2>
+
+      <section id="errImplConform">
+        <h2>Implementation Conformance</h2>
+        <section id="errUseful">
+          <p class="conformance">
+            When an OSLC Server incurs an error, it is RECOMMENDED that useful information be provided to clients in the
+            body of the HTTP response.
+          </p>
+        </section>
+
+        <p id="errMsg">
+          <span class="conformance"
+            >OSLC Servers SHOULD use the <a href="#ErrorShape">Error resource</a> defined below as the basis for forming
+            error responses.</span
+          >
+        </p>
+
+        <p id="errFormat">
+          <span class="conformance">
+            OSLC Servers SHOULD return an <a href="#ErrorShape">Error resource</a> using the same representation format
+            requested by the client via the HTTP <code>Accept</code> request header. [[!HTTP11]]
+          </span>
+        </p>
+
+        <p id="errFormatStatusCode">
+          <span class="conformance">
+            OSLC Clients SHOULD treat the <code>oslc:statusCode</code> as a String that starts with digits, but MAY
+            contain non-digit text.
+          </span>
+        </p>
+      </section>
+
+      <section id="ErrorShape">
+        <h2>Shape: Error</h2>
+        <p>Used when servers need a consistent shape to communicate error messages.</p>
+
+        <div
+          title="RDF Shape for Error"
+          data-include="./core-shapes.ttl#ErrorShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="ExtendedErrorShape">
+        <h2>Shape: ExtendedError</h2>
+        <p>Additional details about an error the server had when processing the request.</p>
+
+        <div
+          title="RDF Shape for ExtendedError"
+          data-include="./core-shapes.ttl#ExtendedErrorShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="ResponseInfoShape">
+        <h2>Shape: ResponseInfo</h2>
+        <p>
+          <span class="conformance"
+            >Resource representations returned via [[!OSLCCore2]] Resource Paging MUST include a resource of type
+            oslc:ResponseInfo, as defined in this section.</span
+          >
+          A response info resource representation describes information about a paged HTTP response body in which it
+          appears.
+        </p>
+
+        <div
+          title="RDF Shape for ResponseInfo"
+          data-include="./core-shapes.ttl#ResponseInfoShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+    </section>
+
     <section id="resourceShapes">
       <h2>Resource Shape</h2>
       <p>
@@ -425,203 +622,6 @@
         <div
           title="Shape for oslc:AttachmentDescriptor"
           data-include="./core-shapes.ttl#AttachmentDescriptorShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-    </section>
-
-    <section id="commonprops">
-      <h2>Common Properties</h2>
-      <p>
-        Unlike the rest of the Core specification, these properties change and grow as new common properties are added.
-        The properties that we list here are available for use in OSLC domain specifications when defining OSLC
-        resources, but this does not mean that they are required to be in OSLC resources. OSLC domain specifications
-        decide which properties are allowed and required for resources needed to realize their use cases. The OSLC
-        common properties include properties defined in other standard vocabularies including:
-      </p>
-
-      <ul>
-        <li><a href="http://xmlns.com/foaf/spec/">Friend of a Friend (FOAF)</a></li>
-        <li><a href="http://dublincore.org/documents/dcmi-terms/">Dublin Core (dcterms)</a></li>
-        <li><a href="https://www.w3.org/TR/2004/REC-rdf-schema-20040210/">RDF Schema (rdfs)</a></li>
-      </ul>
-
-      <section id="CommonPropertiesShape" class="shapes">
-        <h2>Properties on Any Resource</h2>
-        <div
-          title="Common Properties"
-          data-include="./core-shapes.ttl#CommonPropertiesShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="PersonShape" class="shapes">
-        <h2>Person Properties</h2>
-        <div
-          title="Person Properties"
-          data-include="./core-shapes.ttl#PersonShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="comPropImplConform">
-        <h2>Implementation Conformance</h2>
-
-        <p id="nsRule">
-          <span class="conformance">
-            Changes to the OSLC Core Vocabulary MUST be approved by the OASIS OSLC Open Project.
-          </span>
-          The OSLC Core Vocabulary is assigned the namespace URI of the <code>http://open-services.net/ns/core#</code>.
-        </p>
-
-        <p id="nsRuleExtend">
-          <span class="conformance"
-            >Domain TCs and other extensions MUST contribute their vocabulary terms in a namespace which is assigned to
-            them as an authority.</span
-          >
-        </p>
-
-        <p id="vocabReuse">
-          <span class="conformance"
-            >OSLC Core, domain and other extensions SHOULD reuse existing vocabulary terms from stable vocabularies such
-            as [[!DC-TERMS]], RDF [[!rdf11-concepts]], RDF Schema [[!rdf-schema]], [[!FOAF]], [[skos-reference]] and
-            OSLC.</span
-          >
-          <span class="conformance"
-            >New vocabulary terms SHOULD only be created when there is no clear existing choice available.</span
-          >
-          See the [[!LDP]] <a href="http://www.w3.org/TR/ldp/#ldprs-gen-reusevocabsuchas">similar clause on reuse</a>.
-        </p>
-      </section>
-    </section>
-
-    <section id="discussion">
-      <h2>Discussion</h2>
-
-      <section id="DiscussionShape">
-        <h2>Shape: Discussion</h2>
-        <p>
-          It is common to collect a series of comments on a lifecycle resource, often referred to as a discussion. For
-          example: tasks, bug reports, requirements, assets and so on, are often collected across various types of
-          resources such as project. A project might reflect the planning of work to deliver a product that realizes the
-          requirements as validated through test cases and bug reports. Discussions allow users to collaborate with each
-          other for more efficient and effective delivery. This Discussion resource definition provides a minimal shape
-          describing the needed properties.
-        </p>
-
-        <div
-          title="RDF Shape for Discussion"
-          data-include="./core-shapes.ttl#DiscussionShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="CommentShape">
-        <h2>Shape: Comment</h2>
-        <p>
-          Used in conjunction with <a href="#DiscussionShape" title="Shape: Discussion">Shape: Discussion</a> to provide
-          a minimal resource definition for a collection of comments.
-        </p>
-
-        <div
-          title="RDF Shape for Comment"
-          data-include="./core-shapes.ttl#CommentShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-    </section>
-
-    <section id="errorresponses">
-      <h2>Errors</h2>
-
-      <section id="errImplConform">
-        <h2>Implementation Conformance</h2>
-        <section id="errUseful">
-          <p class="conformance">
-            When an OSLC Server incurs an error, it is RECOMMENDED that useful information be provided to clients in the
-            body of the HTTP response.
-          </p>
-        </section>
-
-        <p id="errMsg">
-          <span class="conformance"
-            >OSLC Servers SHOULD use the <a href="#ErrorShape">Error resource</a> defined below as the basis for forming
-            error responses.</span
-          >
-        </p>
-
-        <p id="errFormat">
-          <span class="conformance">
-            OSLC Servers SHOULD return an <a href="#ErrorShape">Error resource</a> using the same representation format
-            requested by the client via the HTTP <code>Accept</code> request header. [[!HTTP11]]
-          </span>
-        </p>
-
-        <p id="errFormatStatusCode">
-          <span class="conformance">
-            OSLC Clients SHOULD treat the <code>oslc:statusCode</code> as a String that starts with digits, but MAY
-            contain non-digit text.
-          </span>
-        </p>
-      </section>
-
-      <section id="ErrorShape">
-        <h2>Shape: Error</h2>
-        <p>Used when servers need a consistent shape to communicate error messages.</p>
-
-        <div
-          title="RDF Shape for Error"
-          data-include="./core-shapes.ttl#ErrorShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="ExtendedErrorShape">
-        <h2>Shape: ExtendedError</h2>
-        <p>Additional details about an error the server had when processing the request.</p>
-
-        <div
-          title="RDF Shape for ExtendedError"
-          data-include="./core-shapes.ttl#ExtendedErrorShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-
-      <section id="ResponseInfoShape">
-        <h2>Shape: ResponseInfo</h2>
-        <p>
-          <span class="conformance"
-            >Resource representations returned via [[!OSLCCore2]] Resource Paging MUST include a resource of type
-            oslc:ResponseInfo, as defined in this section.</span
-          >
-          A response info resource representation describes information about a paged HTTP response body in which it
-          appears.
-        </p>
-
-        <div
-          title="RDF Shape for ResponseInfo"
-          data-include="./core-shapes.ttl#ResponseInfoShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
