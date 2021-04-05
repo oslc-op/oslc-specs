@@ -28,7 +28,7 @@ import net.open_services.scheck.shapechecker.OSLC;
 
 
 /**
- * Print a canonical representation of a set of OSLC resource shapes.
+ * Print a canonical representation of a set of OSLC vocabulary documents.
  *
  * Useful for a comparison after significant changes to the file structure,
  * use of blank nodes, changes to ordering, type of quotes, etc., to ensure
@@ -58,6 +58,7 @@ public final class PrintVocabs
     {
         new PrintVocabs().run(args);
     }
+
 
     private void run(String...args)
     {
