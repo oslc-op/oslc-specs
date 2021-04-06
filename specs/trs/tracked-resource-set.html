@@ -93,6 +93,12 @@
             status: "Finalized Draft",
             publisher: "http://open-services.net",
           },
+          RDFPatch: {
+            title: "RDF Patch – Describing Changes to an RDF Dataset",
+            href: "http://afs.github.io/rdf-patch/",
+            authors: ["Andy Seaborne", "Rob Vesse"],
+            status: "Unofficial Draft 20 November 2014",
+          },
         },
       };
     </script>
@@ -101,44 +107,23 @@
     <section id="abstract">
       <p>
         The Tracked Resource Set protocol allows a server to expose a set of resources in a way that allows clients to
-        discover the exact set of resources in the set, to track additions to and removals from the set, and to track
-        state changes to the resources in the set. The protocol does not assume that clients will dereference the
-        resources, but they could do so. The protocol is suitable for dealing with large sets containing a large number
-        of resources, as well as highly active resource sets that undergo continual change. The protocol is HTTP-based
-        and follows RESTful principles.
+        discover that set of resources, to track additions to and removals from the set, and to track state changes to
+        the resources in the set. The protocol does not assume that clients will dereference the resources, but they
+        could do so. The protocol is suitable for dealing with sets containing a large number of resources, as well as
+        highly active resource sets that undergo continual change. The protocol is HTTP-based and follows RESTful
+        principles.
       </p>
     </section>
     <section id="toc"></section>
     <section id="sotd"></section>
-    <section id="conformance">
-      <h2>Conformance</h2>
-      <p class="conformance">
-        This specification is based on [[!OSLCCore3]]. OSLC Tracked Resource Set Servers servers MUST be compliant with
-        the Core specification, MUST follow all the mandatory requirements in the normative sections of each part of
-        this specification, and SHOULD follow all the guidelines and recommendations in both these specifications.
-      </p>
-    </section>
     <section id="intro" class="informative">
       <h2>Introduction</h2>
       <p>
         An OSLC Tracked Resource Set (TRS) provides a mechanism for making a set of resources discoverable and for
         reporting ongoing changes affecting the set. This allows tools to expose a live feed of linked lifecycle data in
-        a way that permits other tools to build, aggregate, and maintain live, searchable information based on that
-        linked data.
+        a way that permits other tools to monitor the tracked resources, aggregate information from multiple sets of
+        tracked resources, and maintain live, searchable information based on that linked data.
       </p>
-      <p>
-        TRS Clients can use Tracked Resource Sets to monitor or replicate some of the server’s resources, keeping up to
-        date with changes. A single TRS Client could get information from many different TRS Servers and Tracked
-        Resource Sets in order to aggregate information into a repository for more efficient federated access to the
-        resource data, or for access using a different query language or protocol. The TRS protocol does not guarantee
-        that a client can calculate a complete change history (audit log) for the tracked resources.
-      </p>
-      <section id="todo" class="informative">
-        <h3>Still to do</h3>
-        <ul>
-          <li>Search for and deal with TBDs</li>
-        </ul>
-      </section>
       <section id="terminology" class="informative">
         <h3>Terminology</h3>
         <p>
@@ -152,19 +137,18 @@
             and a Change Log.
           </dd>
           <dt><dfn>Tracked Resource</dfn></dt>
-          <dd>A resource identified by URI that is a member of one or more Tracked Resource Sets.</dd>
+          <dd>A resource, identified by URI, that is a member of one or more Tracked Resource Sets.</dd>
           <dt><dfn>Base</dfn></dt>
           <dd>
-            The portion of a Tracked Resource Set representation that lists the Tracked Resources at some specific point
-            in time. Change Events in the Change Log are relative to the Base.
+            The portion of a Tracked Resource Set representation that lists the Tracked Resources at some point in time.
           </dd>
           <dt><dfn>Change Log</dfn></dt>
           <dd>
             The portion of a Tracked Resource Set representation detailing a series of Change Events for Tracked
-            Resources.
+            Resources, where those changes are relative to the Base.
           </dd>
           <dt><dfn>Change Event</dfn></dt>
-          <dd>Describes the addition, removal, or state change of a Tracked Resource in a Tracked Resource Set.</dd>
+          <dd>Identifies an addition, removal, or state change of a Tracked Resource in a Tracked Resource Set.</dd>
           <dt><dfn>TRS Patch</dfn></dt>
           <dd>
             An extended Change Event in a Tracked Resource Set detailing a change to the resource’s RDF representation.
@@ -178,7 +162,7 @@
         </dl>
       </section>
       <section id="conventions" class="informative">
-        <p>Sample resource representations are provided in <code>text/turtle</code> format [[TURTLE]].</p>
+        <p>Sample resource representations are provided in <code>text/turtle</code> format [[Turtle]].</p>
         <p>The following common URI prefixes are used throughout this specification:</p>
         <figure>
           <div class="source">
@@ -203,8 +187,8 @@
         in a particular Tracked Resource Set at any moment; both the Tracked Resource Sets and the linked data contents
         of each Tracked Resource can vary over time. An HTTP GET request sent to the Tracked Resource Set URI returns a
         representation of the state of the Tracked Resource Set characterized in terms of a Base and a Change Log. The
-        Base is a Linked Data Platform (LDP) Container providing a point-in-time enumeration of the Tracked Resource
-        members of the Tracked Resource Set; The Change Log provides a (possibly empty) time-ordered series of
+        Base is a Linked Data Platform [[!LDP]] Container providing a point-in-time enumeration of the Tracked Resource
+        members of the Tracked Resource Set. The Change Log provides a (possibly empty) time-ordered series of
         adjustments describing changes to the Tracked Resources. When the Base is empty, the Change Log describes a
         history of how the Tracked Resource Set has grown and evolved since its inception. A TRS Server can periodically
         update the Base of a TRS and truncate the Change Log to avoid excessively large Change Logs. Clients can read
@@ -215,9 +199,7 @@
         The Change Log portion can contain earlier Change Event entries that would be accounted for by the Base portion.
         A “cutoff” property of the Base identifies the point in the Change Log at which processing of Change Events can
         be cut off because older changes are already covered by the Base portion. TRS Clients use the Base to establish
-        the resources to track, and the Change Log to address changes to those resources. TRS Clients are responsible
-        for knowing what change events they have already processed in the Change Log, and should only process new change
-        events.
+        the resources to track, and the Change Log to address changes to those resources.
       </p>
     </section>
     <section id="discovery">
@@ -237,7 +219,7 @@
         The RDF <code>trs:trackedResourceSet</code> property can be used to declare the whereabouts of a Tracked
         Resource Set resource. The Tracked Resource Set resource is the object.
       </p>
-      <p>
+      <p class="informative">
         This allows the existence and location of a Tracked Resource Set resource to be declared with an RDF statement
         like the following (rendered here in Turtle):
       </p>
@@ -249,7 +231,7 @@
       <p>Where such RDF statements might be found is outside the scope of this specification.</p>
     </section>
     <section id="general-behavior">
-      <h2>General Behavior></h2>
+      <h2>General Behavior</h2>
       <p class="conformance">
         The TRS Server MUST support GET requests conformant with [[OSLCCore2]] or [[OSLCCore3]] for Tracked Resource
         Sets, Base resources, and Change Logs.
@@ -271,7 +253,7 @@
         <h2>Tracked Resource Set</h2>
         <div
           title="Resource shape for a Tracked Resource Set"
-          data-include="./trs-shapes.ttl#TrackedResourceSet"
+          data-include="./trs-shapes.ttl#TrackedResourceSetShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -282,7 +264,7 @@
         <h2>Base</h2>
         <div
           title="Resource shape for the Base of a Tracked Resource Set"
-          data-include="./trs-shapes.ttl#Base"
+          data-include="./trs-shapes.ttl#BaseShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -293,7 +275,7 @@
         <h2>Change Log</h2>
         <div
           title="Resource shape for the Change Log of a Tracked Resource Set"
-          data-include="./trs-shapes.ttl#ChangeLog"
+          data-include="./trs-shapes.ttl#ChangeLogShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -304,7 +286,7 @@
         <h2>Creation Event</h2>
         <div
           title="Resource shape for a Creation Event"
-          data-include="./trs-shapes.ttl#CreationEvent"
+          data-include="./trs-shapes.ttl#CreationEventShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -315,7 +297,7 @@
         <h2>Modification Event</h2>
         <div
           title="Resource shape for a Modification Event"
-          data-include="./trs-shapes.ttl#ModificationEvent"
+          data-include="./trs-shapes.ttl#ModificationEventShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -326,7 +308,7 @@
         <h2>Deletion Event</h2>
         <div
           title="Resource shape for a Deletion Event"
-          data-include="./trs-shapes.ttl#DeletionEvent"
+          data-include="./trs-shapes.ttl#DeletionEventShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -343,28 +325,43 @@
       <p>
         A Change Log represents a series of changes to the corresponding Tracked Resource Set over some period of time.
         <span class="conformance"
-          >The Change Log MUST contain a sufficient sequence of Change Events such that processing the Base and the
-          Change Log gives a consistent and complete picture of the Tracked Resources at the end of that period of
-          time.</span
+          >For any given tracked resource, the Change Log MUST contain a sufficient sequence of Change Events such that
+          processing the Base and the Change Log gives a consistent and complete picture of the Tracked Resources at the
+          end of that period of time.</span
         >
         The Change Log does not necessarily identify <em>every</em> change of internal state before or during that
         period of time.
       </p>
       <p class="conformance">
-        A Server MAY batch up internal changes and add Change Events to the Change Log in a single transaction at some
+        A Server MAY batch up internal changes and add a batch of consolidated Change Events to the Change Log at some
         interval.
       </p>
       <p class="conformance">
-        A Server MUST eventually report a resource modification event if a GET on that resource would return a
-        semantically different response from previously.
+        A Server MUST eventually report a change event for a tracked resource if at time <em>t<sub>0</sub></em
+        >, a tracked resource is added to the tracked resource set, deleted from the tracked resource set, or the state
+        of the tracked resource set is modified, such that a GET on that resource would now return a semantically
+        different response from a GET request issued just before <em>t<sub>0</sub></em
+        >.
       </p>
       <p class="conformance">
         A Server MAY report a modification event even in cases where there would be no significant difference in
         response.
       </p>
       <p class="conformance">
+        When a new resource is added to a tracked resource set, a Server MAY issue a modification event rather than a
+        creation event.
+      </p>
+      <p class="conformance">
+        When an existing tracked resource is modified, a Server MAY issue a creation event rather than a modification
+        event.
+      </p>
+      <p class="conformance">
+        A Server MAY issue a deletion event for a resource that is not a member of the Tracked Resource Set, and MAY
+        issue multiple deletion events for a member of the Tracked Resource Set.
+      </p>
+      <p class="conformance">
         When a resource is modified two or more times in rapid succession, a Server MAY elide such modifications by
-        reporting only a single modification event in the Change Log.
+        reporting only a single creation or modification event in the Change Log.
       </p>
       <p class="conformance">
         When a resource is created and deleted in rapid succession, a Server MAY omit all Change Events for that
@@ -380,26 +377,14 @@
         <span class="conformance"
           >For each such inconsistency in the Base, the Server MUST at some point include a corrective Change Event in
           the Change Log more recent than the base cutoff event</span
-        >. The corrective Change Event corrects the picture for that Resource, allowing a client to compute the correct
-        set of Tracked Resources.
+        >, allowing a client to compute the correct set of Tracked Resources.
       </p>
-      <p class="note">
-        A corrective Change Event might not appear in the Change Log that was retrieved when the client dereferenced the
-        Tracked Resource Set URI; the client might only see a corrective Change Event when it processes the Change Log
-        resource obtained by dereferencing the Tracked Resource Set URI on later occasions.
-      </p>
-      <p class="conformance">
-        Similarly, a TRS Server MAY report unnecessary Change Events such as a creation event for a Resource that is
-        already a member of the Resource Set, or a deletion event for a Resource that is not a member of the Resource
-        Set.
-      </p>
-      <p class="note">Clients should ignore these redundant events.</p>
     </section>
     <section id="change-log-segments">
       <h2>Change Log Segmentation</h2>
       <p>
-        Often, the number of Change Events in the Change Log will grow to the point where it is not reasonable to
-        contain all the Change Events in a single HTTP response. In this case,
+        The number of Change Events in the Change Log can grow to a point where it is not reasonable to contain all the
+        Change Events in a single HTTP response. In this case,
         <span class="conformance"
           >the most recent Change Events MUST be included in the Tracked Resource Set itself</span
         >, and
@@ -417,24 +402,51 @@
         This allows a Client to discover the most recent Change Events, and retrieve successively older Change Log
         resources until it encounters a Change Event that has already been processed (on a previous check). The protocol
         does not attach significance to where a Server breaks the Change Log into separate parts, i.e., the number of
-        entries in a trs:ChangeLog is entirely up to the Server.
+        entries in a <code>trs:ChangeLog</code> is entirely up to the Server.
       </p>
     </section>
     <section id="paged-base">
-      <h2>Paged Base</h2>
+      <h2>Base Segmentation</h2>
       <p>
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Often, the number of member Resources in the Base will grow to the point where
-        it is not reasonable to contain all the Resources in a single HTTP response. In this case, the base member
-        Resources can be segmented into separate resources. There can be any number of such base member Resource
-        segments, each one containing a subset of all base member Resource segments
+        The number of Tracked Resources in the Base could be such that it is not reasonable to list them all in a single
+        HTTP response. In this case,
+        <span class="conformance"
+          >the Base MAY be segmented into separate resources; there can be any number of such Base segments, each one
+          listing a subset of all Tracked Resources</span
+        >.
       </p>
+      <p class="conformance">
+        Base segmentation MUST be accomplished using the mechanisms described in the "Resource Paging" section of
+        [[!OSLCCore3]].
+      </p>
+      <p class="conformance">A Server MAY include a Tracked Resource in more than one base segment.</p>
     </section>
     <section id="rebase">
-      <h2>Truncating Change Logs, and Rebasing</h2>
+      <h2>Updating Change Log segments, Truncating Change Logs, and Replacing the Base</h2>
       <p>
         <span class="conformance"
-          >A chain of Change Logs MAY continue all the way back to the inception of the Tracked Resource Set and contain
-          Change Events for every change made since then.</span
+          >A Server MAY add new change events at the start of the initial set of events returned inline with the Tracked
+          Resource itself</span
+        >
+        (in fact, this is the <b>only</b> way in which new change events are added to the Change Log).
+      </p>
+      <p class="conformance">
+        A Server MUST NOT move a change event from one segment of a segmented change log to an earlier segment in the
+        chain, one with more recent change events.
+      </p>
+      <p class="conformance">
+        A Server MAY move or copy a change event from one segment of a segmented change log to an later segment in the
+        chain, one with older change events.
+      </p>
+      <p>
+        <span class="conformance">A Server MAY remove a change event from the change log</span>, perhaps because that
+        change is now reflected in an updated base with a new cutoff event.
+      </p>
+
+      <p>
+        <span class="conformance"
+          >A chain of Change Log segments MAY continue all the way back to the inception of the Tracked Resource Set and
+          contain Change Events for every change made since then.</span
         >
         However, to avoid maintaining this ever growing list of Change Logs indefinitely,
         <span class="conformance">a Server MAY truncate the Change Log at a suitable point in the chain</span>. This can
@@ -453,14 +465,10 @@
         and all Change Events more recent than it. Thus the Server is only allowed to truncate Change Events older than
         the base cutoff event.
         <span class="conformance"
-          >When the Base has no base cutoff event (i.e., the Base enumerates the Resource Set at the start of time), the
-          Change Log MUST contain all Change Events back to the start of time; i.e., no truncation is allowed</span
+          >When the Base has no base cutoff event (i.e., the Base enumerates the Resource Set at the inception of the
+          Tracked Resource Set), the Change Log MUST contain all Change Events back to the inception of the Tracked
+          Resource Set; i.e., no truncation is allowed</span
         >.
-      </p>
-      <p class="note">
-        While servers preserve the cutoff event in the truncated change log, the same is not true of any earlier events
-        that a client might have already processed. For this reason, a client should not assume that it will find a
-        change event that it has previously processed: that change event might have been truncated.
       </p>
       <p>
         To allow truncation of long Change Logs,
@@ -480,98 +488,118 @@
           what the degree of overlap should be between a base and a corresponding change log. These are quality of
           implementation issues, and should be described in the server documentation.
         </li>
-        <li class="red">
-          TBD:
-          <em
-            >If paging of the base is supported (see other TBD section), then the server should take care to avoid
-            mismatching pairing of a new change log with the old base and vice versa.</em
-          >
+        <li class="conformance">
+          When producing multiple segments of a new Base, the TRS Server MUST NOT reuse URIs from segments of a previous
+          Base.
         </li>
       </ul>
+    </section>
+    <section id="timescales" class="informative">
+      <h2>Timescales and event frequency</h2>
+      <p>
+        In order to provide adequate response to client requests, a TRS server needs to allow those clients sufficient
+        time to read the base, the change log, and process the set of tracked resources. However, the data volumes and
+        timescales involved in TRS processing are likely to vary between servers for different applications. A server
+        representing Amazon transactions might have many events per second, while a server representing exhibits at a
+        museum might have a few events per month. The cost of processing a single event is also likely to vary between
+        applications; reading a new or modified resource with 5 RDF properties will take less time than reading one with
+        5,000 properties.
+      </p>
+      <p>
+        For these reasons, the TRS specification does not impose specific constraints over the length of time for which
+        a TRS base must remain readable, nor what the degree of overlap should be between a base and a corresponding
+        change log. A server implementing TRS must consider, and should document, the quality of service it will provide
+        in terms of the size of pages in the base or change log, how long base pages are kept, how long change events
+        are kept, and the minimum period for which change events behind the latest base cutoff are kept.
+      </p>
+    </section>
+    <section id="trs-examples" class="informative">
+      <h2>TRS Examples</h2>
+      <p>
+        In this example of a change log, time stamps are used to generate unique URNs for the Change Event URIs; other
+        ways of generating a unique URI are also possible.
+      </p>
+      <p>
+        Note that the actual time of change is not included in a Change Event. Only a sequence number, representing the
+        "sequence in time" of each change is provided.
+      </p>
+      <pre class="example">
+# Resource: http://cm1.example.com/trackedResourceSet
+@prefix trs: &lt;http://open-services.net/ns/core/trs#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;http://cm1.example.com/trackedResourceSet&gt;
+  a trs:TrackedResourceSet ;
+  trs:base &lt;http://cm1.example.com/baseResources/&gt; ;
+  trs:changeLog [
+    a trs:ChangeLog ;
+    trs:change &lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:33.000Z:103&gt; ;
+    trs:change &lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:32.000Z:102&gt; ;
+    trs:change &lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:31.000Z:101&gt; .
+  ] .
+
+&lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:33.000Z:103&gt;
+  a trs:Creation ;
+  trs:changed &lt;http://cm1.example.com/bugs/23&gt; ;
+  trs:order &quot;103&quot;^^xsd:integer .
+
+&lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:32.000Z:102&gt;
+  a trs:Modification ;
+  trs:changed &lt;http://cm1.example.com/bugs/22&gt; ;
+  trs:order &quot;102&quot;^^xsd:integer .
+
+&lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:31.000Z:101&gt;
+  a trs:Deletion ;
+  trs:changed &lt;http://cm1.example.com/bugs/21&gt; ;
+  trs:order &quot;101&quot;^^xsd:integer .
+  </pre
+      >
     </section>
     <section id="trs-patch">
       <h2>TRS Patch</h2>
       <p>
-        This section describes an extension to Change Events allowing them to carry detailed information about
-        modifications to resources with an RDF representation.
+        This section describes an mechanism allowing Change Events to carry detailed information about modifications to
+        resources with an inline RDF representation, avoiding the need for a client to issue a GET request for a new or
+        modified resource. This allows more efficient handling of frequent small changes to a large resources and
+        creation of new versions of existing resources. The patch format is a subset of [[RDFPatch]].
       </p>
-      <section id="patch-motivation">
-        <h3>Use cases for Patch Events - TBD - needs better wording and organization</h3>
-        <p>
-          For a Resource that changes frequently, a typical Client might otherwise need to retrieve the same Resource
-          over and over again. When the representation of the Resource is large and the differences between adjacent
-          representations can be described compactly, including additional information in the trs:Modification Change
-          Event can allow the Client to determine the Resource’s current representation and thereby avoid having to
-          retrieve the Resource.
-        </p>
-        <p>
-          Similiarly, in versioned worlds each change to a versioned resource could result in the creation of a new
-          Resource representing an immutable version of the resource. The typical Client retrieves each such Resource as
-          it is created. The state of the new Resource is often quite similar to the state of a Resource corresponding
-          to a previous version. When the state of one Resource is similar to that of another Resource and the
-          differences between the two can be described compactly, including additional information in the trs:Creation
-          Change Event can allow the Client to determine the new Resource’s resultant state from the potentially-known
-          state of a previously-retrieved Resource and thereby avoid having to retrieve the new Resource.
-        </p>
-      </section>
-      <section id="createdFrom">
-        <p>
-          <em>Editor - move this to the shape table</em>
-          The <code>trspatch:createdFrom</code> property, when present, identifies the antecedent resource. If omitted,
-          the antecedent resource is the resource referenced in the <code>trs:changed</code> property. The antecedent
-          resource is the one that supplies the “before” state.
-        </p>
-      </section>
-      <section id="rdfPatch">
-        <p>
-          <em>Editor - move this to the shape table</em>
-          The <code>trspatch:rdfPatch</code> property, when present, describes a patch applied to the antecedent
-          resource’s representation. The result of applying the patch describes the representation of the resource
-          referenced in the <code>trs:changed</code> property. The <code>trspatch:rdfPatch</code> property is used with
-          <code>trs:Modification</code> and <code>trs:Creation</code> Change Events; it is not meaningful for
-          <code>trs:Deletion</code> Change Events. The value of the <code>trspatch:rdfPatch</code> property is an LD
-          Patch. The <code>trspatch:rdfPatch</code> property is meaningful only for resources with RDF representations.
-        </p>
-      </section>
-      <section id="beforeEtag">
-        <p>
-          <em>Editor - move this to the shape table</em>
-          The <code>trspatch:beforeETag</code> property, when present, gives the initial HTTP entity tag of the
-          antecedent resource. This is the entity-tag value that would be returned in the HTTP ETag response header if
-          the antecedent resource is retrieved immediately before the change.
-        </p>
-      </section>
-      <section id="afterEtag">
-        <p>
-          <em>Editor - move this to the shape table</em>
-          The <code>trspatch:afterETag</code> property, when present, gives the final HTTP entity tag of the resource
-          referenced in the trs:changed property. For a <code>trs:Modification</code> (<code>trs:Creation</code>) Change
-          Event, this is the entity tag of the resource immediately after it was modified (created, respectively). This
-          is the entity-tag value that would be returned in the HTTP ETag response header if the resource is retrieved
-          immediately after the change.
-        </p>
-      </section>
-      <p>
-        Note that these properties are can be used with any resource having both an RDF representation and an entity
-        tag. This includes all Linked Data Platform RDF Source (LDP-RS) resources, which have both.
-      </p>
-      <p>
-        Note also that the <code>trspatch:beforeETag</code> and <code>trspatch:afterETag</code> properties are
-        meaningful for any kind of resource, not just ones with RDF representations.
+      <p class="conformance">
+        A patch event MUST have type <code>trs:Modification</code> or <code>trs:Creation</code> Change Events; it is not
+        meaningful for <code>trs:Deletion</code> Change Events.
       </p>
       <section id="trsPatch">
         <h2>TRS Patch</h2>
+        <p class="conformance">A TRS patch MUST consist of a sequence of directives delimited by a ‘.’</p>
+        <p class="conformance">Each directive of a patch MUST consist of four terms.</p>
+        <p class="conformance">Each term in a directive MAY be separated with white space, including newlines.</p>
+        <p class="conformance">The first term of a directive MUST be the character ‘A’ or the character 'D'.</p>
+        <p>
+          A directive with the first term being the character ‘A’ describes the addition of one RDF triple to the
+          resource’s RDF data graph. The subject, predicate, and object of the triple to be added are given in terms 2
+          to 4 of the directive.
+        </p>
+        <p>
+          A directive with the first term being the character ‘D’ describes the deletion of one RDF triple from the
+          resource’s RDF data graph. The subject, predicate, and object of the triple to be added are given in terms 2
+          to 4 of the directive.
+        </p>
         <p class="conformance">
-          TBD - needs rewording to be more normative. A TRS patch consists of a sequence of rows. A row with ‘A’ (or
-          ‘D’) in the first column describes the addition (deletion) of one RDF triple from the resource’s RDF data
-          graph. The subject, predicate, and object of the triples are described in columns 2-4 in the form of absolute
-          URI references enclosed between ‘&lt;’ and ‘&gt;’. Each row is delimited by a ‘.’ and MAY have white space
-          between the various terms in a row, including newlines.
+          The subject and predicate (terms 2 and 3) in a directive MUST be in the form of absolute URI references
+          enclosed between ‘&lt;’ and ‘&gt;’
+        </p>
+
+        <p class="conformance">
+          The object in a directive (term 4) MUST be either an absolute URI references enclosed between ‘&lt;’ and
+          ‘&gt;’, or a literal in [[!Turtle]] syntax.
+        </p>
+
+        <p class="conformance">
+          The order of patch directives is significant - changes MUST be applied in the order given.
         </p>
         <p class="informative">
           Example of a TRS patch that deletes one RDF triple (subject <code>http://example.com/bob</code>, predicate
           <code>http://xmlns.com/foaf/0.1/knows</code>, object <code>https://example.com/alice</code>) and adds another
-          an RDF triple (subject <code>https://example.com/fred</code>, predicate
+          RDF triple (subject <code>https://example.com/fred</code>, predicate
           <code>http://http://xmlns.com/foaf/0.1/member</code>, object <code>http://example.com/old-timers</code>):
         </p>
         <pre class="example">
@@ -580,71 +608,8 @@
          </pre
         >
       </section>
-      <section id="patchEx1" class="informative">
-        <h2>TRS Patch Example 1</h2>
-        <p>
-          Turtle representation for the resource <code>https://a.example.com/config/a1</code> in state 1. Assume that
-          when the resource is retrieved in this state, the entity tag <code>15687ds9gha6s7</code> is returned in the
-          ETag response header:
-        </p>
-        <pre class="example">
-  # The following is the representation of
-  # https://a.example.com/config/a1
-  # in the state with entity tag 15687ds9gha6s7
-  @prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
-  @prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
-  &lt;https://a.example.com/config/a1&gt;
-     a ldp:BasicContainer;
-     dcterms:title &quot;Component configuration A1&quot;;
-     ldp:member &lt;https://a.example.com/version/s/143&gt;;
-     ldp:member &lt;https://a.example.com/version/r/577&gt;;
-     ldp:member &lt;https://a.example.com/version/t/033&gt;.
-       </pre
-        >
-        <p>
-          Turtle representation for the same resource <code>https://a.example.com/config/a1</code> in state 2. Assume
-          that when the resource is retrieved in this state, the entity tag <code>285d4h2ffgddd9</code> is returned in
-          the ETag response header:
-        </p>
-        <pre class="example">
-  # The following is the representation of
-  # https://a.example.com/config/a1
-  # in the state with entity tag 285d4h2ffgddd9
-  @prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
-  @prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
-  &lt;https://a.example.com/config/a1&gt;
-     a ldp:BasicContainer;
-     dcterms:title &quot;Component configuration A1&quot;;
-     ldp:member &lt;https://a.example.com/version/s/143&gt;;
-     ldp:member &lt;https://a.example.com/version/r/578&gt;;
-     ldp:member &lt;https://a.example.com/version/t/033&gt;.
-       </pre
-        >
-        <p>
-          Turtle representation for a Change Event describing resource
-          <code>https://a.example.com/config/a1</code> changing from state 1 to state 2:
-        </p>
-        <pre class="example">
-  # The following is the representation of a change event
-  @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;.
-  @prefix trs: &lt;http://open-services.net/ns/core/trs#&gt;.
-  @prefix trspatch: &lt;http://open-services.net/ns/core/trspatch#&gt;.
-  &lt;urn:example:6e8bc430:a.example.com:2014-04-28T17:39:32.000Z:102&gt;
-     a trs:Modification;
-     trs:changed &lt;https://a.example.com/config/a1&gt;;
-     trs:order &quot;102&quot;^^xsd:integer;
-     trspatch:beforeEtag &quot;15687ds9gha6s7&quot;;
-     trspatch:afterEtag &quot;285d4h2ffgddd9&quot;;
-     trspatch:rdfPatch
-       &quot;&quot;&quot;
-        D &lt;https://a.example.com/config/a1&gt; &lt;http://www.w3.org/ns/ldp#member&gt; &lt;https://a.example.com/version/r/577&gt; .
-        A &lt;https://a.example.com/config/a1&gt; &lt;http://www.w3.org/ns/ldp#member&gt; &lt;https://a.example.com/version/r/578&gt; .
-       &quot;&quot;&quot;.
-       </pre
-        >
-      </section>
-      <section id="patchEx2" class="informative">
-        <h2>TRS Patch Example 2</h2>
+      <section id="patchExample" class="informative">
+        <h2>TRS Patch Example</h2>
         <p>
           Turtle representation for the resource <code>https://a.example.com/sw-movie/versions/1</code>. Assume that
           when the resource is retrieved in this state, the entity tag <code>783xhaty95</code> is returned in the ETag
@@ -702,56 +667,14 @@
        &quot;&quot;&quot;
         D &lt;https://a.example.com/sw-movie/versions/1&gt;  &lt;http://purl.org/dc/terms/isVersionOf&gt; &lt;https://a.example.com/sw-movie&gt; .
         A &lt;https://a.example.com/sw-movie/versions/2&gt;  &lt;http://purl.org/dc/terms/isVersionOf&gt; &lt;https://a.example.com/sw-movie&gt; .
-        D &lt;https://a.example.com/sw-movie&gt; &lt;http://purl.org/dc/terms/title&gt; \&quot;Star Wars\&quot;.
-        A &lt;https://a.example.com/sw-movie&gt; &lt;http://purl.org/dc/terms/title&gt; \&quot;Star Wars: Episode IV - A New Hope\&quot;.
+        D &lt;https://a.example.com/sw-movie&gt; &lt;http://purl.org/dc/terms/title&gt; &quot;Star Wars&quot;.
+        A &lt;https://a.example.com/sw-movie&gt; &lt;http://purl.org/dc/terms/title&gt; &quot;Star Wars: Episode IV - A New Hope&quot;.
        &quot;&quot;&quot;.
        </pre
         >
       </section>
     </section>
 
-    <section id="trs-examples" class="informative">
-      <h2>TRS Examples</h2>
-      <p>
-        In this example of a change log, time stamps are used to generate unique URNs for the Change Event URIs; other
-        ways of generating a unique URI are also possible.
-      </p>
-      <p>
-        Note that the actual time of change is not included in a Change Event. Only a sequence number, representing the
-        "sequence in time" of each change is provided.
-      </p>
-      <pre class="example">
-# Resource: http://cm1.example.com/trackedResourceSet
-@prefix trs: &lt;http://open-services.net/ns/core/trs#&gt; .
-@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
-
-&lt;http://cm1.example.com/trackedResourceSet&gt;
-  a trs:TrackedResourceSet ;
-  trs:base &lt;http://cm1.example.com/baseResources/&gt; ;
-  trs:changeLog [
-    a trs:ChangeLog ;
-    trs:change &lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:33.000Z:103&gt; ;
-    trs:change &lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:32.000Z:102&gt; ;
-    trs:change &lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:31.000Z:101&gt; .
-  ] .
-
-&lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:33.000Z:103&gt;
-  a trs:Creation ;
-  trs:changed &lt;http://cm1.example.com/bugs/23&gt; ;
-  trs:order &quot;103&quot;^^xsd:integer .
-
-&lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:32.000Z:102&gt;
-  a trs:Modification ;
-  trs:changed &lt;http://cm1.example.com/bugs/22&gt; ;
-  trs:order &quot;102&quot;^^xsd:integer .
-
-&lt;urn:example:6e8bc430:cm1.example.com:2010-10-27T17:39:31.000Z:101&gt;
-  a trs:Deletion ;
-  trs:changed &lt;http://cm1.example.com/bugs/21&gt; ;
-  trs:order &quot;101&quot;^^xsd:integer .
-  </pre
-      >
-    </section>
     <section id="vocabularies">
       <h2>RDF Vocabularies</h2>
       <section id="trs-vocabulary" class="vocabulary">
@@ -766,6 +689,14 @@
         ></div>
       </section>
     </section>
+    <section id="conformance">
+      <h2>Conformance</h2>
+      <p class="conformance">
+        This specification is based on [[!OSLCCore3]]. OSLC Tracked Resource Set Servers servers MUST be compliant with
+        the Core specification, MUST follow all the mandatory requirements in the normative sections of each part of
+        this specification, and SHOULD follow all the guidelines and recommendations in both these specifications.
+      </p>
+    </section>
     <section class="appendix informative">
       <h2>Acknowledgements</h2>
       <p>
@@ -773,7 +704,7 @@
         acknowledged:
       </p>
       <p><b>Participants</b>:</p>
-      <p style="margin-left: 40px;">
+      <p style="margin-left: 40px">
         James Amsden, IBM (Chair, Editor)<br />
         Frank Budinsky, IBM<br />
         Nick Crossley, IBM<br />
@@ -782,68 +713,6 @@
         Arthur Ryman, IBM<br />
         Steve Speicher, IBM
       </p>
-    </section>
-    <section class="appendix informative" id="history">
-      <h2>Change History</h2>
-      <table border="1" cellspacing="0" cellpadding="0">
-        <tr>
-          <td
-            width="103"
-            valign="top"
-            style="width: 77.4pt; border: solid windowtext 1pt; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Revision</b>
-          </td>
-          <td
-            width="96"
-            valign="top"
-            style="width: 1in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Date</b>
-          </td>
-          <td
-            width="144"
-            valign="top"
-            style="width: 1.5in; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Editor</b>
-          </td>
-          <td
-            width="295"
-            valign="top"
-            style="width: 221.4pt; border: solid windowtext 1pt; border-left: none; padding: 0in 5.4pt 0in 5.4pt;"
-          >
-            <b>Changes Made</b>
-          </td>
-        </tr>
-        <tr>
-          <td>04</td>
-          <td>7/29/2019</td>
-          <td>Nick Crossley</td>
-          <td>Removed all access control information, and yet more informative guidance.</td>
-        </tr>
-        <tr>
-          <td>03</td>
-          <td>10/26/2017</td>
-          <td>Nick Crossley</td>
-          <td>Moved to TRS subdirectory. Removed all client guidance and most other non-normative text.</td>
-        </tr>
-        <tr>
-          <td>02</td>
-          <td>03/17/2017</td>
-          <td>Ian Green</td>
-          <td>
-            removed references to indexed linked data provider/consumer. use client/server rather than
-            consumer/provider. added some comments to the editor for identified issues.
-          </td>
-        </tr>
-        <tr>
-          <td>01</td>
-          <td>07/15/2016</td>
-          <td>Jim Amsden</td>
-          <td>Editor's draft created.</td>
-        </tr>
-      </table>
     </section>
   </body>
 </html>
