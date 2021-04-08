@@ -94,6 +94,13 @@
         This document contains material for a TRS tutorial - it is fragmented, contains repetition, and is not yet ready
         for publication.
       </p>
+      <p class="ednote" title="TBD">
+        <strong
+          >Several current editors and project members feel many of the opinions expressed in the Guidance sections are
+          excessively strict or judgemental, and not appropriate for general guidance. This document needs considerable
+          editing and redaction before being published.</strong
+        >
+      </p>
     </section>
     <section id="toc"></section>
     <section id="sotd"></section>
@@ -115,9 +122,7 @@
         in terms of the size of pages in the base or change log, how long base pages are kept, how long change events
         are kept, and the minimum period for which change events behind the latest base cutoff are kept.
       </p>
-      <p class="note">
-        In the primer, include examples such as 7/14/21 days from current docs ...
-      </p>
+      <p class="note">In the primer, include examples such as 7/14/21 days from current docs ...</p>
     </section>
     <section id="patch-motivation" class="informative">
       <h2>Motivation and Use Cases for Patch Events</h2>
@@ -237,9 +242,6 @@
         </p>
         <ul>
           <li>
-            <p class="ednote" title="TBD">
-              <strong>Editor: These seem unwarranted reactions to a percieved usability problem. (img)</strong>
-            </p>
             A TRS Server should restrict itself to a small number of Tracked Resource Sets. When configuring a TRS
             Client, an administrator will typically have to select Tracked Resource Sets one at a time.
           </li>
@@ -296,24 +298,28 @@
       </section>
       <section id="consumerGuidance" class="informative">
         <h2>General Guidance for TRS Clients</h2>
-        <p>
-          A TRS Client does is akin to what a Web crawler does, and most of the same considerations apply.
-        </p>
+        <p>A TRS Client does is akin to what a Web crawler does, and most of the same considerations apply.</p>
         <p>
           A Client retrieves the TRS, Change Logs, and Base Resources, as well as some or all the Tracked Resources
-          contained in the TRS. Except for the TRS Resource URI itself, the Client is blindly retrieving a succession of
-          URIs that the Server includes in the Tracked Resource Set. An insufficiently wary Client can come to grief
-          when it interacts with an imperfect or untrustworthy Server.
+          contained in the TRS.
         </p>
         <p>
-          Most of the risks are always present: networks connecting Client to Server may experience delays and outages;
-          and Server implementations may be imperfect (bugs in code, database corruptions). Moreover, when the Server is
-          untrusted - when there is a concern the Server could attempt something nefarious - the Client needs to take
-          extra steps to prevent itself from being misused or abused.
+          TRS Clients are responsible for knowing what change events they have already processed in the Change Log, and
+          should only process new change events.
         </p>
         <p>
-          Here are risks and general guidance for Clients:
+          While servers preserve the cutoff event in the truncated change log, the same is not true of any earlier
+          events that a client might have already processed. For this reason, a client should not assume that it will
+          find a change event that it has previously processed: that change event might have been truncated.
         </p>
+        <p>
+          If an insufficiently wary client reads the tracked resources themselves, some risks are present: networks
+          connecting Client to Server may experience delays and outages; and Server implementations may be imperfect
+          (bugs in code, database corruptions). Moreover, when the Server is untrusted - when there is a concern the
+          Server could attempt something nefarious - the Client needs to take extra steps to prevent itself from being
+          misused or abused.
+        </p>
+        <p>Here are risks and general guidance for Clients:</p>
         <ul>
           <li>
             The size and rate of change of a Server's resource set reflects the amount of linked data that a Server has
@@ -388,18 +394,14 @@
             Contexts used in any of its Tracked Resources, unless there are reasons to do otherwise.
           </li>
         </ul>
-        <p>
-          The following recipes suggest some of the designs that are possible.
-        </p>
+        <p>The following recipes suggest some of the designs that are possible.</p>
         <p>
           <b>Recipe 1</b>: Your tool has top-level objects called workspaces. New workspaces are created infrequently,
           and only by administrators. Each linked data resource is associated with a single workspace. Teams of users
           work in the context of a single workspace. All the resources in a workspace have the same security
           classification.
         </p>
-        <p>
-          Your tool should treat each workspace as a separate Tracked Resource Set, and not use Access Contexts.
-        </p>
+        <p>Your tool should treat each workspace as a separate Tracked Resource Set, and not use Access Contexts.</p>
         <p>
           An administrator can always control access to the linked data in a Client on an TRS by TRS basis, and grant
           users access to linked data from some workspaces but not others.
@@ -440,15 +442,11 @@
           custom Access Contexts. Your tool should let users (or possibly just administrators) associate resources with
           these Access Contexts.
         </p>
-        <p>
-          An administrator can control access to the linked data in a Client based on these custom Access Contexts.
-        </p>
+        <p>An administrator can control access to the linked data in a Client based on these custom Access Contexts.</p>
       </section>
       <section id="patchGuidance" class="informative">
         <h2>TRS Patch Guidance</h2>
-        <p>
-          The following sections provide general guidlines on using the TRS Patch capability.
-        </p>
+        <p>The following sections provide general guidlines on using the TRS Patch capability.</p>
         <section id="patchServerGuidance" class="informative">
           <h3>TRS Patch Guidance for Servers</h3>
           <p>
