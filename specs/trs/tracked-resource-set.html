@@ -155,10 +155,6 @@
           </dd>
           <dt><dfn>TRS Server</dfn></dt>
           <dd>An application or application component that provides one or more Tracked Resource Sets.</dd>
-          <dt><dfn>Access Context</dfn></dt>
-          <dd>A grouping of resources with similar security requirements.</dd>
-          <dt><dfn>Access Context List</dfn></dt>
-          <dd>A resource describing a list of Access Contexts.</dd>
         </dl>
       </section>
       <section id="conventions" class="informative">
@@ -198,7 +194,7 @@
       <p>
         The Change Log portion can contain earlier Change Event entries that would be accounted for by the Base portion.
         A “cutoff” property of the Base identifies the point in the Change Log at which processing of Change Events can
-        be cut off because older changes are already covered by the Base portion. TRS Clients use the Base to establish
+        be cut off because older changes are already included in the Base. TRS Clients use the Base to establish
         the resources to track, and the Change Log to address changes to those resources.
       </p>
     </section>
@@ -206,11 +202,8 @@
       <h2>Discovery</h2>
       <p class="note" title="Discovery is a convenience">
         Discoverability is a convenience; an administrator can configure a Client with a particular Tracked Resource Set
-        knowing just the URIs of the Server's Tracked Resource Set and designated Access Context List resource. An
-        administrator can retrieve the Access Context List resource to discover the titles and URIs of the Access
-        Contexts being used with that Server. Documentation for an TRS Server can describe its Tracked Resource Sets,
-        including the URI of each of the Server's Tracked Resource Set resources and designated Access Context List
-        resources.
+        knowing just the URI of the Server's Tracked Resource Set. Documentation for an TRS Server can describe its Tracked Resource Sets,
+        including the URI of each of the Server's Tracked Resource Set resources.
       </p>
       <p class="conformance">
         A Server MAY provide multiple Tracked Resource Sets, and MAY make its Tracked Resource Sets discoverable.
@@ -228,7 +221,8 @@
 &lt;&gt; trs:trackedResourceSet &lt;https://a.example.com/trs1&gt; .
     </pre
       >
-      <p>Where such RDF statements might be found is outside the scope of this specification.</p>
+      <p>Where such RDF statements might be found is outside the scope of this specification, but one likely place is a root services document;
+      see [[OSLCCore3]], section "Well-known URI Bootstrapping".</p>
     </section>
     <section id="general-behavior">
       <h2>General Behavior</h2>
@@ -476,7 +470,7 @@
           >a TRS Server MAY calculate a new base set at any time, with a new cutoff event in the Change Log</span
         >. When doing this,
         <span class="conformance"
-          >TRS Servers SHOULD take care to handle clients that are currently processing the older Base and Change
+          >In order to handle clients that are currently processing the older Base and Change
           Log</span
         >:
       </p>
