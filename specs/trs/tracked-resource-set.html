@@ -181,36 +181,36 @@
       <p>
         A TRS Server maintains one or more Tracked Resource Sets. The TRS Server decides which particular resources are
         in a particular Tracked Resource Set at any moment; both the Tracked Resource Sets and the linked data contents
-        of each Tracked Resource can vary over time. An HTTP GET request sent to the Tracked Resource Set URI returns a
-        representation of the state of the Tracked Resource Set characterized in terms of a Base and a Change Log. The
-        Base is a Linked Data Platform [[!LDP]] Container providing a point-in-time enumeration of the Tracked Resource
-        members of the Tracked Resource Set. The Change Log provides a (possibly empty) time-ordered series of
-        adjustments describing changes to the Tracked Resources. When the Base is empty, the Change Log describes a
+        of each Tracked Resource can vary over time. A Tracked Resource Set is represented in terms of a Base and a
+        Change Log. The Base is a Linked Data Platform [[!LDP]] Container providing a point-in-time enumeration of the
+        Tracked Resource members of the Tracked Resource Set. The Change Log provides a (possibly empty) ordered series
+        of adjustments describing changes to the Tracked Resources. When the Base is empty, the Change Log describes a
         history of how the Tracked Resource Set has grown and evolved since its inception. A TRS Server can periodically
         update the Base of a TRS and truncate the Change Log to avoid excessively large Change Logs. Clients can read
-        the Base and poll the Change Log to derive and maintain an up to date picture of the state of all the Tracked
+        the Base and poll the Change Log to derive and maintain an up-to-date picture of the state of all the Tracked
         Resources in a Tracked Resource Set.
       </p>
       <p>
-        The Change Log portion can contain earlier Change Event entries that would be accounted for by the Base portion.
-        A “cutoff” property of the Base identifies the point in the Change Log at which processing of Change Events can
-        be cut off because older changes are already included in the Base. TRS Clients use the Base to establish
-        the resources to track, and the Change Log to address changes to those resources.
+        The Change Log can contain earlier Change Event entries that would be accounted for by the Base portion. A
+        “cutoff” property of the Base identifies the point in the Change Log at which processing of Change Events can be
+        cut off because older changes are already included in the Base. TRS Clients use the Base to establish an initial
+        set of resources to track, and the Change Log to address changes to that set, and changes to the those
+        resources.
       </p>
     </section>
     <section id="discovery">
       <h2>Discovery</h2>
       <p class="note" title="Discovery is a convenience">
         Discoverability is a convenience; an administrator can configure a Client with a particular Tracked Resource Set
-        knowing just the URI of the Server's Tracked Resource Set. Documentation for an TRS Server can describe its Tracked Resource Sets,
-        including the URI of each of the Server's Tracked Resource Set resources.
+        knowing just the URI of the Server's Tracked Resource Set. Documentation for an TRS Server can describe its
+        Tracked Resource Sets, including the URI of each of the Server's Tracked Resource Set resources.
       </p>
       <p class="conformance">
         A Server MAY provide multiple Tracked Resource Sets, and MAY make its Tracked Resource Sets discoverable.
       </p>
-      <p>
-        The RDF <code>trs:trackedResourceSet</code> property can be used to declare the whereabouts of a Tracked
-        Resource Set resource. The Tracked Resource Set resource is the object.
+      <p class="conformance">
+        A <code>trs:trackedResourceSet</code> property MAY be used to declare the whereabouts of a Tracked Resource Set
+        resource; the value of such a property MUST be the URI of a Tracked Resource Set.
       </p>
       <p class="informative">
         This allows the existence and location of a Tracked Resource Set resource to be declared with an RDF statement
@@ -221,8 +221,10 @@
 &lt;&gt; trs:trackedResourceSet &lt;https://a.example.com/trs1&gt; .
     </pre
       >
-      <p>Where such RDF statements might be found is outside the scope of this specification, but one likely place is a root services document;
-      see [[OSLCCore3]], section "Well-known URI Bootstrapping".</p>
+      <p>
+        Where such RDF statements might be found is outside the scope of this specification, but one likely place is a
+        root services document; see [[OSLCCore3]], section "Well-known URI Bootstrapping".
+      </p>
     </section>
     <section id="general-behavior">
       <h2>General Behavior</h2>
@@ -310,6 +312,22 @@
         ></div>
       </section>
     </section>
+    <section id="cutoff-event">
+      <h2>Cutoff Event</h2>
+      <p class="conformance">
+        The cutoff event in the Base marks the point in the Change Log at which all earlier changes have already been
+        accounted for in the Base. If the cutoff property is missing, or if it has the value <code>rdf:nil</code>, the
+        Base enumerates the (possibly empty) Resource Set at the inception of the Tracked Resource Set, and the Change
+        Log MUST list all changes since that inception.
+      </p>
+      <p class="conformance">
+        Otherwise, the identified Change Event MUST be in the Change Log - that is, there MUST NOT be a gap between the
+        Base portion and the Change Log portion of a Tracked Resource Set representation.
+      </p>
+      <p class="conformance">
+        Conversely, the Change Log MAY contain earlier Change Event entries that have been accounted for in the Base.
+      </p>
+    </section>
     <section id="change-logs">
       <h2>Change Logs and Change Events</h2>
       <p class="conformance">
@@ -323,6 +341,13 @@
           processing the Base and the Change Log gives a consistent and complete picture of the Tracked Resources at the
           end of that period of time.</span
         >
+      </p>
+
+      <p>
+        The ordering of Change Log events is meaningful for changes to any specific resource, but there is no meaning to
+        the ordering of change log events for different resources.
+      </p>
+      <p>
         The Change Log does not necessarily identify <em>every</em> change of internal state before or during that
         period of time.
       </p>
@@ -332,8 +357,8 @@
       </p>
       <p class="conformance">
         A Server MUST eventually report a change event for a tracked resource if at time <em>t<sub>0</sub></em
-        >, a tracked resource is added to the tracked resource set, deleted from the tracked resource set, or the state
-        of the tracked resource set is modified, such that a GET on that resource would now return a semantically
+        >, a tracked resource is added to the Tracked Resource Set, deleted from the Tracked Resource Set, or the state
+        of the Tracked Resource Set is modified, such that a GET on that resource would now return a semantically
         different response from a GET request issued just before <em>t<sub>0</sub></em
         >.
       </p>
@@ -350,8 +375,8 @@
         event.
       </p>
       <p class="conformance">
-        A Server MAY issue a deletion event for a resource that is not a member of the Tracked Resource Set, and MAY
-        issue multiple deletion events for a member of the Tracked Resource Set.
+        A Server MAY issue a deletion event for a resource that is not a member of the Tracked Resource Set. This
+        includes issuing multiple deletion events for (what was) a member of the Tracked Resource Set.
       </p>
       <p class="conformance">
         When a resource is modified two or more times in rapid succession, a Server MAY elide such modifications by
@@ -373,6 +398,12 @@
           the Change Log more recent than the base cutoff event</span
         >, allowing a client to compute the correct set of Tracked Resources.
       </p>
+      <p class="informative">
+        From the above sections, one can infer that the consistency and completeness of the change log with respect to
+        the date on a TRS Server is only possible after reading the entire Base and Change Log. A client cannot skip the
+        initial reading of the base, nor partially consume a Change Log, and then expect consistency with some earlier
+        point-in-time of the server’s data.
+      </p>
     </section>
     <section id="change-log-segments">
       <h2>Change Log Segmentation</h2>
@@ -385,7 +416,11 @@
         <span class="conformance"
           >earlier events MAY be segmented into separate Change Log resources referenced from the
           <code>trs:previous</code> property</span
-        >. There can be any number of such Change Log segments, each one containing earlier and earlier events.
+        >. There can be any number of such Change Log segments, each one containing successively lower ordered events.
+      </p>
+      <p class="conformance">
+        The events in a Change Log segment MUST all have order numbers higher than any events in all subsequent Change
+        Log segments.
       </p>
       <p class="conformance">
         Just as the most recent Change Events MUST be included in the HTTP response for the Change Log in the Tracked
@@ -429,8 +464,12 @@
         chain, one with more recent change events.
       </p>
       <p class="conformance">
-        A Server MAY move or copy a change event from one segment of a segmented change log to an later segment in the
-        chain, one with older change events.
+        A Server MAY move a change event from one segment of a segmented change log to an later segment in the chain,
+        one with older change events.
+      </p>
+      <p class="informative, note">
+        The above implies that a client could see the same change event more than once. Since each change event has a
+        unique URI, clients can detect such repetition, and ignore duplicate events.
       </p>
       <p>
         <span class="conformance">A Server MAY remove a change event from the change log</span>, perhaps because that
@@ -470,17 +509,13 @@
           >a TRS Server MAY calculate a new base set at any time, with a new cutoff event in the Change Log</span
         >. When doing this,
         <span class="conformance"
-          >In order to handle clients that are currently processing the older Base and Change
-          Log</span
+          >In order to handle clients that are currently processing the older Base and Change Log</span
         >:
       </p>
       <ul>
         <li class="conformance">
           When calculating a new Base, the TRS Server SHOULD retain Change Events before the new cutoff event that a
-          reasonable client might still be processing. This specification does not impose specific constraints over the
-          length of time for which a TRS base must remain readable, the size of pages in the base or change log, nor
-          what the degree of overlap should be between a base and a corresponding change log. These are quality of
-          implementation issues, and should be described in the server documentation.
+          reasonable client might still be processing.
         </li>
         <li class="conformance">
           When producing multiple segments of a new Base, the TRS Server MUST NOT reuse URIs from segments of a previous
@@ -501,10 +536,10 @@
       </p>
       <p>
         For these reasons, the TRS specification does not impose specific constraints over the length of time for which
-        a TRS base must remain readable, nor what the degree of overlap should be between a base and a corresponding
-        change log. A server implementing TRS must consider, and should document, the quality of service it will provide
-        in terms of the size of pages in the base or change log, how long base pages are kept, how long change events
-        are kept, and the minimum period for which change events behind the latest base cutoff are kept.
+        a TRS base needs to remain readable, nor what the degree of overlap should be between a base and a corresponding
+        change log. A server implementing TRS needs to consider, and should document, the quality of service it will
+        provide in terms of the size of pages in the base or change log, how long base pages are kept, how long change
+        events are kept, and the minimum period for which change events behind the latest base cutoff are kept.
       </p>
     </section>
     <section id="trs-examples" class="informative">
@@ -698,7 +733,7 @@
         acknowledged:
       </p>
       <p><b>Participants</b>:</p>
-      <p style="margin-left: 40px">
+      <p style="margin-left: 40px;">
         James Amsden, IBM (Chair, Editor)<br />
         Frank Budinsky, IBM<br />
         Nick Crossley, IBM<br />
