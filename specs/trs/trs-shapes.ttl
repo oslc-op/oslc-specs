@@ -66,7 +66,7 @@
     oslc:valueType          oslc:AnyResource ;
     oslc:range              trs:ChangeLog ;
     oslc:readOnly           true ;
-    dcterms:description     """A Change Log providing a time series of incremental adjustments to the Tracked Resource Set.
+    dcterms:description     """A Change Log providing an ordered series of incremental adjustments to the Tracked Resource Set.
 {{The Tracked Resource Set representation MUST contain the triples for the referenced Change Log
 (i.e., via a blank node, or an inline named resource),
 including the Change Events for the first page of changes}}."""^^rdf:XMLLiteral .
@@ -90,7 +90,7 @@ including the Change Events for the first page of changes}}."""^^rdf:XMLLiteral 
     oslc:representation     oslc:Reference ;
     oslc:valueType          oslc:Resource ;
     oslc:range              rdfs:Class ;
-    dcterms:description     """A resource type URI. Clients can infer a resource type of <code>ldp:DirectContainer</code>."""^^rdf:XMLLiteral .
+    dcterms:description     """A resource type URI. Clients can infer a resource type of <code>trs:Base</code>, or its superclass <code>ldp:DirectContainer</code>."""^^rdf:XMLLiteral .
 
 :cutoffEvent
     a                       oslc:Property ;
@@ -101,10 +101,7 @@ including the Change Events for the first page of changes}}."""^^rdf:XMLLiteral 
     oslc:valueType          oslc:AnyResource ;
     oslc:range              trs:Creation, trs:Modification, trs:Deletion ;
     oslc:readOnly           true ;
-    dcterms:description     """The URI of an entry in the Change Log after which changes might not be in the Base of the Tracked Resource Set.
-If this property is missing, or if it has the value <code>rdf:nil</code>, the Base enumerates the (possibly empty) Resource Set at the inception of the Tracked Resource Set, and the Change Log lists all changes since that inception.
-{{Otherwise, the identified Change Event MUST be in the Change Log}} - that is, {{there MUST NOT be a gap between the Base portion and the Change Log portion of a Tracked Resource Set representation}}.
-Conversely, the Change Log may contain earlier Change Event entries that would be accounted for by the Base. This <code>cutoffEvent</code> property of the Base identifies the point in the Change Log at which processing of Change Events can be cut off because older changes are already covered by the Base portion."""^^rdf:XMLLiteral .
+    dcterms:description     """The URI of an entry in the Change Log at and after which all changes have already been included in the Base."""^^rdf:XMLLiteral .
 
 :member
     a                       oslc:Property ;
@@ -148,8 +145,8 @@ but the actual predicate is indicated by <code>ldp:hasMemberRelation</code>."""^
     oslc:readOnly           true ;
     dcterms:description     """An inline resource describing a change to a Tracked Resource.
 {{Change Events MUST have URIs (i.e., they cannot be blank nodes) to allow clients to recognize entries they have seen before.}}
-{{The URI is only used to identify an event (i.e., it need not be HTTP GETable) and therefore MAY be a URN.}}
-{{The URI of a Change Event MUST be guaranteed unique, even in the wake of a Server rollback where order numbers get reused}}."""^^rdf:XMLLiteral .
+{{The URI is used to identify an event; it need not be dereferenceable, and MAY be a URN.}}
+{{The URI of a Change Event MUST be guaranteed unique, even if order numbers get reused in the wake of a Server rollback}}."""^^rdf:XMLLiteral .
 
 :previous
     a                       oslc:Property ;
@@ -254,5 +251,6 @@ Clients can use this as the expected <code>trspatch:beforeETag</code> value in a
     oslc:occurs             oslc:Zero-or-one;
     oslc:valueType          xsd:string ;
     oslc:readOnly           true ;
-    dcterms:description     """This property, when present, describes a patch to be applied to the antecedent resource’s RDF representation. A patch is meaningful only for resources with RDF representations. The result of applying the patch describes the representation of the resource referenced in the <code>trs:changed</code> property immediately after this change event.
-This property is used with <code>trs:Modification</code> and <code>trs:Creation Change Events</code>; it is not meaningful for <code>trs:Deletion</code> Change Events. The format of the patch property is defined at XXX."""^^rdf:XMLLiteral .
+    dcterms:description     """This property, when present, describes a patch to be applied to the antecedent resource’s RDF representation. A patch cannot describe a change to the non-RDF contents of a resource.
+The result of applying the patch describes the representation of the resource referenced in the <code>trs:changed</code> property immediately after this change event.
+This property is used with <code>trs:Modification</code> and <code>trs:Creation Change Events</code>; it is not meaningful for <code>trs:Deletion</code> Change Events. The format of the patch property is defined at <a href="#trs-patch">TRS Patch</a>."""^^rdf:XMLLiteral .
