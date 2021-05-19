@@ -87,7 +87,7 @@
         shortName: "core-vocab",
         subtitle: "Core Vocabulary",
         citationLabel: "OSLC-CoreVocab-3.0",
-        noConformanceTable: true,
+        // noConformanceTable: true,
         namespaces: [
           {
             href: "http://open-services.net/ns/core#",
@@ -100,6 +100,12 @@
             mailto: "jamsden@us.ibm.com",
             company: "IBM",
             companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Andrii Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se/",
           },
         ],
         license: "cc-by-4",
@@ -166,9 +172,7 @@
         <dl>
           <dt class="loc-heading"><dfn>Archived Resource</dfn></dt>
           <dd>
-            A resource in which an explicit action has been performed to mark the resource as no longer active and may
-            be removed from typical user interactions. As a consequence, an archived resource should be considered
-            immutable.
+            A resource in which an explicit action has been performed to mark the resource as no longer active.
           </dd>
         </dl>
       </section>
@@ -195,46 +199,75 @@
         various domain specifications to redundantly define similar terms. The follow paragraphs describe the kinds of
         common terms defined by OSLC core in order to achieve the stated intent.
       </p>
+    </section>
+    <section id="select-terms" class="normative">
+      <h2>Consideration for select vocabulary terms</h2>
+      <section>
+        <h3>Archived resources</h3>
+        <p>
+          <a title="">Archived Resource</a>s are typically found in large systems in which an immutable copy of the
+          state of a resource at a given time is captured. The purpose may vary in that it could be simply a way to
+          facilitate access to a backup or snapshot of a resource at a particular point in time. Another use may be to
+          indicate that a resource has been deleted, but is saved by the system for historical or legal reasons. Having
+          a consistent way to indicate that a resource, or a set of them, has been archived helps when defining certain
+          views of the resources or queries.
+          <br />
+          <span class="conformance"
+            >Archived Resources MAY be identified by having a property <code>oslc:archived</code>, with value
+            <code>true</code>.</span
+          >
+          <br />
+          <span class="conformance">Archived Resources MAY be removed from typical user interactions.</span>
+          <br />
+          <span class="conformance">Archived Resources SHOULD be considered immutable.</span>
+          <br />
+        </p>
+      </section>
 
-      <p>
-        <a title="">Archived Resource</a>s are typically found in large systems in which an immutable copy of the state
-        of a resource at a given time is captured. The purpose may vary in that it could be simply a way to facilitate
-        access to a backup or snapshot of a resource at a particular point in time. Another use may be to indicate that
-        a resource has been deleted, but is saved by the system for historical or legal reasons. Having a consistent way
-        to indicate that a resource, or a set of them, has been archived helps when defining certain views of the
-        resources or queries. Archived Resources may be identified by having a property <code>oslc:archived</code>, with
-        value <code>true</code>.
-      </p>
+      <section>
+        <h3>Comments</h3>
+        <p>
+          Many different kinds of applications have a way to provide comments or notes related to a given resource.
+          These take the form of a discussion, with a sequence of comments. OSLC Core provide a common way for
+          applications to easily add to a comment to a discussion thread or navigate a discussion thread.
+        </p>
+      </section>
 
-      <p>
-        Many different kinds of applications have a way to provide comments or notes related to a given resource. These
-        take the form of a discussion, with a sequence of comments. OSLC Core provide a common way for applications to
-        easily add to a comment to a discussion thread or navigate a discussion thread.
-      </p>
+      <section>
+        <h3>Errors</h3>
 
-      <p>
-        Error responses from HTTP request often take the form of HTML pages intended for a human to read, even though
-        these requests are often initiated from applications that don't have a human actively monitoring it. OSLC Core
-        defines a consistent way to request error responses of a certain format, and a prescribed interaction model that
-        helps clients better handle errors automatically.
-      </p>
+        <p>
+          Error responses from HTTP request often take the form of HTML pages intended for a human to read, even though
+          these requests are often initiated from applications that don't have a human actively monitoring it. OSLC Core
+          defines a consistent way to request error responses of a certain format, and a prescribed interaction model
+          that helps clients better handle errors automatically.
+        </p>
+      </section>
 
-      <p>
-        Consider a user interface for a query builder that allows users to build queries about test cases. It is natural
-        for the query builder to present the user with a list of the properties that apply to test cases that could be
-        used in the query. Suppose the user wants to build a query that returns all the requirements that are validated
-        by a test case. The query builder should describe the available properties from the point of view of the test
-        case. This implies that the query builder should describe the inverse relation asserted by any triple that has
-        the test case as an object. In this example, the query builder should describe assertions of the form
-        {requirement <code>oslc_rm:validatedBy</code> test case} as {test case <code>validates</code> requirement}.
-      </p>
+      <section>
+        <h3>Impact of resource changes on links</h3>
 
-      <p>
-        Some RDF properties express relations or links between subject and object artifacts. If a change in state of
-        subject and/or object of a triple may result in the assertion becoming invalid, the link may be seen to
-        represent a dependency. OSLC Core provides property <code>oslc:impactType</code> as a means of defining the
-        dependency represented by an RDF property.
-      </p>
+        <p>
+          Some RDF properties express relations or links between subject and object artifacts. If a change in state of
+          subject and/or object of a triple may result in the assertion becoming invalid, the link may be seen to
+          represent a dependency. OSLC Core provides property <code>oslc:impactType</code> as a means of defining the
+          dependency represented by an RDF property.
+        </p>
+      </section>
+
+      <section>
+        <h3>Inverse properties</h3>
+
+        <p>
+          Consider a user interface for a query builder that allows users to build queries about test cases. It is
+          natural for the query builder to present the user with a list of the properties that apply to test cases that
+          could be used in the query. Suppose the user wants to build a query that returns all the requirements that are
+          validated by a test case. The query builder should describe the available properties from the point of view of
+          the test case. This implies that the query builder should describe the inverse relation asserted by any triple
+          that has the test case as an object. In this example, the query builder should describe assertions of the form
+          {requirement <code>oslc_rm:validatedBy</code> test case} as {test case <code>validates</code> requirement}.
+        </p>
+      </section>
     </section>
 
     <section id="enumerations" class="informative">
