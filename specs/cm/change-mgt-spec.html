@@ -11,12 +11,12 @@
   management of product change requests, activities, and resources."
     />
 
-    <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.22/builds/respec-oasis-common.min.js"
+    <!-- <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.25/builds/respec-oasis-common.min.js"
       async
       class="remove"
-    ></script>
-    <!-- <script src='http://127.0.0.1:9000/respec-oasis-common.js' async class='remove'></script> -->
+    ></script> -->
+    <script src="http://127.0.0.1:9000/respec-oasis-common.js" async class="remove"></script>
     <script type="text/javascript" class="remove">
       var filePath = "/change-mgt-spec.html";
       var wdBase = "https://oslc-op.github.io/oslc-specs/specs/cm";
@@ -27,7 +27,11 @@
 
       var thisBase = wdBase;
       if (specStatus != "WD") {
-        thisBase = oasisBase + "/" + specStatus.toLowerCase() + revision;
+        if (specStatus != "OS") {
+          thisBase = oasisBase + "/" + specStatus.toLowerCase() + revision;
+        } else {
+          thisBase = oasisBase + "/" + specStatus.toLowerCase();
+        }
       }
 
       var respecConfig = {
@@ -38,7 +42,7 @@
         previousMaturity: "PS",
 
         thisVersion: thisBase + filePath,
-        prevVersion: "https://docs.oasis-open-projects.org/oslc-op/cm/v3.0/ps01/change-mgt-spec.html",
+        prevVersion: "https://docs.oasis-open-projects.org/oslc-op/cm/v3.0/ps01/" + filePath,
         latestVersion: oasisBase + filePath,
         latestSpecVersion: "https://open-services.net/spec/cm/latest",
         edDraftURI: "https://open-services.net/spec/cm/latest-draft",
