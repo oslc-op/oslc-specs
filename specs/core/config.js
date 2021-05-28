@@ -1,7 +1,7 @@
 var specConfig = {
-  status: "WD",
+  status: "PS",
   revision: "02",
-  publishDate: null,
+  publishDate: "2021-04-23",
   previousPublishDate: "2020-09-17",
   previousMaturity: "PS",
 };
