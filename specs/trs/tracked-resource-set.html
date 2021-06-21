@@ -364,24 +364,19 @@
         >.
       </p>
       <p class="conformance">
-        A Server MAY report a modification event even in cases where there would be no significant difference in
-        response.
-      </p>
-      <p class="conformance">
-        When a new resource is added to a tracked resource set, a Server MAY issue a modification event rather than a
-        creation event.
-      </p>
-      <p class="conformance">
-        When an existing tracked resource is modified, a Server MAY issue a creation event rather than a modification
-        event.
-      </p>
-      <p class="conformance">
-        A Server MAY issue a deletion event for a resource that is not a member of the Tracked Resource Set. This
-        includes issuing multiple deletion events for (what was) a member of the Tracked Resource Set.
-      </p>
-      <p class="conformance">
         When a resource is modified two or more times in rapid succession, a Server MAY elide such modifications by
         reporting only a single creation or modification event in the Change Log.
+      </p>
+      <p>
+        <span class="conformance">A Server MAY report a modification event even in cases where there would be no significant difference in
+        response.</span>
+        This could happen because a resource was modified and then that change was reverted in a second modification; the first modification could be elided in the change log.
+      </p>
+      <p>
+        There is no difference between change events with RDF type <code>trs:Creation</code> and <code>trs:Modification</code>;
+        the two types exist for historical reasons.
+        <span class="conformance">When a new resource is modified or added to a tracked resource set, a Server MAY issue a modification event or a
+        creation event</span>; as described earlier, <span class="conformance">the server MUST eventually issue at least one such event</span>.
       </p>
       <p class="conformance">
         When a resource is created and deleted in rapid succession, a Server MAY omit all Change Events for that
@@ -399,6 +394,12 @@
           the Change Log more recent than the base cutoff event</span
         >, allowing a client to compute the correct set of Tracked Resources.
       </p>
+      <p class="conformance">
+        A Server MAY issue a deletion event for a resource that is not a member of the Tracked Resource Set. This
+        includes issuing multiple deletion events for (what was) a member of the Tracked Resource Set. This might happen
+        when the base is being recalculated, and the change log slightly overlaps the base, or as part of the corrective
+        set of change events described in the previous paragraph.
+      </p>
       <p class="informative">
         From the above sections, one can infer that the consistency and completeness of the change log with respect to
         the date on a TRS Server is only possible after reading the entire Base and Change Log. A client cannot skip the
@@ -412,7 +413,7 @@
         The number of Change Events in the Change Log can grow to a point where it is not reasonable to contain all the
         Change Events in a single HTTP response. In this case,
         <span class="conformance"
-          >the most recent Change Events MUST be included in the Tracked Resource Set itself</span
+          >the most recent Change Event resources MUST be included in the RDF representation of the Tracked Resource Set itself</span
         >, and
         <span class="conformance"
           >earlier events MAY be segmented into separate Change Log resources referenced from the
@@ -424,14 +425,16 @@
         Log segments.
       </p>
       <p class="conformance">
-        Just as the most recent Change Events MUST be included in the HTTP response for the Change Log in the Tracked
-        Resource Set resource itself, TRS Servers MUST include the Change Events for each Change Log segment in the HTTP
+        Just as the most recent Change Events MUST be included inline in the HTTP response for the Change Log in the Tracked
+        Resource Set resource itself, TRS Servers MUST include the Change Event resources for each Change Log segment inline in the RDF representation of the HTTP
         response for the Change Log segment.
       </p>
       <p class="note">
-        This allows a Client to discover the most recent Change Events, and retrieve successively older Change Log
-        resources until it encounters a Change Event that has already been processed (on a previous check). The protocol
-        does not attach significance to where a Server breaks the Change Log into separate parts, i.e., the number of
+        The above paragraphs allows a Client to discover the most recent Change Events, retrieve successively older Change Log
+        resources until it encounters a Change Event that has already been processed (on a previous check), and for it
+        to be guaranteed that a segment cannot contain Change Events with a higher order number (representing a more recent change)
+        than the events already encountered on earlier segments in the chain. The protocol
+        does not attach significance to where a Server breaks the Change Log into separate segments, i.e., the number of
         entries in a <code>trs:ChangeLog</code> is entirely up to the Server.
       </p>
     </section>
@@ -602,14 +605,14 @@
         <p class="conformance">A TRS patch MUST consist of a sequence of directives delimited by a ‘.’</p>
         <p class="conformance">Each directive of a patch MUST consist of four terms.</p>
         <p class="conformance">Each term in a directive MAY be separated with white space, including newlines.</p>
-        <p class="conformance">The first term of a directive MUST be the character ‘A’ or the character 'D'.</p>
+        <p class="conformance">The first term of a directive MUST be the ASCII character 'A' (U+0041) or the ASCII character 'D' (U+0044)".</p>
         <p>
-          A directive with the first term being the character ‘A’ describes the addition of one RDF triple to the
+          A directive with the first term being the ASCII character ‘A’ (U+0041) describes the addition of one RDF triple to the
           resource’s RDF data graph. The subject, predicate, and object of the triple to be added are given in terms 2
           to 4 of the directive.
         </p>
         <p>
-          A directive with the first term being the character ‘D’ describes the deletion of one RDF triple from the
+          A directive with the first term being the ASCII character ‘D’ (U+0044) describes the deletion of one RDF triple from the
           resource’s RDF data graph. The subject, predicate, and object of the triple to be added are given in terms 2
           to 4 of the directive.
         </p>
@@ -619,7 +622,7 @@
         </p>
 
         <p class="conformance">
-          The object in a directive (term 4) MUST be either an absolute URI references enclosed between ‘&lt;’ and
+          The object in a directive (term 4) MUST be either an absolute URI reference enclosed between ‘&lt;’ and
           ‘&gt;’, or a literal in [[!Turtle]] syntax.
         </p>
 
