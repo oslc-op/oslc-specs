@@ -400,11 +400,12 @@
         when the base is being recalculated, and the change log slightly overlaps the base, or as part of the corrective
         set of change events described in the previous paragraph.
       </p>
-      <p class="informative">
+      <p class="note">
         From the above sections, one can infer that the consistency and completeness of the change log with respect to
-        the date on a TRS Server is only possible after reading the entire Base and Change Log. A client cannot skip the
+        the date on a TRS Server is only possible (but is not guaranteed) after reading the entire Base and Change Log. A client cannot skip the
         initial reading of the base, nor partially consume a Change Log, and then expect consistency with some earlier
-        point-in-time of the server’s data.
+        point-in-time of the server’s data. Even after reading both the Base and the Change Log, there is no guarantee
+        that the result represents an exact state of the server's data at any specific point in time.
       </p>
     </section>
     <section id="change-log-segments">
@@ -418,10 +419,10 @@
         <span class="conformance"
           >earlier events MAY be segmented into separate Change Log resources referenced from the
           <code>trs:previous</code> property</span
-        >. There can be any number of such Change Log segments, each one containing successively lower ordered events.
+        >.
       </p>
       <p class="conformance">
-        The events in a Change Log segment MUST all have order numbers higher than any events in all subsequent Change
+        There can be any number of such Change Log segments. The events in a Change Log segment MUST all have order numbers higher than any events in all subsequent Change
         Log segments.
       </p>
       <p class="conformance">
