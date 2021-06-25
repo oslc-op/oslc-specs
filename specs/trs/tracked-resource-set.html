@@ -149,7 +149,12 @@
             Resources, where those changes are relative to the Base.
           </dd>
           <dt><dfn>Change Event</dfn></dt>
-          <dd>Identifies an addition, removal, or state change of a Tracked Resource in a Tracked Resource Set.</dd>
+          <dd>
+            Identifies an addition, removal, or state change of a Tracked Resource in a Tracked Resource Set. These
+            events are represented using the three RDF classes <code>trs:Creation</code>, <code>trs:Modification</code>,
+            and <code>trs:Deletion</code> - but note that the distinction between creation and modification is
+            historical and servers are not required to observe any such distinction.
+          </dd>
           <dt><dfn>TRS Patch</dfn></dt>
           <dd>
             An extended Change Event in a Tracked Resource Set detailing a change to the resource’s RDF representation.
@@ -158,10 +163,9 @@
           <dd>An application or application component that provides one or more Tracked Resource Sets.</dd>
         </dl>
       </section>
-      <section id="conventions" class="informative">
+      <section id="conventions">
         <p>Sample resource representations are provided in <code>text/turtle</code> format [[Turtle]].</p>
         <p>The following common URI prefixes are used throughout this specification:</p>
-        <figure>
           <div class="source">
             <pre>
 @prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
@@ -173,8 +177,6 @@
 @prefix xsd:     &lt;http://www.w3.org/2001/XMLSchema#&gt;.</pre
             >
           </div>
-          <figcaption>Commonly used URI prefixes.</figcaption>
-        </figure>
       </section>
     </section>
     <section id="concepts" class="informative">
@@ -215,16 +217,16 @@
       </p>
       <p class="informative">
         This allows the existence and location of a Tracked Resource Set resource to be declared with an RDF statement
-        like the following (rendered here in Turtle):
+        like the following:
       </p>
-      <pre class="example">
+      <pre>
 @prefix trs: &lt;http://open-services.net/ns/core/trs#&gt; .
 &lt;&gt; trs:trackedResourceSet &lt;https://a.example.com/trs1&gt; .
     </pre
       >
       <p>
-        Where such RDF statements might be found is outside the scope of this specification, but one likely place is a
-        root services document; see [[OSLCCore3]], section "Well-known URI Bootstrapping".
+        Where such RDF statements might be found is outside the scope of this specification. See also [[OSLCCore3]],
+        section "Well-known URI Bootstrapping".
       </p>
     </section>
     <section id="general-behavior">
@@ -258,7 +260,7 @@
         ></div>
       </section>
       <section id="shape-base" class="shapes">
-        <h2>Base</h2>
+        <h2>TRS Base</h2>
         <div
           title="Resource shape for the Base of a Tracked Resource Set"
           data-include="./trs-shapes.ttl#BaseShape"
@@ -269,7 +271,7 @@
         ></div>
       </section>
       <section id="shape-changelog" class="shapes">
-        <h2>Change Log</h2>
+        <h2>TRS Change Log</h2>
         <div
           title="Resource shape for the Change Log of a Tracked Resource Set"
           data-include="./trs-shapes.ttl#ChangeLogShape"
@@ -280,21 +282,10 @@
         ></div>
       </section>
       <section id="shape-create" class="shapes">
-        <h2>Creation Event</h2>
+        <h2>TRS Creation or Modification Event</h2>
         <div
-          title="Resource shape for a Creation Event"
-          data-include="./trs-shapes.ttl#CreationEventShape"
-          data-oninclude="shapeToSpec"
-          data-include-sync="true"
-          data-include-replace="true"
-          data-include-format="html"
-        ></div>
-      </section>
-      <section id="shape-modify" class="shapes">
-        <h2>Modification Event</h2>
-        <div
-          title="Resource shape for a Modification Event"
-          data-include="./trs-shapes.ttl#ModificationEventShape"
+          title="Resource shape for a Creation or Modification Event"
+          data-include="./trs-shapes.ttl#ChangeEventShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -302,7 +293,7 @@
         ></div>
       </section>
       <section id="shape-delete" class="shapes">
-        <h2>Deletion Event</h2>
+        <h2>TRS Deletion Event</h2>
         <div
           title="Resource shape for a Deletion Event"
           data-include="./trs-shapes.ttl#DeletionEventShape"
@@ -315,22 +306,26 @@
     </section>
     <section id="cutoff-event">
       <h2>Cutoff Event</h2>
-      <p class="conformance">
+      <p>
         The cutoff event in the Base marks the point in the Change Log at which this change and all earlier changes have
-        already been accounted for in the Base. If the cutoff property is missing, or if it has the value
-        <code>rdf:nil</code>, the Base enumerates the (possibly empty) Resource Set at the inception of the Tracked
-        Resource Set, and the Change Log MUST list all changes since that inception.
+        already been accounted for in the Base.
+      </p>
+
+      <p class="conformance">
+        If the cutoff property is missing, or if it has the value <code>rdf:nil</code>, the Base enumerates the
+        (possibly empty) Resource Set at the inception of the Tracked Resource Set, and the Change Log MUST list all
+        changes since that inception.
       </p>
       <p class="conformance">
-        Otherwise, the identified Change Event MUST be in the Change Log - that is, there MUST NOT be a gap between the
-        Base portion and the Change Log portion of a Tracked Resource Set representation.
+        Otherwise, the identified Change Event MUST be in the Change Log - that is, there MUST NOT be a discontinuity
+        between the Base portion and the Change Log portion of a Tracked Resource Set.
       </p>
       <p class="conformance">
         Conversely, the Change Log MAY contain earlier Change Event entries that have been accounted for in the Base.
       </p>
     </section>
     <section id="change-logs">
-      <h2>Change Logs and Change Events</h2>
+      <h2>Change Logs and Creation or Modification Events</h2>
       <p class="conformance">
         A Server MUST refer to a given Tracked Resource using the exact same URI in the Base membership property and
         every Change Event (<code>trs:changed</code> reference) for that resource.
@@ -347,14 +342,17 @@
       <p>
         The ordering of Change Log events is meaningful for changes to any specific resource, but there is no meaning to
         the ordering of change log events for different resources.
+        <span class="conformance"
+          >That is, a change event for resource <code>R1</code> at time <code>t</code> MAY have an order number that is
+          greater than a change to an unrelated resource <code>R2</code> at time <code>t+1</code></span
+        >.
       </p>
       <p>
-        The Change Log does not necessarily identify <em>every</em> change of internal state before or during that
-        period of time.
+        The Change Log does not necessarily identify <em>every</em> change of state before or during that period of
+        time, as further explained in the following paragraphs.
       </p>
       <p class="conformance">
-        A Server MAY batch up internal changes and add a batch of consolidated Change Events to the Change Log at some
-        interval.
+        A Server MAY batch up changes and add a batch of consolidated Change Events to the Change Log at some interval.
       </p>
       <p class="conformance">
         A Server MUST eventually report a change event for a tracked resource if at time <em>t<sub>0</sub></em
@@ -368,15 +366,21 @@
         reporting only a single creation or modification event in the Change Log.
       </p>
       <p>
-        <span class="conformance">A Server MAY report a modification event even in cases where there would be no significant difference in
-        response.</span>
-        This could happen because a resource was modified and then that change was reverted in a second modification; the first modification could be elided in the change log.
+        <span class="conformance"
+          >A Server MAY report a modification event even in cases where there would be no significant difference in
+          response.</span
+        >
+        This could happen because a resource was modified and then that change was reverted in a second modification;
+        the first modification could be elided in the change log.
       </p>
       <p>
-        There is no difference between change events with RDF type <code>trs:Creation</code> and <code>trs:Modification</code>;
-        the two types exist for historical reasons.
-        <span class="conformance">When a new resource is modified or added to a tracked resource set, a Server MAY issue a modification event or a
-        creation event</span>; as described earlier, <span class="conformance">the server MUST eventually issue at least one such event</span>.
+        There is no difference between change events with RDF type <code>trs:Creation</code> and
+        <code>trs:Modification</code>; the two types exist for historical reasons.
+        <span class="conformance"
+          >When a new resource is modified or added to a tracked resource set, a Server MAY issue a modification event
+          or a creation event</span
+        >; as described earlier,
+        <span class="conformance">the server MUST eventually issue at least one such event</span>.
       </p>
       <p class="conformance">
         When a resource is created and deleted in rapid succession, a Server MAY omit all Change Events for that
@@ -402,9 +406,16 @@
       </p>
       <p class="note">
         From the above sections, one can infer that the consistency and completeness of the change log with respect to
-        the date on a TRS Server is only possible (but is not guaranteed) after reading the entire Base and Change Log. A client cannot skip the
+        the data on a TRS Server is only possible (but is not guaranteed) after reading the entire Base and Change Log.
+        A client cannot skip the
         initial reading of the base, nor partially consume a Change Log, and then expect consistency with some earlier
         point-in-time of the server’s data. Even after reading both the Base and the Change Log, there is no guarantee
+        that the result represents an exact state of the server's data at any specific point in time.
+        the data on a TRS Server is only possible after reading the entire Base and Change Log, and even then it may be
+        only approximate. A client cannot skip the initial reading of the base, nor partially consume a Change Log, and
+        then expect consistency with some earlier point-in-time of the server’s data. Even having read the entire base
+        plus change log, a client may still not have information on the most recent changes to the tracked resources;
+        nor is there any guarantee
         that the result represents an exact state of the server's data at any specific point in time.
       </p>
     </section>
@@ -414,7 +425,8 @@
         The number of Change Events in the Change Log can grow to a point where it is not reasonable to contain all the
         Change Events in a single HTTP response. In this case,
         <span class="conformance"
-          >the most recent Change Event resources MUST be included in the RDF representation of the Tracked Resource Set itself</span
+          >the most recent Change Event resources MUST be included in the RDF representation of the Tracked Resource Set
+          itself</span
         >, and
         <span class="conformance"
           >earlier events MAY be segmented into separate Change Log resources referenced from the
@@ -422,20 +434,20 @@
         >.
       </p>
       <p class="conformance">
-        There can be any number of such Change Log segments. The events in a Change Log segment MUST all have order numbers higher than any events in all subsequent Change
+        There can be any number of such Change Log segments. The events in a Change Log segment MUST all have order numbers higher than any events in any subsequent Change
         Log segments.
       </p>
       <p class="conformance">
-        Just as the most recent Change Events MUST be included inline in the HTTP response for the Change Log in the Tracked
-        Resource Set resource itself, TRS Servers MUST include the Change Event resources for each Change Log segment inline in the RDF representation of the HTTP
-        response for the Change Log segment.
+        Just as the most recent Change Events MUST be included inline in the HTTP response for the Change Log in the
+        Tracked Resource Set resource itself, TRS Servers MUST include the Change Event resources for each Change Log
+        segment inline in the RDF representation of the HTTP response for the Change Log segment.
       </p>
       <p class="note">
-        The above paragraphs allows a Client to discover the most recent Change Events, retrieve successively older Change Log
-        resources until it encounters a Change Event that has already been processed (on a previous check), and for it
-        to be guaranteed that a segment cannot contain Change Events with a higher order number (representing a more recent change)
-        than the events already encountered on earlier segments in the chain. The protocol
-        does not attach significance to where a Server breaks the Change Log into separate segments, i.e., the number of
+        The above paragraphs allows a Client to discover the most recent Change Events, retrieve successively older
+        Change Log resources until it encounters a Change Event that has already been processed (on a previous check),
+        and for it to be guaranteed that a segment cannot contain Change Events with a higher order number (representing
+        a more recent change) than the events already encountered on earlier segments in the chain. The protocol does
+        not attach significance to where a Server breaks the Change Log into separate segments, i.e., the number of
         entries in a <code>trs:ChangeLog</code> is entirely up to the Server.
       </p>
     </section>
@@ -606,16 +618,18 @@
         <p class="conformance">A TRS patch MUST consist of a sequence of directives delimited by a ‘.’</p>
         <p class="conformance">Each directive of a patch MUST consist of four terms.</p>
         <p class="conformance">Each term in a directive MAY be separated with white space, including newlines.</p>
-        <p class="conformance">The first term of a directive MUST be the ASCII character 'A' (U+0041) or the ASCII character 'D' (U+0044)".</p>
-        <p>
-          A directive with the first term being the ASCII character ‘A’ (U+0041) describes the addition of one RDF triple to the
-          resource’s RDF data graph. The subject, predicate, and object of the triple to be added are given in terms 2
-          to 4 of the directive.
+        <p class="conformance">
+          The first term of a directive MUST be the ASCII character 'A' (U+0041) or the ASCII character 'D' (U+0044)".
         </p>
         <p>
-          A directive with the first term being the ASCII character ‘D’ (U+0044) describes the deletion of one RDF triple from the
-          resource’s RDF data graph. The subject, predicate, and object of the triple to be added are given in terms 2
-          to 4 of the directive.
+          A directive with the first term being the ASCII character ‘A’ (U+0041) describes the addition of one RDF
+          triple to the resource’s RDF data graph. The subject, predicate, and object of the triple to be added are
+          given in terms 2 to 4 of the directive.
+        </p>
+        <p>
+          A directive with the first term being the ASCII character ‘D’ (U+0044) describes the deletion of one RDF
+          triple from the resource’s RDF data graph. The subject, predicate, and object of the triple to be added are
+          given in terms 2 to 4 of the directive.
         </p>
         <p class="conformance">
           The subject and predicate (terms 2 and 3) in a directive MUST be in the form of absolute URI references
@@ -723,7 +737,7 @@
         acknowledged:
       </p>
       <p><b>Participants</b>:</p>
-      <p style="margin-left: 40px;">
+      <p style="margin-left: 40px">
         James Amsden, IBM (Chair, Editor)<br />
         Frank Budinsky, IBM<br />
         Nick Crossley, IBM<br />
