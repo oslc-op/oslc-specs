@@ -310,7 +310,9 @@ neither client nor server is obligated to perform any recursion through nested C
             dcterms:description      """The <a href="http://www.w3.org/TR/ldp/#ldpc">Linked Data Platform Container</a>
 that contains all the configurations (both streams and baselines) of this component.
 {{The `oslc_config:configurations` property on a component is read-only; servers MAY also treat the referenced container as read-only}}.
-If it is not read-only, {{the container MAY have `oslc:resourceShape` properties describing the shapes of streams and baselines that may be created}}."""^^rdf:XMLLiteral
+If it is not read-only, {{the container MAY have an `oslc:resourceShape` property referencing a resource shape that describes the
+container}}. {{If a container resource shape is specified, the shape SHOULD have a property describing the membership of the container with a
+`oslc:valueShape` referencing a resource shape that describes the shapes of streams and baselines that may be created}}."""^^rdf:XMLLiteral
         ] ,
 
         # Properties shared with other shapes
@@ -495,7 +497,9 @@ A new stream derived from this baseline is created by a POST to this container;
 {{a `previousBaseline` property of the new stream MUST be set to refer to this baseline}}.
 Note that the `streams` property itself is immutable,
 but the container referenced by the property is not.
-{{The container MAY have `oslc:resourceShape` properties describing the shapes of baselines that may be created}}."""^^rdf:XMLLiteral
+{{The container MAY have an `oslc:resourceShape` property referencing a resource shape that describes the container}}.
+{{If a container resource shape is specified, it should have a property describing the membership of the container with a
+``oslc:valueShape`` referencing a resource shape that describes the shapes of streams that may be created}}."""^^rdf:XMLLiteral
         ] ,
         [
             #subject (tag)
@@ -583,7 +587,9 @@ that contains all the baselines of this stream.
 A new baseline of this stream is created by a POST to this container.
 Note that the `baselines` property itself is immutable,
 but the container referenced by the property is not.
-{{The container MAY have an `oslc:resourceShape` property describing additional properties required when creating baselines}}."""^^rdf:XMLLiteral
+{{The container MAY have an `oslc:resourceShape` property referencing a resource shape that describes the container}}.
+{{If a container resource shape is specified, it SHOULD have a property describing the membership of the container with a
+`oslc:valueShape` referencing a resource shape that describes the additional properties that may be specified for baselines}}."""^^rdf:XMLLiteral
         ] ,
         [
             #previousBaseline
