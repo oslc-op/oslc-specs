@@ -144,22 +144,6 @@
         this specification.
       </p>
     </section>
-    <section id="componentcontainer">
-      <h2>Component Container</h2>
-      <p class="conformance">
-        Configuration Management servers MUST provide a single Linked Data Platform Container ([[!LDP]]) for all
-        components in that server.
-      </p>
-      <p class="conformance">
-        This component container MUST be advertised as an [[!OSLCCore3]] Creation Factory in the Service resource for
-        the configuration server.
-      </p>
-      <p class="conformance">
-        This creation factory SHOULD provide a resource shape describing the shape of components that can be created; if
-        any properties beyond those described in this standard are required to create components, then a resource shape
-        MUST be provided.
-      </p>
-    </section>
     <section id="config-resource-shapes" class="shapes">
       <h2>Component and Configuration Constraints</h2>
       <p>This section describes constraints on the resources for components, configurations, and related artifacts.</p>
@@ -393,6 +377,9 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
         A configuration server SHOULD support, and a global configuration server MUST support one or more component
         creation factories declared in one or more OSLC service providers.
       </p>
+      <p class="conformance">
+        A configuration server SHOULD support one or more query capabilities for components.
+      </p>
     </section>
     <section id="configoperations">
       <h2>Supported Operations on Configurations</h2>
@@ -433,6 +420,9 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
           >Servers SHOULD add the property <code>oslc:archived=TRUE</code> on a reduced form of a partially deleted
           baseline</span
         >.
+      </p>
+      <p class="conformance">
+        A configuration server SHOULD support one or more query capabilities for configurations.
       </p>
     </section>
     <section id="citemoperations">
@@ -475,7 +465,7 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
     <section id="creation">
       <h2>Creation of Baselines and Streams</h2>
       <p class="conformance">
-        When a new component is created by POSTing to the Component Container, an empty baseline for that component MUST
+        When a new component is created by POSTing to the Component Container, an empty baseline for that component SHOULD
         be created automatically, and MUST be added to the <code>oslc_config:configurations</code> container for that
         component. The empty baseline has no contributions, no selections, and no branch.
       </p>
