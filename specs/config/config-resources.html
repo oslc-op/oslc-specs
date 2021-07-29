@@ -445,7 +445,7 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
           >.
         </li>
         <li>
-          PUT: Update the state of a specified versioned concept resource in a specified stream;
+          PUT: Update the state of a specified versioned concept resource in a specified stream or change set;
           <span class="conformance">this operation MAY cause the creation of a new version of the resource</span>.
         </li>
       </ul>
@@ -455,11 +455,11 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
       </p>
       <ul>
         <li class="conformance">
-          POST to a component in the context of a stream, resulting in the creation of the first version of a new
+          POST to a component in the context of a stream or change set, resulting in the creation of the first version of a new
           concept resource, or a new version of an existing resource. A successful response MUST include a <code>Location</code>
           header specifying the URI of the newly created resource.
         </li>
-        <li>DELETE: Delete the current mutable version resource in a specified stream.</li>
+        <li>DELETE: Delete the current mutable version resource in a specified stream or change set.</li>
       </ul>
     </section>
     <section id="creation">
@@ -772,6 +772,11 @@ https://example.com/configs?oslc.where=oslc_config:baselineOfStream=&lt;https://
 https://example.com/configs?oslc.where=oslc_config%3AbaselineOfStream%3D%3Chttps%3A%2F%2Fexample.com%2Fconfigs%2Fstream123%3E%20and
      %20dc_terms%3Amodified%3E%3D%222014-07-01T00%3A00%3A00%22%20and%20dcterms_subject%3D%22stellar%22</pre
       >
+      <p class="conformance">
+        Servers that support query capabilities on versioned resources MUST support the use of a configuration context to 
+        limit the query results to the versions selected by that configuration context, or to unversioned resources. 
+        The configuration context MUST support reference of a global configuration, or a configuration from this server.
+      </p>
     </section>
     <section id="matching_contribs">
       <h2>Matching Contributions</h2>
