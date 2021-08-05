@@ -27,8 +27,7 @@
         citationLabel: "OSLC-ConfigMgmt-v1.0-cr",
         specStatus: status,
         revision: rev,
-        conformanceLabelPrefix: "CONFIG",
-        noConformanceTable: 1,
+        conformanceLabelPrefix: "CONFIG-RES",
         thisVersion: thisBase + filePath,
         copyrightStart: "2013",
         maxTocLevel: 3,
@@ -143,22 +142,6 @@
       <p class="conformance">
         A service with this usage property MUST provide all global configuration capabilities described as mandatory in
         this specification.
-      </p>
-    </section>
-    <section id="componentcontainer">
-      <h2>Component Container</h2>
-      <p class="conformance">
-        Configuration Management servers MUST provide a single Linked Data Platform Container ([[!LDP]]) for all
-        components in that server.
-      </p>
-      <p class="conformance">
-        This component container MUST be advertised as an [[!OSLCCore3]] Creation Factory in the Service resource for
-        the configuration server.
-      </p>
-      <p class="conformance">
-        This creation factory SHOULD provide a resource shape describing the shape of components that can be created; if
-        any properties beyond those described in this standard are required to create components, then a resource shape
-        MUST be provided.
       </p>
     </section>
     <section id="config-resource-shapes" class="shapes">
@@ -305,6 +288,10 @@ GET /resources/conceptResourceA?oslc_config.context=%3Chttp%3A//example.com/conf
         If a configuration context is passed on a request for a non-versioned resource, the server MUST NOT treat that
         as an error, and MAY use that context to resolve references to embedded or related resources.
       </p>
+      <p class="conformance">
+        If a configuration context is passed on a request using the version URI for a versioned resource, a server MUST
+        ignore the configuration context, even if that configuration context does not select that versioned resource.
+      </p>
       <p class="note">
         The client is responsible for providing the correct configuration context to each request issued by that client
         at least where the relevant resource might be a versioned resource. If a resource returned from such a request
@@ -363,11 +350,15 @@ GET /resources/conceptResourceA?oslc_config.context=%3Chttp%3A//example.com/conf
         on Linked Data Platform Containers:
       </p>
       <ul>
-        <li>POST to the component LDPC to create a new component</li>
-        <li>
+        <li class="conformance">
+          POST to the component LDPC to create a new component. A successful response MUST contain a
+          <code>Location</code> header providing the URI of the newly created component.
+        </li>
+        <li class="conformance">
           POST to the configuration LDPC for a component to create a new stream for that component, optionally
           specifying an initial baseline; if an initial baseline is not specified, a real or notional empty baseline is
-          implied as the starting point for the stream
+          implied as the starting point for the stream. A successful response MUST contain a
+          <code>Location</code> header providing the URI of the newly created component.
         </li>
       </ul>
       <p class="conformance">
@@ -383,6 +374,13 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
       <p class="conformance">
         Servers MAY support OSLC selective properties on a GET, allowing a client to specify exactly which properties of
         those LDPCs are to be returned.
+      </p>
+      <p class="conformance">
+        A configuration server SHOULD support, and a global configuration server MUST support one or more component
+        creation factories declared in one or more OSLC service providers.
+      </p>
+      <p class="conformance">
+        A configuration server SHOULD support one or more query capabilities for components.
       </p>
     </section>
     <section id="configoperations">
@@ -425,6 +423,9 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
           baseline</span
         >.
       </p>
+      <p class="conformance">
+        A configuration server SHOULD support one or more query capabilities for configurations.
+      </p>
     </section>
     <section id="citemoperations">
       <h2>Supported Operations on Versioned Resources in a Configuration Context</h2>
@@ -442,11 +443,12 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
           where this operation returns zero or one version resources matching the required state.
           <span class="conformance"
             >An attempt to GET a version resource URI in a configuration context where a different version of that
-            concept resource is bound MUST fail with an HTTP 404 error</span
+            concept resource MUST ignore the configuration context and return the specified version resource if it
+            exists.</span
           >.
         </li>
         <li>
-          PUT: Update the state of a specified versioned concept resource in a specified stream;
+          PUT: Update the state of a specified versioned concept resource in a specified stream or change set;
           <span class="conformance">this operation MAY cause the creation of a new version of the resource</span>.
         </li>
       </ul>
@@ -455,19 +457,21 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
         configuration, or in the context of a configuration from this server:
       </p>
       <ul>
-        <li>
-          POST to a component in the context of a stream, resulting in the creation of the first version of a new
-          concept resource, or a new version of an existing resource
+        <li class="conformance">
+          POST to a component in the context of a stream or change set, resulting in the creation of the first version
+          of a new concept resource, or a new version of an existing resource. A successful response MUST include a
+          <code>Location</code>
+          header specifying the URI of the newly created resource.
         </li>
-        <li>DELETE: Delete the current mutable version resource in a specified stream.</li>
+        <li>DELETE: Delete the current mutable version resource in a specified stream or change set.</li>
       </ul>
     </section>
     <section id="creation">
       <h2>Creation of Baselines and Streams</h2>
       <p class="conformance">
-        When a new component is created by POSTing to the Component Container, an empty baseline for that component MUST
-        be created automatically, and MUST be added to the <code>oslc_config:configurations</code> container for that
-        component. The empty baseline has no contributions, no selections, and no branch.
+        When a new component is created by POSTing to the Component Container, an empty baseline for that component
+        SHOULD be created automatically, and MUST be added to the <code>oslc_config:configurations</code> container for
+        that component. The empty baseline has no contributions, no selections, and no branch.
       </p>
       <section id="streamcreation">
         <h3>Creation of Streams</h3>
@@ -493,13 +497,17 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
           the <code>prov:wasDerivedFrom</code> property of the new stream, to reference the baseline owning the
           <code>oslc_config:streams</code> container.
         </p>
+        <p class="conformance">
+          A server MAY support one or more configuration creation factories declared in one or more OSLC service
+          providers that create a stream for the component specified in the configuration's POSTED RDF body.
+        </p>
       </section>
       <section id="baselinecreation">
         <h3>Creation of Baselines</h3>
         <p class="conformance">
           A new baseline of a stream is created by POSTing to the <code>oslc_config:baselines</code> container for that
           stream. If the server determines that a suitable baseline already exists, the server MAY return a 303 with a
-          <code>location</code> header referring to that existing baseline; for an existing baseline to be suitable it
+          <code>Location</code> header referring to that existing baseline; for an existing baseline to be suitable it
           MUST be for the same component, MUST have the same <code>oslc_config:branch</code> value, if any, MUST select
           the same version resources, each contribution MUST be a suitable baseline for the corresponding stream
           contribution, and there must be no additional or missing contributions.
@@ -768,6 +776,11 @@ https://example.com/configs?oslc.where=oslc_config:baselineOfStream=&lt;https://
 https://example.com/configs?oslc.where=oslc_config%3AbaselineOfStream%3D%3Chttps%3A%2F%2Fexample.com%2Fconfigs%2Fstream123%3E%20and
      %20dc_terms%3Amodified%3E%3D%222014-07-01T00%3A00%3A00%22%20and%20dcterms_subject%3D%22stellar%22</pre
       >
+      <p class="conformance">
+        Servers that support query capabilities on versioned resources MUST support the use of a configuration context
+        to limit the query results to the versions selected by that configuration context, or to unversioned resources.
+        The configuration context MUST support reference of a global configuration, or a configuration from this server.
+      </p>
     </section>
     <section id="matching_contribs">
       <h2>Matching Contributions</h2>
@@ -839,6 +852,11 @@ https://example.com/configs?oslc.where=oslc_config%3AbaselineOfStream%3D%3Chttps
         Servers MAY treat the <code>oslc_config:accepts</code> and <code>oslc_config:acceptedBy</code> as
         server-generated read-only properties, not modifiable by a client.
       </p>
+      <p class="conformance">
+        Servers MAY perform validation of <code>oslc_config:accepts</code>code> and <code>oslc_config:acceptedBy</code>.
+        If a server performs such validation, it MAY limit validation to new contributions being added or defined for
+        the first time.
+      </p>
     </section>
     <section id="longoperations">
       <h2>Long Operations</h2>
@@ -875,50 +893,6 @@ https://example.com/configs?oslc.where=oslc_config%3AbaselineOfStream%3D%3Chttps
         data-include-format="html"
       ></div>
     </section>
-    <section id="conformance">
-      <h2>Conformance</h2>
-      <section id="conformance-core">
-        <h3>Conformance to OSLC Core</h3>
-        <p class="conformance">
-          This specification is based on [[!OSLCCore3]]. OSLC Configuration Management Servers servers MUST be compliant
-          with the Core specification, MUST follow all the mandatory requirements in the normative sections of each part
-          of this specification, and SHOULD follow all the guidelines and recommendations in both these specifications.
-        </p>
-      </section>
-      <section>
-        <h3>Parts of this Specification</h3>
-        <p>The OSLC Configuration Management Specification consists of the following parts.</p>
-        <dl class="spaced">
-          <dt><a href="oslc-config-mgt.html">Overview</a></dt>
-          <dd class="conformance">
-            <a href="oslc-config-mgt.html">Part 1</a> of this specification provides an overview of OSLC Configuration
-            Management. OSLC Servers that implement versioned resources or configurations MUST implement all of the
-            mandatory requirements specified in the normative sections of part 1 of this multi-part specification, and
-            SHOULD follow all the guidelines and recommendations in that part.
-          </dd>
-          <dt><a href="versioned-resources.html">Versioned Resource Specification</a></dt>
-          <dd class="conformance">
-            <a href="versioned-resources.html">Part 2</a> of this specification defines the representation and behavior
-            of versioned resources. OSLC Servers that implement versioned resources MUST implement all of the mandatory
-            requirements specified in the normative sections of part 2 of this multi-part specification, and SHOULD
-            follow all the guidelines and recommendations in that part.
-          </dd>
-          <dt>Configuration Specification (this document)</dt>
-          <dd class="conformance">
-            <a href="config-resources.html">Part 3</a> of this specification defines the representation and behavior of
-            components and configurations of resources in those components. OSLC Servers that implement configurations
-            MUST implement all of the mandatory requirements specified in the normative sections of part 3 of this
-            multi-part specification, and SHOULD follow all the guidelines and recommendations in that part.
-          </dd>
-          <dt><a href="config-vocab.html">RDF Vocabulary</a></dt>
-          <dd class="conformance">
-            <a href="config-vocab.html">Part 4</a> of this specification defines a vocabulary of RDF terms for versions
-            and configuration management. OSLC Servers that implement versioned resources or configurations MUST use the
-            vocabulary terms defined there where required, and with the meanings defined there. OSLC Servers MAY augment
-            this vocabulary with additional terms.
-          </dd>
-        </dl>
-      </section>
-    </section>
+    <section id="conformance"></section>
   </body>
 </html>
