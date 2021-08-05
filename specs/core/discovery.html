@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <script src="./config.js" class="remove"></script>
     <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.18/builds/respec-oasis-common.min.js"
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.22/builds/respec-oasis-common.min.js"
       async
       class="remove"
     ></script>
@@ -28,23 +28,22 @@
         // ===== Links =====
 
         thisVersion: thisBase + fileName,
-        prevVersion:
-          "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/csprd03/part2-discovery/oslc-core-v3.0-csprd03-part2-discovery.html",
+        prevVersion: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/ps01/discovery.html",
         latestVersion: oasisBase + fileName,
         latestSpecVersion: "https://open-services.net/spec/core/latest",
         edDraftURI: "https://open-services.net/spec/core/latest-draft",
 
         additionalArtifacts: [
-          { title: "OSLC Core Version 3.0. Part 1: Overview", href: "oslc-core.html" },
-          { title: "OSLC Core Version 3.0. Part 2: Discovery (this document)", href: "discovery.html" },
-          { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: "resource-preview.html" },
-          { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: "dialogs.html" },
-          { title: "OSLC Core Version 3.0. Part 5: Attachments", href: "attachments.html" },
-          { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: "resource-shape.html" },
-          { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: "core-vocab.html" },
-          { title: "OSLC Core Version 3.0. Part 8: Constraints", href: "core-shapes.html" },
-          { title: "OSLC Core Version 3.0. Part 9: Machine Readable Vocabulary Terms", href: "core-vocab.ttl" },
-          { title: "OSLC Core Version 3.0. Part 10: Machine Readable Constraints", href: "core-shapes.ttl" },
+          { title: "OSLC Core Version 3.0. Part 1: Overview", href: thisBase + "oslc-core.html" },
+          { title: "OSLC Core Version 3.0. Part 2: Discovery (this document)", href: thisBase + "discovery.html" },
+          { title: "OSLC Core Version 3.0. Part 3: Resource Preview", href: thisBase + "resource-preview.html" },
+          { title: "OSLC Core Version 3.0. Part 4: Delegated Dialogs", href: thisBase + "dialogs.html" },
+          { title: "OSLC Core Version 3.0. Part 5: Attachments", href: thisBase + "attachments.html" },
+          { title: "OSLC Core Version 3.0. Part 6: Resource Shape", href: thisBase + "resource-shape.html" },
+          { title: "OSLC Core Version 3.0. Part 7: Vocabulary", href: thisBase + "core-vocab.html" },
+          { title: "OSLC Core Version 3.0. Part 8: Constraints", href: thisBase + "core-shapes.html" },
+          { title: "OSLC Core Version 3.0. Machine Readable Vocabulary Terms", href: thisBase + "core-vocab.ttl" },
+          { title: "OSLC Core Version 3.0. Machine Readable Constraints", href: thisBase + "core-shapes.ttl" },
         ],
 
         relatedWork: [
@@ -64,24 +63,24 @@
           },
           OSLCQuery: {
             title: "OSLC Query Version 3.0",
-            href: "http://open-services.net/specifications/query/oslc-query.html",
+            href: "https://docs.oasis-open-projects.org/oslc-op/query/v3.0/ps01/oslc-query.html",
             authors: ["Jim Amsden", "S. Padgett", "S. Speicher", "David Honey"],
-            status: "Public Review Draft Project Specification",
+            status: "Project Specification 01",
             publisher: "OASIS",
           },
-          OSLCSPR: {
-            title: "OSLC Core 2.0 Service Provider Resources",
-            href: "http://open-services.net/bin/view/Main/OslcCoreSpecification#Service_Provider_Resources",
-            authors: ["S. Speicher", "D. Johnson"],
-            status: "Finalized",
-            publisher: "http://open-services.net",
+          "WELL-KNOWN": {
+            title: "RFC 8615: Well-Known Uniform Resource Identifiers (URIs)",
+            href: "https://tools.ietf.org/html/rfc8615",
+            authors: ["M. Nottingham"],
+            status: "Proposed Standard",
+            publisher: "IETF",
           },
-          OSLCSPV: {
-            title: "OSLC Core 2.0 Selective Property Values",
-            href: "http://open-services.net/bin/view/Main/OslcCoreSpecification#Selective_Property_Values",
-            authors: ["S. Speicher", "D. Johnson"],
-            status: "Finalized",
-            publisher: "http://open-services.net",
+          "ROOT-SERVICES": {
+            title: "Root Services Specification",
+            href: "https://jazz.net/wiki/bin/view/Main/RootServicesSpec",
+            authors: ["J. des Rivieres", "S. Speicher"],
+            status: "Approved",
+            publisher: "IBM",
           },
           OpenIDConnect: {
             title: "OpenID Connect",
@@ -109,6 +108,12 @@
             mailto: "jamsden@us.ibm.com",
             company: "IBM",
             companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Andrii Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se/",
           },
         ],
         license: "cc-by-4",
@@ -416,6 +421,40 @@
         <p>
           This is also to avoid the complexity on server implementations that would be needed to provide such additional
           content.
+        </p>
+      </section>
+
+      <section id="wellKnown">
+        <h2>Well-known URI Bootstrapping</h2>
+
+        <p class="conformance">
+          An OSLC Server MAY serve a Root Services document at the
+          <code>/.well-known/oslc/rootservices.xml</code> URI [[!WELL-KNOWN]] if the Server provides access to such a
+          document. The Root Services document SHALL conform to the [[!ROOT-SERVICES]] specification. If no specific
+          content type is requested, or if the requested content type is <code>application/xml</code> or
+          <code>application/rdf+xml</code>, the server SHALL return the Root Services document using the RDF/XML-ABBREV
+          format. Servers MAY return other formats in response to other requested content types.
+        </p>
+
+        <p class="conformance">
+          An OSLC Server SHOULD serve a Service Provider Catalog at the
+          <code>/.well-known/oslc/sp-catalog</code> URI if the Server provides access to such a document.
+        </p>
+
+        <p class="conformance">
+          An OSLC Server MAY serve an LDP Container at the
+          <code>/.well-known/oslc/ldpc</code> URI if the Server provides access to such a document.
+        </p>
+
+        <p class="conformance">
+          An OSLC Server MAY use an HTTP redirect to a URI that satisfies the conformance clauses listed above in
+          response to any request under
+          <code>/.well-known/oslc/</code> URIs.
+        </p>
+
+        <p class="conformance">
+          An OSLC Server SHALL NOT serve documents on any vendor-specific URIs under
+          <code>/.well-known/oslc/</code> not defined in any official OSLC specification.
         </p>
       </section>
 

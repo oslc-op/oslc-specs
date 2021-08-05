@@ -56,7 +56,7 @@ public class HttpHandler
     private Map<URI, Boolean> httpResourceIsRDF = new HashMap<>();
     private Set<String>       foundRDFResources = new HashSet<>();
     private Set<Pattern>      skipURIPatterns   = new HashSet<>();
-    private int           	  debug             = 0;
+    private int                 debug             = 0;
     private HttpClient        httpClient;
     private final HttpClient  rdfClient;
 
@@ -71,7 +71,7 @@ public class HttpHandler
         this.debug = debug;
         if (skipURIPatterns != null)
         {
-        	this.skipURIPatterns.addAll(skipURIPatterns);
+            this.skipURIPatterns.addAll(skipURIPatterns);
         }
 
         Header header = new BasicHeader(HttpHeaders.ACCEPT, TEXT_CONTENT_TYPES);
@@ -95,9 +95,9 @@ public class HttpHandler
         if (debug > 2)
         {
             // for debugging redirects
-        	System.err.println("Setting up http interceptor");
-        	builder = builder.addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.err.println(response.toString()))
-            	.addInterceptorLast(this::responseInterceptor);
+            System.err.println("Setting up http interceptor");
+            builder = builder.addInterceptorFirst((HttpRequestInterceptor) (response, context) -> System.err.println(response.toString()))
+                .addInterceptorLast(this::responseInterceptor);
         }
         rdfClient = builder.build();
     }
@@ -264,7 +264,7 @@ public class HttpHandler
 
             RDFParserBuilder rdfParserBuilder = builderFactory();
             String source = httpUri.toString();
-			rdfParserBuilder = rdfParserBuilder.source(source);
+            rdfParserBuilder = rdfParserBuilder.source(source);
             RDFParser parser = rdfParserBuilder.build();
             parser.parse(foundModel);
 
@@ -275,6 +275,10 @@ public class HttpHandler
                 String uri = ri.next().getURI();
                 if (uri != null)
                 {
+                    if (debug > 1)
+                    {
+                        System.err.println("Adding RDF resource "+uri);
+                    }
                     foundRDFResources.add(uri);
                 }
             }
@@ -336,6 +340,10 @@ public class HttpHandler
         else
         {
             // Not found - but add it so we report an error only once
+            if (debug > 1)
+            {
+                System.err.println("Cannot find RDF resource "+uri);
+            }
             foundRDFResources.add(uri);
             throw new ShapeCheckException(
                 Terms.UndefinedTerm,

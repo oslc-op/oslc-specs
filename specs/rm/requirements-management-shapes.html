@@ -8,13 +8,13 @@
     />
     <title>OSLC Requirements Management Version 2.1. Part 3: Constraints</title>
     <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.18/builds/respec-oasis-common.min.js"
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.22/builds/respec-oasis-common.min.js"
       async
       class="remove"
     ></script>
     <script class="remove">
       var status = "PS";
-      var revision = 1;
+      var revision = 2;
 
       var wdBase = "https://oslc-op.github.io/oslc-specs/specs/rm/";
       var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/rm/v2.1/";
@@ -30,11 +30,11 @@
         shortName: "requirements-management-shapes",
         specStatus: status,
         revision: revision.toString().padStart(2, "0"),
-        publishDate: "2020-09-03",
-        previousPublishDate: "2019-10-01",
-        previousMaturity: "PSD",
+        publishDate: "2021-05-28",
+        previousPublishDate: "2020-09-03",
+        previousMaturity: "PS",
 
-        prevVersion: null,
+        prevVersion: "https://docs.oasis-open-projects.org/oslc-op/rm/v2.1/ps01/requirements-management-shapes.html",
         latestVersion: oasisBase + "requirements-management-shapes.html",
 
         thisVersion: thisBase + "requirements-management-shapes.html",
@@ -45,23 +45,23 @@
         additionalArtifacts: [
           {
             title: "OSLC Requirements Management Version 2.1. Part 1: Specification",
-            href: "requirements-management-spec.html",
+            href: thisBase + "requirements-management-spec.html",
           },
           {
             title: "OSLC Requirements Management Version 2.1. Part 2: Vocabulary",
-            href: "requirements-management-vocab.html",
+            href: thisBase + "requirements-management-vocab.html",
           },
           {
             title: "OSLC Requirements Management Version 2.1. Part 3: Constraints (this document)",
-            href: "requirements-management-shapes.html",
+            href: thisBase + "requirements-management-shapes.html",
           },
           {
             title: "OSLC Requirements Management Version 2.1. Machine-readable Vocabulary Terms",
-            href: "requirements-management-vocab.ttl",
+            href: thisBase + "requirements-management-vocab.ttl",
           },
           {
             title: "OSLC Requirements Management Version 2.1. Machine-readable Constraints",
-            href: "requirements-management-shapes.ttl",
+            href: thisBase + "requirements-management-shapes.ttl",
           },
         ],
 
@@ -81,8 +81,8 @@
             publisher: "http://open-services.net",
           },
           OSLCCore3: {
-            title: "OSLC Core 3.0",
-            href: "https://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html",
+            title: "OSLC Core Version 3.0. Part 1: Overview",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/oslc-core.html",
             authors: ["Jim Amsden", "S. Speicher"],
             status: "Project Specification",
             publisher: "OASIS",
@@ -130,7 +130,7 @@
           {
             name: "Jad El-khoury",
             mailto: "jad@kth.se",
-            company: "KTH The Royal Institute of Technology",
+            company: "KTH Royal Institute of Technology",
             companyURL: "http://www.kth.se",
           },
         ],
@@ -147,7 +147,7 @@
           {
             name: "Andrii Berezovskyi",
             mailto: "andriib@kth.se",
-            company: "KTH",
+            company: "KTH Royal Institute of Technology",
             companyURL: "https://www.kth.se",
           },
         ],
@@ -224,11 +224,11 @@
     </section>
     <section id="conformance">
       <h2>Conformance</h2>
-      <p>
+      <p class="conformance">
         Requirements Management servers MUST use the vocabulary terms defined here where required, and with the meanings
         defined here.
       </p>
-      <p>
+      <p class="conformance">
         Requirements Management servers MAY augment this vocabulary with additional classes, properties, and
         individuals.
       </p>
@@ -243,15 +243,21 @@
           The constraints on the Requirement resource properties are defined in the tables below. Requirement resource
           properties are not limited to the ones defined in this specification. Service providers may provide additional
           properties. It is strongly recommended that any additional properties be defined in XML namespaces distinct
-          from those defined by OSLC in these specifications. Requirement creation through a Creation Factory resource
-          in the Service Description is REQUIRED by this specification.
+          from those defined by OSLC in these specifications.
+          <span class="conformance"
+            >Requirement creation through a Creation Factory resource in the Service Description is REQUIRED by this
+            specification.</span
+          >
         </p>
         <p>
-          Any <strong>resource</strong> asserted to be of <code>rdf:type</code>
-          <code>http://open-services.net/ns/rm#Requirement</code> MUST conform to the constraints and meaning of
-          properties defined below. Notice that partial representations of a requirement resource are admitted by this
-          specification (for example, in query results, or where <code>oslc.properties</code> has been used), and such
-          partial representations will in general not conform to these constraints.
+          <span class="conformance"
+            >Any <strong>resource</strong> asserted to be of <code>rdf:type</code>
+            <code>http://open-services.net/ns/rm#Requirement</code> MUST conform to the constraints and meaning of
+            properties defined below.</span
+          >
+          Notice that partial representations of a requirement resource are admitted by this specification (for example,
+          in query results, or where <code>oslc.properties</code> has been used), and such partial representations will
+          in general not conform to these constraints.
         </p>
 
         <div
@@ -270,15 +276,21 @@
           The constraints on the RequirementCollection vocaubluary resource properties are defined in the tables below.
           RequirementCollection resource properties are not limited to the ones defined in this specification, service
           providers may provide additional properties. It is strongly recommended that any additional properties be
-          defined in XML namespaces distinct from those defined by OSLC in these specifications. RequirementCollection
-          creation through a Creation Factory resource in the Service Description is OPTIONAL in this specification.
+          defined in XML namespaces distinct from those defined by OSLC in these specifications.
+          <span class="conformance"
+            ><code>RequirementCollection</code> creation through a Creation Factory resource in the Service Description
+            is OPTIONAL in this specification.</span
+          >
         </p>
         <p>
-          Any <strong>resource</strong> asserted to be of <code>rdf:type</code>
-          <code>http://open-services.net/ns/rm#RequirementCollection</code> MUST conform to the constraints and meaning
-          of properties defined below. Notice that partial representations of a requirement collection resource are
-          admitted by this specification (for example, in query results, or where <code>oslc.properties</code> has been
-          used), and such partial representations will in general not conform to these constraints.
+          <span class="conformance"
+            >Any <strong>resource</strong> asserted to be of <code>rdf:type</code>
+            <code>http://open-services.net/ns/rm#RequirementCollection</code> MUST conform to the constraints and
+            meaning of properties defined below.</span
+          >
+          Notice that partial representations of a requirement collection resource are admitted by this specification
+          (for example, in query results, or where <code>oslc.properties</code> has been used), and such partial
+          representations will in general not conform to these constraints.
         </p>
 
         <div
@@ -292,13 +304,15 @@
       </section>
     </section>
 
-    <section id="relationshipProperties" class="informative">
+    <section id="relationshipProperties">
       <h2>Relationship Properties</h2>
       <p>
-        For compatibility with OSLC Core 2.0 [[!OSLCCore2]], RM servers MAY accept relationship properties. This is
-        however no longer recommended practice, since the necessary reification of relationship can have entailment and
-        inferencing issues. OSLC Core 3.0 Link Guidance [[!OSLCCore3LinkGuidance]] details an alternative approach,
-        where a separate resource is created to represent the relationship and its properties.
+        <span class="conformance"
+          >For compatibility with OSLC Core 2.0 [[!OSLCCore2]], RM servers MAY accept relationship properties.</span
+        >
+        This is however no longer recommended practice, since the necessary reification of relationship can have
+        entailment and inferencing issues. OSLC Core 3.0 Link Guidance [[!OSLCCore3LinkGuidance]] details an alternative
+        approach, where a separate resource is created to represent the relationship and its properties.
       </p>
 
       <p>The following relationship properties are defined by this specification:</p>
@@ -324,8 +338,10 @@
             <td>n/a</td>
             <td>n/a</td>
             <td colspan="2">
-              Title (reference: Dublin Core) of the link represented as rich text in XHTML content. SHOULD include only
-              content that is valid inside an XHTML &lt;span&gt; element.
+              Title (reference: Dublin Core) of the link represented as rich text in XHTML content.
+              <span class="conformance"
+                >It SHOULD include only content that is valid inside an XHTML &lt;span&gt; element.</span
+              >
             </td>
           </tr>
           <tr>
@@ -375,20 +391,26 @@
         </tbody>
       </table>
 
-      <section id="relationshipLabels" class="informative">
+      <section id="relationshipLabels">
         <h3>Relationship labels</h3>
         <p>
           When an RM relationship property is to be presented in a user interface, it may be helpful to provide an
           informative and useful textual label for that relationship instance. (This in addition to the relationship
-          property URI and the object resource URI, which are also candidates for presentation to a user.) To this end,
-          OSLC Servers MAY suppport a <code>dcterms:title</code> link property in RM resource representations where a
-          relationship property is permitted, using the anchor approach outlined in the OSLC Core Links Guidance.
+          property URI and the object resource URI, which are also candidates for presentation to a user.)
+          <span class="conformance"
+            >To this end, OSLC Servers MAY suppport a <code>dcterms:title</code> link property in RM resource
+            representations where a relationship property is permitted, using the anchor approach outlined in the OSLC
+            Core Links Guidance.</span
+          >
         </p>
 
         <p>
-          Servers and Clients should be aware that the <code>dcterms:title</code> of a link is unrelated to the
-          dcterms:title of the object resource. Indeed, links may carry other properties with names in common to the
-          object of the link, but there is no specified relationship between these property values.
+          <span class="conformance"
+            >Servers and Clients SHOULD be aware that the <code>dcterms:title</code> of a link is unrelated to the
+            dcterms:title of the object resource.</span
+          >
+          Indeed, links may carry other properties with names in common to the object of the link, but there is no
+          specified relationship between these property values.
         </p>
       </section>
     </section>
