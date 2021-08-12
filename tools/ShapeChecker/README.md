@@ -6,15 +6,20 @@ best practices for publishing such documents, using the right properties for the
 
 It also validates a set of OSLC Resource Shapes, again checking that each follows OSLC best practices.
 
-Finally, the tool cross-checks the vocabularies and shapes, ensuring that each RDF term used in the shapes and in the name space
-of a vocabulary is actually defined in that vocabulary, and that each term defined in the given vocabularies is used somewhere in a shape.
+Finally, the tool cross-checks the vocabularies and shapes,
+ensuring that each RDF term used in the shapes and in the name space of a vocabulary
+is actually defined in that vocabulary,
+and that each term defined in the given vocabularies is used somewhere in a shape.
 
-In its current form, the tool is a command line program. The vocabularies and shapes to be validated are passed as command line arguments.
+In its current form, the tool is a command line program.
+The vocabularies and shapes to be validated are passed as command line arguments.
 Output is a simple textual report, summarizing the number of issues found, and a line describing each issue.
 
-In the longer term, the intent is that the tool should become a web-based one,
-with a front end that prompts the user to enter the vocabulary and shape,
-and a prettier presentation of the results.
+This is not the easiest of tools to use, and the messages it produces are often obscure.
+The author was overdosing on Jena and RDF models when it was written, and things fell into the old adage
+"if you have a hammer, everything looks like a nail".
+The error/warning handling should really be rewritten to produce plainly intelligible messages.
+It uses annotations, and has an annotations processor, scapt, as part of the system; again, that's probably overkill.
 
 Command line usage
 ------------------
@@ -54,7 +59,8 @@ For example, `-q BadTermStatus` suppresses warnings about uses of
 
     -x excludeURIPattern ...
 
-Each `-x` argument specifies a URI **not** to be loaded when chasing down cross-references
+Each `-x` argument specifies a regular expression for a set of URIs
+**not** to be loaded when chasing down cross-references
 from vocabularies or shapes being checked. Use this to exclude older versions of the
 vocabularies or shapes being checked, or vocabularies or shapes not yet published to
 their intended location. Use `@base` in the source to specify the intended location
