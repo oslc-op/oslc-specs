@@ -33,7 +33,7 @@ Configuration Management, and all the various OSLC domain specifications.
 
 | Title | Description |Responsible|
 |-------|-------------|------|
-| [OSLC Configuration Management 3.0 Primer](https://github.com/oslc-op/oslc-specs/wiki/Configuration-Management-3.0-Primer) | TBD | David |
+| [OSLC Configuration Management Primer](https://github.com/oslc-op/oslc-specs/wiki/Configuration-Management-1.0-Primer) | TBD | David |
 | [Summary of changes in OSLC Core 3.0](https://hackmd.io/ojZYshcATLyZ7ziowDnsCw) | TBD | Andrew |
 | [OSLC Core 3.0 Link Guidance](https://oslc-op.github.io/oslc-specs/notes/link-guidance.html) | TBD | Jim |
 | [TRS 3.0 Primer](https://github.com/oslc-op/oslc-specs/wiki/TRS-3.0-Primer) | TBD | David |
