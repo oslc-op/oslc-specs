@@ -13,10 +13,10 @@ var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/";
 var thisBase = wdBase;
 if (specConfig.status != "WD") {
   thisBase = oasisBase + specConfig.status.toLowerCase();
-  if(specConfig.status != "OS") {
+  if (specConfig.status != "OS") {
     thisBase += specConfig.revision;
   }
-  thisBase +="/";
+  thisBase += "/";
 } else {
   // if it's a WD, set
   var scriptUri = document.currentScript.src;
