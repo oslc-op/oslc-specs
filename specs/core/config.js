@@ -1,8 +1,8 @@
 var specConfig = {
-  status: "PS",
-  revision: "02",
-  publishDate: "2021-04-23",
-  previousPublishDate: "2020-09-17",
+  status: "OS",
+  // revision: "02",
+  publishDate: "2021-08-26T12:00Z",
+  previousPublishDate: null,
   previousMaturity: "PS",
 };
 
