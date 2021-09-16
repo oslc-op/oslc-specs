@@ -1,13 +1,11 @@
 ---
-title: Configuration and Change Management 3.0 Primer
+title: Configuration Management 1.0 Primer
 abstract: 
   Configuration and Change Management 3.0 Primer
   is an OSLC OP Project Note
 ---
 
-Configuration Management 1.0 Primer is an OSLC OP Project Note
-
-# 1. Outline
+# Outline
 
 The OSLC Configuration Management specification is a reference for servers that want to expose configuration management to OSLC clients.
 However, the specification is not organized as a tutorial or introduction about how to implement an OSLC configuration management
@@ -18,9 +16,9 @@ versioning and configurations are represented, how and when local configurations
 lists the elements that an implementation should consider. The specification remains the definitive source, and where this primer
 differs from the specification, the specification should be taken as the authoritative reference.
 
-# 2. Motivation
+# Motivation
 
-## 2.1. Problem
+## Problem
 
 Any software development project team creating anything but the simplest, short-lived solutions knows the value of source code management (SCM). Without SCM, teams could not reliably recreate the source files that were used to build a specific release, making it impossible to reliably maintain what the team has delivered.
 
@@ -32,7 +30,7 @@ All this shared information is generally not available under the control of a si
 
 Development teams need an efficient, effective means of managing versions and variants of artifacts across the whole systems development lifecycle. They need to be able to capture, preserve, compare, merge and potentially recreate specific sets of versioned information covering the whole lifecycle in order to know who did what, when, and why.
 
-## 2.2. Solution
+## Solution
 
 The OSLC Configuration Management specification defines an RDF vocabulary and a set of REST APIs for managing versions and configurations of linked data resources from multiple domains. Using client and server applications that implement the configuration management vocabulary and REST APIs allow a team administrator to create configurations of versioned resources contributed from tools and data sources across the lifecycle. These contributions can be assembled into aggregate (global) configurations that are used to resolve references to artifacts in a particular and reproducible context.
 
@@ -40,7 +38,7 @@ Team members set the configuration context in each of the tools they use to refe
 
 Development teams can create baselines that preserve the state of the federated, shared information in order to be able to recreate that state for any reason, including for regulatory compliance or for applying maintenance updates to released versions and/or variants of a product.
 
-## 2.3. Business Value
+## Business Value
 
 The primary purpose for versioning and configuration management is to be able to establish and restore or recover a particular set of related resources in order to know and manage who changed what, when, and why. Applying these techniques to other disciplines, and combining them together, offers new opportunities for parallel development, managing change, reuse, and management of product variants in complex development projects.
 
@@ -71,7 +69,7 @@ Branching streams for different purposes including experimentation, A/B testing,
 * Support different approaches to reuse by branching from product streams that are closes to the new variant, or branching from a common base that is maintained as a reusable enterprise asset.
 * Enable concurrent development of shared enterprise assets in different product delivery streams (requirements delivery life-cycles) while at the same time managing and governing changes to long-lived enterprise assets (asset management life-cycles).
 
-# 3. Concepts
+# Concepts
 
 [Configuration Management on Wikipedia](https://en.wikipedia.org/wiki/Configuration_management) defines Configuration Management as follows:
 > Configuration management (CM) is a systems engineering process for establishing and maintaining consistency of a product's performance, functional, and physical attributes with its requirements, design, and operational information throughout its life.
@@ -91,7 +89,7 @@ OSLC Configuration Management supports the idea that a configuration may be a co
 There is a UML class diagram in section 7 that describes how these concepts, and those in following sections, relate to the resources described in the OSLC Configuration Management Specification.
 
 
-# 4. Representation of version resources
+# Representation of version resources
 
 We will use an example of two requirements, A and B, in order to explain some of the concepts and representations.
 From a concept resource point of view, one might think of the requirements as having some basic properties as shown below.
@@ -181,7 +179,7 @@ For work in progress, this is usually a stream. If the user wants to see the ver
 milestone, they would typically select the baseline that was created for that milestone. From a REST API standpoint, a configuration
 context can be specified using either a `Configuration-Context` header or a `oslc_config.context` parameter in the request.
 
-# 5. Local configurations
+# Local configurations
 
 A configuration created in and used by an application to manage the selected versions in that configuration is called a _local configuration_.
 Using the previous example based on requirements, let's imagine we have a stream in a requirements management application
@@ -244,7 +242,7 @@ a baseline cannot be modified. The baseline therefore serves as a non-modifiable
 stream from which it was created at a specific point in time.
 
 
-# 6. Global configurations
+# Global configurations
 
 A _global configuration_ is a configuration used to assemble other configurations (typically from other application servers)
 into a hierarchy. To understand the usage, let's consider that we have a quality management application that has a test case 
@@ -346,7 +344,7 @@ The distinguishing characteristics of a global configuration are that they are n
 in any other global configuration and may use contributions from any local or global configuration. So such a configuration would be
 more accurately termed a local configuration even though it has contributions.
 
-# 7. UML Class diagram
+# UML Class diagram
 The UML class diagram below shows the main elements of the configuration management specification. 
 It intentionally omits some relationships for the sake of clarity. 
 The resource shapes in the specification remain the definitive reference.
@@ -358,7 +356,7 @@ Some key aspects of the representation are:
 * Global configurations often only have contributions and not selections.
 * Local configurations often only have selections and not contributions.
 
-# 8. Component skew and contribution order
+# Component skew and contribution order
 
 Consider a global stream `globalStream2` that has contributions from `rmStream1`, `rmBaseline1`, and `:qmStream1`
 in that order. `rmStream1` and `rmBaseline1` are for the same _component_. Where a configuration hierarchy has contributions
@@ -400,7 +398,7 @@ A depth-first, sibling ordered by contribution order second traversal results in
 ```
 Note that the contribution order should be sorted as an ASCII string rather than being treated as a numeric string. 
 
-# 9. Branching
+# Branching
 The OSLC Configuration Management specification does not define whether a versioning system should support
 branching and/or parallel versions, and if so how these are managed. Some versioning systems support
 branches as first-class objects, and there are actions to create branches. Some versioning system
@@ -424,9 +422,9 @@ merging streams. However, a client can PUT merged content to the concept resourc
 has multiple `prov:wasRevisionOf` statements indicating the contents were merged from those predecessor versions.
 
 
-# 10. Implementation elements
+# Implementation elements
 
-## 10.1 Introduction
+## Introduction
 When adding support for OSLC Configuration Management to an application, or writing an adapter to provide
 such support to an existing application, there are a number of elements to the implementation.
 To gain the full power of configuration management, an implementation should support both version resources and configurations.
@@ -442,9 +440,9 @@ because it may affect the implementation. Applications that support this or simi
 declare a separate `oslc:ServiceProvider` for each such container. For example, this is a common convention for
 IBM Jazz applications. 
 
-## 10.2 Components
+## Components
 
-### 10.2.1 Minimal elements
+### Minimal elements
 At a minimum, an implementation should provide REST support for:
 * `GET` of a component URI. The RDF of a component should include a `oslc_config:configurations` statement to a _Linked Data Platform Container_ (LDPC). The response should include an `Etag` header whose value represents the state of the component.
 * `PUT` of a component. The implementation should require the use of an 'If-match' header whose value matches the current Etag.
@@ -456,7 +454,7 @@ creating a component to do either of:
 * Create an empty default stream.
 
 
-### 10.2.2 Optional elements
+### Optional elements
 * Support resource shapes for components. Each component should include in its RDF representation an `oslc:instanceShape` 
 property that references a resource shape for that component. 
 * Support an OSLC selection dialog of components. This should be declared in an `oslc:Service` that is discoverable from a
@@ -468,9 +466,9 @@ property that references a resource shape for that component.
 `oslc:ServiceProviderCatalog`. The query capability should reference a resource shape for the query container, and that
 resource shape should reference a value shape for the components that might be returned in that container.
 
-## 10.3 Configurations
+## Configurations
 
-### 10.3.1 Minimal elements
+### Minimal elements
 At a minimum, an implementation should provide REST support for:
 * `GET` on a configuration URI. If the application manages versioned resources, the RDF representation should include
 a `oslc_config:selections` statement to a selections resource. The response should include an `Etag` header whose value 
@@ -479,7 +477,7 @@ represents the state of that stream.
 * `GET` on a selections resource (if the application manages versioned resources). The RDF representation should include 
 a `oslc_config:select` statement to each version resource URI selected by that configuration.
 
-### 10.3.2 Optional elements
+### Optional elements
 * Support resource shapes for configurations. Each configuration should include in its RDF representation an `oslc:instanceShape` 
 property that references a resource shape for that configuration. 
 * Support `oslc_config:streams` property in the RDF of a baseline, and support a `GET` on that LDPC. 
@@ -497,9 +495,9 @@ in that container.
 * Support `DELETE` of a local configuration.
 
 
-# 10.4 Concept resources and version resources
+# Concept resources and version resources
 
-## 10.4.1 Minimal elements
+## Minimal elements
 At a minimum, an implementation should provide REST support for:
 * `GET` on a version resource URI. The RDF representation of the version resource should:
    * Include statements against the version URI declaring it of type `oslc_config:versionResource`, and `dcterms:isVersionOf` referencing
@@ -509,7 +507,7 @@ At a minimum, an implementation should provide REST support for:
   should resolve the concept resource to the version resource and return the RDF of that version resource. This requires that the
   application be able to determine the component to which a specified concept resource belongs.
 
-## 10.4.2 Optional elements
+## Optional elements
 * Support `GET` on a concept resource with a global configuration context specified by a `oslc_config.context` query parameter or header. This
   should resolve the concept resource in the context of that global configuration to the version resource and return the RDF of that 
   version resource. This is required if the application is to be used with global configurations. The only mechanism for resolving a local
@@ -529,4 +527,5 @@ At a minimum, an implementation should provide REST support for:
 * Support an `oslc:CreationFactory` that can create new concept resources and their initial version in the context of a configuration.
 
 # References
+
 [https://oslc-op.github.io/oslc-specs/specs/config/oslc-config-mgt.html](https://oslc-op.github.io/oslc-specs/specs/config/oslc-config-mgt.html)
