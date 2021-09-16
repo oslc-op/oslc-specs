@@ -1,8 +1,7 @@
 ---
 title: Configuration Management 1.0 Primer
 abstract: 
-  Configuration and Change Management 3.0 Primer
-  is an OSLC OP Project Note
+  This primer serves as a guide to the concepts in the specification, and through the use of simple examples, explains how versioning and configurations are represented, how and when local configurations and global configurations are used, and lists the elements that an implementation should consider.
 ---
 
 # Outline
