@@ -34,6 +34,7 @@ Configuration Management, and all the various OSLC domain specifications.
 | Title | Description |Responsible|
 |-------|-------------|------|
 | [OSLC Configuration Management Primer](https://oslc-op.github.io/oslc-specs/notes/config-primer/config-primer.html) | This primer serves as a guide to the concepts in the specification, and through the use of simple examples, explains how versioning and configurations are represented, how and when local configurations and global configurations are used, and lists the elements that an implementation should consider. The specification remains the definitive source, and where this primer differs from the specification, the specification should be taken as the authoritative reference. | David |
+| [TRS Guidance](https://oslc-op.github.io/oslc-specs/notes/trs-guidance/trs-guidance.html) | TBD | Nick |
 | [Summary of changes in OSLC Core 3.0](https://hackmd.io/ojZYshcATLyZ7ziowDnsCw) | TBD | Andrew |
 | [OSLC Core 3.0 Link Guidance](https://oslc-op.github.io/oslc-specs/notes/link-guidance.html) | TBD | Jim |
 | [TRS 3.0 Primer](https://github.com/oslc-op/oslc-specs/wiki/TRS-3.0-Primer) | TBD | David |
