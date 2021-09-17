@@ -33,10 +33,11 @@ Configuration Management, and all the various OSLC domain specifications.
 
 | Title | Description |Responsible|
 |-------|-------------|------|
-| [OSLC Configuration Management 3.0 Primer](https://github.com/oslc-op/oslc-specs/wiki/Configuration-Management-3.0-Primer) | TBD | David |
-| [Summary of changes in OSLC Core 3.0](https://hackmd.io/ojZYshcATLyZ7ziowDnsCw) | TBD | Andrew |
-| [OSLC Core 3.0 Link Guidance](https://oslc-op.github.io/oslc-specs/notes/link-guidance.html) | TBD | Jim |
-| [TRS 3.0 Primer](https://github.com/oslc-op/oslc-specs/wiki/TRS-3.0-Primer) | TBD | David |
+| [Summary of changes in OSLC Core 3.0](https://oslc-op.github.io/oslc-specs/notes/core-3.0-changes/core-3.0-changes.html) | This note will serve as a guide for existing OSLC 2.0 users to learn what’s new and navigate around the changes in the specifications. | David |
+| [OSLC Configuration Management Primer](https://oslc-op.github.io/oslc-specs/notes/config-primer/config-primer.html) | This primer serves as a guide to the concepts in the specification, and through the use of simple examples, explains how versioning and configurations are represented, how and when local configurations and global configurations are used, and lists the elements that an implementation should consider. The specification remains the definitive source, and where this primer differs from the specification, the specification should be taken as the authoritative reference. | David |
+| [TRS 3.0 Primer](https://oslc-op.github.io/oslc-specs/notes/trs-primer/trs-primer.html) | This primer serves as a guide to the concepts in the TRS specification, and through the use of simple examples, explains how a data provider might expose resources in a TRS and how a TRS client might consume a data provider's TRS.  | David |
+| [TRS Guidance](https://oslc-op.github.io/oslc-specs/notes/trs-guidance/trs-guidance.html) | This document contains material for a TRS tutorial - it is fragmented, contains repetition, and is not yet ready for publication. | Nick |
+| [OSLC Core 3.0 Link Guidance](https://oslc-op.github.io/oslc-specs/notes/link-guidance.html) | In this informative note we offer advice to OSLC Technical Committees on modeling links and relationships between OSLC resources. | Jim |
 
 ### Old specs
 
