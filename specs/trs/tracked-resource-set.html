@@ -268,8 +268,11 @@
     </section>
     <section id="terms-Constraints">
       <h2>Vocabulary Terms and Constraints</h2>
-      <p><a href="tracked-resource-set-vocab.html">OSLC TRS Version 3.0. Part 2: Vocabulary</a> and <a href="tracked-resource-set-shapes.html">
-OSLC TRS Version 3.0. Part 3: Constraints</a> define the vocabulary terms and constraints for OSLC Change Management resources. These terms and constraints are specified according to [OSLCCore3].
+      <p>
+        <a href="tracked-resource-set-vocab.html">OSLC TRS Version 3.0. Part 2: Vocabulary</a> and
+        <a href="tracked-resource-set-shapes.html"> OSLC TRS Version 3.0. Part 3: Constraints</a> define the vocabulary
+        terms and constraints for OSLC Change Management resources. These terms and constraints are specified according
+        to [OSLCCore3].
       </p>
     </section>
 
@@ -607,11 +610,27 @@ OSLC TRS Version 3.0. Part 3: Constraints</a> define the vocabulary terms and co
         <p class="conformance">
           The order of patch directives is significant - changes MUST be applied in the order given.
         </p>
+        <div class="conformance">
+          <p>The value for property trspatch:rdfPatch must conform to the following EBNF:</p>
+          <pre>
+rdfPatch       ::= (addProperty | deleteProperty)*
+addProperty    ::= 'A' triple
+deleteProperty ::= 'D' triple
+        </pre
+          >
+          <p>
+            Where triple is defined in
+            <a href="https://www.w3.org/TR/n-triples/#n-triples-grammar">RDF 1.1 N-Triples</a> except BLANK_NODE_LABEL
+            is not allowed for subject or object. The trspatch:rdfPatch properties are properties of either a
+            trs:Creation or trs:Modification resource.
+          </p>
+        </div>
         <p class="informative">
-          Example of a TRS patch that deletes one RDF triple (subject <code>http://example.com/bob</code>, predicate
-          <code>http://xmlns.com/foaf/0.1/knows</code>, object <code>https://example.com/alice</code>) and adds another
-          RDF triple (subject <code>https://example.com/fred</code>, predicate
-          <code>http://http://xmlns.com/foaf/0.1/member</code>, object <code>http://example.com/old-timers</code>):
+          The following is an example of a TRS patch that deletes one RDF triple (subject
+          <code>http://example.com/bob</code>, predicate <code>http://xmlns.com/foaf/0.1/knows</code>, object
+          <code>https://example.com/alice</code>) and adds another RDF triple (subject
+          <code>https://example.com/fred</code>, predicate <code>http://http://xmlns.com/foaf/0.1/member</code>, object
+          <code>http://example.com/old-timers</code>):
         </p>
         <pre class="example" title="Patch to delete a triple">
   D &lt;http://example.com/bob&gt; &lt;http://xmlns.com/foaf/0.1/knows&gt; &lt;http://example.com/alice&gt; .
