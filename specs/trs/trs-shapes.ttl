@@ -1,3 +1,17 @@
+# Copyright 2022 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 @prefix dcterms:        <http://purl.org/dc/terms/> .
 @prefix ldp:            <http://www.w3.org/ns/ldp#> .
 @prefix oslc:           <http://open-services.net/ns/core#> .
@@ -19,12 +33,12 @@
     dcterms:title            "Resource Shapes for OSLC TRS" ;
     dcterms:description      "Shapes for resources defined by OSLC TRS."^^rdf:XMLLiteral ;
     dcterms:publisher        <https://open-services.net/about/> ;
-    dcterms:source           <https://github.com/oslc-op/oslc-specs/blob/master/specs/trs/trs-shapes.ttl> ;
-    dcterms:isPartOf         <https://oslc-op.github.io/oslc-specs/specs/trs/tracked-resource-set.html> ;
-    dcterms:hasVersion       "PSD" ;
+    dcterms:source           <https://docs.oasis-open-projects.org/oslc-op/trs/v3.0/ps01/trs-shapes.ttl> ;
+    dcterms:isPartOf         <https://docs.oasis-open-projects.org/oslc-op/trs/v3.0/ps01/tracked-resource-set.html> ;
+    dcterms:hasVersion       "PS" ;
     dcterms:license          <http://www.apache.org/licenses/LICENSE-2.0> ;
-    dcterms:issued          "2021-08-26"^^<http://www.w3.org/2001/XMLSchema#date> ;
-    dcterms:dateCopyrighted  "2012-2021" .
+    dcterms:issued          "2022-02-03"^^<http://www.w3.org/2001/XMLSchema#date> ;
+    dcterms:dateCopyrighted  "2012-2022" .
 
 :TrackedResourceSetShape
     a                       oslc:ResourceShape ;
@@ -159,11 +173,11 @@ but the actual predicate is indicated by <code>ldp:hasMemberRelation</code>."""^
     oslc:readOnly           true ;
     dcterms:description     """The continuation of the Change Log, containing the next group of chronologically earlier Change Events."""^^rdf:XMLLiteral .
 
-:ChangeEventShape
+:CreationEventShape
     a                       oslc:ResourceShape ;
-    dcterms:title           "The shape of a Creation or Modification event" ;
+    dcterms:title           "Creation Event" ;
     dcterms:description     "Represents the creation or modification of a resource at a point in time."^^rdf:XMLLiteral ;
-    oslc:describes          trs:Creation, trs:Modification ;
+    oslc:describes          trs:Creation ;
     oslc:property
         :changed ,
         :order ,
@@ -172,6 +186,18 @@ but the actual predicate is indicated by <code>ldp:hasMemberRelation</code>."""^
         :patchAfterEtag ,
         :patchRdfPatch .
 
+:ModificationEventShape
+    a                       oslc:ResourceShape ;
+    dcterms:title           "Modification Event" ;
+    dcterms:description     "Represents the creation or modification of a resource at a point in time."^^rdf:XMLLiteral ;
+    oslc:describes          trs:Modification ;
+    oslc:property
+        :changed ,
+        :order ,
+        :patchCreatedFrom ,
+        :patchBeforeEtag ,
+        :patchAfterEtag ,
+        :patchRdfPatch .
 
 :DeletionEventShape
     a                       oslc:ResourceShape ;
@@ -199,7 +225,7 @@ but the actual predicate is indicated by <code>ldp:hasMemberRelation</code>."""^
     oslc:occurs             oslc:Exactly-one;
     oslc:valueType          xsd:integer ;
     oslc:readOnly           true ;
-    dcterms:description     """A non-negative integer number indicating the sequence in time of the Change Event.}} {{There MAY be gaps in the sequence}}, but {{a more recent Change Event MUST have a larger number than any preceding Change Event}}."""^^rdf:XMLLiteral .
+    dcterms:description     """A non-negative integer number indicating the sequence in time of the Change Event.}} {{There MAY be gaps in the sequence}}, but {{a more recently available Change Event MUST have a larger number than any previously avalable Change Event as accessed by GET on the change log}}."""^^rdf:XMLLiteral .
 
 :patchCreatedFrom
     a                       oslc:Property ;
