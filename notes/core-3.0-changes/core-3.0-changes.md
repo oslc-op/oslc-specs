@@ -1,6 +1,6 @@
 ---
-title: Summary of changes in OSLC Core 3.0 
-abstract: 
+title: OSLC Core v3.0 Changes Version 1.0 
+abstract:
   This note will serve as a guide for existing OSLC 2.0 users to learn what's new and navigate around the changes in the specifications.
 ---
 
@@ -38,7 +38,7 @@ In OSLC Core 2.0, the use of query capabilities was defined by a section on disc
 
 OSLC Core 2.0 did not define a minimum set of prefixes that OSLC servers should predefine and declare in services. OSLC Core 3.0 defines a set of recommended predefined prefixes. Existing servers are not required to implement this to be compliant with OSLC Core 3.0, but it is recommended they do so for convenience to clients.
 
-## Resource Paging 
+## Resource Paging
 
 Resource paging is unchanged in OSLC Core 3.0 with respect to Core 2.0.
 
