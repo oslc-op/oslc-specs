@@ -9,11 +9,10 @@
     />
 
     <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.30/builds/respec-oasis-common.min.js"
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.28/builds/respec-oasis-common.min.js"
       async
       class="remove"
-    ></script> -->
-    <script src="http://127.0.0.1:9000/respec-oasis-common.js" async class="remove"></script>
+    ></script>
     <script class="remove">
       var respecConfig = {
         shortName: "config-primer",
@@ -46,10 +45,6 @@
             authors: ["Jim Amsden", "S. Speicher"],
             status: "OASIS Standard",
             publisher: "OASIS",
-          },
-          OSLCShapes: {
-            title: "OSLC Configuration Management Version 1.0. Part 1: Overview",
-            href: "https://open-services.net/spec/config/latest",
           },
         },
 
@@ -292,10 +287,15 @@
       <h1>Concepts</h1>
       <p>
         <a href="https://en.wikipedia.org/wiki/Configuration_management">Configuration Management on Wikipedia</a>
-        defines Configuration Management as follows: &gt; Configuration management (CM) is a systems engineering process
-        for establishing and maintaining consistency of a product’s performance, functional, and physical attributes
-        with its requirements, design, and operational information throughout its life.
+        defines Configuration Management as follows:
       </p>
+      <blockquote>
+        <p>
+          Configuration management (CM) is a systems engineering process for establishing and maintaining consistency of
+          a product’s performance, functional, and physical attributes with its requirements, design, and operational
+          information throughout its life.
+        </p>
+      </blockquote>
       <p>
         In Configuration Management, artifacts are versioned. For example, a new requirement R1 might be defined and
         created. Once the content of that requirement is checked in or committed, version 1 of that requirement R1
@@ -386,15 +386,20 @@
         dcterms:identifier &quot;A&quot; ;
         dcterms:title &quot;Requirement A&quot;^^rdf:XMLLiteral ;
         dcterms:description &quot;A description of requirement A version 1&quot;^^rdf:XMLLiteral .</code></pre>
-      <p>
-        There are two important things to note: 1. The main properties of the requirement are made using a subject URI
-        of the <em>concept resource</em> <code>:requirementA</code> and <strong>not</strong> the URI of the specific
-        version <code>:requirementA-v1</code>. This is done so that the same subject is used for properties of all the
-        versions of that concept resource. A query against the concept URI <code>:requirementA</code> and
-        <code>dcterms:description</code> would give the descriptions of requirement A across all versions. 2. There are
-        a few statements made using the subject URI of the version resource <code>:requirementA-v1</code> that specify
-        the artifact is a version resource and its concept resource.
-      </p>
+      <p>There are two important things to note:</p>
+      <ol type="1">
+        <li>
+          The main properties of the requirement are made using a subject URI of the <em>concept resource</em>
+          <code>:requirementA</code> and <strong>not</strong> the URI of the specific version
+          <code>:requirementA-v1</code>. This is done so that the same subject is used for properties of all the
+          versions of that concept resource. A query against the concept URI <code>:requirementA</code> and
+          <code>dcterms:description</code> would give the descriptions of requirement A across all versions.
+        </li>
+        <li>
+          There are a few statements made using the subject URI of the version resource
+          <code>:requirementA-v1</code> that specify the artifact is a version resource and its concept resource.
+        </li>
+      </ol>
       <p>
         Now consider that requirement A has been updated with a new description, resulting in version 2
         (<code>requirementA-v2</code>):
@@ -614,12 +619,17 @@
         Implementations commonly use some form of caching of that data and use an implementation dependent way of
         maintaining that cached data.
       </p>
-      <p>
-        Global configurations therefore fulfill two important functions: * They allow a configuration context to be used
-        across applications that allow an application to resolve their concept resources to the right versions. * They
-        allow links between concept resources in <em>different</em> applications to be viewed and navigated to the right
-        versions of those artifacts in that configuration context.
-      </p>
+      <p>Global configurations therefore fulfill two important functions:</p>
+      <ul>
+        <li>
+          They allow a configuration context to be used across applications that allow an application to resolve their
+          concept resources to the right versions.
+        </li>
+        <li>
+          They allow links between concept resources in <em>different</em> applications to be viewed and navigated to
+          the right versions of those artifacts in that configuration context.
+        </li>
+      </ul>
       <p>
         The distinction between a local configuration and a global configuration is a fuzzy one. Consider a requirements
         management server that supports configurations that have contributions from other configurations in the same
@@ -638,14 +648,20 @@
         the definitive reference.
         <img src="https://lucid.app/publicSegments/view/d6da1584-ba23-4b93-a2a9-c0f8aca038b9/image.png" />
       </p>
-      <p>
-        Some key aspects of the representation are: * The version resources selected by a configuration are determined
-        using the property path <code>oslc_config:selections/oslc_config:selects</code>. * The immediate contributed
-        configurations to a configuration are determined using the property path
-        <code>oslc_config:contribution/oslc_config:configuration</code>. Contribution resources are embedded within
-        configurations. * Global configurations often only have contributions and not selections. * Local configurations
-        often only have selections and not contributions.
-      </p>
+      <p>Some key aspects of the representation are:</p>
+      <ul>
+        <li>
+          The version resources selected by a configuration are determined using the property path
+          <code>oslc_config:selections/oslc_config:selects</code>.
+        </li>
+        <li>
+          The immediate contributed configurations to a configuration are determined using the property path
+          <code>oslc_config:contribution/oslc_config:configuration</code>. Contribution resources are embedded within
+          configurations.
+        </li>
+        <li>Global configurations often only have contributions and not selections.</li>
+        <li>Local configurations often only have selections and not contributions.</li>
+      </ul>
     </section>
     <section id="component-skew-and-contribution-order" class="level1">
       <h1>Component skew and contribution order</h1>
@@ -749,20 +765,30 @@
         <h2>Components</h2>
         <section id="minimal-elements" class="level3">
           <h3>Minimal elements</h3>
-          <p>
-            At a minimum, an implementation should provide REST support for: * <code>GET</code> of a component URI. The
-            RDF of a component should include a <code>oslc_config:configurations</code> statement to a
-            <em>Linked Data Platform Container</em> (LDPC). The response should include an <code>Etag</code> header
-            whose value represents the state of the component. * <code>PUT</code> of a component. The implementation
-            should require the use of an ‘If-match’ header whose value matches the current Etag. * <code>GET</code> of a
-            component’s configurations LDPC, returning a container that references all the configurations of that
-            container.
-          </p>
+          <p>At a minimum, an implementation should provide REST support for:</p>
+          <ul>
+            <li>
+              <code>GET</code> of a component URI. The RDF of a component should include a
+              <code>oslc_config:configurations</code> statement to a <em>Linked Data Platform Container</em> (LDPC). The
+              response should include an <code>Etag</code> header whose value represents the state of the component.
+            </li>
+            <li>
+              <code>PUT</code> of a component. The implementation should require the use of an ‘If-match’ header whose
+              value matches the current Etag.
+            </li>
+            <li>
+              <code>GET</code> of a component’s configurations LDPC, returning a container that references all the
+              configurations of that container.
+            </li>
+          </ul>
           <p>
             While it is valid to create a component that initially does not have any configurations, it is good practice
-            when creating a component to do either of: * Create an empty initial baseline, then create an empty default
-            stream from that baseline. * Create an empty default stream.
+            when creating a component to do either of:
           </p>
+          <ul>
+            <li>Create an empty initial baseline, then create an empty default stream from that baseline.</li>
+            <li>Create an empty default stream.</li>
+          </ul>
         </section>
         <section id="optional-elements" class="level3">
           <h3>Optional elements</h3>
@@ -797,16 +823,23 @@
         <h2>Configurations</h2>
         <section id="minimal-elements-1" class="level3">
           <h3>Minimal elements</h3>
-          <p>
-            At a minimum, an implementation should provide REST support for: * <code>GET</code> on a configuration URI.
-            If the application manages versioned resources, the RDF representation should include a
-            <code>oslc_config:selections</code> statement to a selections resource. The response should include an
-            <code>Etag</code> header whose value represents the state of that stream. * <code>PUT</code> of a
-            configuration. The implementation should require the use of an ‘If-match’ header whose value matches the
-            current Etag. * <code>GET</code> on a selections resource (if the application manages versioned resources).
-            The RDF representation should include a <code>oslc_config:select</code> statement to each version resource
-            URI selected by that configuration.
-          </p>
+          <p>At a minimum, an implementation should provide REST support for:</p>
+          <ul>
+            <li>
+              <code>GET</code> on a configuration URI. If the application manages versioned resources, the RDF
+              representation should include a <code>oslc_config:selections</code> statement to a selections resource.
+              The response should include an <code>Etag</code> header whose value represents the state of that stream.
+            </li>
+            <li>
+              <code>PUT</code> of a configuration. The implementation should require the use of an ‘If-match’ header
+              whose value matches the current Etag.
+            </li>
+            <li>
+              <code>GET</code> on a selections resource (if the application manages versioned resources). The RDF
+              representation should include a <code>oslc_config:select</code> statement to each version resource URI
+              selected by that configuration.
+            </li>
+          </ul>
         </section>
         <section id="optional-elements-1" class="level3">
           <h3>Optional elements</h3>
@@ -852,16 +885,28 @@
       <h1>Concept resources and version resources</h1>
       <section id="minimal-elements-2" class="level2">
         <h2>Minimal elements</h2>
-        <p>
-          At a minimum, an implementation should provide REST support for: * <code>GET</code> on a version resource URI.
-          The RDF representation of the version resource should: * Include statements against the version URI declaring
-          it of type <code>oslc_config:versionResource</code>, and <code>dcterms:isVersionOf</code> referencing the
-          concept resource URI. * Include statements about the properties of the resource using the concept resource URI
-          as the subject. * <code>GET</code> on a concept resource with a local configuration context specified by a
-          <code>oslc_config.context</code> query parameter or header. This should resolve the concept resource to the
-          version resource and return the RDF of that version resource. This requires that the application be able to
-          determine the component to which a specified concept resource belongs.
-        </p>
+        <p>At a minimum, an implementation should provide REST support for:</p>
+        <ul>
+          <li>
+            <code>GET</code> on a version resource URI. The RDF representation of the version resource should:
+            <ul>
+              <li>
+                Include statements against the version URI declaring it of type
+                <code>oslc_config:versionResource</code>, and <code>dcterms:isVersionOf</code> referencing the concept
+                resource URI.
+              </li>
+              <li>
+                Include statements about the properties of the resource using the concept resource URI as the subject.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <code>GET</code> on a concept resource with a local configuration context specified by a
+            <code>oslc_config.context</code> query parameter or header. This should resolve the concept resource to the
+            version resource and return the RDF of that version resource. This requires that the application be able to
+            determine the component to which a specified concept resource belongs.
+          </li>
+        </ul>
       </section>
       <section id="optional-elements-2" class="level2">
         <h2>Optional elements</h2>
