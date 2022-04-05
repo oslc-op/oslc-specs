@@ -57,6 +57,9 @@ local webserver (it is inadvisable to disable the security protections against
 running AJAX requests on local filesystem). With Python 3 installed:
 
     cd specs/
+    # if you have JDK 18+ installed
+    jwebserver
+    # or, if you have Python 3 installed
     python3 -m http.server 8000 --bind 127.0.0.1
 
 Now you can browse all specs via <http://localhost:8000/>. For an even better
