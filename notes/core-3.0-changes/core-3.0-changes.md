@@ -62,4 +62,4 @@ OSLC Core 2.0 supports the use of HTTP Basic Authentication, OAuth (1.0), or bot
 
 ## CORS protocol
 
-OSLC Core 2.0 did not address the issue of new security constraints being imposed by some web browsers to limit the loading of resources with cross-origin. See [Cross-origin resource sharing](https://[https://en.wikipedia.org/wiki/Cross-origin_resource_sharing). An example is where a dialog served by one application embeds content from another application, such as in an iFrame. OSLC Core 3.0 recommends that servers support the CORS protocol to address these emerging security requirements.
+OSLC Core 2.0 did not address the issue of new security constraints being imposed by some web browsers to limit the loading of resources with cross-origin. See [Cross-origin resource sharing](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing). An example is where a dialog served by one application embeds content from another application, such as in an iFrame. OSLC Core 3.0 recommends that servers support the CORS protocol to address these emerging security requirements.
