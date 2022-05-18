@@ -9,7 +9,7 @@ Configuration Management, and all the various OSLC domain specifications.
 
 ## Quick links
 
-- ~~[OASIS OP tickets](https://github.com/oasis-open-projects/administration/issues)~~ Switched back to [OASIS Jira](https://issues.oasis-open.org/browse/TCADMIN-4191?jql=project%20%3D%20TCADMIN%20AND%20statusCategory%20!%3D%20Done%20%20AND%20text%20~%20%22oslc%22%20ORDER%20BY%20key%20DESC%2C%20priority%20DESC%2C%20updated%20DESC)
+- ~~[OASIS OP tickets](https://github.com/oasis-open-projects/administration/issues)~~ Switched back to [OASIS Jira](https://issues.oasis-open.org/issues/?jql=project%20%3D%20TCADMIN%20AND%20statusCategory%20!%3D%20Done%20%20AND%20text%20~%20%22oslc%22%20ORDER%20BY%20key%20DESC%2C%20priority%20DESC%2C%20updated%20DESC)
 - [Handbook](https://github.com/oslc-op/oslc-specs/wiki/Publication-guidelines)
 - [OP minutes](https://github.com/oslc-op/oslc-admin/tree/master/minutes)
 - [website issues](https://github.com/oslc-op/website/issues) (+[conneg](https://github.com/oslc-op/website-content-negotiation/issues))
