@@ -1,11 +1,8 @@
 ---
-title: Tracked Resource Set 1.0 Primer
+title: Tracked Resource Set Primer Version 1.0
 abstract: 
-  This primer serves as a guide to the concepts in the TRS specification, and through the use of simple examples, explains how a data provider might expose resources in a TRS and how a TRS client might consume a data provider's TRS. 
+  This primer serves as a guide to the concepts in the TRS 3.0 specification, and through the use of simple examples, explains how a data provider might expose resources in a TRS and how a TRS client might consume a data provider's TRS. 
 ---
-
-
-TRS 3.0 Primer is an OSLC OP Project Note
 
 
 # Outline
