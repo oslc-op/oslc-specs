@@ -39,7 +39,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFParserBuilder;
 
 
@@ -262,11 +262,8 @@ public class HttpHandler
             }
             Model foundModel = ModelFactory.createDefaultModel();
 
-            RDFParserBuilder rdfParserBuilder = builderFactory();
-            String source = httpUri.toString();
-            rdfParserBuilder = rdfParserBuilder.source(source);
-            RDFParser parser = rdfParserBuilder.build();
-            parser.parse(foundModel);
+
+            RDFDataMgr.read(foundModel, httpUri.toString());
 
             ResIterator ri = foundModel.listSubjects();
             while (ri.hasNext())

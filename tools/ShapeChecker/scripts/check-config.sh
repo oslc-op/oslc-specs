@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 build/install/ShapeChecker/bin/ShapeChecker \
+-D \
 -C ${comment# Enforce check for ResourceShapeConstraints} \
 -q unusedVocabulary \
 -q unusedTerm \
