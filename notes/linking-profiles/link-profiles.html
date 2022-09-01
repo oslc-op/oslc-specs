@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OSLC Linking Profiles Version 1.0</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="OSLC Linking profiles are non-normative supplement to OSLC specifications that specify additional constraints on OSLC conformance clauses and vocabulary terms for a common purpose. The goal is to facilitate interoperability between OSLC enabled applications when linking across applications, domains, and heterogenious domain providers." />
+
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.32/builds/respec-oasis-common.min.js"
+      async
+      class="remove"
+    ></script>
+    <script class="remove">
+      var respecConfig = {
+        shortName: "linking-profiles",
+        specStatus: "PND",
+        revision: "01",
+        // publishDate: "2021-12-16T12:00Z",
+        // previousPublishDate: "2019-11-14",
+        // previousMaturity: "PSD",
+
+        thisVersion: "https://docs.oasis-open-projects.org/oslc-op/linking-profiles/v1.0/pnd01/linking-profiles.html",
+        prevVersion: null,
+        latestVersion: "https://docs.oasis-open-projects.org/oslc-op/linking-profiles/v1.0/linking-profiles.html",
+        latestSpecVersion: null,
+        edDraftURI: null,
+
+        // Other parts of multi-part spec
+        additionalArtifacts: [],
+
+        relatedWork: [
+          {
+            title: "OSLC Core Version 3.0: Link Guidance Version 1.0",
+            href: "https://docs.oasis-open-projects.org/oslc-op/link-guidance/v1.0/link-guidance.html",
+            authors: ["Jim Amsden"],
+            publisher: "OASIS",
+          },
+        ],
+
+        localBiblio: {
+          OSLCCore3: {
+            title: "OSLC Core 3.0",
+            href: "hhttps://open-services.net/spec/core/latest",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "OASIS Standard",
+            publisher: "OASIS",
+          },
+        },
+
+        license: "cc-by-4",
+        additionalLicenses: [
+          {
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+          },
+        ],
+        citationLabel: "OSLC-Linkinig-Profiles-1.0",
+        maxTocLevel: 3,
+        // conformanceLabelPrefix: "CP",
+        // noConformanceStyling: 1,
+        noConformanceTable: 1,
+        // conformanceClauseStrength : 1,
+
+        // name of the OP
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-op",
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "https://www.ibm.com/",
+          },
+          {
+            name: "Jad El-khoury",
+            mailto: "jad@kth.se",
+            company: "KTH Royal Institute of Technology",
+            companyURL: "https://www.kth.se/",
+          },
+        ],
+        editors: [
+          {
+            name: "Eran Gery",
+            mailto: "eran.gery@il.ibm.com",
+            company: "IBM",
+            companyURL: "https://www.ibm.com/",
+          },
+        ],
+      };
+    </script>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid #666;
+        border-collapse: collapse;
+      }
+      table th,
+      table td {
+        padding: 5px; /* Apply cell padding */
+      }
+
+      hr {
+        border: none;
+        border-top: 1px double #666;
+        color: #666;
+        overflow: visible;
+        height: 0px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section id="abstract">
+      <p>OSLC Linking profiles are non-normative supplement to OSLC specifications that specify additional constraints on OSLC conformance clauses and vocabulary terms for a common purpose. The goal is to facilitate interoperability between OSLC enabled applications when linking across applications, domains, and heterogenious domain providers.</p>
+    </section>
+
+    <section id="toc"></section>
+    <section id="sotd"></section>
+
+    <section id="introduction" class="level1">
+    <h1>Introduction</h1>
+    <p>Linking profiles are non-normative supplement to OSLC specifications, aiming to ensure interoperability between OSLC enabled applications when linking across applications, domains, and heterogenious domain providers. It is important to note that OSLC interoperability is not automatically implied by OSLC specifications, as the specifications allow for high degree of conformance variability.</p>
+    <p>Linking use cases result in establishing OSLC links across OSLC resources in different applications, possibly within the same OSLC domain or across domains. For example, a requirements provider from one vendor establishes traceability links to a requirements provider from another vendor. A cross domain example would be a PLM BOM application establishing traceability links to a requirements application by a different vendor. The cross vendors emphasis is because this is the context for interoperability challenges. Linking use cases may vary in capability as described later in this document, but all linking use cases require establishing connections between the resources in the consumer and provider applications, ability to select a resource with the provider to link with a resource of the consumer, and storage of the link in one of the applications. From that point onwards there is a variability across the use cases related to bi-directional navigability (are both applications aware of the link) and also behaviors that depend if the application supports configuration management or not.</p>
+    <p>The introduction of the profile comes to help users qualify whether two OSLC applications meet compatibility level to perform a set of use OSLC linking cases, and software vendors on how to build/consume OSLC linking related services that ensure interoperability.</p>
+    <p>The linking profiles specify 4 (3+1 future) levels of conformance, each aims at certain implementation level and set of linking use cases, and can also be related to “OSLC maturity” usage. The profiles should be based on accumulated practice. Since IBM ELM has the longest and broadest OSLC integration adoptions of OSLC integrations, IBM ELM is used as a baseline for spec variability choices, so the profiles will ensure ELM linking interoperability. However, the profiles are meant provide an interoperability baseline to any other vendor and future interoperability related or unrelated to IBM OSLC applications.</p>
+    </section>
+    <section id="motivation" class="level1">
+    <h1>Motivation</h1>
+    <section id="the-problem" class="level2">
+    <h2>The Problem</h2>
+    <p>The fundamental set of interoperability use cases in the context of OSLC linked data architecture describe cross linking across lifecycle resources and domain providers. Cross linking forms the foundation for “digital continuity” and establishment of “digital threads”. Using linking profiles guarantees a set of use cases across providers implemented by different software vendors.</p>
+    <p>When originally developed, the OSLC specifications (Core, GCM) were purposefully kept general avoiding over-prescription. The intent was to allow a considerable degree of implementation variability to speed vendor adoption as well as let adopting vendors identify areas (though their adoption) that needed more prescription.by. This is reflected in the minimal set of mandatory (“must”) services , and rest that are only recommended (“should”).</p>
+    <p>The goal of interoperability across different vendor OSLC specification implementations requires peer to peer testing and adjustments to satisfy certain common interoperability use cases. Also, implementors complain that practically implementing interoperable OSLC providers or consumers is very time consuming and requires lots of discovery, trial and error. Additionally, when vendors label their applications as “OSLC compliant”, the possible implementation variability makes that label definition very broad becoming difficult for end users to know for certain what aspects of interoperability exist.</p>
+    <p>In addition to the variability caused by the mandatory/optional requirements, implementors also struggle to follow the specification without detailed explanations or examples. Unfortunately, while some guides exist, they are not always known about or found, requiring web searches. In some cases, guides simply do not exist.</p>
+    </section>
+    <section id="solution-scope" class="level2">
+    <h2>Solution scope</h2>
+    <p>Specify profiles based on maturity and use cases to reduce interoperability variability across providers complying to a specific profile, and provide guidance with examples to eliminate ambiguities and confusion related to the implementation of the specifications. A key aspect of reducing spec variabilities is converting “should” clauses in the spec to “must” in certain profiles. Guidance may be reference existing articles and/or include a supplementary spec in the profile.</p>
+    <p>As agreed in preliminary discussions, the linking profiles will accommodate various degrees of maturity and need of OSLC implementations, that are based on two key characteristics related to providers/consumers:</p>
+    <ul>
+    <li>The need to maintain bi-directional navigability or not</li>
+    <li>Usage of configuration management by the provider or not</li>
+    </ul>
+    <p>Based on that we aim to specify 3+1 profiles as follows</p>
+    <ul>
+    <li><strong>Basic</strong>: focuses on establishing links to a provider, without bi-directional navigation. The main objective of this profile is to establish proper connection with a provider by a consumer and obtaining a resource selection UI. The challenges related to the basic profile are around establishing OSLC connection with a provider with proper authentication and discovery of services.</li>
+    <li><strong>Bi-directional</strong>: this profile extends the capabilities of the basic profile, but in addition it should result in by-directional navigation across the two applications. It also requires conformance with the basic profile but requires additional capabilities. This profile needs to clarify where a physical link is actually stored, and how the non-storing application can discover incoming links. The issues related to this profile are around link storage, discovery, and OSLC query.</li>
+    <li><strong>Config management Linking</strong>: Linking across configuration management enabled OSLC providers. This profile extends the bi-directional profile with additional guidance in case of the application enables OSLC configuration management.</li>
+    <li><strong>Full</strong>: This profile is future and is not currently feasible, as it depends on future standardization of a link discovery service. It aims to prescribe providers on how to use an incoming link service if one exists, to optimize incoming links discovery, on top of the config management linking profile.</li>
+    </ul>
+    <section id="solution-capability-matrix" class="level3">
+    <h3>Solution Capability Matrix</h3>
+    <p>The following table summarizes the OSLC capabilities for ach of the profiles.</p>
+    <table>
+    <thead>
+    <tr class="header">
+    <th>Capability</th>
+    <th>Basic</th>
+    <th>Bi-Directional</th>
+    <th>Config</th>
+    <th>Full</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="odd">
+    <td>Root Services document</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr class="even">
+    <td>CSP for friends</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr class="odd">
+    <td>Selection Dialogs</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr class="even">
+    <td>CORS for friends</td>
+    <td>SHOULD</td>
+    <td>SHOULD</td>
+    <td>SHOULD</td>
+    <td>MUST</td>
+    </tr>
+    <tr class="odd">
+    <td>Preview Dialogs</td>
+    <td>SHOULD</td>
+    <td>SHOULD</td>
+    <td>SHOULD</td>
+    <td>SHOULD</td>
+    </tr>
+    <tr class="even">
+    <td>PUT on Resources</td>
+    <td>MAY</td>
+    <td>SHOULD</td>
+    <td>SHOULD</td>
+    <td>SHOULD</td>
+    </tr>
+    <tr class="odd">
+    <td>OSLC Query</td>
+    <td>MAY</td>
+    <td>SHOULD</td>
+    <td>SHOULD</td>
+    <td>SHOULD</td>
+    </tr>
+    <tr class="even">
+    <td>Link Ownership</td>
+    <td>MAY</td>
+    <td>SHOULD</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr class="odd">
+    <td>Config Management</td>
+    <td>MAY</td>
+    <td>MAY</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr class="even">
+    <td>Contribute links to TRS</td>
+    <td>MAY</td>
+    <td>MAY</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr class="odd">
+    <td>OSLC Link Discovery Service</td>
+    <td>MAY</td>
+    <td>MAY</td>
+    <td>MAY</td>
+    <td>MUST</td>
+    </tr>
+    </tbody>
+    </table>
+    </section>
+    </section>
+    </section>
+    <section id="root-services-document" class="level1">
+    <h1>Root Services document</h1>
+    <p>Each section will list:</p>
+    <ol type="1">
+    <li>The applicable profiles</li>
+    <li>The applicable OSLC conformance clauses</li>
+    <li>How those conformance clauses are tightened in the profile</li>
+    <li>Any additional ResourceShape constrints</li>
+    <li>The intended purpose of the additional constrats</li>
+    <li>Any additional conformance clauses</li>
+    <li>Examples</li>
+    </ol>
+    </section>
+    <section id="csp-for-friends" class="level1">
+    <h1>CSP for friends</h1>
+    </section>
+    <section id="selection-dialogs" class="level1">
+    <h1>Selection Dialogs</h1>
+    </section>
+    <section id="cors-for-friends" class="level1">
+    <h1>CORS for friends</h1>
+    </section>
+    <section id="preview-dialogs" class="level1">
+    <h1>Preview Dialogs</h1>
+    </section>
+    <section id="put-on-resources" class="level1">
+    <h1>PUT on Resources</h1>
+    </section>
+    <section id="oslc-query" class="level1">
+    <h1>OSLC Query</h1>
+    </section>
+    <section id="link-ownership" class="level1">
+    <h1>Link Ownership</h1>
+    </section>
+    <section id="configuration-management" class="level1">
+    <h1>Configuration Management</h1>
+    </section>
+    <section id="contribute-links-to-trs" class="level1">
+    <h1>Contribute links to TRS</h1>
+    </section>
+    <section id="oslc-link-discovery-service" class="level1">
+    <h1>OSLC Link Discovery service</h1>
+    </section>
+    <section class="appendix">
+       <h2>Acknowledgements</h2>
+
+       <p>
+         The following individuals have participated in the creation of this specification and are gratefully
+         acknowledged:
+       </p>
+
+       <p><b>Project Governing Board</b>:</p>
+       <p style="margin-left: 40px">
+         James Amsden, IBM (co-chair)<br />
+         Andrii Berezovskyi, KTH (co-chair)<br />
+         Axel Reichwein, Koneksys<br />
+       </p>
+
+       <p><b>Techical Steering Committee</b>:</p>
+       <p style="margin-left: 40px">
+         James Amsden, IBM<br />
+         Andrii Berezovskyi, KTH<br />
+         Axel Reichwein, Koneksys<br />
+       </p>
+
+       <p><b>Additional Participants</b>:</p>
+       <p style="margin-left: 40px">
+         Eran Gery, IBM<br />
+         Andrii Berezovskyi, KTH<br />
+         Jim Gammon, Raytheon<br />
+       </p>
+     </section>
+  </body>
+</html>
