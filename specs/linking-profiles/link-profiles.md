@@ -3,7 +3,7 @@ title: OSLC Linking Profiles Version 1.0
 abstract: OSLC Linking profiles are non-normative supplement to OSLC specifications that specify additional constraints on OSLC conformance clauses and vocabulary terms for a common purpose. The goal is to facilitate interoperability between OSLC enabled applications when linking across applications, domains, and heterogenious domain providers.  
 ---
 
-# Introduction
+# Introduction {.informative}
 
 Linking profiles are non-normative supplement to OSLC specifications, aiming to ensure interoperability between OSLC enabled applications when linking across applications, domains, and heterogenious domain providers.  It is important to note that OSLC interoperability is not automatically implied by OSLC specifications, as the specifications allow for high degree of conformance variability.
 
@@ -74,6 +74,9 @@ Each section will list:
 5. Any additional conformance clauses
 6. Examples
 
+Example some normative text: <span class="conformance">OSLC Services **MUST** support at least one RDF resource serialization format, and should support as many serialization formats as possible through content negotiation.</span>
+
+
 # Authentication 
 
 # CSP for friends
@@ -103,5 +106,5 @@ example text
 
 # Contribute links to TRS
 
-# OSLC Link Discovery service
+# OSLC Link Discovery service {.informative}
 
