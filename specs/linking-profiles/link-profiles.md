@@ -52,14 +52,17 @@ The following table summarizes the OSLC capabilities for ach of the profiles.
 | Selection Dialogs      | MUST | MUST | MUST | MUST |
 | CORS for friends       | SHOULD | SHOULD | SHOULD | MUST |
 | Preview Dialogs        | SHOULD | SHOULD | SHOULD | SHOULD |
-| PUT on Resources       | MAY | SHOULD | SHOULD | SHOULD |
-| OSLC Query             | MAY | SHOULD | SHOULD | SHOULD |
-| Link Ownership         | MAY | SHOULD | MUST | MUST | 
-| Config Management       | MAY | MAY | MUST | MUST  |
-| Contribute links to TRS  | MAY | MAY | MUST | MUST  |
-| OSLC Link Discovery Service  | MAY | MAY | MAY | MUST  |
+| PUT on Resources       | | SHOULD | SHOULD | SHOULD |
+| OSLC Query             | | SHOULD | SHOULD | SHOULD |
+| Link Ownership         | | SHOULD | MUST | MUST | 
+| Config Management       | | | MUST | MUST  |
+| Contribute links to TRS  | | | MUST | MUST  |
+| OSLC Link Discovery Service  | | | | MUST  |
 
 # Root Services document
+| Capability | Basic | Bi-Directional | Config | Full |
+| ---------- | ----- | -------------- | ------ | ---- |
+| Root Services document | MUST | MUST | MUST | MUST |
 
 Each section will list:
 
@@ -71,7 +74,12 @@ Each section will list:
 5. Any additional conformance clauses
 6. Examples
 
+# Authentication 
+
 # CSP for friends
+| Capability | Basic | Bi-Directional | Config | Full |
+| ---------- | ----- | -------------- | ------ | ---- |
+| CSP for friends    | MUST | MUST | MUST | MUST |
 
 # Selection Dialogs
 
@@ -82,6 +90,12 @@ Each section will list:
 # PUT on Resources
 
 # OSLC Query
+| Capability | Basic | Bi-Directional | Config | Full |
+| ---------- | ----- | -------------- | ------ | ---- |
+| OSLC Query             | | SHOULD | SHOULD | SHOULD |
+```
+example text
+```
 
 # Link Ownership
 
