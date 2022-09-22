@@ -52,9 +52,9 @@ The following table summarizes the OSLC capabilities for ach of the profiles.
 | Selection Dialogs      | MUST | MUST | MUST | MUST |
 | CORS for friends       | SHOULD | SHOULD | SHOULD | MUST |
 | Preview Dialogs        | SHOULD | SHOULD | SHOULD | SHOULD |
-| PUT on Resources       | | SHOULD | SHOULD | SHOULD |
+| Link Ownership         | | MUST | MUST | MUST | 
+| PUT on Resources       | | MUST | MUST | MUST |
 | OSLC Query             | | SHOULD | SHOULD | SHOULD |
-| Link Ownership         | | SHOULD | MUST | MUST | 
 | Config Management       | | | MUST | MUST  |
 | Contribute links to TRS  | | | MUST | MUST  |
 | OSLC Link Discovery Service  | | | | MUST  |
@@ -90,6 +90,9 @@ Example some normative text: <span class="conformance">OSLC Services **MUST** su
 
 # Preview Dialogs
 
+# Link Ownership
+In bi-derctional linking scenarios both OSLC participants are aware of links across their owned resources and enable link visibility and navigation at each side. Nevertheless storing a link at both sides is considered a ill-practice as it is essentially replication of data. This that may result in inconsistencies as links are updated or deleted, since maintaining consistency requires synchrnization across the providers on any update. Therefore the recommended practice is to store links on one of the participants, and use link discovery by the other participant. Therefore there need to be an agreed convention on which side should store the link. OSLC links have an incoming and outgoing sides, determined by the role of the link. Usully one side will have an active predicate name, for example "implements" and the other side will have a passive predicate name, in this example it would be "implemented by". The active side is also considered the outgoing side, and the passive the incoming side. The convention is that the link is stored with the resource on the outgoing side, i.e. the resource with the active predicate. The incoming side would discover the links with one of the discovery methods discussed in the following sections. Note the the creation of the link can be initiated by both providers. In case that the link is intiated by the incoming side provider, it needs to store it with the resource on the outgoing side provider. This is discussed in the put on resources section. 
+
 # PUT on Resources
 
 # OSLC Query
@@ -99,8 +102,6 @@ Example some normative text: <span class="conformance">OSLC Services **MUST** su
 ```
 example text
 ```
-
-# Link Ownership
 
 # Configuration Management
 
