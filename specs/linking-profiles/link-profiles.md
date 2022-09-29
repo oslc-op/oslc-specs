@@ -84,7 +84,7 @@ Example some normative text: <span class="conformance">OSLC Services **MUST** su
 | ---------- | ----- | -------------- | ------ | ---- |
 | CSP for friends    | MUST | MUST | MUST | MUST |
 
-# Selection Dialogs <WIP>
+# Selection Dialogs 
 | Capability | Basic | Bi-Directional | Config | Full |
 | ---------- | ----- | -------------- | ------ | ---- |
 | Selection Dialog   | MUST | MUST | MUST | MUST |
