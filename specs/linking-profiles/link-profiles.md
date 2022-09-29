@@ -84,7 +84,16 @@ Example some normative text: <span class="conformance">OSLC Services **MUST** su
 | ---------- | ----- | -------------- | ------ | ---- |
 | CSP for friends    | MUST | MUST | MUST | MUST |
 
-# Selection Dialogs
+# Selection Dialogs <WIP>
+| Capability | Basic | Bi-Directional | Config | Full |
+| ---------- | ----- | -------------- | ------ | ---- |
+| Selection Dialog   | MUST | MUST | MUST | MUST |
+
+Selection Dialogs MUST provide a mechanism to search and select remote resources. Selection dialog provides OSLC consumers to search and select resources, to create trace links. Selection Dialog MUST accept user input and to filter out resources on basis of user input and MUST display filtered resources. Selection Dialogs MUST provide a way to user to select filtered resources and submit their selection. Once user selection is submitted, resource URI should be 
+
+| Capability | Basic | Bi-Directional | Config | Full |
+| ---------- | ----- | -------------- | ------ | ---- |
+| Previews   | SHOULD | SHOULD | SHOULD | SHOULD |
 
 # CORS for friends
 
