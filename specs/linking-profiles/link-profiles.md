@@ -84,12 +84,18 @@ Example some normative text: <span class="conformance">OSLC Services **MUST** su
 | ---------- | ----- | -------------- | ------ | ---- |
 | CSP for friends    | MUST | MUST | MUST | MUST |
 
-# Selection Dialogs 
+# Selection Dialogs <In context to Resource Creation>
 | Capability | Basic | Bi-Directional | Config | Full |
 | ---------- | ----- | -------------- | ------ | ---- |
 | Selection Dialog   | MUST | MUST | MUST | MUST |
 
-Selection Dialogs MUST provide a mechanism to search and select remote resources. Selection dialog provides OSLC consumers to search and select resources, to create trace links. Selection Dialog MUST accept user input and to filter out resources on basis of user input and MUST display filtered resources. Selection Dialogs MUST provide a way to user to select filtered resources and submit their selection. Once user selection is submitted, resource URI should be 
+A OSLC server MUST register Dialog discovery service using oslc:selectionDialog property with a service provider. A OSLC consumer discovers the service by looking for oslc:selectionDialog property and making a GET request on the service resource.
+
+Selection Dialog associaton with a resource Type
+
+OSLC server MUST provide a dialog, an HTML page for resource selection, search and select remote resources. Selection dialog provides OSLC consumers to search and select resources, to create trace links. Selection Dialog MUST(SHOULD) accept user input and to filter out resources on basis of user input and MUST(SHOULD) display filtered resources. Selection Dialogs MUST provide a way to user to select filtered resources and submit their selection. Once user selection is submitted, Dialogs send selected resource URI as result back to the client using the HTML5 function Window.postMessage [whatwg-web-messaging]. postMessage is called on window.opener if set. Otherwise, postMessage is called on window.parent.
+    
+OSLC client MUST Open the dialog in a new window or embed the dialog in an iframe. Selection Dialog consumer MUST add a message listener to receive messages from the dialog. When message from the dialog indicates a completed action, OSLC Consumer SHOULD free resources and MUST handle the action.
 
 | Capability | Basic | Bi-Directional | Config | Full |
 | ---------- | ----- | -------------- | ------ | ---- |
