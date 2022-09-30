@@ -97,14 +97,12 @@ OSLC server MUST provide a dialog, an HTML page for resource selection, search a
     
 OSLC client MUST Open the dialog in a new window or embed the dialog in an iframe. Selection Dialog consumer MUST add a message listener to receive messages from the dialog. When message from the dialog indicates a completed action, OSLC Consumer SHOULD free resources and MUST handle the action.
 
-# Previews
-| Capability | Basic | Bi-Directional | Config | Full |
-| ---------- | ----- | -------------- | ------ | ---- |
-| Previews   | SHOULD | SHOULD | SHOULD | SHOULD |
-
 # CORS for friends
 
 # Preview Dialogs
+| Capability | Basic | Bi-Directional | Config | Full |
+| ---------- | ----- | -------------- | ------ | ---- |
+| Previews   | SHOULD | SHOULD | SHOULD | SHOULD |
 
 # PUT on Resources
 
