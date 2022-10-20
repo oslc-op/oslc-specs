@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title>OSLC Tracked Resource Set Version 3.0. Part 1: Specification</title>
     <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.28/builds/respec-oasis-common.js"
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.32/builds/respec-oasis-common.js"
       async
       class="remove"
     ></script>
@@ -15,7 +15,7 @@
       var status = "PS";
       var wdBase = "https://oslc-op.github.io/oslc-specs/specs/trs";
       var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/trs/v3.0";
-      var rev = "01";
+      var rev = "02";
       var thisBase = wdBase;
       if (status !== "WD") {
         thisBase = oasisBase + "/" + status.toLowerCase() + rev;
@@ -26,11 +26,11 @@
         specStatus: status,
         revision: rev,
         thisVersion: thisBase + filePath,
-        prevVersion: "https://docs.oasis-open-projects.org/oslc-op/trs/v3.0/psd01/tracked-resource-set.html",
+        prevVersion: "https://docs.oasis-open-projects.org/oslc-op/trs/v3.0/ps01/tracked-resource-set.html",
         latestVersion: oasisBase + filePath,
         latestSpecVersion: "https://open-services.net/spec/trs/latest",
         edDraftURI: "https://open-services.net/spec/trs/latest-draft",
-        publishDate: "2022-02-03T12:00Z",
+        publishDate: "2022-11-24T12:00Z",
         maxTocLevel: 3,
         conformanceLabelPrefix: "TRS",
         license: "cc-by-4",
@@ -423,15 +423,28 @@
       <p>
         The number of Tracked Resources in the Base could be such that it is not reasonable to list them all in a single
         HTTP response. In this case,
-        <span class="conformance"
-          >the Base MAY be segmented into separate resources; there can be any number of such Base segments, each one
-          listing a subset of all Tracked Resources</span
-        >.
+        <span class="conformance">
+          the Base MAY be segmented into separate resources; there can be any number of such Base segments, each one
+          listing a subset of all Tracked Resources.</span
+        >
       </p>
       <p class="conformance">
-        Base segmentation MUST be accomplished using the mechanisms described in the "Resource Paging" section of
-        [[!OSLCCore3]].
+        If base paging is implemented, the server MAY respond with a 30x redirect message, directing the Client to the
+        first “single-page resource”, or alternatively it MAY respond with the first "single-page resource" .
       </p>
+      <p class="conformance">
+        The representation of a single-page resource MAY contain a subset of the Base’s membership triples.
+      </p>
+      <p>
+        <span class="conformance"
+          >The response for a single-page resource SHOULD contain a Link: &lt;http://www.w3.org/ns/ldp#Page&gt;;
+          rel="type" header.</span
+        ><span class="conformance"
+          >If there are further pages of base page members for the single-page response, the response MUST include a
+          Link: &lt;uriOfNextPage&gt;; rel="next" header, where uriOfNextPage is the URI of the next page.</span
+        >
+      </p>
+      <p class="conformance">The first single-page resource of a Base MUST include a trs:cutoffEvent.</p>
       <p class="conformance">A Server MAY include a Tracked Resource in more than one base segment.</p>
     </section>
     <section id="rebase">
@@ -720,7 +733,7 @@ deleteProperty ::= 'D' triple
         acknowledged:
       </p>
       <p><b>Participants</b>:</p>
-      <p style="margin-left: 40px;">
+      <p style="margin-left: 40px">
         James Amsden, IBM (Chair, Editor)<br />
         Frank Budinsky, IBM<br />
         Nick Crossley, IBM<br />
