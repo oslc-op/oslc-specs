@@ -91,36 +91,63 @@ Example some normative text: <span class="conformance">OSLC Services **MUST** su
 # Preview Dialogs
 
 # Link Ownership
-In bi-derctional linking scenarios both OSLC participants are aware of links across their owned resources and enable link visibility and navigation at each side. Nevertheless storing a link at both sides is considered a ill-practice as it is essentially replication of data. This that may result in inconsistencies as links are updated or deleted, since maintaining consistency requires synchrnization across the providers on any update. Therefore the recommended practice is to store links on one of the participants, and use link discovery by the other participant. Therefore there need to be an agreed convention on which side should store the link. OSLC links have an incoming and outgoing sides, determined by the role of the link. Usully one side will have an active predicate name, for example "implements" and the other side will have a passive predicate name, in this example it would be "implemented by". The active side is also considered the outgoing side, and the passive the incoming side. The convention is that the link is stored with the resource on the outgoing side, i.e. the resource with the active predicate. The incoming side would discover the links with one of the discovery methods discussed in the following sections. Note the the creation of the link can be initiated by both providers. In case that the link is intiated by the incoming side provider, it needs to store it with the resource on the outgoing side provider. This is discussed in the put on resources section. 
+In bi-derctional linking scenarios both OSLC participants are aware of links across their owned resources and enable link visibility and navigation at each side. Nevertheless storing a link at both sides is considered a ill-practice as it is essentially replication of data. This that may result in inconsistencies as links are updated or deleted, since maintaining consistency requires synchrnization across the providers on any update. Therefore the recommended practice is to store links on one of the participants, and use link discovery by the other participant. Therefore there need to be an agreed convention on which side should store the link. OSLC links have an incoming and outgoing sides, determined by the role of the link. Usully one side will have an active predicate name, for example "implements" and the other side will have a passive predicate name, in this example it would be "implemented by". The active side is also considered the outgoing side, and the passive the incoming side. The convention is that the link is stored with the resource on the outgoing side, i.e. the resource with the active predicate. The incoming side would discover the links with one of the discovery methods discussed in the following sections. Note the the creation of the link can be initiated by both providers. In case that the link is intiated by the incoming side provider, it needs to store it with the resource on the outgoing side provider. This is discussed in the put on resources section. In addition, for historical reasons, certain OSLC providers such as IBM ELM, may have some variations of behaviors between configuration enabled and non-configuration enabled modes, where in non-configuration modes there may still be a usage of backlink storage. In addition, providers do not support configurations such as CM (change management providers) would have preference for link storage over configuration enabled providers, to prevent baselined links to refer to mutable entities.
 
-predicate	Source domain and link owner	Target domain (informal)	Reverse predicate
-oslc_rm:constraints	RM	RM	oslc_rm:constrainedBy
-oslc_rm:decomposes	RM	RM	oslc_rm:decomposedBy
-oslc_rm:elaborates	RM	RM	oslc_rm:elaboratedBy
-oslc_rm:satisfies	RM	RM	oslc_rm:satisfiedBy
-oslc_rm:uses	RM	RM	-unspcified-
-affects	QM	RM	oslc_rm:affectedBy
-affectedByChangeRequest	QM	CM	-unspecified-
-blockedByChangeRequest	QM	CM	-unspecified-
-testsChangeRequest	QM	CM	-unspecified-
-validatesRequirement	QM	RM	validatedBy
-validatesRequirementCollection	QM	RM	validatedBy
-implements	CM	RM	imlementedBy
-tracksRequirement	CM	RM	trackedBy
-affectsRequirement	CM	RM	
-relatedTestScript	CM	QM	
-relatedTestCase	CM	QM	
-relatedTestPlan	CM	QM	
-relatedTestExecutionRecord	CM	QM	
-affectedPlanItem	CM	CM	-unspecified-
-affectedByDefect	CM	CM	-unspecified-
-relatedChangeRequest	CM	CM	-unspecified-
-jazz_am:derives	AM	-unspecified-	-unspecified-
-jazz_am:elaborates	AM	-unspecified-	-unspecified-
-jazz_am:external	AM	External resource	-unspecified-
-jazz_am:refine	AM	RM	-unspecified-
-jazz_am:satisfy	AM	RM	-unspecified-
-jazz_am:trace	AM	RM	-unspecified-
+Along those principles, here is a list of all the specified OSLC predicates and their respective ownership.
+
+Source domain/link owner |	Primary predicate	| Target domain | Secondary  predicate
+-------------------------|----------------------|---------------|---------------------
+RM	|   oslc_rm:constraints |   RM	|   oslc_rm:constrainedBy
+-------------------------|----------------------|---------------|---------------------
+RM	|   oslc_rm:decomposes |   	RM	|   oslc_rm:decomposedBy
+-------------------------|----------------------|---------------|---------------------
+RM	|   oslc_rm:elaborates	|   RM	|   oslc_rm:elaboratedBy
+-------------------------|----------------------|---------------|---------------------
+RM	|   oslc_rm:satisfies	|   RM	|   oslc_rm:satisfiedBy
+-------------------------|----------------------|---------------|---------------------
+RM	|   oslc_rm:uses	|   RM	|   -unspcified-
+-------------------------|----------------------|---------------|---------------------
+QM	|   oslc_qm:affects	|   RM	|   oslc_rm:affectedBy
+-------------------------|----------------------|---------------|---------------------
+QM	|   oslc_qm:validatesRequirement	|   RM	|   oslc_rm:validatedBy
+-------------------------|----------------------|---------------|---------------------
+QM	|   oslc_qm:validatesRequirementCollection	|   RM	oslc_rm:validatedBy
+-------------------------|----------------------|---------------|---------------------
+CM	|   oslc_cm:implements	|   RM	|   oslc_rm:imlementedBy
+-------------------------|----------------------|---------------|---------------------
+CM	|   oslc_cm:tracksRequirement	|   RM	|   oslc_rm:trackedBy
+-------------------------|----------------------|---------------|---------------------
+CM	|   oslc_cm:affectsRequirement	|   RM	
+-------------------------|----------------------|---------------|---------------------
+CM	|   oslc_cm:relatedTestScript   	|   QM	oslc_qm:relatedChangeRequest
+-------------------------|----------------------|---------------|---------------------
+CM	|   oslc_cm:relatedTestCase	|   QM	|   oslc_qm:relatedChangeRequest
+-------------------------|----------------------|---------------|---------------------
+CM	|   oslc_cm:relatedTestPlan	|   QM	|   oslc_qm:relatedChangeRequest
+-------------------------|----------------------|---------------|---------------------
+CM	|   oslc_cm:relatedTestExecutionRecord	|   QM	|   oslc_qm:relatedChangeRequest
+-------------------------|----------------------|---------------|---------------------
+CM	|   oslc_cm:affectedPlanItem	|   CM	|   -unspecified-
+-------------------------|----------------------|---------------|---------------------
+CM	|   oslc_cm:affectedByDefect	|   CM   |   -unspecified-
+-------------------------|----------------------|---------------|---------------------
+CM	|   oslc_cm:relatedChangeRequest	|   CM	-unspecified-
+-------------------------|----------------------|---------------|---------------------
+AM	|   jazz_am:derives	|   -unspecified-	|   -unspecified-
+-------------------------|----------------------|---------------|---------------------
+AM	|   jazz_am:elaborates	|   -unspecified-	|   -unspecified-
+-------------------------|----------------------|---------------|---------------------
+AM	|   jazz_am:external	|   External resource	|   -unspecified-
+-------------------------|----------------------|---------------|---------------------
+AM	|   jazz_am:refine	|   RM	|   -unspecified-
+-------------------------|----------------------|---------------|---------------------
+AM	|   jazz_am:satisfy	|   RM	|   -unspecified-
+-------------------------|----------------------|---------------|---------------------
+AM	|   jazz_am:trace	|   RM	|   -unspecified-
+
+
+
+
 
 
 # PUT on Resources
