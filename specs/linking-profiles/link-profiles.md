@@ -146,10 +146,6 @@ AM	|   jazz_am:satisfy	|   RM	|   -unspecified-
 AM	|   jazz_am:trace	|   RM	|   -unspecified-
 
 
-
-
-
-
 # PUT on Resources
 
 # OSLC Query
