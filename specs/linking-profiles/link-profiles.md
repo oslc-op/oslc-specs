@@ -84,11 +84,18 @@ Example some normative text: <span class="conformance">OSLC Services **MUST** su
 | ---------- | ----- | -------------- | ------ | ---- |
 | CSP for friends    | MUST | MUST | MUST | MUST |
 
-# Selection Dialogs
+# Selection Dialogs <In context to Resource Creation>
+| Capability | Basic | Bi-Directional | Config | Full |
+| ---------- | ----- | -------------- | ------ | ---- |
+| Selection Dialog   | MUST | MUST | MUST | MUST |
 
-# CORS for friends
+A OSLC server MUST register Dialog discovery service using oslc:selectionDialog property with a service provider. A OSLC consumer discovers the service by looking for oslc:selectionDialog property and making a GET request on the service resource OR
+Clients can also use the HTTP Prefer header to find the dialogs for a container.The server responds with the dialog descriptors in the response body OR
+The client discovers the dialogs by making an HTTP OPTIONS request on the container and The server response contains a Link header with URLs to the dialog descriptors.
 
-# Preview Dialogs
+OSLC server MUST provide a dialog, an HTML page for resource selection, search and select remote resources. Selection dialog provides OSLC consumers to search and select resources, to create trace links. Selection Dialog MUST accept user input and to filter out resources on basis of user input and MUST display filtered resources. Selection Dialogs MUST provide a way to user to select filtered resources and submit their selection. Once user selection is submitted, Dialogs send selected resource URI as result back to the client using the HTML5 function Window.postMessage [whatwg-web-messaging]. postMessage is called on window.opener if set. Otherwise, postMessage is called on window.parent.
+    
+OSLC client MUST Open the dialog in a new window or embed the dialog in an iframe. Selection Dialog consumer MUST add a message listener to receive messages from the dialog. When message from the dialog indicates a completed action, OSLC Consumer SHOULD free resources and MUST handle the action.
 
 # Link Ownership
 In bi-derctional linking scenarios both OSLC participants are aware of links across their owned resources and enable link visibility and navigation at each side. Nevertheless storing a link at both sides is considered a ill-practice as it is essentially replication of data. This that may result in inconsistencies as links are updated or deleted, since maintaining consistency requires synchrnization across the providers on any update. Therefore the recommended practice is to store links on one of the participants, and use link discovery by the other participant. Therefore there need to be an agreed convention on which side should store the link. OSLC links have an incoming and outgoing sides, determined by the role of the link. Usully one side will have an active predicate name, for example "implements" and the other side will have a passive predicate name, in this example it would be "implemented by". The active side is also considered the outgoing side, and the passive the incoming side. The convention is that the link is stored with the resource on the outgoing side, i.e. the resource with the active predicate. The incoming side would discover the links with one of the discovery methods discussed in the following sections. Note the the creation of the link can be initiated by both providers. In case that the link is intiated by the incoming side provider, it needs to store it with the resource on the outgoing side provider. This is discussed in the put on resources section. In addition, for historical reasons, certain OSLC providers such as IBM ELM, may have some variations of behaviors between configuration enabled and non-configuration enabled modes, where in non-configuration modes there may still be a usage of backlink storage. In addition, providers do not support configurations such as CM (change management providers) would have preference for link storage over configuration enabled providers, to prevent baselined links to refer to mutable entities.
@@ -147,6 +154,13 @@ AM	|   jazz_am:trace	|   RM	|   -unspecified-
 
 
 # PUT on Resources
+
+# CORS for friends
+
+# Preview Dialogs 
+| Capability | Basic | Bi-Directional | Config | Full |
+| ---------- | ----- | -------------- | ------ | ---- |
+| Preview Dialogs   | SHOULD | SHOULD | SHOULD | SHOULD |
 
 # OSLC Query
 | Capability | Basic | Bi-Directional | Config | Full |
