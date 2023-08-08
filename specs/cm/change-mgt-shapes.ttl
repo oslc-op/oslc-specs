@@ -1,4 +1,4 @@
-# Copyright 2021 OASIS Open
+# Copyright 2023 OASIS Open
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@
   rdfs:label "The OSLC Change Management(CM) Constraints" ;
   dcterms:description "Constraints on vocabulary terms defined in the OSLC Change Management (CM) namespace."^^rdf:XMLLiteral ;
   dcterms:publisher <https://open-services.net/about/> ;
-  dcterms:issued "2021-05-27"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  dcterms:issued "2023-07-06"^^<http://www.w3.org/2001/XMLSchema#date> ;
   dcterms:license <http://www.apache.org/licenses/LICENSE-2.0> ;
-  dcterms:source <https://docs.oasis-open-projects.org/oslc-op/cm/v3.0/os/change-mgt-shapes.ttl> ;
-  dcterms:isPartOf <https://docs.oasis-open-projects.org/oslc-op/cm/v3.0/os/change-mgt-spec.html> ;
+  dcterms:source <https://docs.oasis-open-projects.org/oslc-op/cm/v3.0/errata01/os/change-mgt-shapes.ttl> ;
+  dcterms:isPartOf <https://docs.oasis-open-projects.org/oslc-op/cm/v3.0/errata01/os/change-mgt-spec.html> ;
   dcterms:hasVersion "OS" .
 
 
@@ -73,7 +73,16 @@
             :fixed,
             :approved,
             :reviewed,
-            :verified
+            :verified,
+
+            # oslc_qm link properties
+            :testedByTestCase,
+            :affectsTestResult,
+            :blocksTestExecutionRecord,
+            :relatedTestExecutionRecord,
+            :relatedTestCase,
+            :relatedTestPlan,
+            :relatedTestScript
         .
 
 :ChangeNoticeShape  a      oslc:ResourceShape ;
@@ -153,7 +162,16 @@
             :fixed,
             :approved,
             :reviewed,
-            :verified
+            :verified,
+
+            # oslc_qm link properties
+            :testedByTestCase,
+            :affectsTestResult,
+            :blocksTestExecutionRecord,
+            :relatedTestExecutionRecord,
+            :relatedTestCase,
+            :relatedTestPlan,
+            :relatedTestScript
         .
 
 :EnhancementShape  a       oslc:ResourceShape ;
@@ -192,7 +210,16 @@
             :fixed,
             :approved,
             :reviewed,
-            :verified
+            :verified,
+
+            # oslc_qm link properties
+            :testedByTestCase,
+            :affectsTestResult,
+            :blocksTestExecutionRecord,
+            :relatedTestExecutionRecord,
+            :relatedTestCase,
+            :relatedTestPlan,
+            :relatedTestScript
         .
 
 :ReviewTaskShape  a             oslc:ResourceShape ;
@@ -551,3 +578,82 @@ specifications, which could result in multiple values for this property."""^^rdf
         oslc:propertyDefinition  oslc_cm:verified ;
         oslc:valueType           xsd:boolean ;
         dcterms:description      "Whether or not the resolution or fix of the Change Request has been verified."^^rdf:XMLLiteral .
+
+
+# Constraints on properties representing links to oslc_qm resources
+
+:testedByTestCase  a             oslc:Property ;
+        oslc:name                "testedByTestCase" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:testedByTestCase ;
+        oslc:range               oslc_config:ChangeSet ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Test case by which this change request is tested. It is likely that the target resource will be an oslc_qm:TestCase but that is not necessarily the case."^^rdf:XMLLiteral ;
+        dcterms:title            "Tested By Test Case" .
+
+:affectsTestResult  a            oslc:Property ;
+        oslc:name                "affectsTestResult" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:affectsTestResult ;
+        oslc:range               oslc_config:ChangeSet ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Associated QM resource that is affected by this Change Request. It is likely that the target resource will be an oslc_qm:TestResult but that is not necessarily the case."^^rdf:XMLLiteral ;
+        dcterms:title            "Zffects Test Result" .
+
+:blocksTestExecutionRecord  a    oslc:Property ;
+        oslc:name                "blocksTestExecutionRecord" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:blocksTestExecutionRecord ;
+        oslc:range               oslc_config:ChangeSet ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Associated QM resource that is blocked by this Change Request. It is likely that the target resource will be an oslc_qm:TestExecutionRecord but that is not necessarily the case."^^rdf:XMLLiteral ;
+        dcterms:title            "Blocks Test Execution Record" .
+
+:relatedTestExecutionRecord  a   oslc:Property ;
+        oslc:name                "relatedTestExecutionRecord" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:relatedTestExecutionRecord ;
+        oslc:range               oslc_config:ChangeSet ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Related to a QM test execution resource. It is likely that the target resource will be an oslc_qm:TestExecutionRecord but that is not necessarily the case."^^rdf:XMLLiteral ;
+        dcterms:title            "Related Test Execution Record" .
+
+:relatedTestCase  a              oslc:Property ;
+        oslc:name                "relatedTestCase" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:relatedTestCase ;
+        oslc:range               oslc_config:ChangeSet ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Related QM test case resource. It is likely that the target resource will be an oslc_qm:TestCase but that is not necessarily the case."^^rdf:XMLLiteral ;
+        dcterms:title            "Related Test Case" .
+
+:relatedTestPlan  a              oslc:Property ;
+        oslc:name                "relatedTestPlan" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:relatedTestPlan ;
+        oslc:range               oslc_config:ChangeSet ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Related QM test plan resource. It is likely that the target resource will be an oslc_qm:TestPlan but that is not necessarily the case."^^rdf:XMLLiteral ;
+        dcterms:title            "Related Test Plan" .
+
+:relatedTestScript  a            oslc:Property ;
+        oslc:name                "relatedTestScript" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:relatedTestScript ;
+        oslc:range               oslc_config:ChangeSet ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      "Related QM test script resource. It is likely that the target resource will be an oslc_qm:TestScript but that is not necessarily the case."^^rdf:XMLLiteral ;
+        dcterms:title            "Related Test Script" .
+
+
+
+
+
+

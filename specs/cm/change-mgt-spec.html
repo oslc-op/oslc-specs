@@ -12,7 +12,7 @@
     />
 
     <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.25/builds/respec-oasis-common.min.js"
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.32/builds/respec-oasis-common.min.js"
       async
       class="remove"
     ></script>
@@ -20,7 +20,7 @@
     <script type="text/javascript" class="remove">
       var filePath = "/change-mgt-spec.html";
       var wdBase = "https://oslc-op.github.io/oslc-specs/specs/cm";
-      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/cm/v3.0";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/cm/v3.0/errata01";
 
       var specStatus = "OS";
       var revision = "01";
@@ -37,12 +37,12 @@
       var respecConfig = {
         specStatus: specStatus,
         revision: revision,
-        publishDate: "2021-05-27",
-        previousPublishDate: "2020-09-17",
-        previousMaturity: "PS",
+        publishDate: "2023-07-06",
+        previousPublishDate: "2023-05-12",
+        //previousMaturity: "OS",
 
         thisVersion: thisBase + filePath,
-        prevVersion: "https://docs.oasis-open-projects.org/oslc-op/cm/v3.0/ps01" + filePath,
+        prevVersion: "https://docs.oasis-open-projects.org/oslc-op/cm/v3.0/os" + filePath,
         latestVersion: oasisBase + filePath,
         latestSpecVersion: "https://open-services.net/spec/cm/latest",
         edDraftURI: "https://open-services.net/spec/cm/latest-draft",
@@ -213,6 +213,7 @@
   </head>
   <body>
     <section id="abstract">
+      <p>This document includes approved errata, as described in Appendix C. Errata.</p>
       <p>
         This specification defines the OSLC Change Management domain, a RESTful web services interface for the
         management of product change requests, activities, tasks and relationships between those and related resources
@@ -925,195 +926,420 @@
             </li>
           </ul>
         </section>
-
-        <section id="conformance"></section>
       </section>
 
-      <section id="versionCompability" class="appendix">
-        <h2>Version Compatibility with 2.0 Specifications</h2>
+      <section id="conformance"></section>
+    </section>
+    <section id="versionCompability" class="appendix">
+      <h2>Version Compatibility with 2.0 Specifications</h2>
+      <section id="deprecatedTerms">
+        <h3>Deprecated terms</h3>
 
-        <section id="deprecatedTerms">
-          <h3>Deprecated terms</h3>
-
-          <p>
-            A number of terms introduced in early development of the OSLC Change Management domain were deprecated in
-            the finalized [[OSLCCM20]] specification. These terms are summarized here in order to indicate they remain
-            deprecated.
-          </p>
-
-          <table border="1" cellspacing="0" cellpadding="5">
-            <thead>
-              <tr>
-                <th><strong>Prefixed Name</strong></th>
-                <th><strong>Occurs</strong></th>
-                <th><strong>Read-only</strong></th>
-                <th><strong>Value-type</strong></th>
-                <th><strong>Represen-tation</strong></th>
-                <th><strong>Range</strong></th>
-                <th><strong>Description</strong></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><em>deprecated</em> dcterms:type</td>
-                <td>zero-or-more</td>
-                <td>unspecified</td>
-                <td>String</td>
-                <td>n/a</td>
-                <td>n/a</td>
-                <td>A short string representation for the type, example <code>Defect</code>.</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Relationship properties:</strong> This grouping of properties are used to identify
-                  relationships between resources managed by other OSLC servers
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td><em>deprecated</em> oslc_cm:testedByTestCase</td>
-                <td>zero-or-many</td>
-                <td>False</td>
-                <td>Resource</td>
-                <td>Reference</td>
-                <td><code style="white-space: pre;">any</code></td>
-                <td>
-                  Test case by which this change request is tested. It is likely that the target resource will be an
-                  <code>oslc_qm:TestCase</code>, but that is not necessarily the case.
-                </td>
-              </tr>
-              <tr>
-                <td><em>deprecated</em> oslc_cm:affectsTestResult</td>
-                <td>zero-or-many</td>
-                <td>False</td>
-                <td>Resource</td>
-                <td>Reference</td>
-                <td><code style="white-space: pre;">any</code></td>
-                <td>
-                  Associated QM resource that is affected by this Change Request. It is likely that the target resource
-                  will be an <code>oslc_qm:TestResult</code>, but that is not necessarily the case.
-                </td>
-              </tr>
-              <tr>
-                <td><em>deprecated</em> oslc_cm:blocksTestExecutionRecord</td>
-                <td>zero-or-many</td>
-                <td>False</td>
-                <td>Resource</td>
-                <td>Reference</td>
-                <td><code style="white-space: pre;">any</code></td>
-                <td>
-                  Associated QM resource that is blocked by this Change Request. It is likely that the target resource
-                  will be an oslc_cm:TestExecutionRecord, but that is not necessarily the case.
-                </td>
-              </tr>
-              <tr>
-                <td><em>deprecated</em> oslc_cm:relatedTestExecutionRecord</td>
-                <td>zero-or-many</td>
-                <td>False</td>
-                <td>Resource</td>
-                <td>Reference</td>
-                <td><code style="white-space: pre;">any</code></td>
-                <td>
-                  Related to a QM test execution resource. It is likely that the target resource will be an
-                  <code>oslc_qm:TestExecutionRecord</code>, but that is not necessarily the case.
-                </td>
-              </tr>
-              <tr>
-                <td><em>deprecated</em> oslc_cm:relatedTestCase</td>
-                <td>zero-or-many</td>
-                <td>False</td>
-                <td>Resource</td>
-                <td>Reference</td>
-                <td><code style="white-space: pre;">any</code></td>
-                <td>
-                  Related QM test case resource. It is likely that the target resource will be an
-                  <code>oslc_qm:TestCase</code>, but that is not necessarily the case.
-                </td>
-              </tr>
-              <tr>
-                <td><em>deprecated</em> oslc_cm:relatedTestPlan</td>
-                <td>zero-or-many</td>
-                <td>False</td>
-                <td>Resource</td>
-                <td>Reference</td>
-                <td><code style="white-space: pre;">any</code></td>
-                <td>
-                  Related QM test plan resource. It is likely that the target resource will be an
-                  <code>oslc_qm:TestPlan</code>, but that is not necessarily the case.
-                </td>
-              </tr>
-              <tr>
-                <td><em>deprecated</em> oslc_cm:relatedTestScript</td>
-                <td>zero-or-many</td>
-                <td>False</td>
-                <td>Resource</td>
-                <td>Reference</td>
-                <td><code style="white-space: pre;">any</code></td>
-                <td>
-                  Related QM test script resource. It is likely that the target resource will be an
-                  <code>oslc_qm:TestScript</code>, but that is not necessarily the case.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <section id="changesFrom2">
-          <h2>Changes from 2.0</h2>
-          <p>
-            The following lists the significant vocabulary changes that were introduced in this specification. The
-            changes are all upward compatible additions and therefore do not introduce incompatibilities with version
-            2.0.
-          </p>
-          <ul>
-            <li>Added <em>oslc_cm:priority</em> and <em>oslc_cm:severity</em></li>
-            <li>Added new change management types</li>
-          </ul>
-        </section>
-      </section>
-
-      <section class="appendix informative">
-        <h2>Acknowledgements</h2>
         <p>
-          The following individuals have participated in the creation of this specification and are gratefully
-          acknowledged:
+          Terms introduced in early development of the OSLC Change Management domain were deprecated in the finalized
+          [[OSLCCM20]] specification. These terms are summarized here in order to indicate they remain deprecated.
         </p>
 
-        <p><b>Project Governing Board</b>:</p>
-        <p style="margin-left: 40px;">
-          James Amsden, IBM (co-chair)<br />
-          Andrii Berezovskyi, KTH (co-chair)<br />
-          Bill Chown, Mentor<br />
-          Wesley Coelho, Tasktop<br />
-          Axel Reichwein, Koneksys<br />
-        </p>
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th><strong>Prefixed Name</strong></th>
+              <th><strong>Occurs</strong></th>
+              <th><strong>Read-only</strong></th>
+              <th><strong>Value-type</strong></th>
+              <th><strong>Represen-tation</strong></th>
+              <th><strong>Range</strong></th>
+              <th><strong>Description</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><em>deprecated</em> dcterms:type</td>
+              <td>zero-or-more</td>
+              <td>unspecified</td>
+              <td>String</td>
+              <td>n/a</td>
+              <td>n/a</td>
+              <td>A short string representation for the type, example <code>Defect</code>.</td>
+            </tr>
+            -
+            <tr>
+              <td>
+                <del
+                  ><strong>Relationship properties:</strong> This grouping of properties are used to identify
+                  relationships between resources managed by other OSLC servers</del
+                >
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>
+                <del><em>deprecated</em> oslc_cm:testedByTestCase</del>
+              </td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Test case by which this change request is tested. It is likely that the target resource will be an
+                <code>oslc_qm:TestCase</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <del><em>deprecated</em> oslc_cm:affectsTestResult</del>
+              </td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Associated QM resource that is affected by this Change Request. It is likely that the target resource
+                will be an <code>oslc_qm:TestResult</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <del><em>deprecated</em> oslc_cm:blocksTestExecutionRecord</del>
+              </td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Associated QM resource that is blocked by this Change Request. It is likely that the target resource
+                will be an oslc_cm:TestExecutionRecord, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <del><em>deprecated</em> oslc_cm:relatedTestExecutionRecord</del>
+              </td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Related to a QM test execution resource. It is likely that the target resource will be an
+                <code>oslc_qm:TestExecutionRecord</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <del><em>deprecated</em> oslc_cm:relatedTestCase</del>
+              </td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Related QM test case resource. It is likely that the target resource will be an
+                <code>oslc_qm:TestCase</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <del><em>deprecated</em> oslc_cm:relatedTestPlan</del>
+              </td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Related QM test plan resource. It is likely that the target resource will be an
+                <code>oslc_qm:TestPlan</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <del><em>deprecated</em> oslc_cm:relatedTestScript</del>
+              </td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Related QM test script resource. It is likely that the target resource will be an
+                <code>oslc_qm:TestScript</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-        <p><b>Techical Steering Committee</b>:</p>
-        <p style="margin-left: 40px;">
-          James Amsden, IBM<br />
-          Andrii Berezovskyi, KTH<br />
-          Axel Reichwein, Koneksys<br />
+      <section id="changesFrom2">
+        <h2>Changes from 2.0</h2>
+        <p>
+          The following lists the significant vocabulary changes that were introduced in this specification. The changes
+          are all upward compatible additions and therefore do not introduce incompatibilities with version 2.0.
         </p>
+        <ul>
+          <li>Added <em>oslc_cm:priority</em> and <em>oslc_cm:severity</em></li>
+          <li>Added new change management types</li>
+        </ul>
+      </section>
+    </section>
 
-        <p><b>Additional Participants</b>:</p>
-        <p style="margin-left: 40px;">
-          Gray Bachelor, IBM<br />
-          Geoff Clemm, IBM<br />
-          Peter Hack, IBM<br />
-          Sam Padget, IBM<br />
-          Martin Pain, IBM<br />
-          Brian Steele, IBM<br />
-          Jad El-Khoury, KTH<br />
-          Martin Sarabura, PTC<br />
-          Jory Burson, OASIS<br />
-          Chet Ensign, OASIS<br />
-          Carol Geyer, OASIS<br />
+    <section class="appendix informative">
+      <h2>Acknowledgements</h2>
+      <p>
+        The following individuals have participated in the creation of this specification and are gratefully
+        acknowledged:
+      </p>
+
+      <p><b>Project Governing Board</b>:</p>
+      <p style="margin-left: 40px;">
+        James Amsden, IBM (co-chair)<br />
+        Andrii Berezovskyi, KTH (co-chair)<br />
+        Bill Chown, Mentor<br />
+        Wesley Coelho, Tasktop<br />
+        Axel Reichwein, Koneksys<br />
+      </p>
+
+      <p><b>Techical Steering Committee</b>:</p>
+      <p style="margin-left: 40px;">
+        James Amsden, IBM<br />
+        Andrii Berezovskyi, KTH<br />
+        Axel Reichwein, Koneksys<br />
+      </p>
+
+      <p><b>Additional Participants</b>:</p>
+      <p style="margin-left: 40px;">
+        Gray Bachelor, IBM<br />
+        Geoff Clemm, IBM<br />
+        Peter Hack, IBM<br />
+        Sam Padget, IBM<br />
+        Martin Pain, IBM<br />
+        Brian Steele, IBM<br />
+        Jad El-Khoury, KTH<br />
+        Martin Sarabura, PTC<br />
+        Jory Burson, OASIS<br />
+        Chet Ensign, OASIS<br />
+        Carol Geyer, OASIS<br />
+      </p>
+    </section>
+
+    <section id="errata" class="appendix">
+      <h2>Errata</h2>
+      <p>
+        OSLC Change Management version 2.0 deprecated a number of properties that refer to OSLC Quality Management
+        artifacts. OSLC version 3.0 preserved these deprecated properties, and in addition, removed them from the
+        resource constraints. This errata removes the deprecation of the following properties and adds them back to the
+        resource constraints:
+      </p>
+      <ul>
+        <li>oslc_cm:testedByTestCase</li>
+        <li>oslc_cm:affectsTestResult</li>
+        <li>oslc_cm:blocksTestExecutionRecord</li>
+        <li>oslc_cm:relatedTestExecutionRecord</li>
+        <li>oslc_cm:relatedTestCase</li>
+        <li>oslc_cm:relatedTestPlan</li>
+        <li>oslc_cm:relatedTestScript</li>
+      </ul>
+      <p>
+        These links were deprecated as part of the resolution of
+        <a href="https://archive.open-services.net/pipermail/oslc-cm_open-services.net/2013-July/000463.html"
+          >Issue on redundant inverse predicates</a
+        >. OSLC CM 3.0 does define the corresponding properties representing links from the other direction, but marks
+        them as deprecated. This was done to follow link guidance best practices and only define the links from one
+        direction to avoid backlinks and data redundancy issues.
+      </p>
+      <p>
+        With the introduction of OSLC Configuration Management 1.0, and that OSLC Change Management resources are not
+        versioned resources, these properties will now be required to create links between non-versioned Change
+        Management resources and versioned Quality Management resources. Therefore these properties are no longer
+        deprecated, and their ResourceShapes have been added to the constraints.
+      </p>
+      <p>The specific changes are listed in the following subsections.</p>
+      <section>
+        <h3>Errata Appendix Added</h3>
+        <p>
+          This appendix was added to describe the issue being addressed, it's motivation, and all of the specific
+          changes made.
         </p>
+      </section>
+      <section>
+        <h3>Vocabulary terms are no longer deprecated</h3>
+        <p>
+          In <a href="./change-mgt-vocab.ttl">change-mgt-vocab.ttl</a> and
+          <a href="./change-mgt-vocab.html">change-mgt-vocab.html</a> (as generated from the .ttl file), the property
+          value <code>vs:term_status "archaic;"</code> was removed from the following properties to indicate they are no
+          lonter deprecated:
+        </p>
+        <ul>
+          <li>oslc_cm:testedByTestCase</li>
+          <li>oslc_cm:affectsTestResult</li>
+          <li>oslc_cm:blocksTestExecutionRecord</li>
+          <li>oslc_cm:relatedTestExecutionRecord</li>
+          <li>oslc_cm:relatedTestCase</li>
+          <li>oslc_cm:relatedTestPlan</li>
+          <li>oslc_cm:relatedTestScript</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Added missing resource constraints</h3>
+        <p>
+          In <a href="./change-mgt-shapes.ttl">change-mgt-shapes.ttl</a> and
+          <a href="./change-mgt-shapes.html">change-mgt-shapes.html</a> (as generated from the .ttl file), Resouce
+          Constraints were added for the formerly deprecated properties. This includes adding the following optional
+          properties to ChangeRequest, Defect and Enhancement:
+        </p>
+        <ul>
+          <li>:testedByTestCase</li>
+          <li>:affectsTestResult</li>
+          <li>:blocksTestExecutionRecord</li>
+          <li>:relatedTestExecutionRecord</li>
+          <li>:relatedTestCase</li>
+          <li>:relatedTestPlan</li>
+          <li>:relatedTestScript</li>
+        </ul>
+        <p>Here's an example of one of the constraints that was added, the others are similar.</p>
+        <pre>
+:testedByTestCase  a       oslc:Property ;
+  oslc:name                "testedByTestCase" ;
+  oslc:occurs              oslc:Zero-or-many ;
+  oslc:propertyDefinition  oslc_cm:testedByTestCase ;
+  oslc:range               oslc_config:ChangeSet ;
+  oslc:representation      oslc:Reference ;
+  oslc:valueType           oslc:Resource ;
+  dcterms:description      "Test case by which this change request is tested. It is likely that the target resource will be an oslc_qm:TestCase but that is not necessarily the case."^^rdf:XMLLiteral ;
+  dcterms:title            "Tested By Test Case" .
+      </pre
+        >
+      </section>
+      <section>
+        <h3>Updated Deprecated Properties Table</h3>
+        <p>
+          The table in appendix A.1 Deprecated terms was updated to remove the following terms that are no longer
+          deprecated.
+        </p>
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th><strong>Prefixed Name</strong></th>
+              <th><strong>Occurs</strong></th>
+              <th><strong>Read-only</strong></th>
+              <th><strong>Value-type</strong></th>
+              <th><strong>Represen-tation</strong></th>
+              <th><strong>Range</strong></th>
+              <th><strong>Description</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <strong>Relationship properties:</strong> This grouping of properties are used to identify relationships
+                between resources managed by other OSLC servers
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><em>deprecated</em> oslc_cm:testedByTestCase</td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Test case by which this change request is tested. It is likely that the target resource will be an
+                <code>oslc_qm:TestCase</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td><em>deprecated</em> oslc_cm:affectsTestResult</td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Associated QM resource that is affected by this Change Request. It is likely that the target resource
+                will be an <code>oslc_qm:TestResult</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td><em>deprecated</em> oslc_cm:blocksTestExecutionRecord</td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Associated QM resource that is blocked by this Change Request. It is likely that the target resource
+                will be an oslc_cm:TestExecutionRecord, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td><em>deprecated</em> oslc_cm:relatedTestExecutionRecord</td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Related to a QM test execution resource. It is likely that the target resource will be an
+                <code>oslc_qm:TestExecutionRecord</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td><em>deprecated</em> oslc_cm:relatedTestCase</td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Related QM test case resource. It is likely that the target resource will be an
+                <code>oslc_qm:TestCase</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td><em>deprecated</em> oslc_cm:relatedTestPlan</td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Related QM test plan resource. It is likely that the target resource will be an
+                <code>oslc_qm:TestPlan</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+            <tr>
+              <td><em>deprecated</em> oslc_cm:relatedTestScript</td>
+              <td>zero-or-many</td>
+              <td>False</td>
+              <td>Resource</td>
+              <td>Reference</td>
+              <td><code style="white-space: pre;">any</code></td>
+              <td>
+                Related QM test script resource. It is likely that the target resource will be an
+                <code>oslc_qm:TestScript</code>, but that is not necessarily the case.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section>
+        <h3>Table of Contents Updated</h3>
+        <p>The table of contents was updated to properly show the appendices.</p>
       </section>
     </section>
   </body>
