@@ -265,18 +265,23 @@ services interface for discovering incoming links."
     <section id="intro" class="informative">
       <h2>Introduction</h2>
       <p>
-        The OSLC link discovery service is a new OSLC specification, that comes to standardize already existing practices for incoming links discovery. The current OSLC core specification does not prescribe how bi-directionality of links is implemented. Nevertheless with the introduction of versioned OSLC providers, the simple technique of storing backlinks appears to be very problematic and highly unrecommended. This is documented in the non-normative OSLC linking profiles draft specification. The scalable approach that has been practiced by several implementors such as IBM ELM and MID Smartfacts, is to manage a centralized link discovery service that supports OSLC providers to discover incoming links. For example a requirements management (RM) application can display incoming links to specific requirement resources  stored in a QM application. To an end user the “incoming links” are essential to carry out various lifecycle activities, such as understanding coverage and/or impact of a set of requirements. The discovery service comes to standardize the already existing practical approaches for OSLC linking, which are proprietary and force implementors to deal with different proprietary approaches, which counters the goal of OSLC.
+        The OSLC link discovery service is a new OSLC specification, that comes to standardize already existing practices for incoming links discovery. 
+        The current OSLC core specification does not prescribe how bidirectionality of links is implemented. 
+        Nevertheless, with the introduction of versioned OSLC providers, the simple technique of storing backlinks appears to be very problematic and highly unrecommended as maintaining data consistency is challenging. 
+        An approach based on current OSLC services, is to use peer to peer OSLC query, where a provider queries each of its related providers for incoming links. 
+        While the peer-to-peer query addresses the fundamental issues of backlinking, it does not scale well to deployments with more than a small number of related providers and is not designed to perform. 
+        A more scalable approach that has been practiced by several implementors such as IBM ELM and MID Smartfacts, is to manage a centralized link discovery service that supports OSLC providers to discover incoming links. 
+        For example, a requirements management (RM) application can display incoming links to specific requirement resources, where the link is stored in a QM application. 
+        To an end user the incoming links are essential to carry out various lifecycle activities, such as understanding coverage and/or impact of a set of requirements. 
+        The discovery service comes to standardize the already existing practical approach for OSLC link discovery.
       </p>
-      <p>
-        Current OSLC based digital thread implementations require to support bi-directional navigation across OSLC links. With the introduction of resource versions in OSLC Configuration Management, bi directional navigation can no longer be based on “backlinking”. The alternative approach is to use peer to peer OSLC query, where a provider queries each its related providers for incoming links, or to use a centralized link discovery service. While the peer to peer query addresses the fundamental issues of backlinking, it does not scale well to deployments with more than a small number of related providers and is not designed to perform. The scalable approach is a discovery service that can provide the requested incoming links using a single inquiry. This service can be performance optimized. OSLC currently does not have a specification of how to utilize such a service. Existing solutions are based on proprietary APIs.
-      </p>
+      
       <p>
         Solution Scope includes specification for an incoming link discovery service that specifies:
       </p>
       <ul>
-        <li>How to discover an incoming links service provider</li>
-        <li>How to inquire incoming links to versioned resources for a provided set of (displayed) concept resource URIs and a given configuration context</li>
-        <li>How to replicate links to link indizes, considering initial load</li>
+        <li>How to inquire incoming links to versioned resources for a provided set of (displayed) concept resource URIs and a given configuration context
+        </li>
       </ul>
       <p>Additional requirements</p>
       <ul>
@@ -284,7 +289,10 @@ services interface for discovering incoming links."
         <li>It is TBD whether the specification accounts for multiple link discovery service providers or provides guidance on how to deal with multiple providers</li>
         <li>The specification does not specify how link discovery services ingest data from the various lifecycle providers, in order to effectively support the inquiries. That said, a common way of ingesting and maintaining a link index to support the inquiries uses already standardized OSLC Tracked Resource Sets</li>
       </ul>
-
+      <p>
+        The specification does not specify how link discovery services ingest data from the various lifecycle providers, in order to effectively support the inquiries. 
+        That said, a common way of ingesting and maintaining a link index to support the inquiries uses already standardized OSLC Tracked Resource Sets [OSLC-TRS-v3.0]
+      </p>
       <p>
         This specification is a [[!OSLCCore3]] compliant specification, and as such most of its content are references
         to [[!OSLCCore3]].
@@ -310,6 +318,17 @@ services interface for discovering incoming links."
             consumers and providers of OSLC resources in a distributed environment based on REST. A particular
             application component could be a client for some OSLC domain services and a server for the same or another
             domain.
+          </dd>
+          <dt>Concept Resource</dt>
+          <dd>An artifact (a requirement, test case, source code file, etc.) as an overall entity, independent of any specific version of that artifact. 
+            In Product Lifecycle  Management (PLM) systems, this is often referred to as a 'master' item or part, of which there are revisions and versions or iterations. As defined in [OSLC-Config-1.0-Part1]
+          <dt>Versioned Resource</dt>
+          <dd>
+            The state (including the properties) of a concept resource can vary over time, or for other reasons. 
+            A versioned resource is a concept resource that keeps track of different states. 
+            A version resource is a resource that represents one specific state of a versioned resource. 
+            Not every past state is necessarily kept; a server may elide or discard states that are no longer referenced. 
+            As defined in [OSLC-Config-1.0-Part1]
           </dd>
         </dl>
       </section>
@@ -361,13 +380,19 @@ services interface for discovering incoming links."
             <tr>
               <td>Resource Paging</td>
               <td class="conformance">
-                LDM Servers MAY provide paging for resources but only when specifically requested by clients
+                LDM Servers SHOULD provide resource paging, as defined in [OSLC-Core-3.0-Part1]. 
+                In case resource paging is supported, stable paging is required.
+                Note: as the LDM server implements a post-method as defined below, 
+                consider that instead of using oslc:nextPage in oslc:ResponseInfo, the use of oslc:postBody is required.
               </td>
             </tr>
             <tr>
               <td>Discovery</td>
               <td class="conformance">
-                LDM Servers MUST provide a Service Provider Catalog as described in [[!OSLCCore3]] to establish the scope of service providers that contribute links to the LDM server.
+                LDM Service URI is configured explicitly in each LDM client.
+                Therefore no dedicated discovery protocol is needed.
+                Note: a scenario with multiple LDM Servers is possible, in which case multiple LDM Service URI are configured. This specification does not prescribe how these multiple LDM servers are managed together.
+                A LDM Service SHOULD provide discovery of its link contributors via Service Provider Catalog which is pointing via oslc:serviceProviderCatalog to the contributing servers catalogs.
               </td>
             </tr>
             <tr>
@@ -387,41 +412,23 @@ services interface for discovering incoming links."
               <td class="conformance">LDM Servers MUST support RDF/XML representations for OSLC Defined Resources</td>
             </tr>
             <tr>
-              <td>XML Representations</td>
+              <td>JSON+LD Representations</td>
               <td class="conformance">
-                LDM Servers MUST support XML representations that conform to the OSLC Core Guidelines for XML
+                LDM Servers MAY support JSON+LD representations; 
+                those which do MUST conform to the OSLC Core Guidelines for JSON+LD 
               </td>
             </tr>
-            <tr>
-              <td>JSON Representations</td>
-              <td class="conformance">
-                LDM Servers MAY support JSON representations; those which do MUST conform to the OSLC Core Guidelines for
-                JSON
-              </td>
-            </tr>
-            <tr>
-              <td>HTML Representations</td>
-              <td class="conformance">LDM Servers MAY provide HTML representations for GET requests</td>
-            </tr>
+            
           </tbody>
         </table>
       </section>
 
       <section id="versioning">
         <h2 id="specificationversioningspec_versioning">Specification Versioning</h2>
-
         <p>This specification follows the specification version guidelines given in [[!OSLCCore3]].</p>
       </section>
 
-      <section id="namespaces">
-        <h2>Namespaces</h2>
-
-        <p>
-          In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>,
-          <code>dcterms</code> and <code>foaf</code> defined in [[!OSLCCore3]], OSLC AM defines the namespace URI of
-          <code>http://open-services.net/ns/am#</code> with a preferred namespace prefix of <code>oslc_am</code>.
-        </p>
-      </section>
+      
       <section id="formats">
         <h2>Resource Formats</h2>
 
@@ -460,10 +467,7 @@ services interface for discovering incoming links."
         <h2>Resource Operations</h2>
 
         <p class="conformance">
-          For compatibility with OSLC 2.0, OSLC LDM Servers MAY accept the OSLC Core Version header (OSLC-Core-Version:
-          2.0) in any HTTP request as specified in [[!OSLCCore3]], and return an OSLC AM 2.0 representation (including
-          the OSLC-Core-Version: 2.0 header). If the OSLC Core Version header is absent on a request, or has some
-          undefined value, the OSLC AM Server MUST return an AM 3.0 representation.
+          LDM does not feature any resource operations other than retrieving a service provider catalog
         </p>
 
       </section>
@@ -477,9 +481,45 @@ services interface for discovering incoming links."
       <section id="errors">
         <h2>Error Responses</h2>
 
-        <p>See [[!OSLCCore3]], OSLC LDM puts no additional constraints on error responses</p>
-      </section>
-
+        <p>
+            The following error situations MUST be handled by the LDM-Server. 
+            In case the error occurs, the subsequent oslc:error SHALL be returned.
+        </p>
+            <ul>
+<li>
+No Object resource provided
+<p>
+dcterms:identifier =	“MissingObject”
+oslc:message = 		“No Object resource provided”
+</p>
+<p>
+oslc:statusCode =		400 (Bad Request)
+</p>
+</li>
+<li>
+Too many Object resources requested
+The LDM-Server MAY limit the amount of Object resources to be requested.
+<p>
+dcterms:identifier =	“LimitReached”
+oslc:message = 		“Too many Object resources requested. Limit = $1” 
+			$1 = Maximum amount of Object concept resources
+</p>
+<p>
+oslc:statusCode =		400 (Bad Request)
+</p>
+</li>
+<li>
+Concept resource requested for Object resource without specified Configuration Context 
+<p>
+dcterms:identifier =	“BadObjectRequest” 
+oslc:message = 		“Concept resource requested for Object resource without specified Configuration Context”
+</p>
+<p>
+oslc:statusCode =		400 (Bad Request)
+</p>
+</li> 
+    </ul>
+</section>
       <section id="pagination">
         <h2>Pagination</h2>
 
@@ -491,33 +531,259 @@ services interface for discovering incoming links."
     </section>
 
 
-    <section id="capabilities">
-      <h2>LDM Server Capabilities</h2>
+    <section id="description">
+      <h2>LDM Service Description</h2>
+      <h3>Discover links inquiry</h3>
+      <p>
+      LDM clients inquire for incoming links related to a set of object resources, typically owned and/or visualized by the client. 
+      The discover links inquiry is exposed under the discover-links path as described in the open-API section below
+      For the incoming links inquiry, the client provides:
+     </p>
+     <ul>
+        <li>
+    Configuration Context [0..1]:	URI
+    </li>
+    <li>
+    Object resource [0..*]:     URI 
+    </li>
+<li>
+    Incoming link predicates [0..*]:		URI
+    </li>
+    </ul>
+    <p>
+In case the Configuration Context is specified, any object- or subject-resource shall be specified based on concept resources. The server MUST respond with a set of triples for the incoming links, which are valid for the given Configuration Context.
+In case the Configuration Context is not specified, any object- or subject-resource shall be specified based on unversioned resources. the server MUST respond with a set of triples for the incoming links, which are not bound to a Configuration Context.
+Rationale: to support bidirectionality for non-configuration aware links 
+In case no predicates are provided, the server MUST provide all incoming links irrespective of their predicate.
+</p>
+<p>
+The LDM Server response is a set of triples consisting of 
+</p>
+<ul>
+    <li>
+Subject resource:	URI 
+</li>
+<li>
+Predicate:		URI
+<p>
+should be one of the requested predicates, in case specified
+</p>
+</li>
+<li>
+Object resource:	URI
+<p>
+    should be one of requested Object concept resources
+</p>
+</li>
+</ul>
+<p>
+Based on the LDM service response, the LDM client would typically show the incoming link with an inverse predicate label (e.g., “validated by” vs. “validates”).
+The inquiry MUST be implemented as an HTTP post request, where the target concept resources and the predicates are provided with the request body.
 
-      <section id="scopeDiscovery">
-        <h3>Scope Discovery</h3>
+</p>
+<h3>LDM contributions discovery</h3>
+<p>
+    A LDM Service provides discovery of its link contributors via Service 
+    Provider Catalog which is pointing via oslc:serviceProviderCatalog to the contributing servers catalogs.
+</p>
+<p>
+    The link contributions discovery is exposed under the root-services path as described in the open-API section below
+</p>
+<section id="openapispec">
+    <h2>OpenApi specification of the LDM service</h2>
+ <pre>
+openapi: 3.0.1
+info:
+  title: "LDM OSLC service"
+  version: “1.0”
+servers:
+  - url: 'http://localhost:8080'
+    description: Generated server url
+paths:
+  /discover-links:
+    post:
+      tags:
+        - link-index-controller
+      operationId: getResources
+      parameters:
+        - name: Configuration-Context
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uri
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GetIncomingLinks'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/rdf+xml:
+            application/turtle:
+            application/json+ld:
+        '400':
+            description:  Bad request
 
-        <p class="conformance">OSLC LDM servers MUST support discovery of OSLC Service Providers that contribut links to the LDM server.</p>
-      </section>
+  /rootservices:
+    get:
+      operationId: getCatalog
+      responses:
+        default:
+          description: default response
+          content:
+            application/rdf+xml:
+              schema:
+                $ref: '#/components/schemas/ServiceProviderCatalog'
 
-      <section id="linkDiscovery">
-        <h3>Query Capabilities</h3>
+components:
+  schemas
+    GetIncomingLinks:
+      type: object
+      properties:
+        objectResources:
+          type: array
+          items:
+            type: string
+	       format: uri
+        predicateFilters:
+          type: array
+          items:
+            type: string
+            format: uri  
+        pageSize:
+          type: integer
+          format: int32
+	  pageNumber:
+          type: integer
+          format: int32
+    Publisher:
+      type: object
+      properties:
+        icon:
+          type: string
+          format: uri
+        identifier:
+          type: string
+        label:
+          type: string
+        title:
+          type: string
+    OAuthConfiguration:
+      type: object
+      properties:
+        authorizationURI:
+          type: string
+          format: uri
+        oauthAccessTokenURI:
+          type: string
+          format: uri
+        oauthRequestTokenURI:
+          type: string
+          format: uri
 
-        <p class="conformance">
-          OSLC LDM Servers MUST provide a means of discovering incoming links to one or more target resources, with an optional list of RDF predicates, and optionally a Configuration-Context to resolve comcept resources.
-        </p>
-      </section>
+    Service:
+      type: object
+      properties:
+        creationDialogs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dialog'
+        creationFactories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationFactory'
+        queryCapabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryCapability'
+        selectionDialogs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dialog'
+        usages:
+          type: array
+          items:
+            type: string
+            format: uri
+        domain:
+          type: string
+          format: uri
 
-    </section>
+    ServiceProvider:
+      type: object
+      properties:
+        details:
+          type: array
+          items:
+            type: string
+            format: uri
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/Service'
+        description:
+          type: string
+        oauthConfiguration:
+          $ref: '#/components/schemas/OAuthConfiguration'
+        publisher:
+          $ref: '#/components/schemas/Publisher'
+        title:
+          type: string 
+    ServiceProviderCatalog:
+      type: object
+      properties:
+        referencedServiceProviderCatalogs:
+          type: array
+          items:
+            type: string
+            format: uri
+        serviceProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceProvider'
+        description:
+          type: string
+        oauthConfiguration:
+          $ref: '#/components/schemas/OAuthConfiguration'
+        publisher:
+          $ref: '#/components/schemas/Publisher'
 
-    <section id="conformance"></section>
-
+</pre>
+</section>
     <section id="samples" class="appendix">
       <h2>Samples</h2>
+    <p>
+The following LDM example illustrates an OSLC RM client that inquires incoming links to requirements req1 and req2 in configuration baseline1 with predicates oslc_cm:tracks and oslc_cm:implements
+</p>
+<pre class="example">
+POST http://ldm.example.com:8080/
+Content-Type: application/x-www-form-urlencoded
+Configuration-Context: http://elm.example.com/gcm/baseline1URI
+objectConceptResources=http://elm.example.com/rm/req1URI,http://elm.example.com/rm/req2URI
+predicateFilters=http:// elm.example.com/implementsURI, http://elm.example.com/tracksURI
+</pre>
+<p>
+Response (in turtle):
+</p>
+<pre class="example">
+HTTP/1.1 200 OK
+Content-Type: application/turtle
 
-      <p>
-      </p>
+<https://example.com/cm/resource/workitem1URI> 
+  oslc_cm:implements http://elm.example.com/rm/req1URI 
+  oslc_cm:tracks http://elm.example.com/rm/req1URI.
+<https://example.com/cm/resource/workitem2URI> 
+  oslc_cm:tracks http://elm.example.com/rm/req2URI.
+
+</pre>
+     
     </section>
+    </section>
+
 
     <section class="appendix informative" id="acknowledgments">
       <h2>Acknowledgements</h2>
