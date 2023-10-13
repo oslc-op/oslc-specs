@@ -1,0 +1,158 @@
+openapi: 3.0.1
+info:
+  title: "LDM OSLC service"
+  version: “1.0”
+servers:
+  - url: 'http://localhost:8080'
+    description: Generated server url
+paths:
+  /discover-links:
+    post:
+      tags:
+        - link-index-controller
+      operationId: getResources
+      parameters:
+        - name: Configuration-Context
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uri
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GetIncomingLinks'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/rdf+xml:
+            text/turtle:
+            application/json+ld:
+        '400':
+            description:  Bad request
+
+  /rootservices:
+    get:
+      operationId: getCatalog
+      responses:
+        default:
+          description: default response
+          content:
+            application/rdf+xml:
+              schema:
+                $ref: '#/components/schemas/ServiceProviderCatalog'
+
+components:
+  schemasGetIncomingLinks:
+      type: object
+      properties:
+        objectResources:
+          type: array
+          items:
+            type: string
+        format: uri
+        predicateFilters:
+          type: array
+          items:
+            type: string
+            format: uri  
+        pageSize:
+          type: integer
+          format: int32
+    pageNumber:
+          type: integer
+          format: int32
+    Publisher:
+      type: object
+      properties:
+        icon:
+          type: string
+          format: uri
+        identifier:
+          type: string
+        label:
+          type: string
+        title:
+          type: string
+    OAuthConfiguration:
+      type: object
+      properties:
+        authorizationURI:
+          type: string
+          format: uri
+        oauthAccessTokenURI:
+          type: string
+          format: uri
+        oauthRequestTokenURI:
+          type: string
+          format: uri
+
+    Service:
+      type: object
+      properties:
+        creationDialogs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dialog'
+        creationFactories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationFactory'
+        queryCapabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryCapability'
+        selectionDialogs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dialog'
+        usages:
+          type: array
+          items:
+            type: string
+            format: uri
+        domain:
+          type: string
+          format: uri
+
+    ServiceProvider:
+      type: object
+      properties:
+        details:
+          type: array
+          items:
+            type: string
+            format: uri
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/Service'
+        description:
+          type: string
+        oauthConfiguration:
+          $ref: '#/components/schemas/OAuthConfiguration'
+        publisher:
+          $ref: '#/components/schemas/Publisher'
+        title:
+          type: string 
+    ServiceProviderCatalog:
+      type: object
+      properties:
+        referencedServiceProviderCatalogs:
+          type: array
+          items:
+            type: string
+            format: uri
+        serviceProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceProvider'
+        description:
+          type: string
+        oauthConfiguration:
+          $ref: '#/components/schemas/OAuthConfiguration'
+        publisher:
+          $ref: '#/components/schemas/Publisher'
