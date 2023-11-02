@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Link Validity Service 1.0. Specification</title>
+    <meta
+      name="description"
+      content="This specification defines the OSLC Link Validity Service, a RESTful web
+services interface for validating links between OSLC resouces as they change over their lifecycle."
+    />
+
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.32/builds/respec-oasis-common.js"
+      async
+      class="remove"
+    ></script>
+    <script class="remove">
+      var status = "WD";
+      var revision = 1;
+
+      var wdBase = "https://oslc-op.github.io/oslc-specs/specs/LVS/";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/LVS/v1.0/";
+      var thisBase = wdBase;
+      if ("WD" !== status) {
+        if (status == "OS") {
+          var thisBase = oasisBase + status.toLowerCase() + "/";
+        } else {
+          var thisBase = oasisBase + status.toLowerCase() + revision.toString().padStart(2, "0") + "/";
+        }
+      }
+
+      var respecConfig = {
+        shortName: "oslc-lvs",
+        specStatus: status,
+        revision: revision.toString().padStart(2, "0"),
+        citationLabel: "OSLC-LVS-1.0",
+
+        license: "cc-by-4",
+        additionalLicenses: [
+          {
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+          },
+        ],
+
+        //publishDate: "2022-07-11T12:00Z",
+        //previousPublishDate: "2021-09-30",
+        //previousMaturity: "PS",
+
+        thisVersion: thisBase + "link-validity-service-spec.html",
+        prevVersion: "",
+        latestVersion: oasisBase + "link-validity-service-spec.html",
+        latestSpecVersion: "https://open-services.net/spec/lvs/latest",
+        edDraftURI: "https://open-services.net/spec/lvs/latest-draft",
+
+        // Other parts of multi-part spec
+        additionalArtifacts: [],
+
+        relatedWork: [
+          {
+            title: "OSLC Architecture Management Specification Version 2.0",
+            href:
+              "http://open-services.net/wiki/architecture-management/OSLC-Architecture-Management-Specification-Version-2.0/",
+          },
+        ],
+
+        // Only include h1 and h2 levels in the table of contents
+        maxTocLevel: 3,
+        conformanceLabelPrefix: "LVS",
+        // noConformanceStyling: 1,
+        // noConformanceTable: 1,
+        // conformanceClauseStrength : 1,
+
+        // Chairs and editors, add as many as you like: you must have at least one editor.
+        // Only "name" is required, but the other fields are recommended.
+        editors: [
+          {
+            name: "Ed Gentry",
+            mailto: "eran.gery@il.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com",
+          },
+        ],
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Jad El-khoury",
+            mailto: "jad@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se/en",
+          },
+        ],
+
+        // name of the TC
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-op",
+
+        // Namespaces defined by this TC
+        namespaces: [{ href: "http://open-services.net/ns/core/am#", prefix: "oslc_am" }],
+
+        localBiblio: {
+          OSLCAM2: {
+            title: "OSLC Architecture Management Specification Version 2.0",
+            href:
+              "http://open-services.net/wiki/architecture-management/OSLC-Architecture-Management-Specification-Version-2.0/",
+            authors: ["Jim Conallen"],
+            status: "Finalized",
+            publisher: "https://open-services.net/",
+          },
+          OSLCCore2: {
+            title: "OSLC Core Specification 2.0",
+            href: "https://archive.open-services.net/bin/view/Main/OslcCoreSpecification",
+            authors: ["Dave Johnson", "S. Speicher"],
+            status: "Finalized",
+            publisher: "https://open-services.net/",
+          },
+          OSLCCore3: {
+            title: "OSLC Core Version 3.0. Part 1: Overview",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/oslc-core.html",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+          OSLCPreview: {
+            title: "OSLC Core Version 3.0. Part 3: Resource Preview0",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/resource-preview.html",
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+          DublinCore: {
+            title: "Dublin Core Metadata Element Set, Version 1.1",
+            href: "http://dublincore.org/documents/dces/",
+            status: "DCMI Recommendation",
+            publisher: "Dublin Core Metadata Initiative",
+          },
+          FOAF: {
+            title: "Friend of a Friend (FOAF)",
+            href: "http://xmlns.com/foaf/spec/",
+            authors: ["Dan Brickley", "Libby Miller"],
+            status: "Finalized",
+            publisher: "FOAF project",
+          },
+          "RDF/XML Concepts": {
+            title: "RDF/XML Concepts and Abstract Syntax",
+            href: "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/",
+            authors: ["Graham Klyne", "Jeremy J. Carroll"],
+            status: "Superseded Recommendation",
+            publisher: "www.w3.org",
+          },
+          "RDF/XML Syntax": {
+            title: "RDF/XML Syntax Specification (Revised)",
+            href: "http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/",
+            authors: ["Dave Beckett"],
+            status: "Revision",
+            publisher: "www.w3.org",
+          },
+          "URI Syntax": {
+            title: "URI Generic Syntax",
+            href: "https://tools.ietf.org/html/rfc3986",
+            status: "Working Group Note",
+          },
+          "XML Namespaces": {
+            title: "Namespaces in XML 1.0 (Third Edition)",
+            href: "http://www.w3.org/TR/REC-xml-names/",
+            authors: ["Tim Bray", "Dave Hollander", "Andrew Layman", "Richard Tobin", "Henry S. Thompson"],
+            publisher: "www.w3.org",
+          },
+          "XML Base": {
+            title: "XML Base (Second Edition)",
+            href: "http://www.w3.org/TR/xmlbase/",
+            authors: ["Jonathan Marsh", "Richard Tobin"],
+            status: "Recommendation",
+            publisher: "www.w3.org",
+          },
+          LDPPatch: {
+            title: "Linked Data Patch Format",
+            href: "http://www.w3.org/TR/ldpatch/",
+            status: "Working Group Note",
+            publisher: "http://www.w3.org/",
+          },
+          "XSD Datatypes": {
+            title: "XML Schema Part 2: Datatypes Second Edition",
+            href: "http://www.w3.org/TR/xmlschema-2/",
+            authors: ["Paul V. Biron", "Ashok Malhotra"],
+            status: "Final",
+            publisher: "https://open-services.net/",
+          },
+          OSLCCoreVocab: {
+            title: "OSLC Core Version 3.0. Part 7: Vocabulary",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/core-vocab.html",
+            authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+          OpenIDConnect: {
+            title: "OpenID Connect",
+            href: "http://openid.net/connect/",
+            publisher: "openid.net",
+          },
+          OSLCShapes: {
+            title: "OSLC Core Version 3.0. Part 6: Resource Shape",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/resource-shape.html",
+            authors: ["Arthur Ryman", "Jim Amsden"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+          OSLCRM20: {
+            title: "Open Services for Lifecycle Collaboration Requirements Management Specification Version 2.0",
+            href: "https://archive.open-services.net/bin/view/Main/RmSpecificationV2",
+            authors: ["Ian Green"],
+            status: "Finalized",
+            publisher: "https://open-services.net",
+          },
+          OSLCCM20: {
+            title: "Open Services for Lifecycle Collaboration Change Management Specification Version 2.0",
+            href: "https://archive.open-services.net/bin/view/Main/CmSpecificationV2",
+            authors: ["Steve Speicher"],
+            status: "Finalized",
+            publisher: "https://open-services.net",
+          },
+          OSLCRM: {
+            title: "OSLC Requirements Management Version 2.1. Part 1: Specification",
+            href: "https://open-services.net/spec/rm/latest",
+            authors: ["Ian Green", "Jad El-khoury"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+          OSLCQM: {
+            title: "OSLC Quality Management 2.1. Part 1: Specification",
+            href: "https://open-services.net/spec/qm/latest",
+            authors: ["Paul McMahan", "Jim Amsden", "Gray Bachelor"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <section id="abstract">
+      <p>
+        OSLC Link Validity Service defines an OSLC RESTful web service API to query, assess and assert the validity
+        status of links that represent some semantic dependency.
+      </p>
+    </section>
+
+    <section id="toc"></section>
+
+    <section id="sotd"></section>
+
+    <section id="intro" class="informative">
+      <h2>Introduction</h2>
+      <p>
+        A Link Validity Service would provide the ability for a client application to query the status of links that
+        represent some semantic dependency. See OSLC Core Version 3.0. Part 7: Vocabulary section 5.2 Traceability and
+        Impact type.
+      </p>
+      <p>
+        OSLC Core describes a “link” as an RDF assertion with a subject, predicate and object. A link may or may not
+        represent a dependency between the subject and object. If a change in either the subject or object of the link
+        could result in the assertion becoming invalid, then OSLC considers the link a dependency. OSLC does not specify
+        the semantics of such a dependency, only that it can exist.
+      </p>
+      <p>
+        The impact of a change in a subject or object in a dependency could follow the link direction (all RDF
+        predicates are directional), the opposite of the link direction, or both. OSLC Core uses oslc:impactType to
+        allow servers to specify how changes in subjects and objects impact a dependency assertion.
+      </p>
+      <p>
+        A Link Validity Service would provide a way of getting links that are valid, suspect or invalid, or requesting
+        whether a specific link/dependency assertion is suspect or invalid. It would also have a way of allowing a
+        client to assert or update link validity, or to clear suspect or invalid links assuming the dependency has been
+        managed somehow.
+      </p>
+      <p>
+        A Link Validity Service would also provide a means to define what constitutes a change in a subject or object in
+        the context of a dependency relationship. This would typically involve specifying what properties of a resource
+        constitute a change in the context of a dependency. The impacting property changes could be different for the
+        same resources in different dependency relationships.
+      </p>
+
+      <section id="terminology">
+        <h3>Terminology</h3>
+        <dl class="spaced">
+          <dt><dfn>Link</dfn></dt>
+          <dd>
+            An assertion or RDF triple consisting of a (subject, predicate, object) that manifests an instance of a
+            relationship between the referenced subject and object.
+          </dd>
+
+          <dt>LVS Client</dt>
+          <dd>
+            An implementation of an application that consumes services provided by LVS servers to assess the validity of
+            links between a particular set of source and target resources.
+          </dd>
+
+          <dt>LVS Server</dt>
+          <dd>
+            A server implementing the OSLC Link Validity Service specification.
+          </dd>
+        </dl>
+      </section>
+      <section id="references"><h3>References</h3></section>
+      <section id="conventions"></section>
+    </section>
+
+    <section id="baseRequirements">
+      <h2>Base Requirements</h2>
+
+      <p>
+        The following sub-sections define the mandatory and optional requirements for an OSLC Architecture Management
+        (OSLC AM) server.
+      </p>
+
+      <section id="baseCompliance">
+        <h2>Base Compliance</h2>
+        <p class="conformance">
+          This specification is based on [[!OSLCCore3]]. OSLC LVS servers MUST be compliant with both the core
+          specification, MUST follow all the mandatory requirements in the normative sections of this specification, and
+          SHOULD follow all the guidelines and recommendations in both these specifications.
+        </p>
+
+        <p>
+          The following table summarizes the requirements from OSLC Core Specification as well as some additional
+          requirements specific for LVS Servers. Note that this specification further restricts some of the requirements
+          from the OSLC Core Specification. See the previous sections in this specification or the OSLC Core
+          Specification to get further details on each of these requirements.
+        </p>
+
+        <table border="1" cellspacing="0" cellpadding="5">
+          <thead>
+            <tr>
+              <th>Requirement</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Absolute URIs</td>
+              <td class="conformance">
+                LVS Servers MUST use absolute URIs for all references to resources by properties
+              </td>
+            </tr>
+            <tr>
+              <td>Resource Operations</td>
+              <td class="conformance">LVS Servers MUST support resource operations via standard HTTP operations</td>
+            </tr>
+            <tr>
+              <td>Resource Paging</td>
+              <td class="conformance">
+                LVS Servers SHOULD provide resource paging, as defined in [OSLC-Core-3.0-Part1]. In case resource paging
+                is supported, stable paging is required. Note: as the LVS server implements a post-method as defined
+                below, consider that instead of using oslc:nextPage in oslc:ResponseInfo, the use of oslc:postBody is
+                required.
+              </td>
+            </tr>
+            <tr>
+              <td>Discovery</td>
+              <td class="conformance">
+                LVS Service URI is configured explicitly in each LVS client. Therefore no dedicated discovery protocol
+                is needed. Note: a scenario with multiple LVS Servers is possible, in which case multiple LVS Service
+                URI are configured. This specification does not prescribe how these multiple LVS servers are managed
+                together. A LVS Service SHOULD provide discovery of its link contributors via Service Provider Catalog
+                which is pointing via oslc:serviceProviderCatalog to the contributing servers catalogs.
+              </td>
+            </tr>
+            <tr>
+              <td>Authentication</td>
+              <td class="conformance">
+                LVS Services SHOULD follow the recommendations for Authentication specified in [[!OSLCCore3]]
+              </td>
+            </tr>
+            <tr>
+              <td>Error Responses</td>
+              <td class="conformance">
+                LVS Servers SHOULD provide error responses using OSLC Core defined error formats
+              </td>
+            </tr>
+            <tr>
+              <td>RDF/XML Representations</td>
+              <td class="conformance">
+                LVS Servers MUST support RDF/XML and SHOULD support Turtle representations for OSLC Defined Resources
+              </td>
+            </tr>
+            <tr>
+              <td>JSON+LD Representations</td>
+              <td class="conformance">
+                LVS Servers MAY support JSON+LD representations; those which do MUST conform to the OSLC Core Guidelines
+                for JSON+LD
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="versioning">
+        <h2 id="specificationversioningspec_versioning">Specification Versioning</h2>
+        <p>This specification follows the specification version guidelines given in [[!OSLCCore3]].</p>
+      </section>
+
+      <section id="formats">
+        <h2>Resource Formats - should be removed</h2>
+
+        <p>
+          In addition to the requirements for resource representations in [[!OSLCCore3]], this section outlines further
+          refinements and restrictions.
+        </p>
+
+        <p>For HTTP GET/PUT/POST requests on all OSLC LVS and OSLC Core defined resource types:</p>
+
+        <ul>
+          <li class="conformance">
+            LVS Servers MUST support RDF/XML representations with media-type <code>application/rdf+xml</code>. LVS
+            Clients should be prepared to deal with any valid RDF/XML document.
+          </li>
+          <li class="conformance">
+            LVS Servers MUST support XML representations with media-type <code>application/xml</code>. The XML
+            representations MUST follow the guidelines outlined in the
+            <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations"
+              >OSLC Core Representations Guidance</a
+            >
+            to maintain compatibility with [[!OSLCCore2]].
+          </li>
+          <li class="conformance">
+            LVS Servers MAY support JSON representations with media-type <code>application/json</code>. The JSON
+            representations MUST follow the guidelines outlined in the
+            <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations"
+              >OSLC Core Representations Guidance</a
+            >
+            to maintain compatibility with [[!OSLCCore2]].
+          </li>
+        </ul>
+      </section>
+
+      <section id="resourceOps">
+        <h2>Resource Operations</h2>
+
+        <p></p>
+      </section>
+
+      <section id="authentication">
+        <h2>Authentication</h2>
+
+        <p>See [[!OSLCCore3]], OSLC LVS puts no additional constraints on authentication.</p>
+      </section>
+
+      <section id="errors">
+        <h2>Error Responses</h2>
+
+        <p class="conformance">
+          The following error situations MUST be handled by the LVS-Server. In case the error occurs, the subsequent
+          oslc:error SHALL be returned.
+        </p>
+      </section>
+      <section id="pagination">
+        <h2>Pagination</h2>
+
+        <p class="conformance">
+          OSLC LVS Servers SHOULD support pagination of query results and MAY support pagination of a single resource's
+          properties as defined by [[!OSLCCore3]].
+        </p>
+      </section>
+    </section>
+
+    <section id="description">
+      <h2>Link Validity Service Description</h2>
+      <h3>Suspect Links</h3>
+      <p></p>
+    </section>
+  </body>
+</html>
