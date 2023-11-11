@@ -1,9 +1,9 @@
 openapi: 3.0.1
 info:
-  title: "LDM OSLC service"
+  title: LDM OSLC service
   version: “1.0”
 servers:
-  - url: 'http://localhost:8080'
+  - url: http://localhost:8080
     description: Generated server url
 paths:
   /discover-links:
@@ -22,18 +22,17 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/GetIncomingLinks'
+              $ref: "#/components/schemas/GetIncomingLinks"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            application/rdf+xml:
-            text/turtle:
-            application/json+ld:
-        '400':
-            description:  Bad request
-
+            application/rdf+xml: null
+            text/turtle: null
+            application/json+ld: null
+        "400":
+          description: Bad request
   /rootservices:
     get:
       operationId: getCatalog
@@ -43,116 +42,113 @@ paths:
           content:
             application/rdf+xml:
               schema:
-                $ref: '#/components/schemas/ServiceProviderCatalog'
-
+                $ref: "#/components/schemas/ServiceProviderCatalog"
 components:
   schemasGetIncomingLinks:
-      type: object
-      properties:
-        objectResources:
-          type: array
-          items:
-            type: string
+    type: object
+    properties:
+      objectResources:
+        type: array
+        items:
+          type: string
+      format: uri
+      predicateFilters:
+        type: array
+        items:
+          type: string
+          format: uri
+      pageSize:
+        type: integer
+        format: int32
+      pageNumber:
+        type: integer
+        format: int32
+      Publisher:
+        type: object
+        properties: null
+      icon:
+        type: string
         format: uri
-        predicateFilters:
-          type: array
-          items:
-            type: string
-            format: uri  
-        pageSize:
-          type: integer
-          format: int32
-    pageNumber:
-          type: integer
-          format: int32
-    Publisher:
+      identifier:
+        type: string
+      label:
+        type: string
+      title:
+        type: string
+      OAuthConfiguration:
+        type: object
+        properties:
+          authorizationURI: null
+          type: string
+          format: uri
+      oauthAccessTokenURI:
+        type: string
+        format: uri
+      oauthRequestTokenURI:
+        type: string
+        format: uri
+      Service:
+        type: object
+        properties: null
+      creationDialogs:
+        type: array
+        items:
+          $ref: "#/components/schemas/Dialog"
+      creationFactories:
+        type: array
+        items:
+          $ref: "#/components/schemas/CreationFactory"
+      queryCapabilities:
+        type: array
+        items:
+          $ref: "#/components/schemas/QueryCapability"
+      selectionDialogs:
+        type: array
+        items:
+          $ref: "#/components/schemas/Dialog"
+      usages:
+        type: array
+        items:
+          type: string
+          format: uri
+      domain:
+        type: string
+        format: uri
+      ServiceProvider: null
       type: object
-      properties:
-        icon:
+      properties: null
+      details:
+        type: array
+        items:
           type: string
           format: uri
-        identifier:
-          type: string
-        label:
-          type: string
-        title:
-          type: string
-    OAuthConfiguration:
-      type: object
-      properties:
-        authorizationURI:
-          type: string
-          format: uri
-        oauthAccessTokenURI:
-          type: string
-          format: uri
-        oauthRequestTokenURI:
-          type: string
-          format: uri
-
-    Service:
-      type: object
-      properties:
-        creationDialogs:
-          type: array
-          items:
-            $ref: '#/components/schemas/Dialog'
-        creationFactories:
-          type: array
-          items:
-            $ref: '#/components/schemas/CreationFactory'
-        queryCapabilities:
-          type: array
-          items:
-            $ref: '#/components/schemas/QueryCapability'
-        selectionDialogs:
-          type: array
-          items:
-            $ref: '#/components/schemas/Dialog'
-        usages:
-          type: array
-          items:
-            type: string
-            format: uri
-        domain:
-          type: string
-          format: uri
-
-    ServiceProvider:
-      type: object
-      properties:
-        details:
-          type: array
-          items:
-            type: string
-            format: uri
-        services:
-          type: array
-          items:
-            $ref: '#/components/schemas/Service'
-        description:
-          type: string
-        oauthConfiguration:
-          $ref: '#/components/schemas/OAuthConfiguration'
-        publisher:
-          $ref: '#/components/schemas/Publisher'
-        title:
-          type: string 
+      services:
+        type: array
+        items:
+          $ref: "#/components/schemas/Service"
+      description:
+        type: string
+      oauthConfiguration:
+        $ref: "#/components/schemas/OAuthConfiguration"
+      publisher:
+        $ref: "#/components/schemas/Publisher"
+      ptitle:
+        type: string
     ServiceProviderCatalog:
       type: object
-      properties:
-        referencedServiceProviderCatalogs:
-          type: array
-          items:
-            type: string
-            format: uri
-        serviceProviders:
-          type: array
-          items:
-            $ref: '#/components/schemas/ServiceProvider'
-        description:
+      properties: null
+      referencedServiceProviderCatalogs:
+        type: array
+        items:
           type: string
-        oauthConfiguration:
-          $ref: '#/components/schemas/OAuthConfiguration'
-        publisher:
-          $ref: '#/components/schemas/Publisher'
+          format: uri
+      serviceProviders:
+        type: array
+        items:
+          $ref: "#/components/schemas/ServiceProvider"
+      description:
+        type: string
+      oauthConfiguration:
+        $ref: "#/components/schemas/OAuthConfiguration"
+      publisher:
+        $ref: "#/components/schemas/Publisher"
