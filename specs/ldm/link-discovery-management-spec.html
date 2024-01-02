@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Link Discovery Management Version 1.0. Specification</title>
+    <title>OSLC Link Discovery Management Version 1.0. Part 1: Specification</title>
     <meta
       name="description"
       content="This specification defines the OSLC Link Discovery Management, a RESTful web
@@ -15,7 +15,7 @@ services interface for discovering incoming links."
       class="remove"
     ></script>
     <script class="remove">
-      var status = "WD";
+      var status = "PSD";
       var revision = 1;
 
       var wdBase = "https://oslc-op.github.io/oslc-specs/specs/ldm/";
@@ -43,7 +43,7 @@ services interface for discovering incoming links."
           },
         ],
 
-        //publishDate: "2022-07-11T12:00Z",
+        publishDate: "2023-12-21T12:00Z",
         //previousPublishDate: "2021-09-30",
         //previousMaturity: "PS",
 
@@ -54,15 +54,18 @@ services interface for discovering incoming links."
         edDraftURI: "https://open-services.net/spec/ldm/latest-draft",
 
         // Other parts of multi-part spec
-        additionalArtifacts: [],
-
-        relatedWork: [
+        additionalArtifacts: [
           {
-            title: "OSLC Architecture Management Specification Version 2.0",
-            href:
-              "http://open-services.net/wiki/architecture-management/OSLC-Architecture-Management-Specification-Version-2.0/",
+            title: "OSLC Link Discovery Management Version 1.0. Part 1: Specification",
+            href: thisBase + "/link-discovery-management-spec.html",
+          },
+          {
+            title: "OSLC LDM Version 1.0: Part 2: Machine-readable OpenAPI yaml",
+            href: thisBase + "/ldm-service.yaml",
           },
         ],
+
+        relatedWork: [],
 
         // Only include h1 and h2 levels in the table of contents
         maxTocLevel: 3,
@@ -352,7 +355,6 @@ services interface for discovering incoming links."
           </dd>
         </dl>
       </section>
-      <section id="references"><h3>References</h3></section>
       <section id="conventions"></section>
     </section>
 
@@ -448,40 +450,6 @@ services interface for discovering incoming links."
       <section id="versioning">
         <h2 id="specificationversioningspec_versioning">Specification Versioning</h2>
         <p>This specification follows the specification version guidelines given in [[!OSLCCore3]].</p>
-      </section>
-
-      <section id="formats">
-        <h2>Resource Formats - should be removed</h2>
-
-        <p>
-          In addition to the requirements for resource representations in [[!OSLCCore3]], this section outlines further
-          refinements and restrictions.
-        </p>
-
-        <p>For HTTP GET/PUT/POST requests on all OSLC LDM and OSLC Core defined resource types:</p>
-
-        <ul>
-          <li class="conformance">
-            LDM Servers MUST support RDF/XML representations with media-type <code>application/rdf+xml</code>. LDM
-            Clients should be prepared to deal with any valid RDF/XML document.
-          </li>
-          <li class="conformance">
-            LDM Servers MUST support XML representations with media-type <code>application/xml</code>. The XML
-            representations MUST follow the guidelines outlined in the
-            <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations"
-              >OSLC Core Representations Guidance</a
-            >
-            to maintain compatibility with [[!OSLCCore2]].
-          </li>
-          <li class="conformance">
-            LDM Servers MAY support JSON representations with media-type <code>application/json</code>. The JSON
-            representations MUST follow the guidelines outlined in the
-            <a href="http://open-services.net/bin/view/Main/OSLCCoreSpecAppendixRepresentations"
-              >OSLC Core Representations Guidance</a
-            >
-            to maintain compatibility with [[!OSLCCore2]].
-          </li>
-        </ul>
       </section>
 
       <section id="resourceOps">
@@ -636,174 +604,24 @@ services interface for discovering incoming links."
       </p>
       <p>
         The link contributions discovery is exposed under the root-services path as described in the open-API section
-        below
+        below.
       </p>
       <section id="openapispec">
         <h2>OpenApi specification of the LDM service</h2>
-        <pre>
-openapi: 3.0.1
-info:
-  title: "LDM OSLC service"
-  version: “1.0”
-servers:
-  - url: 'http://localhost:8080'
-    description: Generated server url
-paths:
-  /discover-links:
-    post:
-      tags:
-        - link-index-controller
-      operationId: getResources
-      parameters:
-        - name: Configuration-Context
-          in: header
-          required: true
-          schema:
-            type: string
-            format: uri
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/GetIncomingLinks'
-        required: true
-      responses:
-        '200':
-          description: OK
-          content:
-            application/rdf+xml:
-            application/turtle:
-            application/json+ld:
-        '400':
-            description:  Bad request
-
-  /rootservices:
-    get:
-      operationId: getCatalog
-      responses:
-        default:
-          description: default response
-          content:
-            application/rdf+xml:
-              schema:
-                $ref: '#/components/schemas/ServiceProviderCatalog'
-
-components:
-  schemas
-    GetIncomingLinks:
-      type: object
-      properties:
-        objectResources:
-          type: array
-          items:
-            type: string
-	       format: uri
-        predicateFilters:
-          type: array
-          items:
-            type: string
-            format: uri  
-        pageSize:
-          type: integer
-          format: int32
-	  pageNumber:
-          type: integer
-          format: int32
-    Publisher:
-      type: object
-      properties:
-        icon:
-          type: string
-          format: uri
-        identifier:
-          type: string
-        label:
-          type: string
-        title:
-          type: string
-    OAuthConfiguration:
-      type: object
-      properties:
-        authorizationURI:
-          type: string
-          format: uri
-        oauthAccessTokenURI:
-          type: string
-          format: uri
-        oauthRequestTokenURI:
-          type: string
-          format: uri
-
-    Service:
-      type: object
-      properties:
-        creationDialogs:
-          type: array
-          items:
-            $ref: '#/components/schemas/Dialog'
-        creationFactories:
-          type: array
-          items:
-            $ref: '#/components/schemas/CreationFactory'
-        queryCapabilities:
-          type: array
-          items:
-            $ref: '#/components/schemas/QueryCapability'
-        selectionDialogs:
-          type: array
-          items:
-            $ref: '#/components/schemas/Dialog'
-        usages:
-          type: array
-          items:
-            type: string
-            format: uri
-        domain:
-          type: string
-          format: uri
-
-    ServiceProvider:
-      type: object
-      properties:
-        details:
-          type: array
-          items:
-            type: string
-            format: uri
-        services:
-          type: array
-          items:
-            $ref: '#/components/schemas/Service'
-        description:
-          type: string
-        oauthConfiguration:
-          $ref: '#/components/schemas/OAuthConfiguration'
-        publisher:
-          $ref: '#/components/schemas/Publisher'
-        title:
-          type: string 
-    ServiceProviderCatalog:
-      type: object
-      properties:
-        referencedServiceProviderCatalogs:
-          type: array
-          items:
-            type: string
-            format: uri
-        serviceProviders:
-          type: array
-          items:
-            $ref: '#/components/schemas/ServiceProvider'
-        description:
-          type: string
-        oauthConfiguration:
-          $ref: '#/components/schemas/OAuthConfiguration'
-        publisher:
-          $ref: '#/components/schemas/Publisher'
-
-</pre
-        >
+        <p class="conformance">
+          LDM servers MUST implement the OpenAPI specification given in
+          <a href="./ldm-service.yaml">OSLC LDM Version 1.0: Part 2: Machine-readable OpenAPI yaml</a>.
+        </p>
       </section>
+    </section>
+
+    <section id="conformance">
+      <h2>Conformance</h2>
+      <p class="conformance">
+        This specification is based on [[!OSLCCore3]]. OSLC Link Discovery Management servers MUST be compliant with the
+        Core specification, MUST follow all the mandatory requirements in the normative sections of each part of this
+        specification, and SHOULD follow all the guidelines and recommendations in both these specifications.
+      </p>
     </section>
 
     <section class="appendix informative" id="acknowledgments">
@@ -812,7 +630,6 @@ components:
         The following individuals have participated in the creation of this specification and are gratefully
         acknowledged:
       </p>
-
       <p><b>Participants</b>:</p>
       <p style="margin-left: 40px;">James Amsden, IBM (co-chair)<br /></p>
     </section>
