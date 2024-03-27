@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>OSLC Systems Modeling Language Version 2.0 Part 3: Constraints</title>
+    <meta name="description" content="Specifies the standard constraints on the OSLC Systems Modeling Language v2.0 vocabulary terms." />
+
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.32/builds/respec-oasis-common.min.js"
+      async
+      class="remove"
+    ></script>
+    <script class="remove">
+      var status = "WD";
+      var revision = 1;
+
+      var wdBase = "https://oslc-op.github.io/oslc-specs/specs/sysml/";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/sysml/v2.0";
+      var thisBase = wdBase;
+      if ("WD" !== status) {
+        if (status == "OS") {
+          var thisBase = oasisBase + status.toLowerCase() + "/";
+        } else {
+          var thisBase = oasisBase + status.toLowerCase() + revision.toString().padStart(2, "0") + "/";
+        }
+      }
+
+      var respecConfig = {
+        shortName: "oslc-sysml",
+        specStatus: status,
+        revision: revision.toString().padStart(2, "0"),
+        citationLabel: "OSLC-SYSML-2.0-Part3",
+
+        license: "cc-by-4",
+        additionalLicenses: [
+          {
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+          },
+        ],
+
+        publishDate: "2024-04-01T12:00Z",
+        //previousPublishDate: "2021-09-30",
+        //previousMaturity: "PS",
+
+        thisVersion: thisBase + "sysml-shapes.html",
+        //prevVersion: "https://docs.oasis-open-projects.org/oslc-op/sysml/v3.0/psd01/sysml-shapes.html",
+        latestVersion: oasisBase + "sysml-shapes.html",
+        latestSpecVersion: "https://open-services.net/spec/sysml/latest",
+        edDraftURI: "https://open-services.net/spec/sysml/latest-draft",
+
+        // Other parts of multi-part spec
+        additionalArtifacts: [
+        {
+            title: "OSLC Systems Modeling Language Version 2.0. Part 1: Specification",
+            href: "sysml-spec.html",
+          },
+          {
+            title: "OSLC Systems Modeling Language Version 2.0. Part 2: Vocabulary",
+            href: "sysml-vocab.html",
+          },
+          {
+            title: "OSLC Systems Modeling Language Version 2.0. Part 3: Constraints (this document)",
+            href: "sysml-shapes.html",
+          },
+          {
+            title: "OSLC Systems Modeling Language Version 2.0. Part 4: Machine Readable Vocabulary Terms",
+            href: "sysml-vocab.ttl",
+          },
+          {
+            title: "OSLC Systems Modeling Language Version 2.0. Part 5: Machine Readable Constraints",
+            href: "sysml-shapes.ttl",
+          },
+        ],
+
+        relatedWork: [
+          {
+            title: "OMG Systems Modeling Language",
+            href: "hhttps://www.omg.org/spec/SysML/",
+            version: "2.0 Beta",
+          },
+          {
+            title: "Systems Modeling Application Programming Interface (API) and Services",
+            href: "https://www.omg.org/spec/SystemsModelingAPI/1.0/Beta1/PDF",
+            version: "1.0 Beta 1",
+          },
+        ],
+
+        // Only include h1 and h2 levels in the table of contents
+        maxTocLevel: 3,
+
+        // Chairs and editors, add as many as you like: you must have at least one editor.
+        // Only "name" is required, but the other fields are recommended.
+        editors: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com",
+          },
+        ],
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "http://www.ibm.com/",
+          },
+          {
+            name: "Jad El-khoury",
+            mailto: "jad@kth.se",
+            company: "KTH Royal Institute of Technology",
+            companyURL: "http://www.kth.se",
+          },
+        ],
+
+        // name of the TC
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-op",
+
+        // Namespaces defined by this TC
+        namespaces: [{ href: "http://open-services.net/ns/core/sysmlv2#", prefix: "oslc_sysmlv2" }],
+
+        localBiblio: {
+          SysML: {
+            title: "OMG Systems Modeling Language Version 2.0",
+            href: "https://www.omg.org/spec/SysML/",
+            authors: ["OMG ADTF"],
+            status: "Beta1",
+            publisher: "OMG",
+          },
+          SYSTEMSMODELINGAPI: {
+            title: "Systems Modeling API and Services",
+            href: "https://www.omg.org/spec/SystemsModelingAPI/1.0/Beta1/About-SystemsModelingAPI",
+            authors: ["OMG ADTF"],
+            status: "1.0 Beta",
+            publisher: "OMG",
+          },
+          OSLCCore3: {
+            title: "OSLC Core Version 3.0. Part 1: Overview",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/oslc-core.html",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+          DublinCore: {
+            title: "Dublin Core Metadata Element Set, Version 1.1",
+            href: "http://dublincore.org/documents/dces/",
+            status: "DCMI Recommendation",
+            publisher: "Dublin Core Metadata Initiative",
+          },
+          FOAF: {
+            title: "Friend of a Friend (FOAF)",
+            href: "http://xmlns.com/foaf/spec/",
+            authors: ["Dan Brickley", "Libby Miller"],
+            status: "Finalized",
+            publisher: "FOAF project",
+          },
+          "RDF/XML Concepts": {
+            title: "RDF/XML Concepts and Abstract Syntax",
+            href: "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/",
+            authors: ["Graham Klyne", "Jeremy J. Carroll"],
+            status: "Superseded Recommendation",
+            publisher: "www.w3.org",
+          },
+          "RDF/XML Syntax": {
+            title: "RDF/XML Syntax Specification (Revised)",
+            href: "http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/",
+            authors: ["Dave Beckett"],
+            status: "Revision",
+            publisher: "www.w3.org",
+          },
+          "URI Syntax": {
+            title: "URI Generic Syntax",
+            href: "https://tools.ietf.org/html/rfc3986",
+            status: "Working Group Note",
+          },
+          "XML Namespaces": {
+            title: "Namespaces in XML 1.0 (Third Edition)",
+            href: "http://www.w3.org/TR/REC-xml-names/",
+            authors: ["Tim Bray", "Dave Hollander", "Andrew Layman", "Richard Tobin", "Henry S. Thompson"],
+            publisher: "www.w3.org",
+          },
+          "XML Base": {
+            title: "XML Base (Second Edition)",
+            href: "http://www.w3.org/TR/xmlbase/",
+            authors: ["Jonathan Marsh", "Richard Tobin"],
+            status: "Recommendation",
+            publisher: "www.w3.org",
+          },
+          "XSD Datatypes": {
+            title: "XML Schema Part 2: Datatypes Second Edition",
+            href: "http://www.w3.org/TR/xmlschema-2/",
+            authors: ["Paul V. Biron", "Ashok Malhotra"],
+            status: "Final",
+            publisher: "https://open-services.net/",
+          },
+          OSLCCoreVocab: {
+            title: "OSLC Core Version 3.0. Part 7: Vocabulary",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/core-vocab.html",
+            authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+          OSLCShapes: {
+            title: "OSLC Core Version 3.0. Part 6: Resource Shape",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/resource-shape.html",
+            authors: ["Arthur Ryman", "Jim Amsden"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <section id="abstract">
+      <p>
+        OSLC Systems Modeling Language Version 2.0. Part 2: Vocabulary defines the RDF vocabulary terms and resources that are the OSLC
+        representation of the corresponding OMG Systems Modeling Language Version 2.0.
+      </p>
+    </section>
+
+    <section id="toc"></section>
+    <section id="sotd"></section>
+
+    <section id="introduction" class="informative">
+      <h2>Introduction</h2>
+
+      <p>
+        RDF vocabularies define the terms and resources for a domain of interest, life-cycle management in the case of
+        OSLC SysML v2. These vocabularies are often specified in an open manner, without providing information such as
+        property domain and range assertions, cardinalities, etc. This helps keep the vocabulary applicable for a wide
+        range of uses and furthering integration with other vocabularies.
+      </p>
+
+      <p>
+        However, it is often desirable to closed down a vocabulary with specific constraints to facilitate using the
+        vocabulary for a specific purpose. This document specifies the constraints for using the OSLC SysML v2
+        vocabulary in OSLC. Different sets of constraints may be applied to a vocabulary in order to tailor its use,
+        without overly constraining the vocabulary for other usages.
+      </p>
+
+      <p>
+        These constraints apply to the core vocabulary defined in
+        <a href="sysml-vocab.html">OSLC SysML Version 2.0. Part 2: Vocabulary</a>.
+      </p>
+      <section id="terminology" class="informative">
+        <h1>Terminology</h1>
+        <p>
+          Terminology is based on OSLC Core Overview [[!OSLCCore3]], W3C Linked Data Platform [[!LDP]], W3C's
+          Architecture of the World Wide Web [[WEBARCH]], Hyper-text Transfer Protocol [[!HTTP11]]. Terminology for this
+          specification is defined in part 1 of the multi-part specification.
+        </p>
+      </section>
+
+      <section id="references"><h3>References</h3></section>
+
+      <section id="conventions">
+        <p></p>
+        <p>
+          In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>,
+          <code>dcterms</code> and <code>foaf</code> defined in the
+          <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html"
+            >OSLC Core specification</a
+          >, OSLC SysML v2 defines the namespace URI of <code>http://open-services.net/ns/sysmlv2#</code> with a
+          namespace prefix of <code>oslc_am</code>
+        </p>
+
+        <p>This specification also uses these namespace prefix definitions:</p>
+
+        <ul>
+          <li>oslc : <code>http://open-services.net/ns/core#</code> [[OSLCCore3]]</li>
+        </ul>
+      </section>
+    </section>
+
+    <section id="resourceConstraints">
+      <h2>Resource Constraints</h2>
+      <p>
+        This section specifies the constraints for the SysML v2 resources. The resource properties are not limited to
+        the ones defined in this specification, SysML v2 Servers may provide additional properties. It is recommended
+        that any additional properties exist in their own unique namespace and not use the namespaces defined in these
+        specifications.
+      </p>
+
+
+
+      <div
+      title="Constraints for AnnotatingElement"
+      data-include="./sysml-shapes.ttl#AnnotatingElementShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for EventOccurrenceUsage"
+      data-include="./sysml-shapes.ttl#EventOccurrenceUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ConjugatedPortDefinition"
+      data-include="./sysml-shapes.ttl#ConjugatedPortDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ActionDefinition"
+      data-include="./sysml-shapes.ttl#ActionDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ReturnParameterMembership"
+      data-include="./sysml-shapes.ttl#ReturnParameterMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for SuccessionAsUsage"
+      data-include="./sysml-shapes.ttl#SuccessionAsUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for InvocationExpression"
+      data-include="./sysml-shapes.ttl#InvocationExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for RequirementDefinition"
+      data-include="./sysml-shapes.ttl#RequirementDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ItemFlowEnd"
+      data-include="./sysml-shapes.ttl#ItemFlowEndShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Connector"
+      data-include="./sysml-shapes.ttl#ConnectorShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for FlowConnectionDefinition"
+      data-include="./sysml-shapes.ttl#FlowConnectionDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for VariantMembership"
+      data-include="./sysml-shapes.ttl#VariantMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for NullExpression"
+      data-include="./sysml-shapes.ttl#NullExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for LiteralString"
+      data-include="./sysml-shapes.ttl#LiteralStringShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for EnumerationUsage"
+      data-include="./sysml-shapes.ttl#EnumerationUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for OperatorExpression"
+      data-include="./sysml-shapes.ttl#OperatorExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for BooleanExpression"
+      data-include="./sysml-shapes.ttl#BooleanExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for StateDefinition"
+      data-include="./sysml-shapes.ttl#StateDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for NamespaceExpose"
+      data-include="./sysml-shapes.ttl#NamespaceExposeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Specialization"
+      data-include="./sysml-shapes.ttl#SpecializationShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for LibraryPackage"
+      data-include="./sysml-shapes.ttl#LibraryPackageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ViewpointUsage"
+      data-include="./sysml-shapes.ttl#ViewpointUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ConnectionDefinition"
+      data-include="./sysml-shapes.ttl#ConnectionDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Relationship"
+      data-include="./sysml-shapes.ttl#RelationshipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Intersecting"
+      data-include="./sysml-shapes.ttl#IntersectingShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ParameterMembership"
+      data-include="./sysml-shapes.ttl#ParameterMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Class"
+      data-include="./sysml-shapes.ttl#ClassShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Subclassification"
+      data-include="./sysml-shapes.ttl#SubclassificationShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Element"
+      data-include="./sysml-shapes.ttl#ElementShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for TransitionFeatureMembership"
+      data-include="./sysml-shapes.ttl#TransitionFeatureMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for FeatureValue"
+      data-include="./sysml-shapes.ttl#FeatureValueShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Comment"
+      data-include="./sysml-shapes.ttl#CommentShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for FeatureChainExpression"
+      data-include="./sysml-shapes.ttl#FeatureChainExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for UseCaseUsage"
+      data-include="./sysml-shapes.ttl#UseCaseUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for DataType"
+      data-include="./sysml-shapes.ttl#DataTypeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Expression"
+      data-include="./sysml-shapes.ttl#ExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for PartDefinition"
+      data-include="./sysml-shapes.ttl#PartDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for SendActionUsage"
+      data-include="./sysml-shapes.ttl#SendActionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for LiteralExpression"
+      data-include="./sysml-shapes.ttl#LiteralExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for StakeholderMembership"
+      data-include="./sysml-shapes.ttl#StakeholderMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ReferenceUsage"
+      data-include="./sysml-shapes.ttl#ReferenceUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for AllocationDefinition"
+      data-include="./sysml-shapes.ttl#AllocationDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ReferenceSubsetting"
+      data-include="./sysml-shapes.ttl#ReferenceSubsettingShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Invariant"
+      data-include="./sysml-shapes.ttl#InvariantShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Type"
+      data-include="./sysml-shapes.ttl#TypeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for AnalysisCaseUsage"
+      data-include="./sysml-shapes.ttl#AnalysisCaseUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for FramedConcernMembership"
+      data-include="./sysml-shapes.ttl#FramedConcernMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for AssignmentActionUsage"
+      data-include="./sysml-shapes.ttl#AssignmentActionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Package"
+      data-include="./sysml-shapes.ttl#PackageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ItemFeature"
+      data-include="./sysml-shapes.ttl#ItemFeatureShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ConstraintUsage"
+      data-include="./sysml-shapes.ttl#ConstraintUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for SubjectMembership"
+      data-include="./sysml-shapes.ttl#SubjectMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for FeatureInverting"
+      data-include="./sysml-shapes.ttl#FeatureInvertingShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ElementFilterMembership"
+      data-include="./sysml-shapes.ttl#ElementFilterMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for IncludeUseCaseUsage"
+      data-include="./sysml-shapes.ttl#IncludeUseCaseUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ItemUsage"
+      data-include="./sysml-shapes.ttl#ItemUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for TextualRepresentation"
+      data-include="./sysml-shapes.ttl#TextualRepresentationShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for JoinNode"
+      data-include="./sysml-shapes.ttl#JoinNodeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for CalculationDefinition"
+      data-include="./sysml-shapes.ttl#CalculationDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ConjugatedPortTyping"
+      data-include="./sysml-shapes.ttl#ConjugatedPortTypingShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for MergeNode"
+      data-include="./sysml-shapes.ttl#MergeNodeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ConnectionUsage"
+      data-include="./sysml-shapes.ttl#ConnectionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for NamespaceImport"
+      data-include="./sysml-shapes.ttl#NamespaceImportShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for FeatureReferenceExpression"
+      data-include="./sysml-shapes.ttl#FeatureReferenceExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for AcceptActionUsage"
+      data-include="./sysml-shapes.ttl#AcceptActionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for BindingConnector"
+      data-include="./sysml-shapes.ttl#BindingConnectorShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for TriggerInvocationExpression"
+      data-include="./sysml-shapes.ttl#TriggerInvocationExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ViewUsage"
+      data-include="./sysml-shapes.ttl#ViewUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for AttributeDefinition"
+      data-include="./sysml-shapes.ttl#AttributeDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Metaclass"
+      data-include="./sysml-shapes.ttl#MetaclassShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for UseCaseDefinition"
+      data-include="./sysml-shapes.ttl#UseCaseDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Step"
+      data-include="./sysml-shapes.ttl#StepShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for AssociationStructure"
+      data-include="./sysml-shapes.ttl#AssociationStructureShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ResultExpressionMembership"
+      data-include="./sysml-shapes.ttl#ResultExpressionMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for MembershipImport"
+      data-include="./sysml-shapes.ttl#MembershipImportShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for PortUsage"
+      data-include="./sysml-shapes.ttl#PortUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ConstraintDefinition"
+      data-include="./sysml-shapes.ttl#ConstraintDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for SelectExpression"
+      data-include="./sysml-shapes.ttl#SelectExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for PortConjugation"
+      data-include="./sysml-shapes.ttl#PortConjugationShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Succession"
+      data-include="./sysml-shapes.ttl#SuccessionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for MetadataDefinition"
+      data-include="./sysml-shapes.ttl#MetadataDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for IfActionUsage"
+      data-include="./sysml-shapes.ttl#IfActionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for TypeFeaturing"
+      data-include="./sysml-shapes.ttl#TypeFeaturingShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for EndFeatureMembership"
+      data-include="./sysml-shapes.ttl#EndFeatureMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for AttributeUsage"
+      data-include="./sysml-shapes.ttl#AttributeUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Predicate"
+      data-include="./sysml-shapes.ttl#PredicateShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for MetadataAccessExpression"
+      data-include="./sysml-shapes.ttl#MetadataAccessExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Interaction"
+      data-include="./sysml-shapes.ttl#InteractionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for DecisionNode"
+      data-include="./sysml-shapes.ttl#DecisionNodeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for CaseDefinition"
+      data-include="./sysml-shapes.ttl#CaseDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for WhileLoopActionUsage"
+      data-include="./sysml-shapes.ttl#WhileLoopActionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ExhibitStateUsage"
+      data-include="./sysml-shapes.ttl#ExhibitStateUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ViewDefinition"
+      data-include="./sysml-shapes.ttl#ViewDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for LifeClass"
+      data-include="./sysml-shapes.ttl#LifeClassShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for RequirementConstraintMembership"
+      data-include="./sysml-shapes.ttl#RequirementConstraintMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for OccurrenceUsage"
+      data-include="./sysml-shapes.ttl#OccurrenceUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for RenderingDefinition"
+      data-include="./sysml-shapes.ttl#RenderingDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for CalculationUsage"
+      data-include="./sysml-shapes.ttl#CalculationUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for LiteralBoolean"
+      data-include="./sysml-shapes.ttl#LiteralBooleanShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for LiteralRational"
+      data-include="./sysml-shapes.ttl#LiteralRationalShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Documentation"
+      data-include="./sysml-shapes.ttl#DocumentationShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ForkNode"
+      data-include="./sysml-shapes.ttl#ForkNodeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Annotation"
+      data-include="./sysml-shapes.ttl#AnnotationShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for FeatureMembership"
+      data-include="./sysml-shapes.ttl#FeatureMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Conjugation"
+      data-include="./sysml-shapes.ttl#ConjugationShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for SatisfyRequirementUsage"
+      data-include="./sysml-shapes.ttl#SatisfyRequirementUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for AssertConstraintUsage"
+      data-include="./sysml-shapes.ttl#AssertConstraintUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for FeatureTyping"
+      data-include="./sysml-shapes.ttl#FeatureTypingShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for VerificationCaseDefinition"
+      data-include="./sysml-shapes.ttl#VerificationCaseDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Structure"
+      data-include="./sysml-shapes.ttl#StructureShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ControlNode"
+      data-include="./sysml-shapes.ttl#ControlNodeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Membership"
+      data-include="./sysml-shapes.ttl#MembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for RenderingUsage"
+      data-include="./sysml-shapes.ttl#RenderingUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for AllocationUsage"
+      data-include="./sysml-shapes.ttl#AllocationUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Featuring"
+      data-include="./sysml-shapes.ttl#FeaturingShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Definition"
+      data-include="./sysml-shapes.ttl#DefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Usage"
+      data-include="./sysml-shapes.ttl#UsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for FlowConnectionUsage"
+      data-include="./sysml-shapes.ttl#FlowConnectionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for CollectExpression"
+      data-include="./sysml-shapes.ttl#CollectExpressionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for RequirementVerificationMembership"
+      data-include="./sysml-shapes.ttl#RequirementVerificationMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for StateUsage"
+      data-include="./sysml-shapes.ttl#StateUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for BindingConnectorAsUsage"
+      data-include="./sysml-shapes.ttl#BindingConnectorAsUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for InterfaceDefinition"
+      data-include="./sysml-shapes.ttl#InterfaceDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for MetadataUsage"
+      data-include="./sysml-shapes.ttl#MetadataUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ItemFlow"
+      data-include="./sysml-shapes.ttl#ItemFlowShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for FeatureChaining"
+      data-include="./sysml-shapes.ttl#FeatureChainingShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Differencing"
+      data-include="./sysml-shapes.ttl#DifferencingShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for SuccessionItemFlow"
+      data-include="./sysml-shapes.ttl#SuccessionItemFlowShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for MultiplicityRange"
+      data-include="./sysml-shapes.ttl#MultiplicityRangeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for LiteralInfinity"
+      data-include="./sysml-shapes.ttl#LiteralInfinityShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for InterfaceUsage"
+      data-include="./sysml-shapes.ttl#InterfaceUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for PerformActionUsage"
+      data-include="./sysml-shapes.ttl#PerformActionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for TransitionUsage"
+      data-include="./sysml-shapes.ttl#TransitionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for VerificationCaseUsage"
+      data-include="./sysml-shapes.ttl#VerificationCaseUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for PortDefinition"
+      data-include="./sysml-shapes.ttl#PortDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for LiteralInteger"
+      data-include="./sysml-shapes.ttl#LiteralIntegerShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ViewpointDefinition"
+      data-include="./sysml-shapes.ttl#ViewpointDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for LoopActionUsage"
+      data-include="./sysml-shapes.ttl#LoopActionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for MembershipExpose"
+      data-include="./sysml-shapes.ttl#MembershipExposeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ActorMembership"
+      data-include="./sysml-shapes.ttl#ActorMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ViewRenderingMembership"
+      data-include="./sysml-shapes.ttl#ViewRenderingMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Import"
+      data-include="./sysml-shapes.ttl#ImportShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Behavior"
+      data-include="./sysml-shapes.ttl#BehaviorShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Expose"
+      data-include="./sysml-shapes.ttl#ExposeShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for RequirementUsage"
+      data-include="./sysml-shapes.ttl#RequirementUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for CaseUsage"
+      data-include="./sysml-shapes.ttl#CaseUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for OwningMembership"
+      data-include="./sysml-shapes.ttl#OwningMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Function"
+      data-include="./sysml-shapes.ttl#FunctionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Redefinition"
+      data-include="./sysml-shapes.ttl#RedefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for AnalysisCaseDefinition"
+      data-include="./sysml-shapes.ttl#AnalysisCaseDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Unioning"
+      data-include="./sysml-shapes.ttl#UnioningShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for SuccessionFlowConnectionUsage"
+      data-include="./sysml-shapes.ttl#SuccessionFlowConnectionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Namespace"
+      data-include="./sysml-shapes.ttl#NamespaceShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Dependency"
+      data-include="./sysml-shapes.ttl#DependencyShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for OccurrenceDefinition"
+      data-include="./sysml-shapes.ttl#OccurrenceDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ForLoopActionUsage"
+      data-include="./sysml-shapes.ttl#ForLoopActionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for MetadataFeature"
+      data-include="./sysml-shapes.ttl#MetadataFeatureShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ObjectiveMembership"
+      data-include="./sysml-shapes.ttl#ObjectiveMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Feature"
+      data-include="./sysml-shapes.ttl#FeatureShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for EnumerationDefinition"
+      data-include="./sysml-shapes.ttl#EnumerationDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ActionUsage"
+      data-include="./sysml-shapes.ttl#ActionUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Disjoining"
+      data-include="./sysml-shapes.ttl#DisjoiningShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Association"
+      data-include="./sysml-shapes.ttl#AssociationShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for PartUsage"
+      data-include="./sysml-shapes.ttl#PartUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Multiplicity"
+      data-include="./sysml-shapes.ttl#MultiplicityShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ConcernDefinition"
+      data-include="./sysml-shapes.ttl#ConcernDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ConcernUsage"
+      data-include="./sysml-shapes.ttl#ConcernUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Classifier"
+      data-include="./sysml-shapes.ttl#ClassifierShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ItemDefinition"
+      data-include="./sysml-shapes.ttl#ItemDefinitionShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for StateSubactionMembership"
+      data-include="./sysml-shapes.ttl#StateSubactionMembershipShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for Subsetting"
+      data-include="./sysml-shapes.ttl#SubsettingShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+
+
+<div
+      title="Constraints for ConnectorAsUsage"
+      data-include="./sysml-shapes.ttl#ConnectorAsUsageShape"
+      data-oninclude="shapeToSpec"
+      data-include-sync="true"
+      data-include-replace="true"
+      data-include-format="html"
+    ></div>
+
+  </section>
+
+    <section id="conformance">
+      <h2>Conformance</h2>
+      <p>
+        OSLC SysML v2 servers MUST follow the constraints defined here where required, and with the meanings defined
+        here.
+      </p>
+      <p>OSLC SysML v2 servers MAY provide additional constraints for specific purposes.</p>
+    </section>
+  </body>
+</html>
