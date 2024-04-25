@@ -270,7 +270,7 @@ public class VocabularyCheck
         if (termType.equals(RDFS.Class))
         {
             checkCase(term, termResult, s->Character.isUpperCase(s.codePointAt(0)));
-            node.checkURI(RDFS.subClassOf, Occurrence.ZeroOrOne, null);
+            node.checkURI(RDFS.subClassOf, Occurrence.ZeroOrMany, null);
             node.checkURI(OWL.sameAs, Occurrence.ZeroOrMany, null);
         }
         else if (termType.equals(RDF.Property))
