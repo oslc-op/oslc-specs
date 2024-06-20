@@ -931,6 +931,111 @@ or to a change set that include both a `oslc_config:RemoveAll` and a `oslc_confi
 {{servers MAY treat occurrences of potentially conflicting selections as an error}}."""^^rdf:XMLLiteral
         ] .
 
+:ChangeSetDeliveryShape
+    a                        oslc:ResourceShape ;
+    oslc:describes           oslc_config:ChangeSetDelivery ;
+    dcterms:title            "The shape of a ChangeSetDelivery." ;
+    dcterms:description      """A ChangeSetDelivery is a resource representing the delivery of a single change set to a single target stream."""^^rdf:XMLLiteral ;
+
+    oslc:property
+
+        [
+            a                        oslc:Property ;
+            oslc:name                "type" ;
+            oslc:propertyDefinition  rdf:type ;
+            oslc:occurs              oslc:One-or-many ;
+            oslc:representation      oslc:Reference ;
+            oslc:valueType           oslc:AnyResource ;
+            oslc:range               rdfs:Class ;
+            dcterms:description      """A resource type URI.
+{{A change set delivery MUST have at least the resource type `oslc_config:ChangeSetDelivery`}}.
+Clients may infer a resource type of `oslc_config:ChangeSetDelivery`,
+but there is no requirement for servers to materialize this triple in the RDF representation.
+."""^^rdf:XMLLiteral
+        ] ,
+        [
+            a                        oslc:Property ;
+            oslc:name                "sourceConfiguration" ;
+            oslc:propertyDefinition  oslc_config:sourceConfiguration ;
+            oslc:occurs              oslc:Exactly-one ;
+            oslc:representation      oslc:Reference ;
+            oslc:valueType           oslc:AnyResource ;
+            oslc:range               oslc_config:ChangeSet ;
+            dcterms:description      """A reference to a resource identifying the change set that was
+delivered. This cannot be modified after creation."""^^rdf:XMLLiteral
+        ] ,
+        [
+            a                        oslc:Property ;
+            oslc:name                "targetStream" ;
+            oslc:propertyDefinition  oslc_config:targetStream ;
+            oslc:occurs              oslc:Exactly-one ;
+            oslc:representation      oslc:Reference ;
+            oslc:valueType           oslc:AnyResource ;
+            oslc:range               oslc_config:Configuration ;
+            dcterms:description      """A reference to a resource identifying the stream to which the
+change set was delivered. This cannot be modified after creation."""^^rdf:XMLLiteral
+        ] ,
+
+        :created ,
+        :creator ,
+        :description ,
+        :identifier ,
+        :instanceShape ,
+        :modified ,
+        :modifiedBy ,
+        :shortId ,
+        :shortTitle ,
+        :subject ,
+        :title .
+
+
+:ChangeSetDeliveryConflictShape
+    a                        oslc:ResourceShape ;
+    oslc:describes           oslc:Error ;
+    dcterms:title            "The shape of a ChangeSetDeliveryConflict." ;
+    dcterms:description      """A ChangeSetDeliveryConflict is a resource representing a conflict error in the delivery of a single change set to a single target stream."""^^rdf:XMLLiteral ;
+
+    oslc:property
+
+        [
+            a                        oslc:Property ;
+            oslc:name                "type" ;
+            oslc:propertyDefinition  rdf:type ;
+            oslc:occurs              oslc:One-or-many ;
+            oslc:representation      oslc:Reference ;
+            oslc:valueType           oslc:AnyResource ;
+            oslc:range               rdfs:Class ;
+            dcterms:description      """A resource type URI.
+{{A change set delivery conflict MUST have at least the resource type `oslc_config:ChangeSetDeliveryConflict`}}.
+Clients may infer a resource type of `oslc_config:ChangeSetDeliveryConflict`,
+but there is no requirement for servers to materialize this triple in the RDF representation.
+."""^^rdf:XMLLiteral
+        ] ,
+        [
+            a                        oslc:Property ;
+            oslc:name                "sourceVersionResource" ;
+            oslc:propertyDefinition  oslc_config:sourceVersionResource ;
+            oslc:occurs              oslc:Exactly-one ;
+            oslc:representation      oslc:Reference ;
+            oslc:valueType           oslc:AnyResource ;
+            oslc:range               oslc_config:VersionResource ;
+            dcterms:description      """The version resource in the source
+configuration that is in conflict."""^^rdf:XMLLiteral
+        ] ,
+        [
+            a                        oslc:Property ;
+            oslc:name                "targetVersionResource" ;
+            oslc:propertyDefinition  oslc_config:targetVersionResource ;
+            oslc:occurs              oslc:Exactly-one ;
+            oslc:representation      oslc:Reference ;
+            oslc:valueType           oslc:AnyResource ;
+            oslc:range               oslc_config:VersionResource ;
+            dcterms:description      """The version resource in the target
+stream that is in conflict."""^^rdf:XMLLiteral
+        ] .
+
+
+
 # ============================ Activity shape ============================
 
 :ActivityShape

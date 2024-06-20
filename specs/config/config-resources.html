@@ -154,6 +154,14 @@
         },
       };
     </script>
+    <style>
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+    </style>
   </head>
   <body>
     <section id="abstract">
@@ -237,6 +245,17 @@
         <div
           title="Resource shape for ChangeSet"
           data-include="./config-shapes.ttl#ChangeSetShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+      <section id="ChangeSetDeliveryShape" class="shapes">
+        <h3>Resource shape for ChangeSetDelivery</h3>
+        <div
+          title="Resource shape for ChangeSetDelivery"
+          data-include="./config-shapes.ttl#ChangeSetDeliveryShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"
@@ -538,6 +557,168 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
         <li>DELETE: Delete the current mutable version resource in a specified stream or change set.</li>
       </ul>
     </section>
+
+    <section id="changesetdelivery">
+      <h2>Supported Operations on Change Set Delivery</h2>
+      <p>
+        A change set delivery represents the delivery of a single change set to a single target stream. If multiple
+        change sets are to be delivered, each would be done as a separate delivery.
+      </p>
+      <p class="conformance">
+        Servers MUST support a GET of a delivery object URI. The response should include an Etag header.
+      </p>
+      <p class="conformance">
+        Servers SHOULD support a HEAD on a delivery object URI. The response should include an Etag header
+      </p>
+      <p class="conformance">
+        Delivery objects MAY be immutable, or a server might permit the title to be changed. If a server allows the
+        title to be changed, it SHOULD support a <code>PUT</code> with <code>If-Match</code> header. Servers MAY
+        silently ignore any data that cannot be changed, such as read only properties, or
+        <code>oslc_config:sourceConfiguration</code> or <code>oslc_config:targetStream</code>.
+      </p>
+      <p class="conformance">
+        POST SHOULD NOT be supported. A new object can only be created through a creation factory. See the next section:
+        Delivering change sets through a delivery creation factory.
+      </p>
+      <p class="conformance">
+        <code>DELETE</code> MAY be supported, but if a server does support it, the semantics of that deletion are
+        undefined. For example, does deleting a delivery remove the change set from the target stream?
+      </p>
+      <section id="creationfactorydelivery">
+        <h2>Delivering change sets using a creation factory</h2>
+        <p>
+          There are several key aspects of change set delivery that OSLC Configuration Management should support:
+        </p>
+        <ol>
+          <li>Delivery is atomic. Either all the changed/new/removed resources are delivered, or none are.</li>
+          <li>A delivery might be a long-running operation.</li>
+          <li>
+            Delivery of a change set should not result in an earlier change being lost. A conflict arises when a change
+            set applies changes on top of version X of an object, whereas the target stream has changes on top of
+            version X+N of that object.
+          </li>
+        </ol>
+        <p class="conformance">
+          An OSLC server would declare an OSLC Creation Factory for <code>rdf:type</code>
+          <code>oslc_config:ChangeSetDelivery</code> in some OSLC service that was discoverable from an OSLC Service
+          Provider Catalog. The declaration of that creation factory SHOULD reference a resource shape that is
+          compatible with <code>oslc_config:ChangeSetDelivery</code>.
+        </p>
+        <p>
+          A client would perform a POST with an RDF body conformant with the resource shape. The server would respond
+          with one of:
+        </p>
+        <ol>
+          <li>
+            <code>201 Created</code>, with the response including a Location header of the new
+            <code>oslc_config:ChangeSetDelivery</code> resource that was created. This might be the case for a server
+            where the operation is quick to execute.
+          </li>
+          <li>
+            <code>400 Bad request</code>, if the request was invalid. For example, missing source configuration or
+            target stream in the POSTed content.
+          </li>
+          <li>
+            <code>409 Conflict</code>, if the delivery could not be made because of a conflict between the change set
+            and the target stream.
+          </li>
+          <li>
+            <code>303 See other</code>, including a Location header of an existing delivery if the change set was
+            already delivered to the target stream.
+          </li>
+          <li>
+            <code>202 Accepted</code>, with the response including a Location header of an
+            <code>oslc_config:Activity</code> resource indicating the progress or result of that activity. Clients
+            SHOULD poll the Activity resource periodically until the state indicates it has finished.
+          </li>
+        </ol>
+      </section>
+      <section id="deliveryconflicts">
+        <h2>Delivery Conflicts</h2>
+        <p class="conformance">
+          If the delivery of a change set would result in the loss or overwriting of a later change to the same object,
+          the delivery MUST fail and report a conflict. The corresponding <code>oslc:Error</code> should provide
+          sufficient information for a client to understand the nature of the conflict. For each conflict, the
+          corresponding <code>oslc:Error</code> should provide a statement using
+          <code>oslc_config:ChangeSetDeliveryConflict</code> to an inline resource of implied type
+          <code>oslc_config:ChangeSetDeliveryConflict</code> with the following resource shape:
+        </p>
+        <div
+          title="Resource shape for ChangeSetDeliveryConflict"
+          data-include="./config-shapes.ttl#ChangeSetDeliveryConflictShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+        <p>
+          OSLC Configuration Management does not specify any means to resolve such conflicts, or to preview a delivery
+          to identify potential conflicts without committing the delivery. Conflicts are expected to be resolved using
+          the tool’s UI and/or non-OSLC defined APIs.
+        </p>
+      </section>
+      <section id="deliveryhistory">
+        <h2>Change Set Delivery History</h2>
+        <p>
+          There are several common uses cases for finding information about change set deliveries:
+        </p>
+        <ul>
+          <li>When was a specified change set delivered to a specified stream, and by whom?</li>
+          <li>Which streams has a specified change set been delivered to?</li>
+          <li>What the change sets that have been delivered to a specified stream?</li>
+        </ul>
+        <p class="conformance">
+          OSLC Query Capability is used to access change set delivery history. Servers SHOULD provide a query capability
+          for <code>rdf:type oslc_config:ChangeSetDelivery</code> in some OSLC service that is discoverable from an OSLC
+          Service Provider Catalog. The declaration of that query capability SHOULD reference a resource shape describes
+          the LDP query results container (as per the OSLC Query specification), which in turn provides a value resource
+          shape for its members that is compatible with <code>oslc_config:ChangeSetDelivery</code>.
+        </p>
+        <p>Some example queries include:</p>
+        <table>
+          <tr>
+            <th>Description</th>
+            <th>Unencoded <code>oslc.where</code> expression</th>
+          </tr>
+          <tr>
+            <td>Find the delivery for a specified change set and target stream</td>
+            <td>oslc_config:sourceConfiguration={changeSetUri} and oslc_config:targetStream={streamUri}</td>
+          </tr>
+          <tr>
+            <td>Find the deliveries for a specified change set to any stream</td>
+            <td>oslc_config:sourceConfiguration={changeSetUri}</td>
+          </tr>
+          <tr>
+            <td>Find the deliveries for all change sets to a specified target stream</td>
+            <td>oslc_config:targetStream={streamUri}</td>
+          </tr>
+          <tr>
+            <td>Find the deliveries for all change sets to a specified target stream since 1st January 2023</td>
+            <td>oslc_config:targetStream={streamUri} and dcterms:created >= "2023-01- 01'T'00:00:00"^^xsd:dateTime</td>
+          </tr>
+          <p class="conformance">
+            Clients that want to find the files changes associated with a delivery would do so through the referenced
+            change set. Query capabilities MAY support nested query properties in <code>oslc.select</code>. For example,
+            an unencoded oslc.select value of
+            <code
+              >dcterms:title,dcterms:created,oslc_config:sourceConfiguration, oslc_config:sourceConfiguration
+              {dcterms:title,oslc_config:selections{oslc_config:selects}}</code
+            >
+            might return the delivery title, when it was delivered, the URI of the change set, the title of the change
+            set, and the URIs of the files changed in the change set.
+          </p>
+        </table>
+      </section>
+      <section id="deliverypersistence">
+        <h2>Change Set Delivery Persistence</h2>
+        <p>
+          The persistence of delivery information is a server implementation choice. In servers where there is a
+          corresponding persisted object, a server might map such objects to delivery objects. In servers where there is
+          no first-class object representing a delivery, the delivery might be constructed from querying internal data.
+        </p>
+      </section>
+    </section>
+
     <section id="creation">
       <h2>Creation of Baselines and Streams</h2>
       <p class="conformance">
@@ -726,11 +907,11 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
       </p>
       <p class="conformance">Implementations SHOULD provide documentation on their version resolution behavior.</p>
     </section>
-    <section id="changesets" class="informative">
+    <section id="changesets">
       <h2>Change Sets</h2>
       <p>
         Some systems use change sets to group related changes, or changes to multiple resources that must be kept
-        together. Change sets may be represented using a configuration of type <code>oslc_config:ChangeSet</code> - a
+        together. Change sets MAY be represented using a configuration of type <code>oslc_config:ChangeSet</code> - a
         special type of stream. Each <code>oslc_config:ChangeSet</code> resource is related to exactly one base
         configuration (either a stream or a baseline), using the <code>oslc_config:overrides</code> property. A
         <code>oslc_config:ChangeSet</code> has either a complete set of replacements for the versions selected by that
@@ -739,10 +920,10 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
         defined by the change set configuration itself.
       </p>
       <p>
-        Systems that allow multiple change sets to be applied to a single base configuration should represent each such
+        Systems that allow multiple change sets to be applied to a single base configuration SHOULD represent each such
         internal change set as an <code>oslc_config:ChangeSet</code> resource using the same value of
         <code>oslc_config:overrides</code>; the property <code>prov:wasDerivedFrom</code> should be used to provide a
-        complete or partial ordering of such change sets. Servers may also synthesize a combined
+        complete or partial ordering of such change sets. Servers MAY also synthesize a combined
         <code>oslc_config:ChangeSet</code> resource representing the overall effect of multiple internal change sets.
       </p>
       <p>
@@ -757,11 +938,12 @@ Prefer: return=representation; include="http://www.w3.org/ns/ldp#PreferMinimalCo
       <p>
         Since the shape for a change set allows only a single value for <code>oslc_config:overrides</code>, systems that
         allow a single change set to be applied to multiple base configurations need to represent that internal change
-        set by multiple <code>oslc_config:ChangeSet</code> resources. These copies may be associated with each other
+        set by multiple <code>oslc_config:ChangeSet</code> resources. These copies MAY be associated with each other
         using properties such as <code>http://purl.org/datanode/ns#isCopyOf</code>, <code>dcterms:relation</code>, or
         similar.
       </p>
     </section>
+
     <section id="delegateduis">
       <h2>Delegated UIs</h2>
       <p class="conformance">
