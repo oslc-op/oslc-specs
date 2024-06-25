@@ -3,6 +3,8 @@
 This directory contains the source files for the OSLC Configuration Management Specification,
 which is one of the work products of the OASIS OSLC Open Project.
 
+Version 1.1 extends OASIS Standard version 1.0 with change set delivery and history.
+
 Earlier draft revisions of this specification were work products of the OASIS OSLC Core Technical
 Committee, and may be found in the [OASIS OSLC Core TC SVN repo](https://tools.oasis-open.org/version-control/browse/wsvn/oslc-core/trunk/specs/config/).
 
