@@ -32,9 +32,9 @@ oslc_config:
     dcterms:title                 "OSLC Configuration Management vocabulary" ;
     dcterms:description           "The OSLC Configuration Management vocabulary defines terms for versioned resources and configurations of those versioned resources." ;
     dcterms:publisher             <https://open-services.net/about/> ;
-    dcterms:source                <https://docs.oasis-open-projects.org/oslc-op/config/v1.0/os/config-vocab.ttl> ;
-    dcterms:isPartOf              <https://docs.oasis-open-projects.org/oslc-op/config/v1.0/os/oslc-config-mgt.html> ;
-    dcterms:hasVersion            "PS" ;
+    dcterms:source                <https://docs.oasis-open-projects.org/oslc-op/config/v1.1/os/config-vocab.ttl> ;
+    dcterms:isPartOf              <https://docs.oasis-open-projects.org/oslc-op/config/v1.1/os/oslc-config-mgt.html> ;
+    dcterms:hasVersion            "PSD" ;
     dcterms:license               <http://www.apache.org/licenses/LICENSE-2.0> ;
     dcterms:issued               "2023-07-23"^^<http://www.w3.org/2001/XMLSchema#date> ;
     dcterms:dateCopyrighted       "2012-2023" .
@@ -68,6 +68,12 @@ oslc_config:ChangeSetSelections
     rdfs:label "ChangeSetSelections" ;
     rdfs:subClassOf oslc_config:Selections ;
     rdfs:comment "A resource listing the version resources selected by a change set configuration." .
+
+oslc_config:ChangeSetDelivery
+    a rdfs:Class ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "ChangeSetDelivery" ;
+    rdfs:comment "A resource representing the delivery of a single change set to a single target stream." .
 
 oslc_config:Component
     a rdfs:Class ;
@@ -227,6 +233,30 @@ oslc_config:overrides
     rdfs:isDefinedBy oslc_config: ;
     rdfs:label "overrides" ;
     rdfs:comment "A reference to a configuration modified by a change set configuration." .
+
+oslc_config:sourceConfiguration
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "sourceConfiguration" ;
+    rdfs:comment "The change set that was delivered. This cannot be modified after creation." .
+
+oslc_config:targetStream
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "targetStream" ;
+    rdfs:comment "The stream to which the change set was delivered. This cannot be modified after creation." .
+
+oslc_config:sourceVersionResource
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "sourceVersionResource" ;
+    rdfs:comment "The version resource in the source configuration that is in conflict." .
+
+oslc_config:targetVersionResource
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc_config: ;
+    rdfs:label "targetVersionResource" ;
+    rdfs:comment "The version resource in the target stream that is in conflict." .
 
 oslc_config:previousBaseline
     a rdf:Property ;
