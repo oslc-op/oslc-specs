@@ -680,10 +680,12 @@ services interface for the OMG Systems Modeling Language Version 2.0."
     <section id="PropertyOrdering">
       <h2>Ordering of multi-valued properties</h2>
       <p>
-        SysML specifies ordering of properties with a multiplicity>1 using the UML:isOrdered property. RDF triples are unordered by definition so some pattern needs to be used to capture ordering.
+        SysML specifies ordering of properties with a multiplicity>1 using the UML:isOrdered property. RDF triples 
+        are unordered by definition so some pattern needs to be used to capture ordering.
       </p>
       <p>
-        The REST API uses JSON, which is naturally ordered.  This ordering will be used to specify the ordering of the RDF properties when using the API.
+        The REST API uses JSON, which is naturally ordered.  This ordering will be used to specify the ordering of 
+        the RDF properties when using the API.
       </p>
       <p>
         Several patterns were considered:
@@ -694,26 +696,35 @@ services interface for the OMG Systems Modeling Language Version 2.0."
         <li>Use of triple reification with an ordering property, this is the pattern chosen</li>
       </ul>
       <p class="conformance">
-        SysML servers MUST support a property <code>oslc_sysmlv2:isOrdered</code> that is used to designate
-        an rdf:Statement reified statement that is ordered.
+        SysML servers MUST support a property <code>oslc_sysmlv2:order</code> that is used to designate
+        an rdf:Statement reified statement order.
       </p>
       <p class="conformance">
-        SysML servers MUST reify all SysML v2 relationships and apply the <code>oslc_sysmlv2:isOrdered</code>
+        SysML servers MUST reify all SysML v2 relationships and apply the <code>oslc_sysmlv2:order</code>
         with the value <code>true</code>. For example:
       </p>
       <pre class="example">
 :r a oslc_sysmlv2:Reltionship . 
 :e a oslc_sysmlv2:Element . 
-#This is the actual triple for the oslc_sysmlv2:source property of a relationship 
+:f a oslc_sysmlv2:Element . 
+#These are actual triples for the oslc_sysmlv2:source property of a relationship 
 :r oslc_sysmlv2:source :e . 
+:r oslc_sysmlv2:source :f . 
 
 # The following reified statement indicates the oslc_sysmlv2:source property is ordered
 :s_1 a rdf:Statement ;
   rdf:subject :r ; 
   rdf:predicate oslc_sysmlv2:source ; 
   rdf:object :e ; 
-  oslc_sysmlv2:isOrdered: 'true' .
-      </pre>
+  oslc_sysmlv2:order: 1 .
+
+:s_2 a rdf:Statement ;
+  rdf:subject :r ; 
+  rdf:predicate oslc_sysmlv2:source ; 
+  rdf:object :f ; 
+  oslc_sysmlv2:order: 2 .
+
+</pre>
       <p>Advantages of this pattern include:
       </p>
       <ul>
@@ -722,7 +733,7 @@ services interface for the OMG Systems Modeling Language Version 2.0."
         <li>A read-user of a model may choose to respect or ignore ordering</li>
         <li>The pattern is compatible with OSLC and can be implemented for SysML</li>
       </ul>
-
+  </section>
     <section id="capabilities">
       <h2>SysML Server Capabilities</h2>
 
