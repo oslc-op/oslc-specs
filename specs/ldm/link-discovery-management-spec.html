@@ -79,8 +79,8 @@ services interface for discovering incoming links."
         editors: [
           {
             name: "Eran Gery",
-            mailto: "eran.gery@il.ibm.com",
-            company: "IBM",
+            mailto: "egery@sodiuswillert.com",
+            company: "Sodius Willert",
             companyURL: "http://www.ibm.com",
           },
           {
@@ -520,32 +520,39 @@ services interface for discovering incoming links."
       <h2>LDM Service Description</h2>
       <h3>Discover links inquiry</h3>
       <p>
-        LDM clients inquire for incoming links related to a set of target object resources, typically owned and/or
+        LDM clients inquire for links related to a set of resources, typically owned and/or
         visualized by the client. The discover links inquiry is exposed under the discover-links path as described in
-        the open-API section below For the incoming links inquiry, the client provides:
+        the open-API section below For the links inquiry, the client provides:
       </p>
       <ul>
         <li>
           Configuration Context [0..1]: URI
         </li>
         <li>
-          Object resource [0..*]: URI
+          Resource [0..*]: URI
         </li>
         <li>
-          Incoming link predicates [0..*]: URI
+          Link predicates [0..*]: URI
+        </li>
+        <li>
+          Direction [0..1]: String    
+        </li>
+        <li>
+          AdditionalResourceProprties [0..*]: URI    
         </li>
       </ul>
       <p class="conformance">
         In case the Configuration Context is specified, any object- or subject-resource shall be specified based on
-        concept resources. The server MUST respond with a set of triples for the incoming links, which are valid for the
+        concept resources. The server MUST respond with a set of triples for the links, which are valid for the
         given Configuration Context. In case the Configuration Context is not specified, any object- or subject-resource
         shall be specified based on unversioned resources. the server MUST respond with a set of triples for the
-        incoming links, which are not bound to a Configuration Context. Rationale: to support bidirectionality for
+        links, which are not bound to a Configuration Context. Rationale: to support bidirectionality for
         non-configuration aware links In case no predicates are provided, the server MUST provide all incoming links
         irrespective of their predicate.
+        The optional direction parameter is assumed by default to be "incoming". Another possible value "any".
       </p>
       <p>
-        The LDM Server response is a set of triples consisting of
+        The LDM Server response is a set of link triples consisting of
       </p>
       <ul>
         <li>
@@ -554,7 +561,7 @@ services interface for discovering incoming links."
         <li>
           Predicate: URI
           <p>
-            should be one of the requested predicates, in case specified
+            should be one of the requested link predicates, in case specified
           </p>
         </li>
         <li>
@@ -565,8 +572,17 @@ services interface for discovering incoming links."
         </li>
       </ul>
       <p class="conformance">
+        If the direction is "incoming", object resource should be one of requested Object concept resource. 
+        If the direction is "any", the subject resource or object resource should match one of the resource URIs specified
+      </p>
+      <p class="conformance">
+        In case of AdditionalResouceProperties predicates specified, LDM may return additional triples {subject, predicate, object} 
+        where {subject} needs to be one of the subjects in the link triples, and predicate should be one of the 
+        AdditionalResourceProperties predicates. 
+      </p>
+      <p class="conformance">
         Based on the LDM service response, the LDM client would typically show the incoming link with an inverse
-        predicate label (e.g., “validated by” vs. “validates”). The inquiry MUST be implemented as an HTTP post request,
+        predicate label (e.g., “validated by” vs. “validates”), for incoming links. The inquiry MUST be implemented as an HTTP post request,
         where the target concept resources and the predicates are provided with the request body.
       </p>
       <p>
@@ -574,28 +590,102 @@ services interface for discovering incoming links."
         req2 in configuration baseline1 with predicates oslc_cm:tracks and oslc_cm:implements
       </p>
       <pre class="example">
-  POST http://ldm.example.com:8080/
-  Content-Type: application/x-www-form-urlencoded
-  Configuration-Context: http://elm.example.com/gcm/baseline1URI
-  objectConceptResources=http://elm.example.com/rm/req1URI,http://elm.example.com/rm/req2URI
-  predicateFilters=http:// elm.example.com/implementsURI, http://elm.example.com/tracksURI
-  </pre
-      >
+        POST http://ldm.example.com:8080/
+
+Content-Type: text/turtle
+
+Configuration-Context: http://elm.example.com/gcm/baseline1URI
+ 
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+@prefix ldp: &lt;http://www.w3.org/ns/ldp# &gt;.
+@prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
+@prefix oslc_ldm: &lt;http://open-services/net/ns/ldm#&gt;.
+ 
+_:b1 oslc_ldm:resources
+    &lt;http://example.org/rm/req1URI &gt;, &lt;http://example.org/rm/req2URI&gt;.
+ 
+_:b2 oslc_ldm: linkPredicates
+    oslc_cm:implementsRequirement, oslc_cm:tracksRequirement .
+
+  </pre>
       <p>
         Response (in turtle):
       </p>
+  
       <pre class="example">
+        HTTP/1.1 200 OK
+
+        Content-Type: text/turtle
+         
+        @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+        @prefix oslc_am: &lt;http://open-services.net/ns/am# . 
+        @prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
+        
+          
+          &lt;http://example.com/cm/resource/workitem1URI&gt;
+            oslc_cm:tracks &lt;http://elm.example.com/rm/req1URI&gt;; 
+            oslc_cm:tracks &lt;http://elm.example.com/rm/req2URI&gt;.
+          &lt;http://example.com/am/am1URI&gt;
+            oslc_am:implements &lt;http://elm.example.com/rm/req1URI&gt;.
+       
+  </pre>
+
+  <p>
+    Example2: requesting all links including the title property of the resources
+ </p>
+  
+  <pre class="example">
+  POST http://ldm.example.com:8080/
+  
+  Content-Type: text/turtle
+  
+  Configuration-Context: http://elm.example.com/gcm/baseline1URI
+   
+  @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+  @prefix dcterms: &lt;http://purl.org/dc/terms/>.
+  @prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
+  @prefix oslc_rm: &lt;http://open-services.net/ns/rm#&gt;.
+  @prefix oslc_ldm: &lt;http://open-services/net/ns/ldm#&gt;.
+   
+  _:b1 oslc_ldm:resources
+      &lt;http://example.org/rm/req1URI &gt;, &lt;http://example.org/rm/req2URI&gt;.
+   
+  _:b2 oslc_ldm:linkPredicates
+      oslc_cm:implementsRequirement, oslc_rm:satisfyRequirement .
+  
+  _:b3 oslc_ldm:direction “any”.
+  
+  _:b4 oslc_ldm:additionalProperties  
+    dcterms:title .
+
+  </pre>
+  <p>
+  Response (in turtle): 
+  </p>
+
+  <pre class="example">
   HTTP/1.1 200 OK
-  Content-Type: application/turtle
   
-  <https://example.com/cm/resource/workitem1URI> 
-    oslc_cm:implements http://elm.example.com/rm/req1URI 
-    oslc_cm:tracks http://elm.example.com/rm/req1URI.
-  <https://example.com/cm/resource/workitem2URI> 
-    oslc_cm:tracks http://elm.example.com/rm/req2URI.
+  Content-Type: text/turtle
+   
+  @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
+  @prefix oslc_am: &lt;http://open-services.net/ns/am#&gt;. 
+  @prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
   
-  </pre
-      >
+    
+    &lt;http://example.com/cm/resource/workitem1URI&gt;
+      oslc_cm:tracks &lt;http://elm.example.com/rm/req1URI&gt;; 
+      oslc_cm:tracks &lt;http://elm.example.com/rm/req2URI&gt;.
+    &lt;http://elm.example.com/rm/req1URI&gt; 
+      oslc_rm:satisfy &lt;http://elm.example.com/rm/req2URI&gt;
+      dcterms:title “requirement2”.
+  
+   &lt;http://example.com/am/am1URI&gt;
+      oslc_am:implements &lt;http://elm.example.com/rm/req1URI&gt;.
+          
+    </pre>
+
+
 
       <h3>LDM contributions discovery</h3>
       <p>
