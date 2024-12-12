@@ -1,0 +1,205 @@
+# Copyright 2024 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix oslc_am: <http://open-services.net/ns/am#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix oslc_plm: <http://open-services.net/ns/plm#> .
+
+oslc_plm: a owl:Ontology ;
+    rdfs:label "OSLC PLM Vocabulary" ;
+    dcterms:dateCopyrighted "2012-2024" ;
+    dcterms:description "All vocabulary URIs defined in the OSLC Product Lifecycle Management (PLM) namespace."^^rdf:XMLLiteral ;
+    dcterms:hasVersion "WD" ;
+    dcterms:isPartOf <https://docs.oasis-open-projects.org/oslc-op/plm/v1.0/os/plm-spec.html> ;
+    dcterms:issued "2024-08-01"^^xsd:date ;
+    dcterms:license <http://www.apache.org/licenses/LICENSE-2.0> ;
+    dcterms:publisher <https://open-services.net/about/> ;
+    dcterms:source <https://docs.oasis-open-projects.org/oslc-op/plm/v1.0/os/plm-vocab.ttl> ;
+    dcterms:title "OSLC PLM Vocabulary" ;
+    vann:preferredNamespacePrefix "oslc_plm" .
+
+# Classes defined in the OSLC PLM specification
+
+oslc_plm:Part a rdfs:Class ;
+    rdfs:subClassOf oslc_am:Resource ;
+    rdfs:label "Part" ;
+    rdfs:comment "An artifact managed by a PLM product, an element of a BOM." ;
+    rdfs:isDefinedBy oslc_plm: ;
+    rdfs:subClassOf oslc_am:Resource .
+
+oslc_plm:PartUsage a rdfs:Class ;
+    rdfs:subClassOf oslc_am:Resource ;
+    rdfs:label "PartUsage" ;
+    rdfs:comment "The use of a part in another part." ;
+    rdfs:isDefinedBy oslc_plm: ;
+    rdfs:subClassOf oslc_am:Resource .
+
+oslc_plm:LogicalDesign a rdfs:Class ;
+    rdfs:subClassOf oslc_plm:Part ;
+    rdfs:label "Logical Design" ;
+    rdfs:comment "The logical design of a product" ;
+    rdfs:isDefinedBy oslc_plm: ;
+    rdfs:subClassOf oslc_am:Resource .
+
+oslc_plm:PhysicalDesign a rdfs:Class ;
+    rdfs:subClassOf oslc_plm:Part ;
+    rdfs:label "Physical Design" ;
+    rdfs:comment "The physical design of a product" ;
+    rdfs:isDefinedBy oslc_plm: ;
+    rdfs:subClassOf oslc_am:Resource .
+
+oslc_plm:Dimension a rdfs:Class ;
+    rdfs:label "Dimension" ;
+    rdfs:comment "Specifies units for property types" ;
+    rdfs:isDefinedBy oslc_plm: ;
+    rdfs:subClassOf oslc_am:Resource .
+
+# Properties defined in the OSLC PLM specification
+
+oslc_plm:alignsPart
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "alignsPart" ;
+  rdfs:comment "A Part is aligned with another Part. It is likely that the target resource will be oslc_plm:Part." .
+
+oslc_plm:alignsPartUsage
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "alignsPartUsage" ;
+  rdfs:comment "A PartUsage is aligned with another PartUsage. It is likely that the target resource will be oslc_plm:PartUsage." .
+
+oslc_plm:composedOfPartUsage
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "composedOfPartUsage" ;
+  rdfs:comment "A Part is composed of PartUsages. It is likely that the target resource will be oslc_plm:PartUsage." .
+
+oslc_plm:representsPart
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "representsPart" ;
+  rdfs:comment "A PartUsage represents a Part. It is likely that the target resource will be oslc_plm:Part." .
+
+oslc_plm:realizesLogicalDesign
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "realizesLogicalDesign" ;
+  rdfs:comment "A PhysicalDesign realizes a LogicalDesign. It is likely that the target resource will be oslc_plm:logicalDesign." .
+
+oslc_plm:boundingBox
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "boundingBox" ;
+  rdfs:comment "An oslc_plm:boundingBox represents the rough dimension of an oslc_plm:Part. It is likely that the target resource will be a oslc_plm:Dimension.".
+
+oslc_plm:weight
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "weight" ;
+  rdfs:comment "An oslc_plm:weight represents the weight of an oslc_plm:Part.".
+
+
+
+# The following properties are intended to be supported by other OSLC domains: CM, QM and AM
+# They are defined in the PLM specification, and are included as additional constraints
+# in the intended domains
+
+# Additional properties for the CM domain
+
+oslc_plm:affectsPart
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "affectsPart" ;
+  rdfs:comment "A ChangeRequest affects a Part. It is likely that the target resource will be oslc_plm:Part." .
+
+oslc_plm:hasProblemPart
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "hasProblemPart" ;
+  rdfs:comment "A ChangeRequest has a problem Part. It is likely that the target resource will be oslc_plm:Part." .
+
+oslc_plm:hasSolutionPart
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "hasSolutionPart" ;
+  rdfs:comment "A ChangeRequest has a solution Part. It is likely that the target resource will be oslc_plm:Part." .
+
+oslc_plm:relatedPart
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "relatedPart" ;
+  rdfs:comment "A ChangeRequest has a related Part. It is likely that the target resource will be oslc_plm:Part." .
+
+oslc_plm:implementsPart
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "implementsPart" ;
+  rdfs:comment "A ChangeRequest implements a Part. It is likely that the target resource will be oslc_plm:Part." .
+
+
+oslc_plm:affectsPartUsage
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "affectsPartUsage" ;
+  rdfs:comment "A ChangeRequest affects a PartUsage. It is likely that the target resource will be oslc_plm:PartUsage." .
+
+oslc_plm:hasProblemPartUsage
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "hasProblemPartUsage" ;
+  rdfs:comment "A ChangeRequest has a problem PartUsage. It is likely that the target resource will be oslc_plm:PartUsage." .
+
+oslc_plm:hasSolutionPartUsage
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "hasSolutionPartUsage" ;
+  rdfs:comment "A ChangeRequest has a solution PartUsage. It is likely that the target resource will be oslc_plm:PartUsage." .
+
+oslc_plm:relatedPartUsage
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "relatedPartUsage" ;
+  rdfs:comment "A ChangeRequest has a related PartUsage. It is likely that the target resource will be oslc_plm:PartUsage." .
+
+oslc_plm:implementsPartUsage
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "implementsPartUsage" ;
+  rdfs:comment "A ChangeRequest implements a PartUsage. It is likely that the target resource will be oslc_plm:PartUsage." .
+
+
+# Additional properties for the QM domain
+
+oslc_plm:validatesPart
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "validatesPart" ;
+  rdfs:comment "A TestCase validates or verifies a Part. It is likely that the target resource will be oslc_plm:Part." .
+
+oslc_plm:validatesPartUsage
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "validatesPartUsage" ;
+  rdfs:comment "A TestCase validates or verifies a PartUsage. It is likely that the target resource will be oslc_plm:PartUsage." .
+
+
+# Additional properties for the QM domain
+
+
