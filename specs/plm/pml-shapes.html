@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>OSLC Product Lifecycle Management Version 1.0 Part 3: Constraints</title>
+    <meta
+      name="description"
+      content="Specifies the standard constraints on the OSLC Product Lifecycle Management Version 1.0 vocabulary terms."
+    />
+
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.35/builds/respec-oasis-common.min.js"
+      async
+      class="remove"
+    ></script>
+    <script class="remove">
+      var status = "PSD";
+      var revision = 1;
+
+      var wdBase = "https://oslc-op.github.io/oslc-specs/specs/plm/";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/plm/v1.0/";
+      var thisBase = wdBase;
+      if ("WD" !== status) {
+        if (status == "OS") {
+          var thisBase = oasisBase + status.toLowerCase() + "/";
+        } else {
+          var thisBase = oasisBase + status.toLowerCase() + revision.toString().padStart(2, "0") + "/";
+        }
+      }
+
+      var respecConfig = {
+        shortName: "oslc-plm",
+        specStatus: status,
+        revision: revision.toString().padStart(2, "0"),
+        citationLabel: "OSLC-PLM-1.0-Part3",
+
+        license: "cc-by-4",
+        additionalLicenses: [
+          {
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+          },
+        ],
+
+        publishDate: "2024-12-25T12:00Z",
+        //previousPublishDate: "2021-09-30",
+        //previousMaturity: "PS",
+
+        thisVersion: thisBase + "plm-shapes.html",
+        //prevVersion: "https://docs.oasis-open-projects.org/oslc-op/plm/v1.0/psd01/plm-shapes.html",
+        latestVersion: oasisBase + "plm-shapes.html",
+        latestSpecVersion: "https://open-services.net/spec/plm/latest",
+        edDraftURI: "https://open-services.net/spec/plm/latest-draft",
+
+        conformanceLabelPrefix: "PLM",
+
+        // Other parts of multi-part spec
+        additionalArtifacts: [
+          {
+            title: "OSLC Product Lifecycle Management Version 1.0. Part 1: Specification",
+            href: "plm-spec.html",
+          },
+          {
+            title: "OSLC Product Lifecycle Management Version 1.0. Part 2: Vocabulary",
+            href: "plm-vocab.html",
+          },
+          {
+            title: "OSLC Product Lifecycle Management Version 1.0. Part 3: Constraints (this document)",
+            href: "plm-shapes.html",
+          },
+          {
+            title: "OSLC Product Lifecycle Management Version 1.0. Part 4: Machine Readable Vocabulary Terms",
+            href: "plm-vocab.ttl",
+          },
+          {
+            title: "OSLC Product Lifecycle Management Version 1.0. Part 5: Machine Readable Constraints",
+            href: "plm-shapes.ttl",
+          },
+        ],
+
+        relatedWork: [
+          {
+            title: "OMG Systems Modeling Language",
+            href: "https://www.omg.org/spec/PLM/",
+            version: "2.0 Beta",
+          },
+        ],
+
+        // Only include h1 and h2 levels in the table of contents
+        maxTocLevel: 3,
+
+        // Chairs and editors, add as many as you like: you must have at least one editor.
+        // Only "name" is required, but the other fields are recommended.
+        editors: [
+          {
+            name: "Ed Gentry",
+            mailto: "e.gentry@mid.de",
+            company: "MID",
+            companyURL: "https://mid.de/en/",
+          },
+          {
+            name: "Jim Amsden",
+            mailto: "j.amsden-ext@mid.de",
+            company: "MID",
+            companyURL: "https://mid.de/en/",
+          },
+        ],
+        chairs: [
+          {
+            name: "Jim Amsden",
+            mailto: "j.amsden-ext@mid.de",
+            company: "MID",
+            companyURL: "https://mid.de/en/",
+          },
+          {
+            name: "Jad El-khoury",
+            mailto: "jad.elkhoury@lynxwork.com",
+            company: "LYNXWORK",
+            companyURL: "https://lynxwork.com",
+          },
+        ],
+
+        // name of the TC
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-op",
+
+        // Namespaces defined by this TC
+        namespaces: [{ href: "http://open-services.net/ns/sysmlv2#", prefix: "oslc_sysmlv2" }],
+
+        localBiblio: {
+          OSLCCore3: {
+            title: "OSLC Core Version 3.0. Part 1: Overview",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/oslc-core.html",
+            authors: ["Jim Amsden", "S. Speicher"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+          OSLCAM2: {
+            title: "OSLC Architecture Management Specification Version 2.0",
+            href: "http://open-services.net/wiki/architecture-management/OSLC-Architecture-Management-Specification-Version-2.0/",
+            authors: ["Jim Conallen"],
+            status: "Finalized",
+            publisher: "https://open-services.net/",
+          },
+          DublinCore: {
+            title: "Dublin Core Metadata Element Set, Version 1.1",
+            href: "http://dublincore.org/documents/dces/",
+            status: "DCMI Recommendation",
+            publisher: "Dublin Core Metadata Initiative",
+          },
+          FOAF: {
+            title: "Friend of a Friend (FOAF)",
+            href: "http://xmlns.com/foaf/spec/",
+            authors: ["Dan Brickley", "Libby Miller"],
+            status: "Finalized",
+            publisher: "FOAF project",
+          },
+          "RDF/XML Concepts": {
+            title: "RDF/XML Concepts and Abstract Syntax",
+            href: "http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/",
+            authors: ["Graham Klyne", "Jeremy J. Carroll"],
+            status: "Superseded Recommendation",
+            publisher: "www.w3.org",
+          },
+          "RDF/XML Syntax": {
+            title: "RDF/XML Syntax Specification (Revised)",
+            href: "http://www.w3.org/TR/2004/REC-rdf-syntax-grammar-20040210/",
+            authors: ["Dave Beckett"],
+            status: "Revision",
+            publisher: "www.w3.org",
+          },
+          "URI Syntax": {
+            title: "URI Generic Syntax",
+            href: "https://tools.ietf.org/html/rfc3986",
+            status: "Working Group Note",
+          },
+          "XML Namespaces": {
+            title: "Namespaces in XML 1.0 (Third Edition)",
+            href: "http://www.w3.org/TR/REC-xml-names/",
+            authors: ["Tim Bray", "Dave Hollander", "Andrew Layman", "Richard Tobin", "Henry S. Thompson"],
+            publisher: "www.w3.org",
+          },
+          "XML Base": {
+            title: "XML Base (Second Edition)",
+            href: "http://www.w3.org/TR/xmlbase/",
+            authors: ["Jonathan Marsh", "Richard Tobin"],
+            status: "Recommendation",
+            publisher: "www.w3.org",
+          },
+          "XSD Datatypes": {
+            title: "XML Schema Part 2: Datatypes Second Edition",
+            href: "http://www.w3.org/TR/xmlschema-2/",
+            authors: ["Paul V. Biron", "Ashok Malhotra"],
+            status: "Final",
+            publisher: "https://open-services.net/",
+          },
+          OSLCCoreVocab: {
+            title: "OSLC Core Version 3.0. Part 7: Vocabulary",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/core-vocab.html",
+            authors: ["Jim Amsden", "S. Padgett", "S. Speicher"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+          OSLCShapes: {
+            title: "OSLC Core Version 3.0. Part 6: Resource Shape",
+            href: "https://docs.oasis-open-projects.org/oslc-op/core/v3.0/resource-shape.html",
+            authors: ["Arthur Ryman", "Jim Amsden"],
+            status: "Project Specification Draft",
+            publisher: "OASIS",
+          },
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <section id="abstract">
+      <p>
+        OSLC Product Lifecycle Management Version 1.0. Part 3: Constraints defines the standard OSLC constratint on the
+        RDF OSLC Product Lifecycle Management Version 1.0 vocabulary terms.
+      </p>
+    </section>
+
+    <section id="toc"></section>
+    <section id="sotd"></section>
+
+    <section id="introduction" class="informative">
+      <h2>Introduction</h2>
+      <p>
+        This section specifies the constraints for the PLM resources. The resource properties are not limited to the
+        ones defined in this specification PLM Servers may provide additional properties. It is recommended that any
+        additional properties exist in their own unique namespace and not use the namespaces defined in these
+        specifications.
+      </p>
+      <p>
+        RDF vocabularies define the terms and resources for a domain of interest, life-cycle management in the case of
+        OSLC PLM. These vocabularies are often specified in an open manner, without providing information such as
+        property domain and range assertions, cardinalities, etc. This helps keep the vocabulary applicable for a wide
+        range of uses and furthering integration with other vocabularies.
+      </p>
+      <p>
+        However, it is often desirable to closed down a vocabulary with specific constraints to facilitate using the
+        vocabulary for a specific purpose. This document specifies the constraints for using the OSLC PLM vocabulary in
+        OSLC. Different sets of constraints may be applied to a vocabulary in order to tailor its use, without overly
+        constraining the vocabulary for other usages.
+      </p>
+
+      <p>
+        These constraints apply to the core vocabulary defined in
+        <a href="plm-vocab.html">OSLC Product Lifecycle Management Version 1.0. Part 2: Vocabulary</a>.
+      </p>
+      <section id="terminology" class="informative">
+        <h1>Terminology</h1>
+        <p>
+          Terminology is based on OSLC Core Overview [[!OSLCCore3]], W3C Linked Data Platform [[!LDP]], W3C's
+          Architecture of the World Wide Web [[WEBARCH]], Hyper-text Transfer Protocol [[!HTTP11]]. Terminology for this
+          specification is defined in part 1 of the multi-part specification.
+        </p>
+      </section>
+
+      <section id="references"><h3>References</h3></section>
+
+      <section id="conventions">
+        <p></p>
+        <p>
+          In addition to the namespace URIs and namespace prefixes <code>oslc</code>, <code>rdf</code>,
+          <code>dcterms</code> and <code>foaf</code> defined in the
+          <a href="http://docs.oasis-open.org/oslc-core/oslc-core/v3.0/oslc-core-v3.0-part1-overview.html"
+            >OSLC Core specification</a
+          >, OSLC PLM defines the namespace URI of <code>http://open-services.net/ns/plm#</code> with a preferred
+          namespace prefix of <code>oslc_plm</code>
+        </p>
+
+        <p>This specification also uses these namespace prefix definitions:</p>
+
+        <ul>
+          <li>oslc : <code>http://open-services.net/ns/core#</code> [[OSLCCore3]]</li>
+          <li>oslc_am : <code>http://open-services.net/ns/am#</code> [[OSLCAM2]]</li>
+        </ul>
+      </section>
+    </section>
+
+    <section id="resourceConstraints">
+      <h2>Resource Constraints</h2>
+      <p>
+        This section specifies the constraints for the PLM resources. The resource properties are not limited to the
+        ones defined in this specification, PLM Servers may provide additional properties. It is recommended that any
+        additional properties exist in their own unique namespace and not use the namespaces defined in these
+        specifications.
+      </p>
+      <p>The following properties are should not be expected to be modifiable by a PUT, or POST.</p>
+      <ul>
+        <li>dcterms:identifier</li>
+        <li>dcterms:creator</li>
+        <li>dcterms:modified</li>
+        <li>decterms:created</li>
+        <li>oslc:serviceProvider</li>
+        <li>oslc:instanceShape</li>
+      </ul>
+
+      <section id="partConstraints">
+        <h2>Part</h2>
+        <div
+          title="Constraints for Part"
+          data-include="./plm-shapes.ttl#PartShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="partUsageConstraints">
+        <h2>PartUsage</h2>
+        <div
+          title="Constraints for PartUsage"
+          data-include="./plm-shapes.ttl#PartUsageShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="logicalDesignConstraints">
+        <h2>LogicalDesign</h2>
+        <div
+          title="Constraints for LogicalDesign"
+          data-include="./plm-shapes.ttl#LogicalDesignShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="pyhsicalDesignConstraints">
+        <h2>PyhsicalDesign</h2>
+        <div
+          title="Constraints for PhysicalDesign"
+          data-include="./plm-shapes.ttl#PhysicalDesignShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+    </section>
+
+    <section id="otherConstraints">
+      <h2>Constraints on Other OSLC Domain Resources</h2>
+      <p>
+        OSLC PLM defines some new properties that are used in constraints to extend other OSLC domains. These
+        constraints are considered added to implementations of CM, QM or AM domains that wish to support the PLM domain.
+      </p>
+
+      <section id="changeRequestConstraints">
+        <h2>ChangeRequest</h2>
+        <div
+          title="Constraints for ChangeRequest"
+          data-include="./plm-shapes.ttl#ChangeRequestShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="testCaseConstraints">
+        <h2>TestCase</h2>
+        <div
+          title="Constraints for TestCase"
+          data-include="./plm-shapes.ttl#TestCaseShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+    </section>
+
+    <section id="conformance">
+      <h2>Conformance</h2>
+      <p>
+        OSLC PLM servers MUST follow the constraints defined here where required, and with the meanings defined here.
+      </p>
+      <p>OSLC PLM servers MAY provide additional constraints for specific purposes.</p>
+    </section>
+  </body>
+</html>

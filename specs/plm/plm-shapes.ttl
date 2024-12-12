@@ -1,0 +1,616 @@
+
+# Copyright 2024 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix jazz_am: <http://jazz.net/ns/dm/linktypes#> .
+@prefix oslc: <http://open-services.net/ns/core#> .
+@prefix oslc_am:    <http://open-services.net/ns/am#> .
+@prefix oslc_cm:    <http://open-services.net/ns/cm#> .
+@prefix oslc_qm:    <http://open-services.net/ns/qm#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix oslc_plm: <http://open-services.net/ns/plm#> .
+
+@prefix : <http://open-services.net/ns/plm/shapes/1.0#> . 
+
+
+: a oslc:ResourceShapeConstraints ;
+    rdfs:label "OSLC Product Lifecycle Management (PLM) Constraints" ;
+    dcterms:dateCopyrighted "2012-2024" ;
+    dcterms:description "<p>Constraints on vocabulary terms defined in the OSLC Product Lifecycle Management (PLM) namespace.</p>"^^rdf:XMLLiteral ;
+    dcterms:hasVersion "WD" ;
+    dcterms:isPartOf <https://docs.oasis-open-projects.org/oslc-op/plm/v1.0/psd01/plm-spec.html> ;
+    dcterms:issued "2025-02-01"^^xsd:date ;
+    dcterms:license <http://www.apache.org/licenses/LICENSE-2.0> ;
+    dcterms:source <https://docs.oasis-open-projects.org/oslc-op/plm/v1.0/psd01/plm-shapes.ttl> ;
+    dcterms:title "OSLC Product Lifecycle Management Version 1.0 Constraints" .
+
+:PartShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:Part ;
+    dcterms:title  "Part" ;
+    dcterms:description  """Represents an element of a product whose lifecycle is being managed."""^^rdf:XMLLiteral ;
+    oslc:property
+        # OSLC Core properties (inherited from oslc_am:Resource)
+        :type,
+        :dctype,
+        :identifier,
+        :title,
+        :shortTitle,
+        :description,
+        :source,
+        :creator,
+        :contributor,
+        :created,
+        :modified,
+        :serviceProvider,
+        :instanceShape,
+
+        # OSLC PLM properties
+        :alignsPart,
+        :composedOfPartUsage,
+        :boundingBox,
+        :weight,
+
+        # Common link types
+        :derives,
+        :elaborates,
+        :refine,
+        :external,
+        :satisfy,
+        :trace
+    .
+
+
+:PartUsageShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:PartUsage ;
+    dcterms:title  "PartUsage" ;
+    dcterms:description  """The use of a part in another part."""^^rdf:XMLLiteral ;
+    oslc:property
+        # OSLC Core properties (inherited from oslc_am:Resource)
+        :type,
+        :dctype,
+        :identifier,
+        :title,
+        :shortTitle,
+        :description,
+        :source,
+        :creator,
+        :contributor,
+        :created,
+        :modified,
+        :serviceProvider,
+        :instanceShape,
+
+        # OSLC PLM properties
+        :alignsPartUsage,
+        :representsPart,
+
+        # Common link types
+        :derives,
+        :elaborates,
+        :refine,
+        :external,
+        :satisfy,
+        :trace
+    .
+
+
+:LogicalDesignShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:LogicalDesign ;
+    dcterms:title  "Logical Design" ;
+    dcterms:description  """A type of Part representing the logical design of some system. """^^rdf:XMLLiteral ;
+    oslc:property
+        # OSLC Core properties (inherited from oslc_am:Resource)
+        :type,
+        :dctype,
+        :identifier,
+        :title,
+        :shortTitle,
+        :description,
+        :source,
+        :creator,
+        :contributor,
+        :created,
+        :modified,
+        :serviceProvider,
+        :instanceShape,
+
+        # OSLC PLM properties
+        :alignsPart,
+        :composedOfPartUsage,
+        :boundingBox,
+        :weight,
+
+        # Common link types
+        :derives,
+        :elaborates,
+        :refine,
+        :external,
+        :satisfy,
+        :trace
+    .
+
+
+:PhysicalDesignShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:PhysicalDesign ;
+    dcterms:title  "Physical Design" ;
+    dcterms:description  """A type of Part representing the physical design of some system that realizes its logical design. """^^rdf:XMLLiteral ;
+    oslc:property
+        # OSLC Core properties (inherited from oslc_am:Resource)
+        :type,
+        :dctype,
+        :identifier,
+        :title,
+        :shortTitle,
+        :description,
+        :source,
+        :creator,
+        :contributor,
+        :created,
+        :modified,
+        :serviceProvider,
+        :instanceShape,
+
+        # OSLC PLM properties
+        :alignsPart,
+        :composedOfPartUsage,
+        :realizesLogicalDesign,
+        :boundingBox,
+        :weight,
+
+        # Common link types
+        :derives,
+        :elaborates,
+        :refine,
+        :external,
+        :satisfy,
+        :trace
+    .
+
+
+
+
+# OSLC PLM Part properties
+
+:alignsPart  a                 oslc:Property ;
+        oslc:name                "alignsPart" ;
+        oslc:range               oslc_plm:Part ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_plm:alignsPart ;
+        oslc:valueType           oslc:Resource ;
+        oslc:representation      oslc:Reference ;
+        dcterms:description      "A Part is aligned with another Part. It is likely that the target resource will be oslc_plm:Part."^^rdf:XMLLiteral .
+
+:composedOfPartUsage a oslc:Property ;
+        oslc:name                "composedOfPartUsage" ;
+        oslc:range               oslc_plm:PartUsage ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_plm:composedOfPartUsage ;
+        oslc:valueType           oslc:Resource ;
+        oslc:representation      oslc:Reference ;
+        dcterms:description      "A Part is composed of PartUsages. It is likely that the target resource will be oslc_plm:PartUsage."^^rdf:XMLLiteral .
+
+:boundingBox  a                   oslc:Property ;
+        oslc:name                "boundingBox" ;
+        oslc:range               oslc_plm:Dimension ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:boundingBox ;
+        oslc:valueType           oslc:AnyResource ;
+        oslc:representation      oslc:Either ;
+        dcterms:description      "An oslc_plm:boundingBox represents the rough dimension of an oslc_plm:Part. It is likely that the target resource will be a oslc_plm:Dimension."^^rdf:XMLLiteral .
+
+:weight  a                   oslc:Property ;
+        oslc:name                "weight" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:weight ;
+        dcterms:description      "Weight of the Part. Value should be provided compliant with UCUM standards: https://ucum.org/."^^rdf:XMLLiteral .
+
+# OSLC PLM PartUsage properties
+
+:alignsPartUsage a oslc:Property ;
+        oslc:name                "alignsPartUsage" ;
+        oslc:range               oslc_plm:PartUsage ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_plm:alignsPartUsage ;
+        oslc:valueType           oslc:Resource ;
+        oslc:representation      oslc:Reference ;
+        dcterms:description      "A PartUsage is aligned with another PartUsage. It is likely that the target resource will be oslc_plm:PartUsage."^^rdf:XMLLiteral .
+
+:representsPart a oslc:Property ;
+        oslc:name                "representsPart" ;
+        oslc:range               oslc_plm:Part ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_plm:representsPart ;
+        oslc:valueType           oslc:Resource ;
+        oslc:representation      oslc:Reference ;
+        dcterms:description      "A PartUsage represents a Part. It is likely that the target resource will be oslc_plm:Part."^^rdf:XMLLiteral .
+
+:realizesLogicalDesign a oslc:Property ;
+        oslc:name                "realizesLogicalDesign" ;
+        oslc:range               oslc_plm:LogicalDesign ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_plm:realizesLogicalDesign ;
+        oslc:valueType           oslc:Resource ;
+        oslc:representation      oslc:Reference ;
+        dcterms:description      "Indicates the logical design this physical design realizes."^^rdf:XMLLiteral .
+
+
+
+
+
+# Inherited oslc_am Constraints
+
+:contributor  a                 oslc:Property ;
+        oslc:name                "contributor" ;
+        oslc:range               oslc:Any ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:contributor ;
+        oslc:valueType           oslc:AnyResource ;
+        oslc:representation      oslc:Either ;
+        dcterms:description      "Contributor or contributors to the resource. It is likely that the target resource will be a foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
+
+:creator  a                 oslc:Property ;
+        oslc:name                "creator" ;
+        oslc:range               oslc:Any ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  dcterms:creator ;
+        oslc:valueType           oslc:AnyResource ;
+        oslc:representation      oslc:Either ;
+        dcterms:description      "Creator or creators of the resource. It is likely that the target resource will be a foaf:Person but that is not necessarily the case."^^rdf:XMLLiteral .
+
+:created  a                 oslc:Property ;
+        oslc:name                "created" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  dcterms:created ;
+        oslc:valueType           xsd:dateTime ;
+        dcterms:description      "Timestamp of resource creation."^^rdf:XMLLiteral .
+
+# Dublin Core Properties
+:description a oslc:Property ;
+    oslc:name "description" ;
+    oslc:propertyDefinition dcterms:description ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description "Descriptive text about resource represented as rich text in XHTML content."^^rdf:XMLLiteral ;
+    oslc:valueType rdf:XMLLiteral .
+
+:identifier a oslc:Property ;
+    oslc:name "identifier" ;
+    oslc:propertyDefinition dcterms:identifier ;
+    oslc:occurs oslc:Exactly-one;
+    dcterms:description """A unique identifier for a resource. Typically read-only and assigned by the
+service provider when a resource is created. Not typically intended for end-user display."""^^rdf:XMLLiteral ;
+    oslc:valueType xsd:string .
+
+:dctype a oslc:Property ;
+    oslc:name "dctype" ;
+    oslc:propertyDefinition dcterms:type ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """A short string representation for the type, for example ‘Car’."""^^rdf:XMLLiteral ;
+    oslc:valueType xsd:string .
+
+:modified a oslc:Property ;
+    oslc:name "modified" ;
+    oslc:propertyDefinition dcterms:modified   ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description "Timestamp of latest resource modification."^^rdf:XMLLiteral ;
+    oslc:valueType xsd:dateTime .
+
+ :source a oslc:Property ;
+    oslc:name "source" ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description "The resource URI a client can perform a get on to obtain the original non-OSLC AM formatted resource that was used to create this resource. The source resource is usually a binary or proprietary format that the service provider can consume and convert into an OSLC AM format. The service may use content negotiation with the Accept header to obtain the desired content type."^^rdf:XMLLiteral ;
+    oslc:propertyDefinition  dcterms:source ;
+    oslc:range               oslc:Any ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource .
+
+:title a oslc:Property ;
+    oslc:name "title" ;
+    oslc:propertyDefinition dcterms:title   ;
+    oslc:occurs oslc:Exactly-one;
+    dcterms:description "Title of the resource represented as rich text in XHTML content."^^rdf:XMLLiteral ;
+    oslc:valueType rdf:XMLLiteral .
+
+:shortTitle  a                 oslc:Property ;
+        oslc:name                "shortTitle" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc:shortTitle ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      "{{Short name identifying a resource, often used as an abbreviated identifier for presentation to end-users. SHOULD include only content that is valid inside an XHTML &lt;span&gt; element}}."^^rdf:XMLLiteral ;
+        dcterms:title            "Short title" .
+
+# RDF Properties
+:type a oslc:Property ;
+    oslc:name "type" ;
+    oslc:range rdfs:Class ;
+    oslc:propertyDefinition rdf:type  ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description "The resource type URIs."^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+#OSLC Properties
+:serviceProvider a oslc:Property ;
+    oslc:name "serviceProvider" ;
+    oslc:propertyDefinition oslc:serviceProvider  ;
+    oslc:range oslc:ServiceProvider ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """A link to the resource's OSLC Service Provider. There may be cases when the
+subject resource is available from a service provider that implements multiple domain
+specifications, which could result in multiple values for this property."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+:instanceShape a oslc:Property ;
+    oslc:name "instanceShape" ;
+    oslc:propertyDefinition oslc:instanceShape  ;
+    oslc:range oslc:ResourceShape ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description """The URI of a Resource Shape that describes the possible properties, occurrence,
+value types, allowed values and labels. This shape information is useful in displaying the subject
+resource as well as guiding clients in performing modifications. Instance shapes may be specific
+to the authenticated user associated with the request that retrieved the resource, the current
+state of the resource and other factors and thus should not be cached."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+:label a oslc:Property ;
+    oslc:name "label" ;
+    oslc:propertyDefinition rdfs:label ;
+    oslc:occurs oslc:Exactly-one;
+    dcterms:description """The human readable name for this link type. This value is expected to be used
+in drop down lists and in tables where a link of this type is involved."""^^rdf:XMLLiteral ;
+    oslc:valueType xsd:string .
+
+:comment a oslc:Property ;
+    oslc:name "comment" ;
+    oslc:propertyDefinition rdfs:comment ;
+    oslc:occurs oslc:Zero-or-one;
+    dcterms:description """Descriptive text about link type. Provides a description of this link
+type that could be used in hover help or other areas of the UI where the user wants to understand more about what a link of this type means."""^^rdf:XMLLiteral ;
+    oslc:valueType xsd:string .
+
+
+
+# Standard AM link type properties that are in common use
+
+:derives a oslc:Property ;
+    oslc:name "derives" ;
+    oslc:propertyDefinition jazz_am:derives  ;
+    oslc:range oslc:Any ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """The resource that derives from another resource originated from or is
+significantly influenced by the referenced resource. For example a model element derives from a
+requirement."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+:elaborates a oslc:Property ;
+    oslc:name "elaborates" ;
+    oslc:propertyDefinition jazz_am:elaborates  ;
+    oslc:range oslc:Any ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """This resource elaborates the referenced resource."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+:refine a oslc:Property ;
+    oslc:name "refine" ;
+    oslc:propertyDefinition jazz_am:refine  ;
+    oslc:range oslc:Any ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """The target is a refinement of the source. (e.g. a use case scenario
+might be a refinement of a textual requirement that describes the interaction)."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+:external a oslc:Property ;
+    oslc:name "external" ;
+    oslc:propertyDefinition jazz_am:external  ;
+    oslc:range oslc:Any ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """A generic link from a resource to an external web page."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+:satisfy a oslc:Property ;
+    oslc:name "satisfy" ;
+    oslc:propertyDefinition jazz_am:satisfy  ;
+    oslc:range oslc:Any ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """The model element satisfies the requirement (e.g. The use case
+satisfies a functional requirement)."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+:trace a oslc:Property ;
+    oslc:name "trace" ;
+    oslc:propertyDefinition jazz_am:trace  ;
+    oslc:range oslc:Any ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """The model element has a trace to the requirement (e.g. An attribute
+or its value are traced to a requirement)."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+
+
+
+# The following are additional PLM constraints on CM and QM resourch shapes
+
+:ChangeRequestShape a oslc:ResourceShape ;
+        oslc:describes  oslc_cm:ChangeRequest ;
+        dcterms:title   "A general type for records in a Change Management." ;
+        oslc:property
+            :affectsPart,
+            :affectsPartUsage,
+            :hasProblemPart,
+            :hasProblemPartUsage,
+            :hasSolutionPart,
+            :hasSolutionPartUsage,
+            :relatedPart,
+            :relatedPartUsage,
+            :implementsPart,
+            :implementsPartUsage
+        .
+
+:TestCaseShape a oslc:ResourceShape ;
+        oslc:describes  oslc_qm:TestCase ;
+        dcterms:title   """Defines the criteria which determine whether a system exhibits the correct behavior under a 
+specific set of circumstances.""" ;
+        oslc:property
+            :validatesPart,
+            :validatesPartUsage
+        .
+
+
+
+:affectsPart a oslc:Property ;
+    oslc:name "affectsPart" ;
+    oslc:propertyDefinition oslc_plm:affectsPart  ;
+    oslc:range oslc_plm:Part ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """A Change Request affests a Part."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+:affectsPartUsage a oslc:Property ;
+    oslc:name "affectsPartUsage" ;
+    oslc:propertyDefinition oslc_plm:affectsPartUsage  ;
+    oslc:range oslc_plm:PartUsage ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """A Change Request affests a PartUsage."""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
+
+:hasProblemPart  a         oslc:Property ;
+        oslc:name                "hasProblemPart" ;
+        dcterms:title            "Has Problem Part" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:hasProblemPart ;
+        oslc:range               oslc_plm:Part ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A Change Request has a problem Part. It is likely that the target 
+resource will be oslc_plm:Part."""^^rdf:XMLLiteral .
+
+
+:hasProblemPartUsage  a         oslc:Property ;
+        oslc:name                "hasProblemPartUsage" ;
+        dcterms:title            "Has Problem PartUsage" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:hasProblemPartUsage ;
+        oslc:range               oslc_plm:PartUsage ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A Change Request has a problem PartUsage. It is likely that the target 
+resource will be oslc_plm:PartUsage."""^^rdf:XMLLiteral .
+
+:hasSolutionPart  a         oslc:Property ;
+        oslc:name                "hasSolutionPart" ;
+        dcterms:title            "Has Solution Part" ; 
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:hasSolutionPart ;
+        oslc:range               oslc_plm:Part ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A Change Request has a solution Part. It is likely that the target 
+resource will be oslc_plm:Part."""^^rdf:XMLLiteral .
+
+
+:hasSolutionPartUsage  a         oslc:Property ;
+        oslc:name                "hasSolutionPartUsage" ;
+        dcterms:title            "Has Solution Part Usage" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:hasSolutionPartUsage ;
+        oslc:range               oslc_plm:PartUsage ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A Change Request has a solution PartUsage. It is likely that the target 
+resource will be oslc_plm:PartUsage."""^^rdf:XMLLiteral .
+
+:relatedPart  a         oslc:Property ;
+        oslc:name                "relatedPart" ;
+        dcterms:title            "Related Part" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:relatedPart ;
+        oslc:range               oslc_plm:Part ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A Change Request has a related Part. It is likely that the target 
+resource will be oslc_plm:Part."""^^rdf:XMLLiteral .
+
+
+:relatedPartUsage  a         oslc:Property ;
+        oslc:name                "relatedPartUsage" ;
+        dcterms:title            "Related PartUsage" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:relatedPartUsage ;
+        oslc:range               oslc_plm:PartUsage ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A Change Request has a related PartUsage. It is likely that the target 
+resource will be oslc_plm:PartUsage."""^^rdf:XMLLiteral .
+
+
+:implementsPart  a         oslc:Property ;
+        oslc:name                "implementsPart" ;
+        dcterms:title            "Implements Part" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:implementsPart ;
+        oslc:range               oslc_plm:Part ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A Change Request implements a Part. It is likely that the target 
+resource will be oslc_plm:Part."""^^rdf:XMLLiteral .
+
+
+:implementsPartUsage  a         oslc:Property ;
+        oslc:name                "implementsPartUsage" ;
+        dcterms:title            "Implements PartUsage" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:implementsPartUsage ;
+        oslc:range               oslc_plm:PartUsage ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A Change Request implements a PartUsage. It is likely that the target 
+resource will be oslc_plm:PartUsage."""^^rdf:XMLLiteral .
+
+
+:validatesPart  a         oslc:Property ;
+        oslc:name                "validatesPart" ;
+        dcterms:title            "Validates Part" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:validatesPart ;
+        oslc:range               oslc_plm:Part ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A Test Case validates a Part. It is likely that the target 
+resource will be oslc_plm:Part."""^^rdf:XMLLiteral .
+
+
+:validatesPartUsage  a         oslc:Property ;
+        oslc:name                "validatesPartUsage" ;
+        dcterms:title            "Validates PartUsage" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_cm:validatesPartUsage ;
+        oslc:range               oslc_plm:PartUsage ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A Test Case validates a PartUsage. It is likely that the target 
+resource will be oslc_plm:PartUsage."""^^rdf:XMLLiteral .
+
