@@ -88,6 +88,18 @@ oslc_kerml:Connector a rdfs:Class ;
     rdfs:subClassOf oslc_kerml:Feature,
         oslc_kerml:Relationship .
 
+oslc_kerml:ConstructorExpression a rdfs:Class ;
+    rdfs:label "ConstructorExpression" ;
+    rdfs:comment "A ConstructorExpression is an InstantiationExpression whose result specializes its instantiatedType, binding some or all of the features of the instantiatedType to the results of its argument Expressions." ;
+    rdfs:isDefinedBy oslc_kerml: ;
+    rdfs:subClassOf oslc_kerml:InstantiationExpression .
+
+oslc_kerml:CrossSubsetting a rdfs:Class ;
+    rdfs:label "CrossSubsetting" ;
+    rdfs:comment "CrossSubsetting is a kind of Subsetting for end Features, as identified by crossingFeature, to subset a chained Feature, identified by crossedFeature. It navigates to instances of the end Feature’s type from instances of other end Feature types on the same owningType (at least two end Features are required for any of them to have a CrossSubsetting)." ;
+    rdfs:isDefinedBy oslc_kerml: ;
+    rdfs:subClassOf oslc_kerml:Subsetting .
+
 oslc_kerml:DataType a rdfs:Class ;
     rdfs:label "DataType" ;
     rdfs:comment "A DataType is a Classifier of things (in the universe) that can only be distinguished by how they are related to other things (via Features). This means multiple things classified by the same DataType." ;
@@ -175,10 +187,9 @@ oslc_kerml:FeatureInverting a rdfs:Class ;
 
 oslc_kerml:FeatureMembership a rdfs:Class ;
     rdfs:label "FeatureMembership" ;
-    rdfs:comment "A FeatureMembership is an OwningMembership between a Feature in an owningType that is also a Featuring Relationship between the Feature and the Type, in which the featuringType is the source and the featureOfType is the target. A FeatureMembership is always owned by its owningType, which is the featuringType for the FeatureMembership considered as a Featuring." ;
+    rdfs:comment "A FeatureMembership is an OwningMembership between an ownedMemberFeature and an owningType. If the ownedMemberFeature has isVariable = false, then the FeatureMembership implies that the owningType is also a featuringType of the ownedMemberFeature. If the ownedMemberFeature has isVariable = true, then the FeatureMembership implies that the ownedMemberFeature is featured by the snapshots of the owningType, which must specialize the Kernel Semantic Library base class Occurrence." ;
     rdfs:isDefinedBy oslc_kerml: ;
-    rdfs:subClassOf oslc_kerml:Featuring,
-        oslc_kerml:OwningMembership .
+    rdfs:subClassOf oslc_kerml:OwningMembership .
 
 oslc_kerml:FeatureReferenceExpression a rdfs:Class ;
     rdfs:label "FeatureReferenceExpression" ;
@@ -198,11 +209,18 @@ oslc_kerml:FeatureValue a rdfs:Class ;
     rdfs:isDefinedBy oslc_kerml: ;
     rdfs:subClassOf oslc_kerml:OwningMembership .
 
-oslc_kerml:Featuring a rdfs:Class ;
-    rdfs:label "Featuring" ;
-    rdfs:comment "Featuring is a Relationship between a Type and a Feature that is featured by that Type. It asserts that every instance in the domain of the feature must be classified by the type." ;
+oslc_kerml:Flow a rdfs:Class ;
+    rdfs:label "Flow" ;
+    rdfs:comment "An Flow is a Step that represents the transfer of values from one Feature to another. Flows can take non-zero time to complete." ;
     rdfs:isDefinedBy oslc_kerml: ;
-    rdfs:subClassOf oslc_kerml:Relationship .
+    rdfs:subClassOf oslc_kerml:Connector,
+        oslc_kerml:Step .
+
+oslc_kerml:FlowEnd a rdfs:Class ;
+    rdfs:label "FlowEnd" ;
+    rdfs:comment "A FlowEnd is a Feature that is one of the connectorEnds giving the source or target of a Flow. For Flows typed by FlowTransfer or its specializations, FlowEnds must have exactly one ownedFeature, which redefines Transfer::source::sourceOutput or Transfer::target::targetInput and redefines the corresponding feature of the relatedElement for its end." ;
+    rdfs:isDefinedBy oslc_kerml: ;
+    rdfs:subClassOf oslc_kerml:Feature .
 
 oslc_kerml:Function a rdfs:Class ;
     rdfs:label "Function" ;
@@ -215,6 +233,18 @@ oslc_kerml:Import a rdfs:Class ;
     rdfs:comment "An Import is an Relationship between its importOwningNamespace and either a Membership (for a MembershipImport) or another Namespace (for a NamespaceImport), which determines a set of Memberships that become importedMemberships of the importOwningNamespace. If isImportAll = false (the default), then only public Memberships are considered \"visible\". If isImportAll = true, then all Memberships are considered \"visible\", regardless of their declared visibility. If isRecursive = true, then visible Memberships are also recursively imported from owned sub-Namespaces." ;
     rdfs:isDefinedBy oslc_kerml: ;
     rdfs:subClassOf oslc_kerml:Relationship .
+
+oslc_kerml:IndexExpression a rdfs:Class ;
+    rdfs:label "IndexExpression" ;
+    rdfs:comment "An IndexExpression is an OperatorExpression whose operator is \"#\", which resolves to the Function BasicFunctions::'#' from the Kernel Functions Library." ;
+    rdfs:isDefinedBy oslc_kerml: ;
+    rdfs:subClassOf oslc_kerml:OperatorExpression .
+
+oslc_kerml:InstantiationExpression a rdfs:Class ;
+    rdfs:label "InstantiationExpression" ;
+    rdfs:comment "An InstantiationExpression is an Expression that instantiates its instantiatedType, binding some or all of the features of that Type to the results of its arguments." ;
+    rdfs:isDefinedBy oslc_kerml: ;
+    rdfs:subClassOf oslc_kerml:Expression .
 
 oslc_kerml:Interaction a rdfs:Class ;
     rdfs:label "Interaction" ;
@@ -237,28 +267,9 @@ oslc_kerml:Invariant a rdfs:Class ;
 
 oslc_kerml:InvocationExpression a rdfs:Class ;
     rdfs:label "InvocationExpression" ;
-    rdfs:comment "An InvocationExpression is an Expression each of whose input parameters are bound to the result of an argument Expression." ;
+    rdfs:comment "An InvocationExpression is an InstantiationExpression whose instantiatedType must be a Behavior or a Feature typed by a single Behavior (such as a Step). Each of the input parameters of the instantiatedType are bound to the result of an argument Expression. If the instantiatedType is a Function or a Feature typed by a Function, then the result of the InvocationExpression is the result of the invoked Function. Otherwise, the result is an instance of the instantiatedType (essentially like a behavioral ConstructorExpression)." ;
     rdfs:isDefinedBy oslc_kerml: ;
-    rdfs:subClassOf oslc_kerml:Expression .
-
-oslc_kerml:ItemFeature a rdfs:Class ;
-    rdfs:label "ItemFeature" ;
-    rdfs:comment "An ItemFeature is the ownedFeature of an ItemFlow that identifies the things carried by the kinds of transfers that are instances of the ItemFlow." ;
-    rdfs:isDefinedBy oslc_kerml: ;
-    rdfs:subClassOf oslc_kerml:Feature .
-
-oslc_kerml:ItemFlow a rdfs:Class ;
-    rdfs:label "ItemFlow" ;
-    rdfs:comment "An ItemFlow is a Step that represents the transfer of objects or data values from one Feature to another. ItemFlows can take non-zero time to complete." ;
-    rdfs:isDefinedBy oslc_kerml: ;
-    rdfs:subClassOf oslc_kerml:Connector,
-        oslc_kerml:Step .
-
-oslc_kerml:ItemFlowEnd a rdfs:Class ;
-    rdfs:label "ItemFlowEnd" ;
-    rdfs:comment "An ItemFlowEnd is a Feature that is one of the connectorEnds giving the source or target of an ItemFlow. For ItemFlows typed by FlowTransfer or its specializations, ItemFlowEnds must have exactly one ownedFeature, which redefines Transfer::source::sourceOutput or Transfer::target::targetInput and redefines the corresponding feature of the relatedElement for its end." ;
-    rdfs:isDefinedBy oslc_kerml: ;
-    rdfs:subClassOf oslc_kerml:Feature .
+    rdfs:subClassOf oslc_kerml:InstantiationExpression .
 
 oslc_kerml:LibraryPackage a rdfs:Class ;
     rdfs:label "LibraryPackage" ;
@@ -384,9 +395,15 @@ oslc_kerml:Package a rdfs:Class ;
 
 oslc_kerml:ParameterMembership a rdfs:Class ;
     rdfs:label "ParameterMembership" ;
-    rdfs:comment "A ParameterMembership is a FeatureMembership that identifies its memberFeature as a parameter, which is always owned, and must have a direction. A ParameterMembership must be owned by a Behavior or a Step." ;
+    rdfs:comment "A ParameterMembership is a FeatureMembership that identifies its memberFeature as a parameter, which is always owned, and must have a direction. A ParameterMembership must be owned by a Behavior, a Step, or the result parameter of a ConstructorExpression." ;
     rdfs:isDefinedBy oslc_kerml: ;
     rdfs:subClassOf oslc_kerml:FeatureMembership .
+
+oslc_kerml:PayloadFeature a rdfs:Class ;
+    rdfs:label "PayloadFeature" ;
+    rdfs:comment "A PayloadFeature is the ownedFeature of a Flow that identifies the things carried by the kinds of transfers that are instances of the Flow." ;
+    rdfs:isDefinedBy oslc_kerml: ;
+    rdfs:subClassOf oslc_kerml:Feature .
 
 oslc_kerml:Predicate a rdfs:Class ;
     rdfs:label "Predicate" ;
@@ -402,7 +419,7 @@ oslc_kerml:Redefinition a rdfs:Class ;
 
 oslc_kerml:ReferenceSubsetting a rdfs:Class ;
     rdfs:label "ReferenceSubsetting" ;
-    rdfs:comment "ReferenceSubsetting is a kind of Subsetting in which the referencedFeature is syntactically distinguished from other Features subsetted by the referencingFeature. ReferenceSubsetting has the same semantics as Subsetting, but the referenceFeature may have a special purpose relative to the referencingFeature. For instance, ReferenceSubsetting is used to identify the relatedFeatures of a Connector." ;
+    rdfs:comment "ReferenceSubsetting is a kind of Subsetting in which the referencedFeature is syntactically distinguished from other Features subsetted by the referencingFeature. ReferenceSubsetting has the same semantics as Subsetting, but the referencedFeature may have a special purpose relative to the referencingFeature. For instance, ReferenceSubsetting is used to identify the relatedFeatures of a Connector." ;
     rdfs:isDefinedBy oslc_kerml: ;
     rdfs:subClassOf oslc_kerml:Subsetting .
 
@@ -438,7 +455,7 @@ oslc_kerml:Specialization a rdfs:Class ;
 
 oslc_kerml:Step a rdfs:Class ;
     rdfs:label "Step" ;
-    rdfs:comment "A Step is a Feature that is typed by one or more Behaviors. Steps may be used by one Behavior to coordinate the performance of other Behaviors, supporting a steady refinement of behavioral descriptions. Steps can be ordered in time and can be connected using ItemFlows to specify things flowing between their parameters." ;
+    rdfs:comment "A Step is a Feature that is typed by one or more Behaviors. Steps may be used by one Behavior to coordinate the performance of other Behaviors, supporting a steady refinement of behavioral descriptions. Steps can be ordered in time and can be connected using Flows to specify things flowing between their parameters." ;
     rdfs:isDefinedBy oslc_kerml: ;
     rdfs:subClassOf oslc_kerml:Feature .
 
@@ -466,11 +483,11 @@ oslc_kerml:Succession a rdfs:Class ;
     rdfs:isDefinedBy oslc_kerml: ;
     rdfs:subClassOf oslc_kerml:Connector .
 
-oslc_kerml:SuccessionItemFlow a rdfs:Class ;
-    rdfs:label "SuccessionItemFlow" ;
-    rdfs:comment "A SuccessionItemFlow is an ItemFlow that also provides temporal ordering. It classifies Transfers that cannot start until the source Occurrence has completed and that must complete before the target Occurrence can start." ;
+oslc_kerml:SuccessionFlow a rdfs:Class ;
+    rdfs:label "SuccessionFlow" ;
+    rdfs:comment "A SuccessionFlow is a Flow that also provides temporal ordering. It classifies Transfers that cannot start until the source Occurrence has completed and that must complete before the target Occurrence can start." ;
     rdfs:isDefinedBy oslc_kerml: ;
-    rdfs:subClassOf oslc_kerml:ItemFlow,
+    rdfs:subClassOf oslc_kerml:Flow,
         oslc_kerml:Succession .
 
 oslc_kerml:TextualRepresentation a rdfs:Class ;
@@ -489,7 +506,7 @@ oslc_kerml:TypeFeaturing a rdfs:Class ;
     rdfs:label "TypeFeaturing" ;
     rdfs:comment "A TypeFeaturing is a Featuring Relationship in which the featureOfType is the source and the featuringType is the target." ;
     rdfs:isDefinedBy oslc_kerml: ;
-    rdfs:subClassOf oslc_kerml:Featuring .
+    rdfs:subClassOf oslc_kerml:Relationship .
 
 oslc_kerml:Unioning a rdfs:Class ;
     rdfs:label "Unioning" ;
@@ -515,17 +532,17 @@ Annotation: The Element that is annotated by the annotatingElement of this Annot
 
 oslc_kerml:annotatingElement a rdf:Property ;
     rdfs:label "annotatingElement" ;
-    rdfs:comment "Annotation: The AnnotatingElement that annotates the annotatedElement of this Annotation." ;
+    rdfs:comment "Annotation: The AnnotatingElement that annotates the annotatedElement of this Annotation. This is always either the ownedAnnotatingElement or the owningAnnotatingElement." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:annotation a rdf:Property ;
     rdfs:label "annotation" ;
-    rdfs:comment "AnnotatingElement: The Annotations that relate this AnnotatingElement to its annotatedElements." ;
+    rdfs:comment "AnnotatingElement: The Annotations that relate this AnnotatingElement to its annotatedElements. This includes the owningAnnotatingRelationship (if any) followed by all the ownedAnnotatingRelationshps." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:argument a rdf:Property ;
     rdfs:label "argument" ;
-    rdfs:comment "InvocationExpression: The value Expressions of the FeatureValues of the owned input parameters of the InvocationExpression." ;
+    rdfs:comment "InstantiationExpression: The Expressions whose results are bound to features of the instantiatedType. The arguments are ordered consistent with the order of the features, though they may not be one-to-one with all the features." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:association a rdf:Property ;
@@ -551,7 +568,7 @@ TextualRepresentation: The textual representation of the representedElement in t
 
 oslc_kerml:bound a rdf:Property ;
     rdfs:label "bound" ;
-    rdfs:comment "MultiplicityRange: The owned Expressions of the MultiplicityRange whose results provide its bounds. These must be the only ownedMembers of the MultiplicityRange." ;
+    rdfs:comment "MultiplicityRange: The owned Expressions of the MultiplicityRange whose results provide its bounds. These must be the first ownedMembers of the MultiplicityRange." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:chainingFeature a rdf:Property ;
@@ -580,6 +597,22 @@ oslc_kerml:connectorEnd a rdf:Property ;
     rdfs:comment "Connector: The endFeatures of a Connector, which redefine the endFeatures of the associations of the Connector. The connectorEnds determine via ReferenceSubsetting Relationships which Features are related by the Connector." ;
     rdfs:isDefinedBy oslc_kerml: .
 
+oslc_kerml:crossFeature a rdf:Property ;
+    rdfs:label "crossFeature" ;
+    rdfs:comment """Feature: The second chainingFeature of the crossedFeature of the ownedCrossSubsetting of this Feature, if it has one. Semantically, the values of the crossFeature of an end Feature must include all values of the end Feature obtained when navigating from values of the other end Features of the same owningType.
+.""" ;
+    rdfs:isDefinedBy oslc_kerml: .
+
+oslc_kerml:crossedFeature a rdf:Property ;
+    rdfs:label "crossedFeature" ;
+    rdfs:comment "CrossSubsetting: The chained Feature that is cross subset by the crossingFeature of this CrossSubsetting." ;
+    rdfs:isDefinedBy oslc_kerml: .
+
+oslc_kerml:crossingFeature a rdf:Property ;
+    rdfs:label "crossingFeature" ;
+    rdfs:comment "CrossSubsetting: The end Feature that owns this CrossSubsetting relationship and is also its subsettingFeature." ;
+    rdfs:isDefinedBy oslc_kerml: .
+
 oslc_kerml:declaredName a rdf:Property ;
     rdfs:label "declaredName" ;
     rdfs:comment "Element: The declared name of this Element." ;
@@ -588,6 +621,11 @@ oslc_kerml:declaredName a rdf:Property ;
 oslc_kerml:declaredShortName a rdf:Property ;
     rdfs:label "declaredShortName" ;
     rdfs:comment "Element: An optional alternative name for the Element that is intended to be shorter or in some way more succinct than its primary name. It may act as a modeler-specified identifier for the Element, though it is then the responsibility of the modeler to maintain the uniqueness of this identifier within a model or relative to some other context." ;
+    rdfs:isDefinedBy oslc_kerml: .
+
+oslc_kerml:defaultFeaturingType a rdf:Property ;
+    rdfs:label "defaultFeaturingType" ;
+    rdfs:comment "Connector: The innermost Type that is a common direct or indirect featuringType of the relatedFeatures, such that, if it exists and was the featuringType of this Connector, the Connector would satisfy the checkConnectorTypeFeaturing constraint." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:differencingType a rdf:Property ;
@@ -621,11 +659,6 @@ oslc_kerml:documentedElement a rdf:Property ;
     rdfs:comment "Documentation: The Element that is documented by this Documentation." ;
     rdfs:isDefinedBy oslc_kerml: .
 
-oslc_kerml:effectStep a rdf:Property ;
-    rdfs:label "effectStep" ;
-    rdfs:comment "Succession: Steps that represent occurrences that are side effects of the transitionStep occurring." ;
-    rdfs:isDefinedBy oslc_kerml: .
-
 oslc_kerml:elementId a rdf:Property ;
     rdfs:label "elementId" ;
     rdfs:comment "Element: The globally unique identifier for this Element. This is intended to be set by tooling, and it must not change during the lifetime of the Element." ;
@@ -648,8 +681,7 @@ oslc_kerml:expression a rdf:Property ;
 
 oslc_kerml:feature a rdf:Property ;
     rdfs:label "feature" ;
-    rdfs:comment """Type: The ownedMemberFeatures of the featureMemberships of this Type.
-Featuring: The Feature that is featured by the featuringType.""" ;
+    rdfs:comment "Type: The ownedMemberFeatures of the featureMemberships of this Type." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:featureChained a rdf:Property ;
@@ -693,6 +725,11 @@ oslc_kerml:filterCondition a rdf:Property ;
     rdfs:comment "Package: The model-level evaluable Boolean-valued Expression used to filter the members of this Package, which are owned by the Package are via ElementFilterMemberships." ;
     rdfs:isDefinedBy oslc_kerml: .
 
+oslc_kerml:flowEnd a rdf:Property ;
+    rdfs:label "flowEnd" ;
+    rdfs:comment "Flow: The connectorEnds of this Flow that are FlowEnds." ;
+    rdfs:isDefinedBy oslc_kerml: .
+
 oslc_kerml:function a rdf:Property ;
     rdfs:label "function" ;
     rdfs:comment "Expression: The Function that types this Expression." ;
@@ -701,11 +738,6 @@ oslc_kerml:function a rdf:Property ;
 oslc_kerml:general a rdf:Property ;
     rdfs:label "general" ;
     rdfs:comment "Specialization: A Type with a superset of all instances of the specific Type, which might be the same set." ;
-    rdfs:isDefinedBy oslc_kerml: .
-
-oslc_kerml:guardExpression a rdf:Property ;
-    rdfs:label "guardExpression" ;
-    rdfs:comment "Succession: Expressions that must evaluate to true before the transitionStep can occur." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:importOwningNamespace a rdf:Property ;
@@ -754,9 +786,14 @@ oslc_kerml:input a rdf:Property ;
     rdfs:comment "Type: All features related to this Type by FeatureMemberships that have direction in or inout." ;
     rdfs:isDefinedBy oslc_kerml: .
 
+oslc_kerml:instantiatedType a rdf:Property ;
+    rdfs:label "instantiatedType" ;
+    rdfs:comment "InstantiationExpression: The Type that is being instantiated." ;
+    rdfs:isDefinedBy oslc_kerml: .
+
 oslc_kerml:interaction a rdf:Property ;
     rdfs:label "interaction" ;
-    rdfs:comment "ItemFlow: The Interactions that type this ItemFlow. Interactions are both Associations and Behaviors, which can type Connectors and Steps, respectively." ;
+    rdfs:comment "Flow: The Interactions that type this Flow. Interactions are both Associations and Behaviors, which can type Connectors and Steps, respectively." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:intersectingType a rdf:Property ;
@@ -777,12 +814,17 @@ oslc_kerml:isAbstract a rdf:Property ;
 
 oslc_kerml:isComposite a rdf:Property ;
     rdfs:label "isComposite" ;
-    rdfs:comment "Feature: Whether the Feature is a composite feature of its featuringType. If so, the values of the Feature cannot exist after its featuring instance no longer does." ;
+    rdfs:comment "Feature: Whether the Feature is a composite feature of its featuringType. If so, the values of the Feature cannot exist after its featuring instance no longer does and cannot be values of another composite feature that is not on the same featuring instance." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:isConjugated a rdf:Property ;
     rdfs:label "isConjugated" ;
     rdfs:comment "Type: Indicates whether this Type has an ownedConjugator." ;
+    rdfs:isDefinedBy oslc_kerml: .
+
+oslc_kerml:isConstant a rdf:Property ;
+    rdfs:label "isConstant" ;
+    rdfs:comment "Feature: If isVariable is true, then whether the value of this Feature nevertheless does not change over all snapshots of its owningType." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:isDefault a rdf:Property ;
@@ -797,7 +839,7 @@ oslc_kerml:isDerived a rdf:Property ;
 
 oslc_kerml:isEnd a rdf:Property ;
     rdfs:label "isEnd" ;
-    rdfs:comment "Feature: Whether or not the this Feature is an end Feature, requiring a different interpretation of the multiplicity of the Feature." ;
+    rdfs:comment "Feature: Whether or not this Feature is an end Feature. An end Feature always has multiplicity 1, mapping each of its domain instances to a single co-domain instance. However, it may have a crossFeature, in which case values of the crossFeature must be the same as those found by navigation across instances of the owningType from values of other end Features to values of this Feature. If the owningType has n end Features, then the multiplicity, ordering, and uniqueness declared for the crossFeature of any one of these end Features constrains the cardinality, ordering, and uniqueness of the collection of values of that Feature reached by navigation when the values of the other n-1 end Features are held fixed." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:isImplied a rdf:Property ;
@@ -836,11 +878,6 @@ oslc_kerml:isNegated a rdf:Property ;
     rdfs:comment "Invariant: Whether this Invariant is asserted to be false rather than true." ;
     rdfs:isDefinedBy oslc_kerml: .
 
-oslc_kerml:isNonunique a rdf:Property ;
-    rdfs:label "isNonunique" ;
-    rdfs:comment "Feature: isNonunique." ;
-    rdfs:isDefinedBy oslc_kerml: .
-
 oslc_kerml:isOrdered a rdf:Property ;
     rdfs:label "isOrdered" ;
     rdfs:comment "Feature: Whether an order exists for the values of this Feature or not." ;
@@ -849,11 +886,6 @@ oslc_kerml:isOrdered a rdf:Property ;
 oslc_kerml:isPortion a rdf:Property ;
     rdfs:label "isPortion" ;
     rdfs:comment "Feature: Whether the values of this Feature are contained in the space and time of instances of the domain of the Feature and represent the same thing as those instances." ;
-    rdfs:isDefinedBy oslc_kerml: .
-
-oslc_kerml:isReadOnly a rdf:Property ;
-    rdfs:label "isReadOnly" ;
-    rdfs:comment "Feature: Whether the values of this Feature can change over the lifetime of an instance of the domain." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:isRecursive a rdf:Property ;
@@ -876,19 +908,9 @@ oslc_kerml:isUnique a rdf:Property ;
     rdfs:comment "Feature: Whether or not values for this Feature must have no duplicates or not." ;
     rdfs:isDefinedBy oslc_kerml: .
 
-oslc_kerml:itemFeature a rdf:Property ;
-    rdfs:label "itemFeature" ;
-    rdfs:comment "ItemFlow: The ownedFeature of the ItemFlow that is an ItemFeature (if any)." ;
-    rdfs:isDefinedBy oslc_kerml: .
-
-oslc_kerml:itemFlowEnd a rdf:Property ;
-    rdfs:label "itemFlowEnd" ;
-    rdfs:comment "ItemFlow: The connectorEnds of this ItemFlow that are ItemFlowEnds." ;
-    rdfs:isDefinedBy oslc_kerml: .
-
-oslc_kerml:itemType a rdf:Property ;
-    rdfs:label "itemType" ;
-    rdfs:comment "ItemFlow: The type of values transferred, which is the type of the itemFeature of the ItemFlow." ;
+oslc_kerml:isVariable a rdf:Property ;
+    rdfs:label "isVariable" ;
+    rdfs:comment "Feature: Whether the value of this Feature might vary over time. That is, whether the Feature may have a different value for each snapshot of an owningType that is an Occurrence." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:language a rdf:Property ;
@@ -956,11 +978,6 @@ oslc_kerml:name a rdf:Property ;
     rdfs:comment "Element: The name to be used for this Element during name resolution within its owningNamespace. This is derived using the effectiveName() operation. By default, it is the same as the declaredName, but this is overridden for certain kinds of Elements to compute a name even when the declaredName is null." ;
     rdfs:isDefinedBy oslc_kerml: .
 
-oslc_kerml:operand a rdf:Property ;
-    rdfs:label "operand" ;
-    rdfs:comment "InvocationExpression: operand." ;
-    rdfs:isDefinedBy oslc_kerml: .
-
 oslc_kerml:operator a rdf:Property ;
     rdfs:label "operator" ;
     rdfs:comment "OperatorExpression: An operator symbol that names a corresponding Function from one of the standard packages from the Kernel Function Library ." ;
@@ -981,6 +998,11 @@ oslc_kerml:output a rdf:Property ;
     rdfs:comment "Type: All features related to this Type by FeatureMemberships that have direction out or inout." ;
     rdfs:isDefinedBy oslc_kerml: .
 
+oslc_kerml:ownedAnnotatingElement a rdf:Property ;
+    rdfs:label "ownedAnnotatingElement" ;
+    rdfs:comment "Annotation: The annotatingElement of this Annotation, when it is an ownedRelatedElement." ;
+    rdfs:isDefinedBy oslc_kerml: .
+
 oslc_kerml:ownedAnnotatingRelationship a rdf:Property ;
     rdfs:label "ownedAnnotatingRelationship" ;
     rdfs:comment "AnnotatingElement: The ownedRelationships of this AnnotatingElement that are Annotations, for which this AnnotatingElement is the annotatingElement." ;
@@ -994,6 +1016,11 @@ oslc_kerml:ownedAnnotation a rdf:Property ;
 oslc_kerml:ownedConjugator a rdf:Property ;
     rdfs:label "ownedConjugator" ;
     rdfs:comment "Type: A Conjugation owned by this Type for which the Type is the originalType." ;
+    rdfs:isDefinedBy oslc_kerml: .
+
+oslc_kerml:ownedCrossSubsetting a rdf:Property ;
+    rdfs:label "ownedCrossSubsetting" ;
+    rdfs:comment "Feature: The one ownedSubsetting of this Feature, if any, that is a CrossSubsetting}, for which the Feature is the crossingFeature." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:ownedDifferencing a rdf:Property ;
@@ -1148,12 +1175,17 @@ oslc_kerml:owner a rdf:Property ;
 
 oslc_kerml:owningAnnotatedElement a rdf:Property ;
     rdfs:label "owningAnnotatedElement" ;
-    rdfs:comment "Annotation: The annotatedElement of this Annotation, when it is also its owningRelatedElement." ;
+    rdfs:comment "Annotation: The annotatedElement of this Annotation, when it is also the owningRelatedElement." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:owningAnnotatingElement a rdf:Property ;
     rdfs:label "owningAnnotatingElement" ;
-    rdfs:comment "Annotation: The annotatingElement of this Annotation, when it is also its owningRelatedElement." ;
+    rdfs:comment "Annotation: The annotatingElement of this Annotation, when it is the owningRelatedElement." ;
+    rdfs:isDefinedBy oslc_kerml: .
+
+oslc_kerml:owningAnnotatingRelationship a rdf:Property ;
+    rdfs:label "owningAnnotatingRelationship" ;
+    rdfs:comment "AnnotatingElement: The owningRelationship of this AnnotatingRelationship, if it is an Annotation." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:owningClassifier a rdf:Property ;
@@ -1209,13 +1241,23 @@ Disjoining: A typeDisjoined that is also an owningRelatedElement.""" ;
 
 oslc_kerml:parameter a rdf:Property ;
     rdfs:label "parameter" ;
-    rdfs:comment """Step: The parameters of this Step, which are defined as its directedFeatures, whose values are passed into and/or out of a performance of the Step.
-Behavior: The parameters of this Behavior, which are defined as its directedFeatures, whose values are passed into and/or out of a performance of the Behavior.""" ;
+    rdfs:comment """Behavior: The parameters of this Behavior, which are defined as its directedFeatures, whose values are passed into and/or out of a performance of the Behavior.
+Step: The parameters of this Step, which are defined as its directedFeatures, whose values are passed into and/or out of a performance of the Step.""" ;
+    rdfs:isDefinedBy oslc_kerml: .
+
+oslc_kerml:payloadFeature a rdf:Property ;
+    rdfs:label "payloadFeature" ;
+    rdfs:comment "Flow: The ownedFeature of the Flow that is a PayloadFeature (if any)." ;
+    rdfs:isDefinedBy oslc_kerml: .
+
+oslc_kerml:payloadType a rdf:Property ;
+    rdfs:label "payloadType" ;
+    rdfs:comment "Flow: The type of values transferred, which is the type of the payloadFeature of the Flow." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:predicate a rdf:Property ;
     rdfs:label "predicate" ;
-    rdfs:comment "BooleanExpression: The Predicate that types this BooleanExpression." ;
+    rdfs:comment "BooleanExpression: The Predicate that types the Expression." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:private a oslc_kerml:VisibilityKind ;
@@ -1235,7 +1277,7 @@ oslc_kerml:public a oslc_kerml:VisibilityKind ;
 
 oslc_kerml:qualifiedName a rdf:Property ;
     rdfs:label "qualifiedName" ;
-    rdfs:comment "Element: The full ownership-qualified name of this Element, represented in a form that is valid according to the KerML textual concrete syntax for qualified names (including use of unrestricted name notation and escaped characters, as necessary). The qualifiedName is null if this Element has no owningNamespace or if there is not a complete ownership chain of named Namespaces from a root Namespace to this Element." ;
+    rdfs:comment "Element: The full ownership-qualified name of this Element, represented in a form that is valid according to the KerML textual concrete syntax for qualified names (including use of unrestricted name notation and escaped characters, as necessary). The qualifiedName is null if this Element has no owningNamespace or if there is not a complete ownership chain of named Namespaces from a root Namespace to this Element. If the owningNamespace has other Elements with the same name as this one, then the qualifiedName is null for all such Elements other than the first." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:redefinedFeature a rdf:Property ;
@@ -1250,7 +1292,7 @@ oslc_kerml:redefiningFeature a rdf:Property ;
 
 oslc_kerml:referencedElement a rdf:Property ;
     rdfs:label "referencedElement" ;
-    rdfs:comment "MetadataAccessExpression:  The Element whose metadata is being accessed." ;
+    rdfs:comment "MetadataAccessExpression: The Element whose metadata is being accessed." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:referencedFeature a rdf:Property ;
@@ -1291,7 +1333,7 @@ oslc_kerml:representedElement a rdf:Property ;
 oslc_kerml:result a rdf:Property ;
     rdfs:label "result" ;
     rdfs:comment """Expression: result.
-Function: The result parameter of the Function, which is owned by the Function via a ReturnParameterMembership.""" ;
+Function: The object or value that is the result of evaluating the Function.""" ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:shortName a rdf:Property ;
@@ -1311,7 +1353,7 @@ oslc_kerml:sourceFeature a rdf:Property ;
 
 oslc_kerml:sourceOutputFeature a rdf:Property ;
     rdfs:label "sourceOutputFeature" ;
-    rdfs:comment "ItemFlow: The Feature that provides the items carried by the ItemFlow. It must be an owned output of the source of the ItemFlow." ;
+    rdfs:comment "Flow: The Feature that provides the items carried by the Flow. It must be a feature of the source of the Flow." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:sourceType a rdf:Property ;
@@ -1361,13 +1403,13 @@ oslc_kerml:target a rdf:Property ;
 
 oslc_kerml:targetFeature a rdf:Property ;
     rdfs:label "targetFeature" ;
-    rdfs:comment """FeatureChainExpression: The Feature that is accessed by this FeatureChainExpression, which is its first non-parameter member.
-Connector: The target relatedFeatures for this Connector. This includes all the relatedFeatures other than the sourceFeature.""" ;
+    rdfs:comment """Connector: The target relatedFeatures for this Connector. This includes all the relatedFeatures other than the sourceFeature.
+FeatureChainExpression: The Feature that is accessed by this FeatureChainExpression, which is its first non-parameter member.""" ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:targetInputFeature a rdf:Property ;
     rdfs:label "targetInputFeature" ;
-    rdfs:comment "ItemFlow: The Feature that receives the values carried by the ItemFlow. It must be an owned output of the target participant of the ItemFlow." ;
+    rdfs:comment "Flow: The Feature that receives the values carried by the Flow. It must be a feature of the target of the Flow." ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:targetType a rdf:Property ;
@@ -1380,20 +1422,9 @@ oslc_kerml:textualRepresentation a rdf:Property ;
     rdfs:comment "Element: The TextualRepresentations that annotate this Element." ;
     rdfs:isDefinedBy oslc_kerml: .
 
-oslc_kerml:transitionStep a rdf:Property ;
-    rdfs:label "transitionStep" ;
-    rdfs:comment "Succession: A Step that is typed by the Behavior TransitionPerformances::TransitionPerformance (from the Kernel Semantic Library) that has this Succession as its transitionLink." ;
-    rdfs:isDefinedBy oslc_kerml: .
-
-oslc_kerml:triggerStep a rdf:Property ;
-    rdfs:label "triggerStep" ;
-    rdfs:comment "Succession: Steps that map incoming events to the timing of occurrences of the transitionStep. The values of triggerStep subset the list of acceptable events to be received by a Behavior or the object that performs it." ;
-    rdfs:isDefinedBy oslc_kerml: .
-
 oslc_kerml:type a rdf:Property ;
     rdfs:label "type" ;
-    rdfs:comment """Featuring: The Type that features the featureOfType.
-Feature: Types that restrict the values of this Feature, such that the values must be instances of all the types. The types of a Feature are derived from its typings and the types of its subsettings. If the Feature is chained, then the types of the last Feature in the chain are also types of the chained Feature.
+    rdfs:comment """Feature: Types that restrict the values of this Feature, such that the values must be instances of all the types. The types of a Feature are derived from its typings and the types of its subsettings. If the Feature is chained, then the types of the last Feature in the chain are also types of the chained Feature.
 FeatureTyping: The Type that is being applied by this FeatureTyping.""" ;
     rdfs:isDefinedBy oslc_kerml: .
 
@@ -1435,11 +1466,11 @@ oslc_kerml:upperBound a rdf:Property ;
 
 oslc_kerml:value a rdf:Property ;
     rdfs:label "value" ;
-    rdfs:comment """LiteralString: The String value that is the result of evaluating this LiteralString.
+    rdfs:comment """FeatureValue: The Expression that provides the value as a result.
 LiteralBoolean: The Boolean value that is the result of evaluating this LiteralBoolean.
 LiteralInteger: The Integer value that is the result of evaluating this LiteralInteger.
-LiteralRational: The value whose rational approximation is the result of evaluating this LiteralRational.
-FeatureValue: The Expression that provides the value of the featureWithValue as its result.""" ;
+LiteralString: The String value that is the result of evaluating this Expression.
+LiteralRational: The value whose rational approximation is the result of evaluating this LiteralRational.""" ;
     rdfs:isDefinedBy oslc_kerml: .
 
 oslc_kerml:visibility a rdf:Property ;
@@ -1456,7 +1487,7 @@ oslc_kerml: a owl:Ontology ;
     dcterms:issued "2025-02-01"^^xsd:date ;
     dcterms:license <> ;
     dcterms:publisher <https://www.omg.org> ;
-    dcterms:source <https://github.com/oslc-op/oslc-specs/blob/master/specs/sysml/KerML-Vocabulary-vocab.ttl> ;
+    dcterms:source <https://github.com/Systems-Modeling/SysML-v2-API-Services/tree/master/public/oslc/KerML-vocab.ttl> ;
     dcterms:title "OSLC KerML Vocabulary" ;
     vann:preferredNamespacePrefix "oslc_kerml" .
 
