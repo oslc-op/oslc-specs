@@ -270,8 +270,8 @@ services interface for validating links between OSLC resouces as they change ove
         A Link Validity Service would provide a way for client applications to set and obtain the validity status of a link. 
         Validity status can be valid, suspect or invalid. When setting a status, it may be set to valid or invalid. 
         When a validity status is set for a link by a client, it is stored along the content hashes of the respective resource ends. 
-        Content hashes represent a semantic state of a resource, factoring its all semantic properties. 
-        When a link validity status is queried, the content hashes of its respective ends (subject and object) are also provided.
+        Content hashes represent a semantic state of a resource, factoring all its semantic properties. 
+        When a link validity status is queried, the content hashes of its respective ends (subject and object) must be provided.
         The validity services looks up for a matching validity record, where the resource content hashes match those provided in the query. 
         If a matching status record is found, the stored status is returned. If no match is found, a suspect status is returned. 
         This behavior of the validity service manifests the idea that certain changes in resources may invalidate the semantics
@@ -308,7 +308,7 @@ services interface for validating links between OSLC resouces as they change ove
             A value associated with a link in context of its subject and object resources. The value can be valid, 
             invalid, or suspect.  
           </dd>
-          <dt>Resource content hash</dt>
+          <dt>Content hash</dt>
           <dd>
             A value associated with a resource that represents its semantic state, obtained by a hash function 
             applied on defined resource properties. Content hahes are calculated by the domain provider that owns the resource 
@@ -325,6 +325,12 @@ services interface for validating links between OSLC resouces as they change ove
               <li>The user id of the person that created the record</li>
               <li>A user comment for the validity update </li>
           </ul>
+          </dd>
+          <dt>Profile identifier</dt>
+          <dd>
+            A validity profile identifier is used to qualify validity records for a certain context. For example two projects 
+            may use different validity criteria, and the profile qualifier can be used to seprate validity settings done 
+            in the context of a specific project, not to interfere with records set in the context of another project.  
           </dd>
         </dl>
       </section>
@@ -497,9 +503,9 @@ services interface for validating links between OSLC resouces as they change ove
         LVS clients inquire for links statuses related to a link predicate, subject resource hash and object resource hash, 
         typically owned and/or visualized by the client.
         It is also possible to provide the subject and object concept URIs for safeguarding the hash based matching. 
-        Another optional parameter is a profile idetifier, that alows to qualify validity records for specific contexts.
-        The link validity status inquiry is exposed under the get-validity-status path as described in the open-API section
-        below. Link validity inquiry is a bulk operation, allowing an inquiry on multiple links. The inquiry is realized as a post request, with a body that consists of a 
+        Another optional parameter is a profile identifier, that allows to qualify validity records for specific contexts.
+        The link validity status inquiry is exposed under the get-validity-status path as described in the open-API annex. 
+        Link validity inquiry is a bulk operation, allowing an inquiry on multiple links. The inquiry is realized as a post request, with a body that consists of a 
         set of RDF triples for each requested link, each one contains:
       </p>
       <ul>
@@ -507,15 +513,17 @@ services interface for validating links between OSLC resouces as they change ove
           Link predicate URI: A URI that identifies the link predicate
         </li>
         <li>Subject content hash: A string which is the value of the link subject resource content hash</li>
-        <li>Subject concept URI (optional): The concept URI of the subject provided for safegurding the validity match </li>
+        <li>Subject concept URI (optional): The concept URI of the subject provided for safegurding the matching 
+             of the validity record in terms of uniqueness </li>
         <li>Object content hash: A string which is the value of the link object resource content hash</li>
-        <li> Object concept URI (optional): The concept URI of the object provided for safegurding the validity match </li>
-        <li> Profile (optional): An identifier that qualifies certain validity records </li>
+        <li> Object concept URI (optional): The concept URI of the object provided for safegurding safegurding the matching 
+          of the validity record in terms of uniqueness </li>
+        <li> Profile (optional): An profile identifier that qualifies certain validity records </li>
       </ul>
 
-      <p> Link validity inquiry response return a set of RDF triples for each link status </p>
+      <p> Link validity inquiry response return a set of RDF triples for each most recent matching validity record </p>
         <ul>
-        <li>Link Predicate URI: Uri identifier of the link predicate</li>
+        <li>Link Predicate URI</li>
         <li>Subject content hash</li>
         <li>Object content hash </li>
         <li>Link validity status: a string which one of "valid", "suspect", "invalid" </li>
@@ -525,8 +533,8 @@ services interface for validating links between OSLC resouces as they change ove
         </p>
         <ul>
         <li>Last status update: a datetime of the status update </li>
-        <li>Last modified by: a uuid of the user </li>
-        <li>user note: a text string attached to the recent status update</li>
+        <li>Last modified by: an identifier of the user </li>
+        <li>User note: an optional text attached to the validity record</li>
       </ul>
       <pre class="example">
         POST http://lvs.example.com:8080/
@@ -576,8 +584,9 @@ services interface for validating links between OSLC resouces as they change ove
       <p>
         Setting a link validity status of a link refers to a link predicate, subject resource and object resource,  
         typically owned and/or visualized by the client. 
-        Setting a link validyty status is exposed under the set-validity-status path as described in the open-API section
-        below. For the setting link validity status of a link, the client provides the following papameters 
+        Setting a link validity status is exposed under the set-validity-status path as described in the open-API annex. 
+        The link validity record shall be stored by the LVS server. For setting link validity status the client provides 
+        the following papameters 
       </p>
       <ul>
         <li>
@@ -590,9 +599,12 @@ services interface for validating links between OSLC resouces as they change ove
         <li>Subject concept URI: Concept URI of the subject resource</li>
         <li>Object concept URI: Concept URI of the object resource </li>
         <li> (optional) Profile: An additional identifier to associate validity records with a certain context </li>
-        <li> (optional) Last modified by: a uuid of the user </li>
-        <li> (optional) note: a text string attached to the recent status update</li>
+        <li> (optional) Last modified by: an identifier of the user who created the validity record</li>
+        <li> (optional) User note: a text attached to the validity record</li>
       </ul>
+      <p>
+        A client may set validity records for multiple links in a single post message
+      </p>
       
       <pre class="example">
         POST http://lvs.example.com:8080/
@@ -617,8 +629,7 @@ services interface for validating links between OSLC resouces as they change ove
     </section>
     <h3>geting a resource hash from a provider</h3>
       <p>
-        getting a resource hash is a request that needs to be supported by domain resource providers conforming to 
-        link validity. Get-resource-hash is a simple get request on a concept resource uri, with a "hash" message header 
+        Resource providers that support LVS shall include the resource hash on any resource get request.  
       </p>
   </body>
 </html>
