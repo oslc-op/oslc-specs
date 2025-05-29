@@ -19,7 +19,7 @@ The profiles should be based on accumulated practice. Since IBM ELM has the long
 ## The Problem
 The fundamental set of interoperability use cases in the context of OSLC linked data architecture describe cross linking across lifecycle resources and domain providers. Cross linking forms the foundation for “digital continuity” and establishment of “digital threads”. Using linking profiles guarantees a set of use cases across providers implemented by different software vendors.
 
-When originally developed, the OSLC specifications (Core, GCM) were purposefully kept general avoiding over-prescription.  The intent was to allow a considerable degree of implementation variability to speed vendor adoption as well as let adopting vendors identify areas (though their adoption) that needed more prescription.by. This is reflected in the minimal set of mandatory (“must”) services , and rest that are only recommended (“should”). 
+When originally developed, the OSLC specifications (Core, GCM) were purposefully kept general avoiding over-prescription.  The intent was to allow a considerable degree of implementation variability to speed vendor adoption as well as let adopting vendors identify areas (though their adoption) that needed more prescription. This is reflected in the minimal set of mandatory (“must”) services , and rest that are only recommended (“should”). 
 
 The goal of interoperability across different vendor OSLC specification implementations requires peer to peer testing and adjustments to satisfy certain common interoperability use cases. Also, implementors complain that practically implementing interoperable OSLC providers or consumers is very time consuming and requires lots of discovery, trial and error.  Additionally, when vendors label  their applications as “OSLC compliant”, the possible implementation variability makes that label definition very broad becoming difficult for end users to know for certain what aspects of interoperability exist. 
 
@@ -104,6 +104,10 @@ Many OSLC links have an incoming and outgoing sides, determined by the role of t
 
 Note the creation of the link can be initiated by both providers. In case that the link is initiated by the incoming side provider, it needs to store it with the resource on the outgoing side provider. This is discussed in the PUT on Resources section. In addition, for historical reasons, certain OSLC providers, such as IBM ELM, may have some variations of behaviors between configuration enabled and non-configuration enabled modes, where in non-configuration modes there may still be a usage of backlink storage. In addition, providers do not support configurations such as CM (change management providers) would have preference for link storage over configuration enabled providers, to prevent baselined links to refer to mutable entities.
 
+Link ownership may also depend on the order in which links are typically created. That is, for a link to be created, the source and target resources must exist or be created. In typical usage scenarios, the source or subject resource will exist first. A user selects the subject resource and invokes an operation to create a link with a chosen link type. The user will then either use an OSLC Selection Dialog to select an existing target resource, or use an OSLC Creation Dialog to create a new target resource to complete the creation of the link. For example, if an organization is using a requirements-driven methodology, the requirements are often created first, and later on linked to validating test cases. In this case, the QM sever would typically own the validatesRequirement link because the requirement most likely already exists when creating the link. A test-driven methodology might take the opposite approach. 
+
+To facilitate OSLC linking, it is necessary to establish consistent relationships between related link types such as validatedBy and validatesRequirement, where these links are stored, and how the link from the other direction is accessed.
+
 Based on these principles and conventions, the Linking Profile establishes specific ownership for OSLC link properties.
 
 | Source/Owner domain |	Primary predicate	| Target domain | Secondary predicate |
@@ -159,4 +163,10 @@ example text
 # Contribute links to TRS
 
 # OSLC Link Discovery service {.informative}
+
+Users should typically not be aware of where links are stored, and should be able to create links from either direction in a transparent way. For primary links the server owns, the server can easily create, store, access, navigate and display these links. However, for secondary link, the information is stored in a different server, and to display them, a server would need to access incoming links, the links for which its resource is the source of the link. 
+
+Servers can use OSLC query as a standard means of requesting incoming links. However, this does not scale well when a server has to access incoming links from many other servers. 
+
+OSLC defines a [Link Discovery Management specification](https://docs.oasis-open-projects.org/oslc-op/ldm/v1.0/psd02/link-discovery-management-spec.html) as a standard means of accessinig incoming versioned or unversioned links. Bi-Directional, Config and Full link profiles must support the LDM specification. 
 
