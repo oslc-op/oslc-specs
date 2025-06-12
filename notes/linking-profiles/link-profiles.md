@@ -286,3 +286,9 @@ But implementing the linking profiles does not restrict severs to follow specifi
 
 So link ownership, or where links are stored, can be transparent to users, while being predicatable for different server implementations to ensure consistent integrations of versioned links across OSLC domains and servers.
 
+Users should typically not be aware of where links are stored, and should be able to create links from either direction in a transparent way. For primary links the server owns, the server can easily create, store, access, navigate and display these links. However, for secondary link, the information is stored in a different server, and to display them, a server would need to access incoming links, the links for which its resource is the source of the link. 
+
+Servers can use OSLC query as a standard means of requesting incoming links. However, this does not scale well when a server has to access incoming links from many other servers. 
+
+OSLC defines a [Link Discovery Management specification](https://docs.oasis-open-projects.org/oslc-op/ldm/v1.0/psd02/link-discovery-management-spec.html) as a standard means of accessinig incoming versioned or unversioned links. Bi-Directional, Config and Full link profiles must support the LDM specification. 
+
