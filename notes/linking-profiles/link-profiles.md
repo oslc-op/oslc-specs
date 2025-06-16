@@ -14,9 +14,7 @@ The introduction of the linking profile helps users qualify whether two OSLC app
 The linking profiles specify 4 (3+1 future) levels of conformance. Each aims at certain implementation level and set of linking use cases, and can also be considered as “OSLC maturity levels”. 
 The profiles are based on common practice. Since IBM ELM has the longest and broadest OSLC integration adoptions  of OSLC integrations, IBM ELM is used as a baseline for spec variability choices, so the profiles will ensure ELM linking interoperability. However, the profiles are meant provide an interoperability baseline to any other vendor and future interoperability related or unrelated to IBM OSLC applications. 
 
-# Motivation
-
-## The Problem
+## Motivation
 The fundamental set of interoperability use cases in the context of OSLC linked data architecture describe cross linking across lifecycle resources and domain providers. Cross linking forms the foundation for “digital continuity” and establishment of “digital threads”. Using linking profiles guarantees a set of use cases across providers implemented by different software vendors.
 
 When originally developed, the OSLC specifications (Core, RM, CM, QM, AM, GCM) were purposefully kept general avoiding over-prescription.  The intent was to allow a considerable degree of implementation variability to speed vendor adoption as well as let adopting vendors identify areas (though their adoption) that needed more prescription.by. This is reflected in the minimal set of mandatory (“MUST”) services , and rest that are only recommended (“SHOULD”) or optional ("MAY"). 
@@ -34,29 +32,56 @@ To enable server implementation flexibility with more predicable variability, th
 1. The need to maintain bi-directional navigability or not
 2. Usage of configuration management by the provider or not
 
-Based on that we aim to specify 3+1 profile conformance levels as follows:
+# Linking Profile Conformance Levels
 
-1. **Basic**: focuses on establishing links to a provider, without bi-directional navigation. The main objective of this profile is to establish proper connection with an OSLC server by a client and obtaining a resource selection or creation delegated dialog. The challenges related to the basic profile are around establishing OSLC connection with a provider with proper authentication and discovery of services.
-2. **Bi-directional**: this profile extends the capabilities of the Basic profile, but in addition it should result in by-directional navigation across the two OSLC applications. This profile extends the Basic profile to specify where a link is stored, and how the other application can discover incoming links. The issues related to this profile are around link storage, discovery, and OSLC query.
-3. **Config management Linking**: Linking across configuration management enabled OSLC servers. This profile extends the Bi-directional profile with additional guidance in case of the OSLC server enables OSLC configuration management. 
-4. **Full**: This profile extends the Bi-Directional or Config management Linking profiles with a Link Discovery Management server to standardize and optimize access to incoming links. 
+The integration challenges described above result from the amount of server implementation variability allowed by the OSLC specification, through the MAY and SHOULD conformance clauses. To simplify and improve interoperability across OSLC applications, while maintaining levels of variability that have been shown to be useful and effective in practice, the Linking Profile introduces the following conformance levels. Each level defines which capabilities are necessary to support the integration services specified for that level. This ensures that tools that advertise conformance to a Linking Profile level will have a predecitable, minimal viable set of capabilities that other clients and servers can rely on. 
 
-### Solution Capability Matrix
+## Basic Linking Profile
+
+The **Basic**: Focuses on establishing links to a provider, without bi-directional navigation. The main objective of this profile is to establish proper connection with a provider by a consumer and obtaining a resource selection UI. The challenges related to the basic profile are around establishing OSLC connection with a provider with proper authentication and discovery of services.
+
+For the Basic RM/AM/QM/CM Linking profile 3,0, a user needs to be able to make a link from inside the web interface of Tool A to an RM/AM/QM/CM resource inside Tool B. The user does not have a link to the resource in advance. Instead, the user shall be able to pick a resource when establishing a link. After selecting the resource, Tool A shall store the link to the resource and display the link title and icon.
+
+## Bi-directional Linking Profile
+
+The **Bi-directional**: profile extends the capabilities of the Basic profile, with the ability to have by-directional navigation across the two applications, and the ability to preview linked resources in different applications. 
+
+For the Bidirectional RM/AM/QM/CM Linking profile 3.0, a user needs to be able to make a link from inside the web interface of Tool A to an RM/AM/QM/CM resource inside Tool B. The user does not have a link to the resource in advance. Instead, the user shall be able to pick a resource when establishing a link. After selecting the resource, the link is either stored in Tool A and/or in Tool B depending on the domain model requirements or how the tools support primary and secondary links. When a user navigates to one of the linked resources in a tool that does not store the link, the backlink or secondary link is shown.
+
+Additionally, when the user of the Tool A hovers over a link to the resource, a preview dialog is shown next to the link.
+
+## Configuration Management Linking Profile
+
+The **Config management Linking**: extends the Bi-directional linking profile with support for linking across configuration management enabled OSLC providers. This profile clarifies where a physical link is actually stored, and how the non-storing application can discover incoming links. The issues related to this profile are around link storage, discovery, and OSLC query.
+
+For the Configuration-aware RM/AM/QM/CM Linking profile 3.0, the Bidirectional RM/AM/QM/CM Linking profile 3.0 applies. Additionally, both tools are configured with OSLC Configuration Management enabled.
+
+Additionally, when the user of the Tool A hovers over a link to the resource, the preview dialog is shown next to the link and displays correct information for the configuration context chosen.
+
+## Link Discovery Linking Profile
+
+The **Link Discovery**: profile extends the Configuration Management Linking Profile with a link discovery service for accessing incoming links.
+
+For the Link Discovery RM/AM/QM/CM Linking profile 3.0, the Configuration-aware RM/AM/QM/CM Linking profile 3.0 applies. Additionally, Additionally, all tools contribute outgoing links to a Link Discovery Management server, and get all incoming links from a Link Discovery Management server.
+
+
+
+# Solution Capability Matrix
 
 The following table summarizes the OSLC capabilities for each of the profiles. 
 
-| Capability | Basic | Bi-Directional | Config | Full |
+| Capability | Basic | Bi-Directional | Config | Link Discovery |
 | ---------- | ----- | -------------- | ------ | ---- |
 | Root Services document | MUST | MUST | MUST | MUST |
-| CSP for friends        | SHOULD | SHOULD | SHOULD | SHOULD |
-| CORS for friends       | SHOULD | SHOULD | SHOULD | MUST |
+| CSP for friends        | MUST | MUST | MUST | MUST |
+| CORS for friends       | MUST | MUST | MUST | MUST |
 | Selection Dialogs      | MUST | MUST | MUST | MUST |
-| Preview Dialogs        | SHOULD | SHOULD | SHOULD | SHOULD |
-| Link Ownership         | | SHOULD | MUST | MUST | 
+| Preview Dialogs        |  | MUST | MUST | MUST |
+| Link Ownership         | |  | MUST | MUST | 
 | PUT on Resources       | | MUST | MUST | MUST |
-| OSLC Query             | | SHOULD | SHOULD | SHOULD |
+| OSLC Query             | |  | MUST | MUST |
 | Config Management       | | | MUST | MUST  |
-| OSLC Link Discovery Service  | | | SHOULD | MUST  |
+| OSLC Link Discovery Service  | | |  | MUST  |
 
 
 The sections below provide details for each profile capability including:
@@ -162,11 +187,11 @@ For automated interactions (e.g., CI/CD pipelines, federated OSLC servers), OSLC
 # CSP for friends
 | Capability | Basic | Bi-Directional | Config | Full |
 | ---------- | ----- | -------------- | ------ | ---- |
-| CSP for friends    | SHOULD | SHOULD | SHOULD | SHOULD |
+| CSP for friends    | MUST | MUST | MUST | MUST |
 
 [Content Security Policy (CSP)](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://content-security-policy.com/&ved=2ahUKEwjDmf3GxNqNAxX-D1kFHab1EAMQFnoECEQQAQ&usg=AOvVaw2oIfjyedgjLbPNakcjhuw5) is a web security standard that helps protect against cross-site scripting (XSS) and other code injection attacks. It works by giving website developers control over which resources (scripts, images, etc.) the browser is allowed to load and execute for a given page. By whitelisting trusted sources, CSP helps prevent browsers from loading malicious or untrusted content, even if a user has been tricked into visiting a compromised website. 
 
-<span class="conformance">An OSLC Server SHOULD support the CSP Content-Security-Policy HTTP response header so that modern browsers can use it to enhance the security of the HTTP entity response resource.</span> The Content-Security-Policy header allows servers to restrict which resources (such as JavaScript, CSS, Images, etc.) can be loaded, and the URLs that they can be loaded from.
+<span class="conformance">An OSLC Server MUST support the CSP Content-Security-Policy HTTP response header so that modern browsers can use it to enhance the security of the HTTP entity response resource.</span> The Content-Security-Policy header allows servers to restrict which resources (such as JavaScript, CSS, Images, etc.) can be loaded, and the URLs that they can be loaded from.
 
 For example, this response header:
 ```
@@ -198,7 +223,7 @@ CORS provide a means for clients and servers to control the Same-Origin Policy t
 
 | Capability | Basic | Bi-Directional | Config | Full |
 | ---------- | ----- | -------------- | ------ | ---- |
-| Link Ownership         | | SHOULD | MUST | MUST | 
+| Link Ownership         | |  | MUST | MUST | 
 
 
 In bi-dirctional linking scenarios both OSLC participants are aware of links across their owned resources and enable link visibility and navigation on each side. In the Bi-Directional profile, OSLC Servers can support bi-directional links, links in the form of (source, primary-predicate, target) and {target, secondary-predicate, source) however they wish. This could be done for example by storing backlinks, or using queries to get links. However, storing a link and a backlink at both sides does not follow [OSLC Link Guidance](https://docs.oasis-open-projects.org/oslc-op/link-guidance/v1.0/pn01/link-guidance.html) as it is essentially replication of data. This may result in inconsistencies as links are updated or deleted, since maintaining consistency requires synchronization across the providers on any update. Therefore the recommended practice is to store links on one of the participants, and use link discovery by the other participant. Therefore there needs to be an agreed convention on which side should store the link. 
@@ -207,7 +232,7 @@ Many OSLC links have an incoming and outgoing sides, determined by the direction
 
 Note the creation of the link can be initiated from the OSLC server at either end of the link. In case that the link is initiated by the incoming side provider, it needs to store it with the resource on the outgoing side provider. This is discussed in the PUT on Resources section. In addition, for historical reasons, certain OSLC providers, such as IBM ELM, may have some variations of behaviors between configuration enabled and non-configuration enabled modes, where in non-configuration modes there may still be a usage of backlink storage. In addition, providers do not support OSLC versioned resources such as CM (change management servers) would have preference for link storage over configuration enabled providers, to prevent baselined links to refer to mutable entities.
 
-Based on these principles and conventions, the Linking Profile establishes specific ownership for OSLC link properties. <span class="conformance">OSLC Servers conforming to the Bi-Directional linking pofile SHOULD store primary predicate links on the source/owner domain side as descirbed in the following table.</scan> <span class="conformance">OSLC Servers conforming to the Config or Full linking pofiles MUST store primary predicate links on the source/owner domain side.</scan>
+Based on these principles and conventions, the Linking Profile establishes specific ownership for OSLC link properties. <span class="conformance">OSLC Servers conforming to the Bi-Directional linking pofile should store primary predicate links on the source/owner domain side as descirbed in the following table.</scan> <span class="conformance">OSLC Servers conforming to the Config or Full linking pofiles MUST store primary predicate links on the source/owner domain side.</scan>
 
 | Source/Owner domain |	Primary predicate	| Target domain | Secondary predicate |
 -------------------------|----------------------|---------------|---------------------
@@ -249,16 +274,16 @@ Based on these principles and conventions, the Linking Profile establishes speci
 # Preview Dialogs 
 | Capability | Basic | Bi-Directional | Config | Full |
 | ---------- | ----- | -------------- | ------ | ---- |
-| Preview Dialogs   | SHOULD | SHOULD | SHOULD | SHOULD |
+| Preview Dialogs   |  | MUST | MUST | MUST |
 
-<span class="conformance">An OSLC Server SHOULD support OSLC Resource Preview to allow applications to preview resources across links.</span>
+<span class="conformance">An OSLC Server MUST support OSLC Resource Preview to allow applications to preview resources across links.</span>
 
 # OSLC Query
 | Capability | Basic | Bi-Directional | Config | Full |
 | ---------- | ----- | -------------- | ------ | ---- |
-| OSLC Query             | | SHOULD | SHOULD | SHOULD |
+| OSLC Query             | |  | MUST | MUST |
 
-<span class="conformance">An OSLC Server SHOULD support OSLC Query, minimally the oslc.select with nested properties, and oslc.where clauses.</span> This allows OSLC Clients and Servers to have a standard means of querying links and accessing information about linked resources. 
+<span class="conformance">An OSLC Server MUST support OSLC Query, minimally the oslc.select with nested properties, and oslc.where clauses.</span> This allows OSLC Clients and Servers to have a standard means of querying links and accessing information about linked resources. 
 
 # Configuration Management
 
@@ -272,7 +297,7 @@ Based on these principles and conventions, the Linking Profile establishes speci
 
 | Capability | Basic | Bi-Directional | Config | Full |
 | ---------- | ----- | -------------- | ------ | ---- |
-| OSLC Link Discovery Management  | | | SHOULD | MUST  |
+| OSLC Link Discovery Management  | | |  | MUST  |
 
 The Full linking profile introduces a standard means for accessing incoming and optionally, outgoing links. This extends the Config linking profile to provide predictable, high performance, reliable versioned link creation, update and navigation in a distributed environment consisting of federated servers supporting different lifecycle domains. <span class="conformancer">OSLC Servers supporting the Full linking profile MUST support the [OSLC Link Discovery Management Server version 1.0](https://open-services.net/spec/ldm/latest).</span>
 
