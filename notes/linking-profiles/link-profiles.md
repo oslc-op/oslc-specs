@@ -73,6 +73,8 @@ The following table summarizes the OSLC capabilities for each of the profiles.
 | Capability | Basic | Bi-Directional | Config | Link Discovery |
 | ---------- | ----- | -------------- | ------ | ---- |
 | Root Services document | MUST | MUST | MUST | MUST |
+| OIDC Authentication | MUST | MUST | MUST | MUST |
+| OAuth 2.0 Authorization | MUST | MUST | MUST | MUST |
 | CSP for friends        | MUST | MUST | MUST | MUST |
 | CORS for friends       | MUST | MUST | MUST | MUST |
 | Selection Dialogs      | MUST | MUST | MUST | MUST |
@@ -108,11 +110,19 @@ OSLC Core, section [4.2 Well-known URI Bootstrapping](https://docs.oasis-open-pr
 
 # Authentication 
 
+| Capability | Basic | Bi-Directional | Config | Link Discovery |
+| ---------- | ----- | -------------- | ------ | ---- |
+| OIDC Authentication | MUST | MUST | MUST | MUST |
+| OAuth 2.0 Authorization | MUST | MUST | MUST | MUST |
+
 [OSLC Core Version 3.0. Part 1: Overview](https://open-services.net/spec/core/latest) recommends specific approaches for authentication and secure communication between clients and servers, as well as between servers. These align with the industry best practices for RESTful APIs and linked data at the time the OSLC Core specification was developed. 
 
 However, the OSLC Core authentication recommendations have proven to be insufficiently specific to facilitiate secure integration scenarios that required authentication and authorization. As a result, a signifiant barrier developing and using OSLC integrations has been establishing authentication and authorization. Since OSLC Core was developed, the IT industry has focused a lot more concern and effort on security. The following specific recommendation are for the linking profiles tighten the OSLC Core recommendations based on current industry best practices. 
 
 ## Client-to-Server Authentication
+
+<p class="conformance">OSLC servers MUST support OpenID Connect for client to server authentication and authorization.</p>
+
 OSLC suggests using **standard HTTP-based authentication mechanisms** to ensure secure access to RESTful services. OSLC Clients should be prepared to handle authentication challenges from the recommended methods including:
 
 ### OAuth 2.0 (Preferred)
@@ -144,14 +154,10 @@ OSLC suggests using **standard HTTP-based authentication mechanisms** to ensure 
    - Both client and server authenticate via X.509 certificates.  
 
 ## Server-to-Server Authentication
-For automated interactions (e.g., CI/CD pipelines, federated OSLC servers), OSLC recommends:
 
-### OAuth 2.0 Client Credentials Flow
-   - **Use Case:** Machine-to-machine (M2M) communication.  
-   - **How it Works:**  
-     1. Servers register as OAuth clients and obtain a `client_id` + `client_secret`.  
-     2. They request an access token using these credentials.  
-     3. Token is used in API requests (`Authorization: Bearer <token>`).  
+<p class="conformance">OSLC servers MUST support OAuth 2.0 for server to server authorization.</p>
+
+For automated interactions (e.g., CI/CD pipelines, federated OSLC servers), OSLC recommends:
 
 ### OAuth 2.0 Client Credentials Flow
    - **Use Case:** Machine-to-machine (M2M) communication.  
@@ -263,6 +269,27 @@ Based on these principles and conventions, the Linking Profile establishes speci
 | AM	|   jazz_am:refine	|   oslc:Any	|   -unspecified- |
 | AM	|   jazz_am:satisfy	|   oslc:Any	|   -unspecified- |
 | AM	|   jazz_am:trace	|   oslc:Any	|   -unspecified- |
+
+All links are directional from source to target e.g., Requirement testedBy TestCase, TestCase validates Requirement.
+OSLC does not define inverse links, however, links are often paired using active/passive names as in implements/implementedBy, validates/testedBy, etc. 
+
+There is some interest in extending OSLC ResourceShapes to formalize these active/passive relationships between link types so their property URLs and titles can be discovered in a standard way.
+
+Links have to be created between existing source and target resources (the targets either already exist and are selected, or are created before the link is created).
+
+Links are only stored in the source resource on one side (usually the active side) of related link types. The "inverse" or incoming link is typically displayed, but is obtained through a query rather than being stored. This avoids storing redundant data that can lead to update anomalies. 
+
+By convention, links are stored on the "downstream" side, i.e., the resource that is created later in the lifecycle. This ensures that both the source and target of the link are likely to exist when the link is created. For example, in Requirements-Driven-Development, requirements are created first, and then later in the lifecycle, test cases are created that validate the requirements. When the test case is created, the requirement will most likely already exist, so the link is stored in the downstream test case source as TestCase validates Requirement. 
+
+Note however that if an organization used Test-Driven-Development, test cases are often created first, representing an executable expression of a requirement that might be identified and refined later. So the convention to store RM/QM links on the QM side is not always ideal, but 
+does provide consistency that improves and simplifies overall tool integration.
+
+Storing related links on only one side is also necessary when using configuration management since it must be possible to create a link from a source to a target resource without changing the  target resource version (it could be in a baseline). 
+
+For example, the requirements for a project may have already been created and baselined before test cases are created. Then when the test cases are created, they can be linked to the requirement they validate without changing the requirement. 
+
+Similarly, a versioned resource cannot store links to unversioned resources because it would be impossible to create an immutable baseline of such a resource since the target unverioned resource could changed or deleted, indirectly modifying an immutable source resource.
+
 
 
 # PUT on Resources

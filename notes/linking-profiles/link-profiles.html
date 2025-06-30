@@ -356,6 +356,20 @@ domains, and heterogenious domain providers.</p>
     <td>MUST</td>
     </tr>
     <tr>
+    <td>OIDC Authentication</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr>
+    <td>OAuth 2.0 Authorization</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr>
     <td>CSP for friends</td>
     <td>MUST</td>
     <td>MUST</td>
@@ -475,6 +489,33 @@ domains, and heterogenious domain providers.</p>
     </section>
     <section id="authentication" class="level1">
     <h1>Authentication</h1>
+    <table>
+    <thead>
+    <tr>
+    <th>Capability</th>
+    <th>Basic</th>
+    <th>Bi-Directional</th>
+    <th>Config</th>
+    <th>Link Discovery</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>OIDC Authentication</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr>
+    <td>OAuth 2.0 Authorization</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    </tbody>
+    </table>
     <p><a href="https://open-services.net/spec/core/latest">OSLC Core
     Version 3.0. Part 1: Overview</a> recommends specific approaches for
     authentication and secure communication between clients and servers,
@@ -492,6 +533,10 @@ domains, and heterogenious domain providers.</p>
     on current industry best practices.</p>
     <section id="client-to-server-authentication" class="level2">
     <h2>Client-to-Server Authentication</h2>
+    <p class="conformance">
+    OSLC servers MUST support OpenID Connect for client to server
+    authentication and authorization.
+    </p>
     <p>OSLC suggests using <strong>standard HTTP-based authentication
     mechanisms</strong> to ensure secure access to RESTful services.
     OSLC Clients should be prepared to handle authentication challenges
@@ -571,27 +616,13 @@ domains, and heterogenious domain providers.</p>
     </section>
     <section id="server-to-server-authentication" class="level2">
     <h2>Server-to-Server Authentication</h2>
+    <p class="conformance">
+    OSLC servers MUST support OAuth 2.0 for server to server
+    authorization.
+    </p>
     <p>For automated interactions (e.g., CI/CD pipelines, federated OSLC
     servers), OSLC recommends:</p>
     <section id="oauth-2.0-client-credentials-flow" class="level3">
-    <h3>OAuth 2.0 Client Credentials Flow</h3>
-    <ul>
-    <li><strong>Use Case:</strong> Machine-to-machine (M2M)
-    communication.<br />
-    </li>
-    <li><strong>How it Works:</strong>
-    <ol type="1">
-    <li>Servers register as OAuth clients and obtain a
-    <code>client_id</code> + <code>client_secret</code>.<br />
-    </li>
-    <li>They request an access token using these credentials.<br />
-    </li>
-    <li>Token is used in API requests
-    (<code>Authorization: Bearer &lt;token&gt;</code>).</li>
-    </ol></li>
-    </ul>
-    </section>
-    <section id="oauth-2.0-client-credentials-flow-1" class="level3">
     <h3>OAuth 2.0 Client Credentials Flow</h3>
     <ul>
     <li><strong>Use Case:</strong> Machine-to-machine (M2M)
@@ -1011,6 +1042,51 @@ domains, and heterogenious domain providers.</p>
     </tr>
     </tbody>
     </table>
+    <p>All links are directional from source to target e.g., Requirement
+    testedBy TestCase, TestCase validates Requirement. OSLC does not
+    define inverse links, however, links are often paired using
+    active/passive names as in implements/implementedBy,
+    validates/testedBy, etc.</p>
+    <p>There is some interest in extending OSLC ResourceShapes to
+    formalize these active/passive relationships between link types so
+    their property URLs and titles can be discovered in a standard
+    way.</p>
+    <p>Links have to be created between existing source and target
+    resources (the targets either already exist and are selected, or are
+    created before the link is created).</p>
+    <p>Links are only stored in the source resource on one side (usually
+    the active side) of related link types. The “inverse” or incoming
+    link is typically displayed, but is obtained through a query rather
+    than being stored. This avoids storing redundant data that can lead
+    to update anomalies.</p>
+    <p>By convention, links are stored on the “downstream” side, i.e.,
+    the resource that is created later in the lifecycle. This ensures
+    that both the source and target of the link are likely to exist when
+    the link is created. For example, in
+    Requirements-Driven-Development, requirements are created first, and
+    then later in the lifecycle, test cases are created that validate
+    the requirements. When the test case is created, the requirement
+    will most likely already exist, so the link is stored in the
+    downstream test case source as TestCase validates Requirement.</p>
+    <p>Note however that if an organization used
+    Test-Driven-Development, test cases are often created first,
+    representing an executable expression of a requirement that might be
+    identified and refined later. So the convention to store RM/QM links
+    on the QM side is not always ideal, but does provide consistency
+    that improves and simplifies overall tool integration.</p>
+    <p>Storing related links on only one side is also necessary when
+    using configuration management since it must be possible to create a
+    link from a source to a target resource without changing the target
+    resource version (it could be in a baseline).</p>
+    <p>For example, the requirements for a project may have already been
+    created and baselined before test cases are created. Then when the
+    test cases are created, they can be linked to the requirement they
+    validate without changing the requirement.</p>
+    <p>Similarly, a versioned resource cannot store links to unversioned
+    resources because it would be impossible to create an immutable
+    baseline of such a resource since the target unverioned resource
+    could changed or deleted, indirectly modifying an immutable source
+    resource.</p>
     </section>
     <section id="put-on-resources" class="level1">
     <h1>PUT on Resources</h1>
