@@ -498,6 +498,13 @@ services interface for validating links between OSLC resouces as they change ove
 
     <section id="description">
       <h2>Link Validity Service Description</h2>
+      <h3>general</h3>
+      <p>
+        LVS server maintains the validity status of OSLC links. It stores a set of validity records that relate to links 
+        across resources in certain states. The resource states are represented by resource hashes. 
+        LVS support two requests: (i) link status inquiry (ii) creating new validity records 
+        The requests are detailed below
+      </p>
       <h3>Links status inquiry</h3>
       <p>
         LVS clients inquire for links statuses related to a link predicate, subject resource hash and object resource hash, 
@@ -505,9 +512,16 @@ services interface for validating links between OSLC resouces as they change ove
         It is also possible to provide the subject and object concept URIs for safeguarding the hash based matching. 
         Another optional parameter is a profile identifier, that allows to qualify validity records for specific contexts.
         The link validity status inquiry is exposed under the get-validity-status path as described in the open-API annex. 
-        Link validity inquiry is a bulk operation, allowing an inquiry on multiple links. The inquiry is realized as a post request, with a body that consists of a 
-        set of RDF triples for each requested link, each one contains:
       </p>
+      <p> How is the validity status request processed:</p>
+      <ul>
+      <li>The LVS server maintains a database of validty records each contains the source and target concept URIs, hash values link type URL, and current validity status.</li>
+      <li>The POST to LVS takes a list of link assertions with their current hash values, and looks up to find a matching validity record</li>
+      <li>If the source and target concept URIs and hashes match for the assertion, then the link validity status stored by LVS is returned.</li>
+      <li>If the source and target concept URIs and hashes don't match for the assertion, then a 'suspect' status is returned</li> 
+      </ul>
+      Link validity inquiry is a bulk operation, allowing an inquiry on multiple links. The inquiry is realized as a post request, with a body that consists of a 
+        set of RDF triples for each requested link, each one contains:
       <ul>
         <li>
           Link predicate URI: A URI that identifies the link predicate
@@ -537,7 +551,7 @@ services interface for validating links between OSLC resouces as they change ove
         <li>User note: an optional text attached to the validity record</li>
       </ul>
       <pre class="example">
-        POST http://lvs.example.com:8080/
+        POST http://lvs.example.com:8080/get-validity-status
         Content-Type: text/turtle
          
         @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
@@ -567,16 +581,20 @@ services interface for validating links between OSLC resouces as they change ove
           @prefix dcterms: &lt;http://purl.org/dc/terms/&gt; .
           @prefix oslc_lvs: &lt;http://open-services/net/ns/lvs#&gt;.
           
-          _:vr1 oslc_lvs:linkPredicate oslc_cm:implementsRequirement;
+          _:vr1 rdf:predicate oslc_cm:implementsRequirement;
+                rdf:subject &lt;http://example.com/am/am1URI&gt;
+                rdf:object &lt;http://example.com/rm/rm1URI&gt;
                 oslc_lvs:subjectHash "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824";
                 oslc_lvs:objectHash "c41c735bec96919551c6b653c3905d409945417932608469b8cb870566367332";
                 oslc_lvs: status "suspect".      
-          _:vr2 oslc_lvs:linkPredicate oslc_cm:satisfy;
+          _:vr2 rdf:predicate oslc_cm:satisfy;
+                rdf:subject &lt;http://example.com/cm/cm1URI&gt;
+                rdf:object &lt;http://example.com/rm/rm1URI&gt;
                 oslc_lvs:subjectHash "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824";
                 oslc_lvs:objectHash "c41c735bec96919551c6b653c3905d409945417932608469b8cb870566367332";
                 oslc_lvs:status "valid";
-                oslc_lvs:datetime "2025-02-26 13:10:29"
-                oslc_lvs:user_id "1007".
+                dcterms:modified  "2025-02-26 13:10:29"
+                dcterms:contributor  "1007".
           
           </pre>
 
@@ -607,7 +625,7 @@ services interface for validating links between OSLC resouces as they change ove
       </p>
       
       <pre class="example">
-        POST http://lvs.example.com:8080/
+        POST http://lvs.example.com:8080/set-validity-status
         Content-Type: text/turtle
         Configuration-Context: http://elm.example.com/gcm/baseline1URI
          
@@ -617,14 +635,14 @@ services interface for validating links between OSLC resouces as they change ove
         @prefix oslc_lvs: &lt;http://open-services/net/ns/lvs#&gt;.
                     
         _:l1 
-            oslc_lvs:linkPredicate oslc_rm:satisfy;
+            rdf:predicate linkPredicate oslc_rm:satisfy;
             oslc_lvs:subjectHash "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824";
-            oslc_lvs:subjectURI &lt;http://example.com/am/am1URI&gt;
+            rdf:subject &lt;http://example.com/am/am1URI&gt;
             oslc_lvs:objectHash "c41c735bec96919551c6b653c3905d409945417932608469b8cb870566367332";
-            oslc_lvs:objectURI &lt;http://elm.example.com/rm/req2URI&gt;
+            rdf:object &lt;http://elm.example.com/rm/req2URI&gt;
             oslc_lvs:status "invalid";
-            oslc_lvs:user_id "1007" ;
-            oslc_lvs:note "the element is inconsistent with the requirement"
+            dcterms:contributor "1007" ;
+            oslc:comment  "the element is inconsistent with the requirement"
 
     </section>
     <h3>geting a resource hash from a provider</h3>
