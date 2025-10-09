@@ -498,12 +498,11 @@ services interface for validating links between OSLC resouces as they change ove
 
     <section id="description">
       <h2>Link Validity Service Description</h2>
-      <h3>general</h3>
+      <h3>General</h3>
       <p>
         LVS server maintains the validity status of OSLC links. It stores a set of validity records that relate to links 
         across resources in certain states. The resource states are represented by resource hashes. 
-        LVS support two requests: (i) link status inquiry (ii) creating new validity records 
-        The requests are detailed below
+        LVS supports two requests: (i) link status inquiry (ii) creating new validity records. 
       </p>
       <h3>Links status inquiry</h3>
       <p>
@@ -648,6 +647,14 @@ services interface for validating links between OSLC resouces as they change ove
     <h3>geting a resource hash from a provider</h3>
       <p>
         Resource providers that support LVS shall include the resource hash on any resource get request.  
+      </p>
+    <h3>Inquiring a domain provider for which properties contribute to hash calculation</h3>
+      <p>
+        Resource providers that support LVS shall indicate as part of resource shapes which resource properties 
+        contribute to hash calculation. This might be useful for tools to check consistency across providers.
+        To do that a property &lt;oslc:contributesToHash&gt; of type boolean may be used as a resource shape property. 
+        If a resource shape property does not have a contributesToHash property, it is assumed as 'true'. In other words, 
+        unless otherwise indicated, a shape property is assumed to contribute to the Hash.     
       </p>
   </body>
 </html>
