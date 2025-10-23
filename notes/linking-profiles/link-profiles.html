@@ -6,8 +6,8 @@
     <meta name="description" content="Open Services for Lifecycle
 Collaboration (OSLC) Linking profiles are non-normative supplement to
 OSLC specifications that specify additional constraints on OSLC
-conformance clauses and vocabulary terms for a common purpose. The goal
-is to facilitate interoperability between OSLC enabled applications when
+conformance clauses and vocabulary terms to reduce variability and
+facilitate interoperability between OSLC enabled applications when
 linking across applications, domains, and heterogenious domain
 providers." />
 
@@ -73,23 +73,29 @@ providers." />
         chairs: [
           {
             name: "Jim Amsden",
-            mailto: "jamsden@us.ibm.com",
-            company: "IBM",
-            companyURL: "https://www.ibm.com/",
+            mailto: "j.amsden@mid.de",
+            company: "MID",
+            companyURL: "https://mid.de/en/",
           },
           {
             name: "Jad El-khoury",
-            mailto: "jad@kth.se",
-            company: "KTH Royal Institute of Technology",
-            companyURL: "https://www.kth.se/",
+            mailto: "jad.elkhoury@lynxwork.com",
+            company: "LYNXWORK",
+            companyURL: "https://lynxwork.com",
           },
         ],
         editors: [
           {
             name: "Eran Gery",
             mailto: "eran.gery@il.ibm.com",
-            company: "IBM",
-            companyURL: "https://www.ibm.com/",
+            company: "SodiusWillert",
+            companyURL: "https://www.sodiuswillert.com",
+          },
+          {
+            name: "Jm Amsden",
+            mailto: "j.amsden@mid.de",
+            company: "MID",
+            companyURL: "https://mid.de/en/",
           },
         ],
       };
@@ -139,9 +145,9 @@ providers." />
       <p>Open Services for Lifecycle Collaboration (OSLC) Linking
 profiles are non-normative supplement to OSLC specifications that
 specify additional constraints on OSLC conformance clauses and
-vocabulary terms for a common purpose. The goal is to facilitate
-interoperability between OSLC enabled applications when linking across
-applications, domains, and heterogenious domain providers.</p>
+vocabulary terms to reduce variability and facilitate interoperability
+between OSLC enabled applications when linking across applications,
+domains, and heterogenious domain providers.</p>
     </section>
 
     <section id="toc"></section>
@@ -163,7 +169,7 @@ applications, domains, and heterogenious domain providers.</p>
     from another vendor. A cross domain example would be a PLM BOM
     application establishing traceability links to a requirements
     application by a different vendor. The cross vendors emphasis is
-    because this is the context for interoperability challenges. Linking
+    because this is where there are interoperability challenges. Linking
     use cases may vary in capability as described later in this
     document, but all linking use cases require establishing connections
     between the resources in the consumer and provider applications,
@@ -173,40 +179,37 @@ applications, domains, and heterogenious domain providers.</p>
     the use cases related to bi-directional navigability (are both
     applications aware of the link) and also behaviors that depend if
     the application supports configuration management or not.</p>
-    <p>The introduction of the profile comes to help users qualify
-    whether two OSLC applications meet compatibility level to perform a
-    set of use OSLC linking cases, and software vendors on how to
-    build/consume OSLC linking related services that ensure
-    interoperability.</p>
+    <p>The introduction of the linking profile helps users qualify
+    whether two OSLC applications meet a compatibility level to perform
+    a set of OSLC linking use cases. The linking profile also helps
+    software vendors to know how to build/consume OSLC linking related
+    services that ensure interoperability.</p>
     <p>The linking profiles specify 4 (3+1 future) levels of
-    conformance, each aims at certain implementation level and set of
-    linking use cases, and can also be related to “OSLC maturity” usage.
-    The profiles should be based on accumulated practice. Since IBM ELM
+    conformance. Each aims at certain implementation level and set of
+    linking use cases, and can also be considered as “OSLC maturity
+    levels”. The profiles are based on common practice. Since IBM ELM
     has the longest and broadest OSLC integration adoptions of OSLC
     integrations, IBM ELM is used as a baseline for spec variability
     choices, so the profiles will ensure ELM linking interoperability.
     However, the profiles are meant provide an interoperability baseline
     to any other vendor and future interoperability related or unrelated
     to IBM OSLC applications.</p>
-    </section>
-    <section id="motivation" class="level1">
-    <h1>Motivation</h1>
-    <section id="the-problem" class="level2">
-    <h2>The Problem</h2>
+    <section id="motivation" class="level2">
+    <h2>Motivation</h2>
     <p>The fundamental set of interoperability use cases in the context
     of OSLC linked data architecture describe cross linking across
     lifecycle resources and domain providers. Cross linking forms the
     foundation for “digital continuity” and establishment of “digital
     threads”. Using linking profiles guarantees a set of use cases
     across providers implemented by different software vendors.</p>
-    <p>When originally developed, the OSLC specifications (Core, GCM)
-    were purposefully kept general avoiding over-prescription. The
-    intent was to allow a considerable degree of implementation
-    variability to speed vendor adoption as well as let adopting vendors
-    identify areas (though their adoption) that needed more
-    prescription.by. This is reflected in the minimal set of mandatory
-    (“must”) services , and rest that are only recommended
-    (“should”).</p>
+    <p>When originally developed, the OSLC specifications (Core, RM, CM,
+    QM, AM, GCM) were purposefully kept general avoiding
+    over-prescription. The intent was to allow a considerable degree of
+    implementation variability to speed vendor adoption as well as let
+    adopting vendors identify areas (though their adoption) that needed
+    more prescription.by. This is reflected in the minimal set of
+    mandatory (“MUST”) services , and rest that are only recommended
+    (“SHOULD”) or optional (“MAY”).</p>
     <p>The goal of interoperability across different vendor OSLC
     specification implementations requires peer to peer testing and
     adjustments to satisfy certain common interoperability use cases.
@@ -215,145 +218,214 @@ applications, domains, and heterogenious domain providers.</p>
     requires lots of discovery, trial and error. Additionally, when
     vendors label their applications as “OSLC compliant”, the possible
     implementation variability makes that label definition very broad
-    becoming difficult for end users to know for certain what aspects of
-    interoperability exist.</p>
+    becoming difficult for end users to know for certain what optional
+    capabilities are supported that impact interoperability.</p>
     <p>In addition to the variability caused by the mandatory/optional
     requirements, implementors also struggle to follow the specification
     without detailed explanations or examples. Unfortunately, while some
     guides exist, they are not always known about or found, requiring
-    web searches. In some cases, guides simply do not exist.</p>
+    web searches. In some cases, guides simply do not exist. While OSLC
+    does define discovery services, OSLC discovery does not provide a
+    machine readable, standard way to determine which optional OSLC
+    features a server implements. This has to be manually documented by
+    server providers, and may not be easily reflected from the server’s
+    APIs.</p>
     </section>
     <section id="solution-scope" class="level2">
     <h2>Solution scope</h2>
-    <p>Specify profiles based on maturity and use cases to reduce
-    interoperability variability across providers complying to a
-    specific profile, and provide guidance with examples to eliminate
-    ambiguities and confusion related to the implementation of the
-    specifications. A key aspect of reducing spec variabilities is
-    converting “should” clauses in the spec to “must” in certain
-    profiles. Guidance may be reference existing articles and/or include
-    a supplementary spec in the profile.</p>
-    <p>As agreed in preliminary discussions, the linking profiles will
-    accommodate various degrees of maturity and need of OSLC
-    implementations, that are based on two key characteristics related
-    to providers/consumers:</p>
-    <ul>
+    <p>The linking profile specifies profiles based on maturity and use
+    cases to reduce interoperability across clients and servers
+    complying to a specific profile, and provides guidance with examples
+    to eliminate ambiguities and confusion related to the implementation
+    of the specifications. A key aspect of reducing spec variabilities
+    is converting “SHOULD” and “MAY” clauses in the spec to “MUST” in
+    certain profiles to ensure those features are implemented by the
+    conforming servers. Guidance may be references existing articles
+    and/or include supplementary information in the profile.</p>
+    <p>To enable server implementation flexibility with more predicable
+    variability, the linking profiles accommodate various degrees of
+    maturity and needs of different OSLC server implementations. The
+    profile conformance levels are based on two key characteristics
+    related to providers/consumers:</p>
+    <ol type="1">
     <li>The need to maintain bi-directional navigability or not</li>
     <li>Usage of configuration management by the provider or not</li>
-    </ul>
-    <p>Based on that we aim to specify 3+1 profiles as follows</p>
-    <ul>
-    <li><strong>Basic</strong>: focuses on establishing links to a
+    </ol>
+    </section>
+    </section>
+    <section id="linking-profile-conformance-levels" class="level1">
+    <h1>Linking Profile Conformance Levels</h1>
+    <p>The integration challenges described above result from the amount
+    of server implementation variability allowed by the OSLC
+    specification, through the MAY and SHOULD conformance clauses. To
+    simplify and improve interoperability across OSLC applications,
+    while maintaining levels of variability that have been shown to be
+    useful and effective in practice, the Linking Profile introduces the
+    following conformance levels. Each level defines which capabilities
+    are necessary to support the integration services specified for that
+    level. This ensures that tools that advertise conformance to a
+    Linking Profile level will have a predecitable, minimal viable set
+    of capabilities that other clients and servers can rely on.</p>
+    <section id="basic-linking-profile" class="level2">
+    <h2>Basic Linking Profile</h2>
+    <p>The <strong>Basic</strong>: Focuses on establishing links to a
     provider, without bi-directional navigation. The main objective of
     this profile is to establish proper connection with a provider by a
     consumer and obtaining a resource selection UI. The challenges
     related to the basic profile are around establishing OSLC connection
     with a provider with proper authentication and discovery of
-    services.</li>
-    <li><strong>Bi-directional</strong>: this profile extends the
-    capabilities of the basic profile, but in addition it should result
-    in by-directional navigation across the two applications. It also
-    requires conformance with the basic profile but requires additional
-    capabilities. This profile needs to clarify where a physical link is
-    actually stored, and how the non-storing application can discover
-    incoming links. The issues related to this profile are around link
-    storage, discovery, and OSLC query.</li>
-    <li><strong>Config management Linking</strong>: Linking across
+    services.</p>
+    <p>For the Basic RM/AM/QM/CM Linking profile 3,0, a user needs to be
+    able to make a link from inside the web interface of Tool A to an
+    RM/AM/QM/CM resource inside Tool B. The user does not have a link to
+    the resource in advance. Instead, the user shall be able to pick a
+    resource when establishing a link. After selecting the resource,
+    Tool A shall store the link to the resource and display the link
+    title and icon.</p>
+    </section>
+    <section id="bi-directional-linking-profile" class="level2">
+    <h2>Bi-directional Linking Profile</h2>
+    <p>The <strong>Bi-directional</strong>: profile extends the
+    capabilities of the Basic profile, with the ability to have
+    by-directional navigation across the two applications, and the
+    ability to preview linked resources in different applications.</p>
+    <p>For the Bidirectional RM/AM/QM/CM Linking profile 3.0, a user
+    needs to be able to make a link from inside the web interface of
+    Tool A to an RM/AM/QM/CM resource inside Tool B. The user does not
+    have a link to the resource in advance. Instead, the user shall be
+    able to pick a resource when establishing a link. After selecting
+    the resource, the link is either stored in Tool A and/or in Tool B
+    depending on the domain model requirements or how the tools support
+    primary and secondary links. When a user navigates to one of the
+    linked resources in a tool that does not store the link, the
+    backlink or secondary link is shown.</p>
+    <p>Additionally, when the user of the Tool A hovers over a link to
+    the resource, a preview dialog is shown next to the link.</p>
+    </section>
+    <section id="configuration-management-linking-profile"
+    class="level2">
+    <h2>Configuration Management Linking Profile</h2>
+    <p>The <strong>Config management Linking</strong>: extends the
+    Bi-directional linking profile with support for linking across
     configuration management enabled OSLC providers. This profile
-    extends the bi-directional profile with additional guidance in case
-    of the application enables OSLC configuration management.</li>
-    <li><strong>Full</strong>: This profile is future and is not
-    currently feasible, as it depends on future standardization of a
-    link discovery service. It aims to prescribe providers on how to use
-    an incoming link service if one exists, to optimize incoming links
-    discovery, on top of the config management linking profile.</li>
-    </ul>
-    <section id="solution-capability-matrix" class="level3">
-    <h3>Solution Capability Matrix</h3>
+    clarifies where a physical link is actually stored, and how the
+    non-storing application can discover incoming links. The issues
+    related to this profile are around link storage, discovery, and OSLC
+    query.</p>
+    <p>For the Configuration-aware RM/AM/QM/CM Linking profile 3.0, the
+    Bidirectional RM/AM/QM/CM Linking profile 3.0 applies. Additionally,
+    both tools are configured with OSLC Configuration Management
+    enabled.</p>
+    <p>Additionally, when the user of the Tool A hovers over a link to
+    the resource, the preview dialog is shown next to the link and
+    displays correct information for the configuration context
+    chosen.</p>
+    </section>
+    <section id="link-discovery-linking-profile" class="level2">
+    <h2>Link Discovery Linking Profile</h2>
+    <p>The <strong>Link Discovery</strong>: profile extends the
+    Configuration Management Linking Profile with a link discovery
+    service for accessing incoming links.</p>
+    <p>For the Link Discovery RM/AM/QM/CM Linking profile 3.0, the
+    Configuration-aware RM/AM/QM/CM Linking profile 3.0 applies.
+    Additionally, Additionally, all tools contribute outgoing links to a
+    Link Discovery Management server, and get all incoming links from a
+    Link Discovery Management server.</p>
+    </section>
+    </section>
+    <section id="solution-capability-matrix" class="level1">
+    <h1>Solution Capability Matrix</h1>
     <p>The following table summarizes the OSLC capabilities for each of
     the profiles.</p>
     <table>
     <thead>
-    <tr class="header">
+    <tr>
     <th>Capability</th>
     <th>Basic</th>
     <th>Bi-Directional</th>
     <th>Config</th>
-    <th>Full</th>
+    <th>Link Discovery</th>
     </tr>
     </thead>
     <tbody>
-    <tr class="odd">
+    <tr>
     <td>Root Services document</td>
     <td>MUST</td>
     <td>MUST</td>
     <td>MUST</td>
     <td>MUST</td>
     </tr>
-    <tr class="even">
+    <tr>
+    <td>OIDC Authentication</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr>
+    <td>OAuth 2.0 Authorization</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr>
     <td>CSP for friends</td>
     <td>MUST</td>
     <td>MUST</td>
     <td>MUST</td>
     <td>MUST</td>
     </tr>
-    <tr class="odd">
+    <tr>
+    <td>CORS for friends</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr>
     <td>Selection Dialogs</td>
     <td>MUST</td>
     <td>MUST</td>
     <td>MUST</td>
     <td>MUST</td>
     </tr>
-    <tr class="even">
-    <td>CORS for friends</td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
-    <td>MUST</td>
-    </tr>
-    <tr class="odd">
+    <tr>
     <td>Preview Dialogs</td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
-    </tr>
-    <tr class="even">
-    <td>Link Ownership</td>
     <td></td>
     <td>MUST</td>
     <td>MUST</td>
     <td>MUST</td>
     </tr>
-    <tr class="odd">
+    <tr>
+    <td>Link Ownership</td>
+    <td></td>
+    <td></td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr>
     <td>PUT on Resources</td>
     <td></td>
     <td>MUST</td>
     <td>MUST</td>
     <td>MUST</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>OSLC Query</td>
     <td></td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
+    <td></td>
+    <td>MUST</td>
+    <td>MUST</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>Config Management</td>
     <td></td>
     <td></td>
     <td>MUST</td>
     <td>MUST</td>
     </tr>
-    <tr class="even">
-    <td>Contribute links to TRS</td>
-    <td></td>
-    <td></td>
-    <td>MUST</td>
-    <td>MUST</td>
-    </tr>
-    <tr class="odd">
+    <tr>
     <td>OSLC Link Discovery Service</td>
     <td></td>
     <td></td>
@@ -362,32 +434,8 @@ applications, domains, and heterogenious domain providers.</p>
     </tr>
     </tbody>
     </table>
-    </section>
-    </section>
-    </section>
-    <section id="root-services-document" class="level1">
-    <h1>Root Services document</h1>
-    <table>
-    <thead>
-    <tr class="header">
-    <th>Capability</th>
-    <th>Basic</th>
-    <th>Bi-Directional</th>
-    <th>Config</th>
-    <th>Full</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr class="odd">
-    <td>Root Services document</td>
-    <td>MUST</td>
-    <td>MUST</td>
-    <td>MUST</td>
-    <td>MUST</td>
-    </tr>
-    </tbody>
-    </table>
-    <p>Each section will list:</p>
+    <p>The sections below provide details for each profile capability
+    including:</p>
     <ol type="1">
     <li>The applicable profiles</li>
     <li>The applicable OSLC conformance clauses</li>
@@ -397,19 +445,19 @@ applications, domains, and heterogenious domain providers.</p>
     <li>Any additional conformance clauses</li>
     <li>Examples</li>
     </ol>
-    <p>Example some normative text: <span class="conformance">OSLC
-    Services <strong>MUST</strong> support at least one RDF resource
-    serialization format, and should support as many serialization
-    formats as possible through content negotiation.</span></p>
+    <p>In the sections below, OSLC Server refers to an OSLC server that
+    conforms to or supports the required capabilities of one or more of
+    the Linking Profile conformance levels.</p>
+    <p><span class="conformance">An OSLC Server MUST support the RDF/XML
+    resource serialization format, and SHOULD support as many
+    serialization formats as possible through content
+    negotiation.</span></p>
     </section>
-    <section id="authentication" class="level1">
-    <h1>Authentication</h1>
-    </section>
-    <section id="csp-for-friends" class="level1">
-    <h1>CSP for friends</h1>
+    <section id="root-services" class="level1">
+    <h1>Root Services</h1>
     <table>
     <thead>
-    <tr class="header">
+    <tr>
     <th>Capability</th>
     <th>Basic</th>
     <th>Bi-Directional</th>
@@ -418,7 +466,246 @@ applications, domains, and heterogenious domain providers.</p>
     </tr>
     </thead>
     <tbody>
-    <tr class="odd">
+    <tr>
+    <td>Root Services document</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    </tbody>
+    </table>
+    <p>OSLC Core, section <a
+    href="https://docs.oasis-open-projects.org/oslc-op/core/v3.0/os/discovery.html#wellKnown">4.2
+    Well-known URI Bootstrapping</a> recommends the use of a
+    rootservices document to list the service providers and tracked
+    resource sets an OSLC server provides. The format of the
+    rootservices document used by IBM ELM jazz.net products is described
+    in <a
+    href="https://jazz.net/wiki/bin/view/Main/RootServicesSpec">Root
+    Services Specification</a>. <span class="conformance">An OSLC Server
+    MUST support rootservices to provide a standard way of “discovering
+    OSLC discovery”.</span></p>
+    </section>
+    <section id="authentication" class="level1">
+    <h1>Authentication</h1>
+    <table>
+    <thead>
+    <tr>
+    <th>Capability</th>
+    <th>Basic</th>
+    <th>Bi-Directional</th>
+    <th>Config</th>
+    <th>Link Discovery</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>OIDC Authentication</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    <tr>
+    <td>OAuth 2.0 Authorization</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    </tbody>
+    </table>
+    <p><a href="https://open-services.net/spec/core/latest">OSLC Core
+    Version 3.0. Part 1: Overview</a> recommends specific approaches for
+    authentication and secure communication between clients and servers,
+    as well as between servers. These align with the industry best
+    practices for RESTful APIs and linked data at the time the OSLC Core
+    specification was developed.</p>
+    <p>However, the OSLC Core authentication recommendations have proven
+    to be insufficiently specific to facilitiate secure integration
+    scenarios that required authentication and authorization. As a
+    result, a signifiant barrier developing and using OSLC integrations
+    has been establishing authentication and authorization. Since OSLC
+    Core was developed, the IT industry has focused a lot more concern
+    and effort on security. The following specific recommendation are
+    for the linking profiles tighten the OSLC Core recommendations based
+    on current industry best practices.</p>
+    <section id="client-to-server-authentication" class="level2">
+    <h2>Client-to-Server Authentication</h2>
+    <p class="conformance">
+    OSLC servers MUST support OpenID Connect for client to server
+    authentication and authorization.
+    </p>
+    <p>OSLC suggests using <strong>standard HTTP-based authentication
+    mechanisms</strong> to ensure secure access to RESTful services.
+    OSLC Clients should be prepared to handle authentication challenges
+    from the recommended methods including:</p>
+    <section id="oauth-2.0-preferred" class="level3">
+    <h3>OAuth 2.0 (Preferred)</h3>
+    <ul>
+    <li><strong>Recommended Flow:</strong> <strong>Authorization Code
+    Grant</strong> (for web apps) or <strong>Resource Owner Password
+    Credentials</strong> (for trusted clients).<br />
+    </li>
+    <li><strong>Use Case:</strong>
+    <ul>
+    <li>Third-party applications accessing OSLC services on behalf of a
+    user.<br />
+    </li>
+    <li>Fine-grained access control via scopes (e.g., <code>read</code>,
+    <code>write</code>, <code>update</code>).<br />
+    </li>
+    </ul></li>
+    <li><strong>Implementation:</strong>
+    <ul>
+    <li>Clients obtain an access token from an OAuth 2.0 provider (e.g.,
+    Keycloak, Okta).<br />
+    </li>
+    <li>Token is sent via the
+    <code>Authorization: Bearer &lt;token&gt;</code> header.</li>
+    </ul></li>
+    </ul>
+    </section>
+    <section id="openid-connect-oidc" class="level3">
+    <h3>OpenID Connect (OIDC)</h3>
+    <ul>
+    <li>Extends OAuth 2.0 for authentication or identity
+    verification.<br />
+    </li>
+    <li>Provides <strong>user authentication</strong> + <strong>OAuth
+    2.0 authorization</strong>.<br />
+    </li>
+    <li>Used in enterprise SSO (Single Sign-On) scenarios.</li>
+    </ul>
+    </section>
+    <section id="http-basic-authentication-legacy" class="level3">
+    <h3>HTTP Basic Authentication (Legacy)</h3>
+    <ul>
+    <li><strong>Not recommended for production</strong> unless over
+    HTTPS.<br />
+    </li>
+    <li>Credentials sent as
+    <code>Authorization: Basic &lt;base64(user:password)&gt;</code>.<br />
+    </li>
+    <li>OSLC servers may support this for backward compatibility.</li>
+    </ul>
+    </section>
+    <section id="jee-forms-authentication-legacy" class="level3">
+    <h3>JEE Forms Authentication (Legacy)</h3>
+    <ul>
+    <li><strong>Not recommended for production</strong> unless over
+    HTTPS.<br />
+    </li>
+    <li>Credentials sent as j_username and j_password parameters to a
+    /j_security_check authentication URL in response to an
+    authentication challenge in a
+    x-com-ibm-team-repository-web-auth-msg=authrequired header</li>
+    <li>OSLC servers may support this for backward compatibility.</li>
+    </ul>
+    </section>
+    <section id="mutual-tls-mtls" class="level3">
+    <h3>Mutual TLS (mTLS)</h3>
+    <ul>
+    <li>Used in high-security environments (e.g., IoT, industrial
+    systems).<br />
+    </li>
+    <li>Both client and server authenticate via X.509 certificates.</li>
+    </ul>
+    </section>
+    </section>
+    <section id="server-to-server-authentication" class="level2">
+    <h2>Server-to-Server Authentication</h2>
+    <p class="conformance">
+    OSLC servers MUST support OAuth 2.0 for server to server
+    authorization.
+    </p>
+    <p>For automated interactions (e.g., CI/CD pipelines, federated OSLC
+    servers), OSLC recommends:</p>
+    <section id="oauth-2.0-client-credentials-flow" class="level3">
+    <h3>OAuth 2.0 Client Credentials Flow</h3>
+    <ul>
+    <li><strong>Use Case:</strong> Machine-to-machine (M2M)
+    communication.<br />
+    </li>
+    <li><strong>How it Works:</strong>
+    <ol type="1">
+    <li>Servers register as OAuth clients and obtain a
+    <code>client_id</code> + <code>client_secret</code>.<br />
+    </li>
+    <li>They request an access token using these credentials.<br />
+    </li>
+    <li>Token is used in API requests
+    (<code>Authorization: Bearer &lt;token&gt;</code>).</li>
+    </ol></li>
+    </ul>
+    </section>
+    <section id="oauth-1.0a-legacy-approach" class="level3">
+    <h3>OAuth 1.0a (Legacy Approach)</h3>
+    <ol type="1">
+    <li>Server A pre-registers a shared secret with OSLC Server B.</li>
+    <li>For each API call, Server A must:</li>
+    </ol>
+    <ul>
+    <li>Generate a signature using the secret + request params.</li>
+    <li>Include the signature in headers (oauth_signature).</li>
+    </ul>
+    <ol start="3" type="1">
+    <li>Server B validates the signature before responding.</li>
+    <li>Often required for IBM ELM OSLC integration</li>
+    </ol>
+    </section>
+    <section id="mutual-tls-mtls-1" class="level3">
+    <h3>Mutual TLS (mTLS)</h3>
+    <ul>
+    <li>Servers authenticate each other via <strong>X.509
+    certificates</strong>.<br />
+    </li>
+    <li>Common in <strong>private cloud/on-premise OSLC
+    deployments</strong>.</li>
+    </ul>
+    </section>
+    <section id="api-keys-less-secure" class="level3">
+    <h3>API Keys (Less Secure)</h3>
+    <ul>
+    <li>Some OSLC implementations may use API keys (sent in headers or
+    query params).<br />
+    </li>
+    <li><strong>Not recommended</strong> for sensitive data (lacks
+    fine-grained revocation).</li>
+    </ul>
+    </section>
+    </section>
+    <section id="additional-security-recommendations" class="level2">
+    <h2>Additional Security Recommendations</h2>
+    <ul>
+    <li><strong>Always use HTTPS (TLS 1.2+)</strong> to encrypt all
+    communications.<br />
+    </li>
+    <li><strong>Token expiration &amp; refresh:</strong> Short-lived
+    access tokens with refresh tokens.<br />
+    </li>
+    <li><strong>CORS &amp; CSRF protection:</strong> OSLC servers should
+    restrict cross-origin requests appropriately.<br />
+    </li>
+    <li><strong>Rate limiting:</strong> Prevent abuse of OSLC APIs.</li>
+    </ul>
+    </section>
+    </section>
+    <section id="csp-for-friends" class="level1">
+    <h1>CSP for friends</h1>
+    <table>
+    <thead>
+    <tr>
+    <th>Capability</th>
+    <th>Basic</th>
+    <th>Bi-Directional</th>
+    <th>Config</th>
+    <th>Full</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
     <td>CSP for friends</td>
     <td>MUST</td>
     <td>MUST</td>
@@ -427,12 +714,59 @@ applications, domains, and heterogenious domain providers.</p>
     </tr>
     </tbody>
     </table>
+    <p><a
+    href="https://www.google.com/url?sa=t&amp;source=web&amp;rct=j&amp;opi=89978449&amp;url=https://content-security-policy.com/&amp;ved=2ahUKEwjDmf3GxNqNAxX-D1kFHab1EAMQFnoECEQQAQ&amp;usg=AOvVaw2oIfjyedgjLbPNakcjhuw5">Content
+    Security Policy (CSP)</a> is a web security standard that helps
+    protect against cross-site scripting (XSS) and other code injection
+    attacks. It works by giving website developers control over which
+    resources (scripts, images, etc.) the browser is allowed to load and
+    execute for a given page. By whitelisting trusted sources, CSP helps
+    prevent browsers from loading malicious or untrusted content, even
+    if a user has been tricked into visiting a compromised website.</p>
+    <p><span class="conformance">An OSLC Server MUST support the CSP
+    Content-Security-Policy HTTP response header so that modern browsers
+    can use it to enhance the security of the HTTP entity response
+    resource.</span> The Content-Security-Policy header allows servers
+    to restrict which resources (such as JavaScript, CSS, Images, etc.)
+    can be loaded, and the URLs that they can be loaded from.</p>
+    <p>For example, this response header:</p>
+    <pre><code>Content-Security-Policy: default-src &#39;self&#39;; img-src &#39;self&#39; cdn.example.com;</code></pre>
+    <p>tells the receiving browser to only allow resource URLs frorm the
+    same origin (domain and scheme), and to allow access to images from
+    the same origin and the cdn.example.com domain.</p>
+    </section>
+    <section id="cors-for-friends" class="level1">
+    <h1>CORS for friends</h1>
+    <p>CORS (Cross-Origin Resource Sharing) is a security mechanism that
+    allows or restricts web applications running in a browser to make
+    requests to a different domain (origin) than the one they originated
+    from. This is commonly used in OSLC resource preview and delegated
+    selection and creation dialogs where an OSLC client running in a
+    HTTP browser needs to access resources from multiple servers. This
+    is required to allow the creation and navigation of links between
+    resources in different OSLC servers.</p>
+    <p>By default, browsers block web pages from making requests to a
+    different domain (origin) for security. CORS identifies the request
+    origin as a combination of the protocol (http/https), host domain
+    (example.com) and port (:8080).</p>
+    <p>CORS provide a means for clients and servers to control the
+    Same-Origin Policy to allow controlled cross-origin requests. When a
+    browser makes a cross-origin request, it first sends a preflight
+    request (OPTIONS) to check if the server allows it. The server
+    responds with CORS headers indicating permitted origins, methods,
+    and headers. This ensures that only cross-origin requests that have
+    been explicitly configured are permitted.</p>
+    <p><span class="conformance">An OSLC Server must support CORS as
+    described in <a
+    href="https://fetch.spec.whatwg.org/commit-snapshots/d070ea245c6eb66cf4196324f063dc6ab608d9e6/#http-cors-protocol">Fetch</a></span>
+    This ensures that security administrators can have sufficient
+    control of cross-origin requests to avoid security issues.</p>
     </section>
     <section id="selection-dialogs" class="level1">
     <h1>Selection Dialogs <In context to Resource Creation></h1>
     <table>
     <thead>
-    <tr class="header">
+    <tr>
     <th>Capability</th>
     <th>Basic</th>
     <th>Bi-Directional</th>
@@ -441,7 +775,7 @@ applications, domains, and heterogenious domain providers.</p>
     </tr>
     </thead>
     <tbody>
-    <tr class="odd">
+    <tr>
     <td>Selection Dialog</td>
     <td>MUST</td>
     <td>MUST</td>
@@ -450,69 +784,84 @@ applications, domains, and heterogenious domain providers.</p>
     </tr>
     </tbody>
     </table>
-    <p>A OSLC server MUST register Dialog discovery service using
-    oslc:selectionDialog property with a service provider. A OSLC
-    consumer discovers the service by looking for oslc:selectionDialog
-    property and making a GET request on the service resource OR Clients
-    can also use the HTTP Prefer header to find the dialogs for a
-    container.The server responds with the dialog descriptors in the
-    response body OR The client discovers the dialogs by making an HTTP
-    OPTIONS request on the container and the server response contains a
-    Link header with URLs to the dialog descriptors.</p>
-    <p>OSLC server MUST provide a dialog, an HTML page for resource
-    selection, search and select remote resources. Selection dialog
-    provides OSLC consumers to search and select resources, to create
-    trace links. Selection Dialog MUST accept user input and to filter
-    out resources on basis of user input and MUST display filtered
-    resources. Selection Dialogs MUST provide a way to user to select
-    filtered resources and submit their selection. Once user selection
-    is submitted, Dialogs send selected resource URI as result back to
-    the client using the HTML5 function Window.postMessage
-    [whatwg-web-messaging]. postMessage is called on window.opener if
-    set. Otherwise, postMessage is called on window.parent.</p>
-    <p>OSLC client MUST Open the dialog in a new window or embed the
-    dialog in an iframe. Selection Dialog consumer MUST add a message
-    listener to receive messages from the dialog. When message from the
-    dialog indicates a completed action, OSLC Consumer SHOULD free
-    resources and MUST handle the action.</p>
+    <p><span class="conformance">An OSLC Server MUST support OSLC
+    Discovery and MUST support OSLC Selection Delegated Dialogs.</span>
+    <span class="conformance">An OSLC Server SHOULD support OSLC
+    Creation Delegated dialogs.</span> These requirements are necessary
+    to support creating links between OSLC resources. An OSLC Client
+    discovers the service by looking for oslc:selectionDialog property
+    and making a GET request on the service resource.</p>
     </section>
     <section id="link-ownership" class="level1">
     <h1>Link Ownership</h1>
+    <table>
+    <thead>
+    <tr>
+    <th>Capability</th>
+    <th>Basic</th>
+    <th>Bi-Directional</th>
+    <th>Config</th>
+    <th>Full</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>Link Ownership</td>
+    <td></td>
+    <td></td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    </tbody>
+    </table>
     <p>In bi-dirctional linking scenarios both OSLC participants are
     aware of links across their owned resources and enable link
-    visibility and navigation on each side. Nevertheless storing a link
-    at both sides is considered bad-practice as it is essentially
-    replication of data. This may result in inconsistencies as links are
-    updated or deleted, since maintaining consistency requires
-    synchronization across the providers on any update. Therefore the
-    recommended practice is to store links on one of the participants,
-    and use link discovery by the other participant. Therefore there
-    need to be an agreed convention on which side should store the
-    link.</p>
+    visibility and navigation on each side. In the Bi-Directional
+    profile, OSLC Servers can support bi-directional links, links in the
+    form of (source, primary-predicate, target) and {target,
+    secondary-predicate, source) however they wish. This could be done
+    for example by storing backlinks, or using queries to get links.
+    However, storing a link and a backlink at both sides does not follow
+    <a
+    href="https://docs.oasis-open-projects.org/oslc-op/link-guidance/v1.0/pn01/link-guidance.html">OSLC
+    Link Guidance</a> as it is essentially replication of data. This may
+    result in inconsistencies as links are updated or deleted, since
+    maintaining consistency requires synchronization across the
+    providers on any update. Therefore the recommended practice is to
+    store links on one of the participants, and use link discovery by
+    the other participant. Therefore there needs to be an agreed
+    convention on which side should store the link.</p>
     <p>Many OSLC links have an incoming and outgoing sides, determined
-    by the role of the link. Usually one side will have an active
+    by the direction of the link. Usually one side will have an active
     predicate name, for example, “implements” and the other side will
-    have a passive predicate name, in this example it would be
-    “implemented by”. The active side is often considered the outgoing
-    side, and the passive the incoming side. The convention is that the
-    link is typically stored with the resource on the outgoing side,
-    i.e., the resource with the active predicate. The incoming side
-    would discover the links with one of the discovery methods discussed
-    in the following sections.</p>
-    <p>Note the creation of the link can be initiated by both providers.
-    In case that the link is initiated by the incoming side provider, it
-    needs to store it with the resource on the outgoing side provider.
-    This is discussed in the PUT on Resources section. In addition, for
-    historical reasons, certain OSLC providers, such as IBM ELM, may
-    have some variations of behaviors between configuration enabled and
-    non-configuration enabled modes, where in non-configuration modes
-    there may still be a usage of backlink storage. In addition,
-    providers do not support configurations such as CM (change
-    management providers) would have preference for link storage over
-    configuration enabled providers, to prevent baselined links to refer
-    to mutable entities.</p>
+    have a passive predicate name, such as for example “implemented by”.
+    The active side is often considered the outgoing side, and the
+    passive the incoming side. The convention is that the link is
+    typically stored with the resource on the outgoing side, i.e., the
+    resource with the active predicate. The incoming side would discover
+    the links with one of the discovery methods discussed in the
+    following sections.</p>
+    <p>Note the creation of the link can be initiated from the OSLC
+    server at either end of the link. In case that the link is initiated
+    by the incoming side provider, it needs to store it with the
+    resource on the outgoing side provider. This is discussed in the PUT
+    on Resources section. In addition, for historical reasons, certain
+    OSLC providers, such as IBM ELM, may have some variations of
+    behaviors between configuration enabled and non-configuration
+    enabled modes, where in non-configuration modes there may still be a
+    usage of backlink storage. In addition, providers do not support
+    OSLC versioned resources such as CM (change management servers)
+    would have preference for link storage over configuration enabled
+    providers, to prevent baselined links to refer to mutable
+    entities.</p>
     <p>Based on these principles and conventions, the Linking Profile
-    establishes specific ownership for OSLC link properties.</p>
+    establishes specific ownership for OSLC link properties.
+    <span class="conformance">OSLC Servers conforming to the
+    Bi-Directional linking pofile should store primary predicate links
+    on the source/owner domain side as descirbed in the following
+    table.</scan> <span class="conformance">OSLC Servers conforming to
+    the Config or Full linking pofiles MUST store primary predicate
+    links on the source/owner domain side.</scan></p>
     <table>
     <colgroup>
     <col style="width: 30%" />
@@ -521,7 +870,7 @@ applications, domains, and heterogenious domain providers.</p>
     <col style="width: 25%" />
     </colgroup>
     <thead>
-    <tr class="header">
+    <tr>
     <th>Source/Owner domain</th>
     <th>Primary predicate</th>
     <th>Target domain</th>
@@ -529,163 +878,163 @@ applications, domains, and heterogenious domain providers.</p>
     </tr>
     </thead>
     <tbody>
-    <tr class="odd">
+    <tr>
     <td>RM</td>
     <td>oslc_rm:constraints</td>
     <td>RM</td>
     <td>oslc_rm:constrainedBy</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>RM</td>
     <td>oslc_rm:decomposes</td>
     <td>RM</td>
     <td>oslc_rm:decomposedBy</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>RM</td>
     <td>oslc_rm:elaborates</td>
     <td>RM</td>
     <td>oslc_rm:elaboratedBy</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>RM</td>
     <td>oslc_rm:satisfies</td>
     <td>RM</td>
     <td>oslc_rm:satisfiedBy</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>RM</td>
     <td>oslc_rm:specifies</td>
     <td>RM</td>
     <td>oslc_rm:specifiedBy</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>RM</td>
     <td>oslc_rm:uses</td>
     <td>RM</td>
     <td>-unspecified-</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>QM</td>
     <td>oslc_qm:validatesRequirement</td>
     <td>RM</td>
     <td>oslc_rm:validatedBy</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>QM</td>
     <td>oslc_qm:validatesRequirementCollection</td>
     <td>RM</td>
     <td>oslc_rm:validatedBy</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:implementsRequirement</td>
     <td>RM</td>
     <td>oslc_rm:implementedBy</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:tracksRequirement</td>
     <td>RM</td>
     <td>oslc_rm:trackedBy</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:affectsRequirement</td>
     <td>RM</td>
     <td>oslc_rm:affectedBy</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:testedByTestCase</td>
     <td>QM</td>
     <td>oslc_qm:testsChangeRequest</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:relatedTestScript</td>
     <td>QM</td>
     <td>oslc_qm:relatedChangeRequest</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:relatedTestCase</td>
     <td>QM</td>
     <td>oslc_qm:relatedChangeRequest</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:relatedTestPlan</td>
     <td>QM</td>
     <td>oslc_qm:relatedChangeRequest</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:relatedTestExecutionRecord</td>
     <td>QM</td>
     <td>oslc_qm:relatedChangeRequest</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:blocksTestExecutionRecord</td>
     <td>QM</td>
     <td>oslc_qm:blockedByChangeRequest</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:affectsTestResult</td>
     <td>QM</td>
     <td>oslc_qm:affectedByChangeRequest</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:affectedByDefect</td>
     <td>CM</td>
     <td>oslc_cm:affectsPlanItem</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:tracksChangeSet</td>
     <td>oslc_config:ChangeSet</td>
     <td>-unspecified-</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>CM</td>
     <td>oslc_cm:relatedChangeRequest</td>
     <td>CM</td>
     <td>-unspecified-</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>AM</td>
     <td>jazz_am:derives</td>
     <td>oslc:Any</td>
     <td>-unspecified-</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>AM</td>
     <td>jazz_am:elaborates</td>
     <td>oslc:Any</td>
     <td>-unspecified-</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>AM</td>
     <td>jazz_am:external</td>
     <td>oslc:Any</td>
     <td>-unspecified-</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>AM</td>
     <td>jazz_am:refine</td>
     <td>oslc:Any</td>
     <td>-unspecified-</td>
     </tr>
-    <tr class="even">
+    <tr>
     <td>AM</td>
     <td>jazz_am:satisfy</td>
     <td>oslc:Any</td>
     <td>-unspecified-</td>
     </tr>
-    <tr class="odd">
+    <tr>
     <td>AM</td>
     <td>jazz_am:trace</td>
     <td>oslc:Any</td>
@@ -693,18 +1042,69 @@ applications, domains, and heterogenious domain providers.</p>
     </tr>
     </tbody>
     </table>
+    <p>All links are directional from source to target e.g., Requirement
+    testedBy TestCase, TestCase validates Requirement. OSLC does not
+    define inverse links, however, links are often paired using
+    active/passive names as in implements/implementedBy,
+    validates/testedBy, etc.</p>
+    <p>There is some interest in extending OSLC ResourceShapes to
+    formalize these active/passive relationships between link types so
+    their property URLs and titles can be discovered in a standard
+    way.</p>
+    <p>Links have to be created between existing source and target
+    resources (the targets either already exist and are selected, or are
+    created before the link is created).</p>
+    <p>Links are only stored in the source resource on one side (usually
+    the active side) of related link types. The “inverse” or incoming
+    link is typically displayed, but is obtained through a query rather
+    than being stored. This avoids storing redundant data that can lead
+    to update anomalies.</p>
+    <p>By convention, links are stored on the “downstream” side, i.e.,
+    the resource that is created later in the lifecycle. This ensures
+    that both the source and target of the link are likely to exist when
+    the link is created. For example, in
+    Requirements-Driven-Development, requirements are created first, and
+    then later in the lifecycle, test cases are created that validate
+    the requirements. When the test case is created, the requirement
+    will most likely already exist, so the link is stored in the
+    downstream test case source as TestCase validates Requirement.</p>
+    <p>Note however that if an organization used
+    Test-Driven-Development, test cases are often created first,
+    representing an executable expression of a requirement that might be
+    identified and refined later. So the convention to store RM/QM links
+    on the QM side is not always ideal, but does provide consistency
+    that improves and simplifies overall tool integration.</p>
+    <p>Storing related links on only one side is also necessary when
+    using configuration management since it must be possible to create a
+    link from a source to a target resource without changing the target
+    resource version (it could be in a baseline).</p>
+    <p>For example, the requirements for a project may have already been
+    created and baselined before test cases are created. Then when the
+    test cases are created, they can be linked to the requirement they
+    validate without changing the requirement.</p>
+    <p>Similarly, a versioned resource cannot store links to unversioned
+    resources because it would be impossible to create an immutable
+    baseline of such a resource since the target unverioned resource
+    could changed or deleted, indirectly modifying an immutable source
+    resource.</p>
     </section>
     <section id="put-on-resources" class="level1">
     <h1>PUT on Resources</h1>
-    </section>
-    <section id="cors-for-friends" class="level1">
-    <h1>CORS for friends</h1>
+    <p><span class="conformance">An OSLC Server MUST support PUT on
+    resources to allow for the creation and storage of links.</span>
+    When an OSLC Server that does not own the link initiates link
+    creation using the selection dialog of a server that does own the
+    link, then the initiating server needs to GET on the selected
+    resoures, add an assertion for the link, using the secondary
+    predicate, and then PUT to the OSLC Server owning the link to save
+    the link. Primary and secondary predicates are listed in the table
+    above.</p>
     </section>
     <section id="preview-dialogs" class="level1">
     <h1>Preview Dialogs</h1>
     <table>
     <thead>
-    <tr class="header">
+    <tr>
     <th>Capability</th>
     <th>Basic</th>
     <th>Bi-Directional</th>
@@ -713,21 +1113,24 @@ applications, domains, and heterogenious domain providers.</p>
     </tr>
     </thead>
     <tbody>
-    <tr class="odd">
+    <tr>
     <td>Preview Dialogs</td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
+    <td></td>
+    <td>MUST</td>
+    <td>MUST</td>
+    <td>MUST</td>
     </tr>
     </tbody>
     </table>
+    <p><span class="conformance">An OSLC Server MUST support OSLC
+    Resource Preview to allow applications to preview resources across
+    links.</span></p>
     </section>
     <section id="oslc-query" class="level1">
     <h1>OSLC Query</h1>
     <table>
     <thead>
-    <tr class="header">
+    <tr>
     <th>Capability</th>
     <th>Basic</th>
     <th>Bi-Directional</th>
@@ -736,26 +1139,127 @@ applications, domains, and heterogenious domain providers.</p>
     </tr>
     </thead>
     <tbody>
-    <tr class="odd">
+    <tr>
     <td>OSLC Query</td>
     <td></td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
-    <td>SHOULD</td>
+    <td></td>
+    <td>MUST</td>
+    <td>MUST</td>
     </tr>
     </tbody>
     </table>
-    <pre><code>example text</code></pre>
+    <p><span class="conformance">An OSLC Server MUST support OSLC Query,
+    minimally the oslc.select with nested properties, and oslc.where
+    clauses.</span> This allows OSLC Clients and Servers to have a
+    standard means of querying links and accessing information about
+    linked resources.</p>
     </section>
     <section id="configuration-management" class="level1">
     <h1>Configuration Management</h1>
+    <table>
+    <thead>
+    <tr>
+    <th>Capability</th>
+    <th>Basic</th>
+    <th>Bi-Directional</th>
+    <th>Config</th>
+    <th>Full</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>Config Management</td>
+    <td></td>
+    <td></td>
+    <td>MUST</td>
+    <td>MUST</td>
+    </tr>
+    </tbody>
+    </table>
+    <p><span class="conformance">An OSLC Server conforming to the Config
+    management Linking or Full linking profiles MUST support
+    configuration management.</span> The Configuration Management
+    profile, as an extension to the Bi-Directional linking profile,
+    supports creating and navigating versioned links in both directions.
+    The Configuration Management profile does not specify how the server
+    access incoming links. OSLC Servers could use OSLC query for
+    accessing incoming links, and the OSLC Query capabilities specified
+    in this document are intended to be necessary and sufficient for
+    this purpose.</p>
     </section>
-    <section id="contribute-links-to-trs" class="level1">
-    <h1>Contribute links to TRS</h1>
-    </section>
-    <section id="oslc-link-discovery-service"
-    class="level1 informative">
-    <h1 class="informative">OSLC Link Discovery service</h1>
+    <section id="oslc-link-discovery-management" class="level1">
+    <h1>OSLC Link Discovery Management</h1>
+    <table>
+    <thead>
+    <tr>
+    <th>Capability</th>
+    <th>Basic</th>
+    <th>Bi-Directional</th>
+    <th>Config</th>
+    <th>Full</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>OSLC Link Discovery Management</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>MUST</td>
+    </tr>
+    </tbody>
+    </table>
+    <p>The Full linking profile introduces a standard means for
+    accessing incoming and optionally, outgoing links. This extends the
+    Config linking profile to provide predictable, high performance,
+    reliable versioned link creation, update and navigation in a
+    distributed environment consisting of federated servers supporting
+    different lifecycle domains. <span class="conformancer">OSLC Servers
+    supporting the Full linking profile MUST support the <a
+    href="https://open-services.net/spec/ldm/latest">OSLC Link Discovery
+    Management Server version 1.0</a>.</span></p>
+    <p>It is recognized that the link ownership rules encourage specific
+    workflows. For example, the fact that QM owns the
+    oslc_qm:validatesRequirement link implies that users using a
+    requirements-driven methodology would likely create requirements
+    before they create test cases to validate them, thus ensuring the
+    requirements exist when the user cratest the
+    oslc_qm:validatesRequirement link. However, test-driven development
+    methodologies might create the test cases first, perhaps as an
+    executable representation of a requirment that can be then
+    elaborated with additional oslc_rm:validatedBy requirements.</p>
+    <p>But implementing the linking profiles does not restrict severs to
+    follow specific, overly rigid methodologies: 1. Selection and
+    Creation dialogs can be used to create primary or secondary links
+    from either side 2. The PUT operations allows a server that doesn’t
+    own the link to add the link to the resource owned by another server
+    and ask that server to update its resource. 3. The link ownership
+    table specifies what server owns what links, and the primary and
+    secondary link predicates so that server implementors know how to
+    create links regardless of which server owns them. 4. The Link
+    Discovery Management provides an efficient means for accessing
+    incoming links in a standard way.</p>
+    <p>So link ownership, or where links are stored, can be transparent
+    to users, while being predicatable for different server
+    implementations to ensure consistent integrations of versioned links
+    across OSLC domains and servers.</p>
+    <p>Users should typically not be aware of where links are stored,
+    and should be able to create links from either direction in a
+    transparent way. For primary links the server owns, the server can
+    easily create, store, access, navigate and display these links.
+    However, for secondary link, the information is stored in a
+    different server, and to display them, a server would need to access
+    incoming links, the links for which its resource is the source of
+    the link.</p>
+    <p>Servers can use OSLC query as a standard means of requesting
+    incoming links. However, this does not scale well when a server has
+    to access incoming links from many other servers.</p>
+    <p>OSLC defines a <a
+    href="https://docs.oasis-open-projects.org/oslc-op/ldm/v1.0/psd02/link-discovery-management-spec.html">Link
+    Discovery Management specification</a> as a standard means of
+    accessinig incoming versioned or unversioned links. Bi-Directional,
+    Config and Full link profiles must support the LDM
+    specification.</p>
     </section>
     <section id="conformance"></section>
     <section class="appendix">
