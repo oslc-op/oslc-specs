@@ -498,12 +498,15 @@ services interface for validating links between OSLC resouces as they change ove
 
     <section id="description">
       <h2>Link Validity Service Description</h2>
+      <section>
       <h3>General</h3>
       <p>
         LVS server maintains the validity status of OSLC links. It stores a set of validity records that relate to links 
         across resources in certain states. The resource states are represented by resource hashes. 
         LVS supports two requests: (i) link status inquiry (ii) creating new validity records. 
       </p>
+      </section>
+      <section>
       <h3>Links status inquiry</h3>
       <p>
         LVS clients inquire for links statuses related to a link predicate, subject resource hash and object resource hash, 
@@ -596,7 +599,8 @@ services interface for validating links between OSLC resouces as they change ove
                 dcterms:contributor  "1007".
           
           </pre>
-
+      </section>
+      <section>
       <h3>Setting a link status</h3>
       <p>
         Setting a link validity status of a link refers to a link predicate, subject resource and object resource,  
@@ -642,19 +646,24 @@ services interface for validating links between OSLC resouces as they change ove
             oslc_lvs:status "invalid";
             dcterms:contributor "1007" ;
             oslc:comment  "the element is inconsistent with the requirement"
-
-    </section>
-    <h3>geting a resource hash from a provider</h3>
+      </pre>
+      </section>
+      <section>
+    <h3>Geting a resource hash from a provider</h3>
       <p>
         Resource providers that support LVS shall include the resource hash on any resource get request.  
       </p>
-    <h3>Inquiring a domain provider for which properties contribute to hash calculation</h3>
+    </section>
+    <section>
+      <h3>Inquiring a domain provider for which properties contribute to hash calculation</h3>
       <p>
         Resource providers that support LVS shall indicate as part of resource shapes which resource properties 
         contribute to hash calculation. This might be useful for tools to check consistency across providers.
-        To do that a property &lt;oslc:contributesToHash&gt; of type boolean may be used as a resource shape property. 
+        To do that, a property <code>oslc:contributesToValidity</code> of type <code>boolean</code> may be used as a resource shape property. 
         If a resource shape property does not have a contributesToHash property, it is assumed as 'true'. In other words, 
         unless otherwise indicated, a shape property is assumed to contribute to the Hash.     
       </p>
+      </section>
+      </section>
   </body>
 </html>
