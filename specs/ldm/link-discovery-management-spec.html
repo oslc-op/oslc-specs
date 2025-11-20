@@ -511,12 +511,6 @@ services interface for an application to discover incoming links."
         <li>
           Direction: optional parameter indicating incoming or any links should be returned, incominig is the default
         </li>
-        <li>
-          AdditionalResourceProperties: URIs of additional properties the LDM Client is requesting the LDM Server return
-          about the objects of the incoming links. This is a convenience for LDM Clients who might need additional
-          information like title and icon to for example display incoming links, and avoids additionl resource GET
-          requests.
-        </li>
       </ul>
       <p class="conformance">
         In case the Configuration Context is specified, any object or subject-resource MUST be specified based on
@@ -595,16 +589,11 @@ _:b2 oslc_ldm: linkPredicates
         
         &lt;http://example.org/cm/changeRequest1&gt; oslc_cm:tracksRequirement  &lt;http://example.org/rm/req1URI&gt; .
         &lt;http://example.org/cm/changeRequest2&gt;  oslc_cm:tracksRequirement  &lt;http://example.org/rm/req1URI&gt; .
-        &lt;http://example.org/cm/changeRequest3&gt;  oslc_cm:implementsRequirement  &lt;http://example.org/rm/req2URI&gt; .
-        oslc_cm:implementsRequirement   rdfs:label "Impalements Requirement" .
-        &lt;http://example.org/cm/changeRequest3&gt;  dcterms:title "Change Request number 3" .
-        &lt;http://example.org/cm/changeRequest3&gt;  dcterms:identifier "3" .
-        
+        &lt;http://example.org/cm/changeRequest3&gt;  oslc_cm:implementsRequirement  &lt;http://example.org/rm/req2URI&gt; . 
        
-  </pre
-      >
+  </pre>
 
-      <p>Example2: requesting all links including the title property of the resources</p>
+      <p>Example2: requesting all links</p>
 
       <pre class="example">
 POST http://ldm.example.com:8080/
@@ -648,8 +637,6 @@ _:b4 oslc_ldm:additionalProperties
       oslc_cm:tracks &lt;http://elm.example.com/rm/req2URI&gt;.
     &lt;http://elm.example.com/rm/req1URI&gt; 
       oslc_rm:satisfy &lt;http://elm.example.com/rm/req2URI&gt;
-      dcterms:title “requirement2”.
-  
    &lt;http://example.com/am/am1URI&gt;
       oslc_am:implements &lt;http://elm.example.com/rm/req1URI&gt;.
           
