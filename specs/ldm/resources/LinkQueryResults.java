@@ -16,7 +16,6 @@
        */
        public LinkQueryResults queryForLinks(final String[] targetURLs, final String gcURL, final String[] linkTypes) throws TeamRepositoryException;
  
-Supporting classes:
  
        public static class LinkQueryResults {
               // zero based page index

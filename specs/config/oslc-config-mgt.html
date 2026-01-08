@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta charset="utf-8" />
@@ -6,25 +6,25 @@
       name="description"
       content="OSLC Configuration Management defines an RDF vocabulary and a set of REST APIs for managing versions and configurations of linked data resources from multiple domains."
     />
-    <title>OSLC Configuration Management Version 1.0. Part 1: Overview</title>
+    <title>OSLC Configuration Management Version 1.1. Part 1: Overview</title>
     <script
-      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.32/builds/respec-oasis-common.min.js"
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.35/builds/respec-oasis-common.min.js"
       async
       class="remove"
     ></script>
     <script class="remove">
       var filePath = "/oslc-config-mgt.html";
-      var status = "OS";
+      var status = "PSD";
       var wdBase = "https://oslc-op.github.io/oslc-specs/specs/config";
-      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/config/v1.0";
-      var rev = "";
+      var oasisBase = "https://docs.oasis-open-projects.org/oslc-op/config/v1.1";
+      var rev = "01";
       var thisBase = wdBase;
       if (status != "WD") {
         thisBase = oasisBase + "/" + status.toLowerCase() + rev;
       }
       var respecConfig = {
         shortName: "oslc-config-mgt",
-        citationLabel: "OSLC-Config-1.0-Part1",
+        citationLabel: "OSLC-Config-1.1-Part1",
         specStatus: status,
         revision: rev,
         conformanceLabelPrefix: "CONFIG-MGT",
@@ -42,17 +42,17 @@
           },
         ],
 
-        publishDate: "2023-07-23T12:00Z",
-        //previousPublishDate:  "2022-05-30T12:00Z",
-        //previousMaturity:  "PS",
-        prevVersion: "https://docs.oasis-open-projects.org/oslc-op/config/v1.0/ps01/oslc-config-mgt.html",
+        publishDate: "2023-10-24T12:00Z",
+        previousPublishDate: "2023-07-23T12:00Z",
+        previousMaturity: "OS",
+        prevVersion: "https://docs.oasis-open-projects.org/oslc-op/config/v1.0/os/oslc-config-mgt.html",
 
         // chairs and editors, add as many as you like
         // only "name" is required
         editors: [
           {
-            name: "Nick Crossley",
-            mailto: "nick_crossley@us.ibm.com",
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
             company: "IBM",
             companyURL: "https://ibm.com/",
           },
@@ -66,10 +66,10 @@
             companyURL: "https://www.ibm.com/",
           },
           {
-            name: "Andrii Berezovskyi",
-            mailto: "andriib@kth.se",
-            company: "KTH",
-            companyURL: "https://www.kth.se/en",
+            name: "Jad El-khoury",
+            mailto: "jad@kth.se",
+            company: "KTH Royal Institute of Technology",
+            companyURL: "http://www.kth.se",
           },
         ],
 
@@ -79,27 +79,27 @@
         // Other parts of multi-part spec
         additionalArtifacts: [
           {
-            title: "OSLC Configuration Management Version 1.0. Part 1: Overview (this document)",
+            title: "OSLC Configuration Management Version 1.1. Part 1: Overview (this document)",
             href: thisBase + "/oslc-config-mgt.html",
           },
           {
-            title: "OSLC Configuration Management Version 1.0. Part 2: Versioned Resources",
+            title: "OSLC Configuration Management Version 1.1. Part 2: Versioned Resources",
             href: thisBase + "/versioned-resources.html",
           },
           {
-            title: "OSLC Configuration Management Version 1.0. Part 3: Configuration Specification",
+            title: "OSLC Configuration Management Version 1.1. Part 3: Configuration Specification",
             href: thisBase + "/config-resources.html",
           },
           {
-            title: "OSLC Configuration Management Version 1.0. Part 4: RDF Vocabulary",
+            title: "OSLC Configuration Management Version 1.1. Part 4: RDF Vocabulary",
             href: thisBase + "/config-vocab.html",
           },
           {
-            title: "OSLC Configuration Management Version 1.0. Part 5: Machine Readable Vocabulary Terms",
+            title: "OSLC Configuration Management Version 1.1. Part 5: Machine Readable Vocabulary Terms",
             href: thisBase + "/config-vocab.ttl",
           },
           {
-            title: "OSLC Configuration Management Version 1.0. Part 6: Machine Readable Vocabulary Constraints",
+            title: "OSLC Configuration Management Version 1.1. Part 6: Machine Readable Vocabulary Constraints",
             href: thisBase + "/config-shapes.ttl",
           },
         ],
@@ -292,7 +292,7 @@
         </p>
         <p>
           The state (including the properties) of a concept resource can vary over time, or for other reasons. A
-          <strong><em>versioned resource</em></strong> is a concept resource that keeps track of different states. a
+          <strong><em>versioned resource</em></strong> is a concept resource that keeps track of different states. A
           <strong><em>version resource</em></strong> is a resource that represents one specific state of a versioned
           resource. Not every past state is necessarily kept; a server may elide or discard states that are no longer
           referenced.
@@ -353,7 +353,7 @@
           graphs is recommended, as shown here using [[TriG]]:
         </p>
         <pre class="example">
-:conceptResourceA-version23 = {
+GRAPH :conceptResourceA-version23 {
     :conceptResourceA-version23
         a oslc_config:VersionResource ;
         dcterms:isVersionOf :conceptResourceA .
@@ -363,9 +363,9 @@
         dcterms:title &quot;Concept Resource A&quot; ;
         :color &quot;blue&quot; ;
         dcterms:description &quot;Concept resource A as it appears in the state with the URI :conceptResourceA-version23&quot; .
-}.
+}
 
-:conceptResourceA-version17 = {
+GRAPH :conceptResourceA-version17 {
     :conceptResourceA-version17
         a oslc_config:VersionResource ;
         dcterms:isVersionOf :conceptResourceA .
@@ -375,13 +375,12 @@
         dcterms:title &quot;Concept Resource A&quot; ;
         :color &quot;red&quot; ;
         dcterms:description &quot;Concept resource A as it appears in the state with the URI :conceptResourceA-version17&quot; .
-}.</pre
+}</pre
         >
         <p>
           Updating a versioned resource is typically performed in a stream, and usually results in the creation of a new
           version of the same concept resource. In some systems, a related batch of changes to one or more resources can
-          be grouped into a <em>change set</em>; this version of OSLC Configuration Management does not define how
-          change sets might work.
+          be grouped into a <em>change set</em>.
         </p>
         <p>
           Since concept resource URIs for versioned resources do not inherently identify a specific version of that
@@ -495,7 +494,7 @@
         The following individuals have participated in the creation of this specification and are gratefully
         acknowledged:
       </p>
-      <p style="margin-left: 40px;">
+      <p style="margin-left: 40px">
         David Honey (Persistent)<br />
         Ian Green (Persistent)<br />
         Geoff Clemm (Persistent)<br />
