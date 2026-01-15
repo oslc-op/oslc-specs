@@ -1,6 +1,6 @@
        /**
        * Queries the back link index for links pointing to the specified target
-       * URLs scoped to the specified specified global configuration URL and
+       * URLs scoped to the specified global configuration URL and
        * specified link types. This is a long running operation.
        *
         * @param targetURLs
