@@ -1,0 +1,65 @@
+# Copyright 2023 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix owl:         <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann:        <http://purl.org/vocab/vann/> .
+
+@prefix oslc_ldm:    <http://open-services.net/ns/ldm#> .
+
+# The ontology
+
+oslc_ldm:
+  a owl:Ontology ;
+  dcterms:title "OSLC Link Discovery Management (LDM) Vocabulary" ;
+  rdfs:label "OSLC Link Discovery Management (LDM) Vocabulary" ;
+  dcterms:description "All vocabulary URIs defined in the OSLC Link Discovery Management (LDM) namespace."^^rdf:XMLLiteral ;
+  vann:preferredNamespacePrefix "oslc_ldm" ;
+  dcterms:publisher <https://open-services.net/about/> ;
+  dcterms:issued "2023-01-01"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  dcterms:license <http://www.apache.org/licenses/LICENSE-2.0> ;
+  dcterms:source <https://docs.oasis-open-projects.org/oslc-op/ldm/v1.0/link-discovery-management-vocab.ttl> ;
+  dcterms:isPartOf <https://docs.oasis-open-projects.org/oslc-op/ldm/v1.0/link-discovery-management-spec.html> ;
+  dcterms:hasVersion "PSD" ;
+  dcterms:dateCopyrighted  "2023" .
+
+# Classes
+
+oslc_ldm:LinkDiscoveryRequest
+        a                 rdfs:Class ;
+        rdfs:comment      "A request to discover links to or from a set of resources, optionally filtered by link predicates and direction." ;
+        rdfs:isDefinedBy  oslc_ldm: ;
+        rdfs:label        "LinkDiscoveryRequest" .
+
+# Properties
+
+oslc_ldm:resources
+        a                 rdf:Property ;
+        rdfs:comment      "The target resources for which links are being discovered." ;
+        rdfs:isDefinedBy  oslc_ldm: ;
+        rdfs:label        "resources" .
+
+oslc_ldm:linkPredicates
+        a                 rdf:Property ;
+        rdfs:comment      "The link type predicates used to filter the discovered links. If not specified, all link predicates are returned." ;
+        rdfs:isDefinedBy  oslc_ldm: ;
+        rdfs:label        "linkPredicates" .
+
+oslc_ldm:direction
+        a                 rdf:Property ;
+        rdfs:comment      "The direction of links to discover. A value of 'incoming' discovers only incoming links. A value of 'any' discovers both incoming and outgoing links. Defaults to 'incoming'." ;
+        rdfs:isDefinedBy  oslc_ldm: ;
+        rdfs:label        "direction" .

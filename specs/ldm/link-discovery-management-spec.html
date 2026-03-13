@@ -56,8 +56,16 @@ services interface for an application to discover incoming links."
         // Other parts of multi-part spec
         additionalArtifacts: [
           {
-            title: "OSLC LDM Version 1.0: Part 2: Machine-readable OpenAPI yaml",
-            href: thisBase + "/ldm-service.yaml",
+            title: "OSLC LDM Version 1.0. Part 2: Machine Readable Vocabulary Terms",
+            href: "link-discovery-management-vocab.ttl",
+          },
+          {
+            title: "OSLC LDM Version 1.0. Part 3: Machine Readable Constraints",
+            href: "link-discovery-management-shapes.ttl",
+          },
+          {
+            title: "OSLC LDM Version 1.0. Part 4: Machine-readable OpenAPI yaml",
+            href: "ldm-service.yaml",
           },
         ],
 
@@ -77,7 +85,7 @@ services interface for an application to discover incoming links."
             name: "Eran Gery",
             mailto: "egery@sodiuswillert.com",
             company: "Sodius Willert",
-            companyURL: "http://www.ibm.com",
+            companyURL: "https://www.sodiuswillert.com",
           },
           {
             name: "Martin Ulrich",
@@ -89,9 +97,9 @@ services interface for an application to discover incoming links."
         chairs: [
           {
             name: "Jim Amsden",
-            mailto: "jimamsden@gmail.com",
-            company: "",
-            companyURL: "",
+            mailto: "j.amsden@mid.ch",
+            company: "MID GmbH",
+            companyURL: "https://mid.de",
           },
           {
             name: "Jad El-khoury",
@@ -106,7 +114,7 @@ services interface for an application to discover incoming links."
         wgShortName: "oslc-op",
 
         // Namespaces defined by this TC
-        namespaces: [],
+        namespaces: [{ href: "http://open-services.net/ns/ldm#", prefix: "oslc_ldm" }],
 
         localBiblio: {
           OSLCCore3: {
@@ -273,11 +281,12 @@ services interface for an application to discover incoming links."
       </p>
       <ul>
         <li>
-          How to inquire incoming and optionnally outgoing links to resources for a provided set of resource URIs.
+          How to inquire incoming and optionnally outgoing links to resources for a provided set of predicate and
+          resource URIs.
         </li>
         <li>
           Incoming links service providers may operate in configuration enabled contexts, returning incoming and
-          outgoing as concept URIs resolved to versions using a Configuration-Context.
+          outgoing as concept URIs that resolve to versions in a Configuration-Context.
         </li>
         <li>A means of discovering service providers that contribute links to an LDM server.</li>
       </ul>
@@ -288,8 +297,8 @@ services interface for an application to discover incoming links."
         implementations may use any means for populating their required content.
       </p>
       <p>
-        This specification is a [[!OSLCCore3]] compliant specification, and as such most of its content are references
-        to [[!OSLCCore3]].
+        This specification is a [[!OSLCCore3]] compliant specification, and as such has many references to
+        [[!OSLCCore3]].
       </p>
 
       <section id="terminology">
@@ -300,7 +309,7 @@ services interface for an application to discover incoming links."
             An assertion or RDF triple consisting of a (subject, predicate, object) that manifests an instance of a
             relationship between the referenced subject and object OSLC resources. The subject in the triple is often
             referred to as the source resource of the Link. The object in the triple if often referred to as the target
-            resource of the Link.
+            resource of the Link. All OSLC Links, like RDF prodicates, are directional.
           </dd>
 
           <dt><dfn>Link Type</dfn></dt>
@@ -328,9 +337,9 @@ services interface for an application to discover incoming links."
           <dd>
             A server implementing the OSLC Link Discovery Management specification. OSLC LDM clients consume services
             provided by LDM Servers to discover incoming links. The use of the terms Client and Server are intended to
-            distinguish typical consumers and providers of OSLC resources in a distributed environment based on REST. A
-            particular application component could be a client for some OSLC domain services and a server for the same
-            or another domain.
+            distinguish typical consumers and providers of OSLC services and resources in a distributed environment
+            based on REST. A particular application component could be a client for some OSLC domain services and a
+            server for the same or another domain.
           </dd>
         </dl>
       </section>
@@ -393,7 +402,7 @@ services interface for an application to discover incoming links."
                 protocol is needed. Note: a scenario with multiple LDM Servers is possible, in which case multiple LDM
                 Server URI are configured. This specification does not prescribe how these multiple LDM servers are
                 managed together. A LDM Service SHOULD provide discovery of its link contributors via Service Provider
-                Catalog which is pointing via <code>oslc:serviceProviderCatalog</code> to the contributing servers
+                Catalog which is accessed via <code>oslc:serviceProviderCatalog</code> to the contributing servers
                 catalogs.
               </td>
             </tr>
@@ -507,7 +516,8 @@ services interface for an application to discover incoming links."
         <li>Resources: One or more URIs of resources for which links are being requested</li>
         <li>Link predicates: Zero or more URIs of OSLC link types (or RDF properties) that are being requested</li>
         <li>
-          Direction: optional parameter indicating incoming or any links should be returned, incominig is the default
+          Direction: optional parameter indicating incoming or any links should be returned, i.e., whether the resources
+          are represent target or source resources or both. Incominig is the default.
         </li>
       </ul>
       <p class="conformance">
@@ -520,27 +530,28 @@ services interface for an application to discover incoming links."
       </p>
       <p class="conformance">
         The optional direction parameter is assumed by default to be "incoming". If the value of Direction is "any" the
-        LDM server MUST include incoming and outgoing links are in the result.
+        LDM server MUST include incoming and outgoing links in the result.
       </p>
       <p>The LDM Server response is a set of link triples consisting of</p>
       <ul>
-        <li>Subject resource: URI</li>
+        <li>Subject resource: concept URI</li>
         <li>
           Predicate: URI
           <p>should be one of the requested link predicates, in case specified</p>
         </li>
         <li>
-          Object resource: URI
-          <p>should be one of requested Object concept resources</p>
+          Object resource: concept URI
+          <p>should be one of requested Object concept resources for incoming links</p>
         </li>
       </ul>
       <p class="conformance">
         If the direction is "incoming", object resource should be one of requested Object concept resource. If the
-        direction is "any", the subject resource or object resource should match one of the resource URIs specified
+        direction is "any", the subject resource or object resource should match one of the resource URIs specified.
       </p>
       <p>
         Based on the LDM Server response, the LDM Client would typically show the incoming link with an inverse link
-        label (e.g., “validated by” vs. “validates”), for incoming links.
+        label (e.g., “validated by” vs. “validates”), for incoming links. LDM servers do not provide inverse link
+        information, that is the responsibility of the LDM client.
       </p>
       <p class="conformance">
         The inquiry MUST be implemented as an HTTP POST request, where the target concept resources and the predicates
@@ -556,14 +567,14 @@ Content-Type: text/turtle
 Configuration-Context: http://elm.example.com/gcm/baseline1URI
  
 @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
-@prefix ldp: &lt;http://www.w3.org/ns/ldp# &gt;.
+@prefix ldp: &lt;http://www.w3.org/ns/ldp#&gt;.
 @prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
 @prefix oslc_ldm: &lt;http://open-services/net/ns/ldm#&gt;.
  
-_:b1 oslc_ldm:resources
-    &lt;http://example.org/rm/req1URI &gt;, &lt;http://example.org/rm/req2URI&gt;.
+[] oslc_ldm:resources
+    &lt;http://example.org/rm/req1URI&gt;, &lt;http://example.org/rm/req2URI&gt;.
  
-_:b2 oslc_ldm: linkPredicates
+[] oslc_ldm: linkPredicates
     oslc_cm:implementsRequirement, oslc_cm:tracksRequirement .
 
   </pre
@@ -594,18 +605,20 @@ Content-Type: text/turtle
 Configuration-Context: http://elm.example.com/gcm/baseline1URI
   
 @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
-@prefix dcterms: &lt;http://purl.org/dc/terms/>.
+@prefix dcterms: &lt;http://purl.org/dc/terms/&gt;.
 @prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
 @prefix oslc_rm: &lt;http://open-services.net/ns/rm#&gt;.
+@prefix jazz_am: &lt;http://jazz.net/ns/dm/linktypes#&gt;.
 @prefix oslc_ldm: &lt;http://open-services/net/ns/ldm#&gt;.
   
-_:b1 oslc_ldm:resources
-    &lt;http://example.org/rm/req1URI &gt;, &lt;http://example.org/rm/req2URI&gt;.
+[] oslc_ldm:resources
+    &lt;http://example.org/rm/req1URI&gt;, &lt;http://example.org/rm/req2URI&gt;.
   
-_:b2 oslc_ldm:linkPredicates
-    oslc_cm:implementsRequirement, oslc_rm:satisfyRequirement .
+[] oslc_ldm:linkPredicates
+    oslc_cm:implementsRequirement, oslc_rm:satisfyRequirement, 
+    oslc_cm:tracks, oslc_rm:satisfies, jazz_am:satisfy .
 
-_:b3 oslc_ldm:direction “any”.
+[] oslc_ldm:direction “any”.
   </pre
       >
       <p>Response (in turtle):</p>
@@ -619,42 +632,116 @@ _:b3 oslc_ldm:direction “any”.
   @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;.
   @prefix oslc_am: &lt;http://open-services.net/ns/am#&gt;. 
   @prefix oslc_cm: &lt;http://open-services.net/ns/cm#&gt;.
-  
+  @prefix oslc_rm: &lt;http://open-services.net/ns/rm#&gt;.
+  @prefix jazz_am: &lt;http://jazz.net/ns/dm/linktypes#&gt;.
     
     &lt;http://example.com/cm/resource/workitem1URI&gt;
       oslc_cm:tracks &lt;http://elm.example.com/rm/req1URI&gt;; 
       oslc_cm:tracks &lt;http://elm.example.com/rm/req2URI&gt;.
     &lt;http://elm.example.com/rm/req1URI&gt; 
-      oslc_rm:satisfy &lt;http://elm.example.com/rm/req2URI&gt;
+      oslc_rm:satisfies &lt;http://elm.example.com/rm/req2URI&gt;.
    &lt;http://example.com/am/am1URI&gt;
-      oslc_am:implements &lt;http://elm.example.com/rm/req1URI&gt;.
+      jazz_am:satisfy &lt;http://elm.example.com/rm/req1URI&gt;.
           
       </pre>
+    </section>
+    <section id="ldmDiscovery">
+      <h2>LDM contributions discovery</h2>
+      <p>
+        A LDM Service provides discovery of its link contributors via Service Provider Catalog which is accessed via
+        oslc:serviceProviderCatalog to the contributing servers catalogs.
+      </p>
+      <p>
+        The link contributions discovery is exposed under the root-services path as described in the open-API section
+        below.
+      </p>
+    </section>
+    <section id="openapispec">
+      <h2>OpenApi specification of the LDM service</h2>
+      <p class="conformance">
+        LDM servers MUST implement the OpenAPI specification given in
+        <a href="./ldm-service.yaml">OSLC LDM Version 1.0: Part 2: Machine-readable OpenAPI yaml</a>.
+      </p>
+      <p>The LDM OpenAPI specification defines the following endpoints:</p>
+      <table class="simple">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Path</th>
+            <th>Operation</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>POST</td>
+            <td>/discover-links</td>
+            <td>discoverLinks</td>
+            <td>
+              Discovers links to or from a set of resources. The request body is an RDF representation of an
+              <code>oslc_ldm:LinkDiscoveryRequest</code> specifying target resources, optional link predicate filters,
+              and optional direction. Accepts an optional <code>Configuration-Context</code> header for resolving
+              concept URIs to version resources. Accepts and returns <code>application/rdf+xml</code>,
+              <code>text/turtle</code>, or <code>application/ld+json</code>.
+            </td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td>/get-contributors</td>
+            <td>getLinkContributors</td>
+            <td>
+              Returns the LDM link contributors that have registered with this LDM server. Returns
+              <code>application/rdf+xml</code>, <code>text/turtle</code>, or <code>application/ld+json</code>.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section id="ldmRequest">
+      <h2>LDM POST Entity Request Body</h2>
+      <!--<div
+          title="RDF Vocabulary for OSLC Link Discovery Management Domain"
+          data-include="./link-discovery-management-vocab.ttl"
+          data-oninclude="vocabToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>-->
+      <div
+        title="Shapes for Link Discovery Management"
+        data-include="./link-discovery-management-shapes.ttl#LinkDiscoveryRequestShape"
+        data-oninclude="shapeToSpec"
+        data-include-sync="true"
+        data-include-replace="true"
+        data-include-format="html"
+      ></div>
+    </section>
 
-      <section id="ldmDiscovery">
-        <h2>LDM contributions discovery</h2>
-        <p>
-          A LDM Service provides discovery of its link contributors via Service Provider Catalog which is pointing via
-          oslc:serviceProviderCatalog to the contributing servers catalogs.
-        </p>
-        <p>
-          The link contributions discovery is exposed under the root-services path as described in the open-API section
-          below.
-        </p>
-      </section>
-      <section id="openapispec">
-        <h2>OpenApi specification of the LDM service</h2>
-        <p class="conformance">
-          LDM servers MUST implement the OpenAPI specification given in
-          <a href="./ldm-service.yaml">OSLC LDM Version 1.0: Part 2: Machine-readable OpenAPI yaml</a>.
-        </p>
-      </section>
-      <section id="ldmRequest">
-        <h2>LDM POST Request Parameters</h2>
-      </section>
-      <section id="ldmResponse">
-        <h2>LDM Response Vocabulary</h2>
-      </section>
+    <section id="ldmRequest">
+      <h2>LDM POST Entity Response Body</h2>
+      <p>
+        The response body of the LDM POST request is an RDF representation of a set of link triples, where each triple
+        consists of a subject resource, a predicate and an object resource. The subject and object resources are concept
+        URIs if the request included a Configuration-Context header.
+      </p>
+      <p>
+        The triples are of the form <code>?sourceConceptURL predicateURL targetConceptURL</code> for incoming links, and
+        <code>sourceConceptURL predicateURL ?targetConceptURL</code> for outgoing links where:
+      </p>
+      <ul>
+        <li>
+          ?sourceConceptURL is any of the oslc_ldm:resources in the POST entity request body that that is related to a
+          targetConceptURL by the predicateURL
+        </li>
+        <li>
+          predicateURL is any of the oslc_ldm:linkPredicates in oslc_ldm:linkPredicates in the POST entity request body,
+          or any predicate if no link predicates were specified in the request body
+        </li>
+        <li>
+          ?targetConceptURL is any of the oslc_ldm:resources in the POST entity request body that that is related to a
+          sourceConceptURL by the predicateURL
+        </li>
+      </ul>
     </section>
 
     <section id="conformance">
@@ -673,7 +760,7 @@ _:b3 oslc_ldm:direction “any”.
         acknowledged:
       </p>
       <p><b>Participants</b>:</p>
-      <p style="margin-left: 40px">James Amsden, IBM (co-chair)<br /></p>
+      <p style="margin-left: 40px">Jim Amsden, MID (co-chair)<br /></p>
     </section>
   </body>
 </html>
