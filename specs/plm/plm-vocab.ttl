@@ -203,3 +203,221 @@ oslc_plm:validatesPartUsage
 # Additional properties for the QM domain
 
 
+# ── Effectivity ──────────────────────────────────────────────────────
+#
+# Effectivity resources express the instance/timing parameters (date,
+# unit, serial, lot, model) under which a Part or PartUsage version
+# applies. Carried by the version resource and evaluated at request
+# time against an EffectivityContext per the OSLC Configuration
+# Management Selections Extensions (oslc_config:EffectivitySelections).
+
+oslc_plm:Effectivity a rdfs:Class ;
+    rdfs:subClassOf oslc_am:Resource ;
+    rdfs:label "Effectivity" ;
+    rdfs:comment "An effectivity record carried by a Part or PartUsage version, expressing the instance/timing parameters (date range, unit range, serial range, lot, end-item) under which the version applies. Evaluated against an EffectivityContext supplied by oslc_config.effectivity per the OSLC Configuration Management Selections Extensions." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:effectivity
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectivity" ;
+  rdfs:comment "An Effectivity record carried by a Part or PartUsage version. Multiple effectivity records on a single version are interpreted as a logical OR (the version is effective under the context if any of its records' predicates evaluate to true)." .
+
+oslc_plm:effectiveValueType
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectiveValueType" ;
+  rdfs:comment "The type of value(s) the Effectivity record's range is expressed in. One of oslc_plm:Date, oslc_plm:UnitNumber, oslc_plm:SerialNumber, oslc_plm:Lot, or oslc_plm:Model." .
+
+oslc_plm:effectiveForEndItem
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectiveForEndItem" ;
+  rdfs:comment "The end-item Part within whose serial/unit namespace this Effectivity record's range values are interpreted. REQUIRED for Effectivity records with effectiveValueType of UnitNumber or SerialNumber, since unit and serial numbers are otherwise ambiguous across end-items. OPTIONAL for Date, Lot, and Model effectivity." .
+
+oslc_plm:effectiveFrom
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectiveFrom" ;
+  rdfs:comment "The lower bound (inclusive) of the Effectivity record's range. The literal datatype matches effectiveValueType (xsd:date for Date, xsd:integer for UnitNumber, xsd:string for SerialNumber/Lot/Model). Absence means open-ended-below." .
+
+oslc_plm:effectiveTo
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectiveTo" ;
+  rdfs:comment "The upper bound (inclusive) of the Effectivity record's range. Datatype matches effectiveValueType. Absence means open-ended-above." .
+
+oslc_plm:effectiveReplacement
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectiveReplacement" ;
+  rdfs:comment "Optional. When present, the Effectivity record's predicate evaluates as a substitution: if the supplied context falls within [effectiveFrom, effectiveTo], the candidate version (the one carrying this record) is replaced in the resolved binding by the version named here. This expresses release effectivity / supersede semantics, where a newer revision replaces an older one as of a date or unit number. The target MUST be a different version of the same versioned resource as the candidate." .
+
+oslc_plm:authorizedBy
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "authorizedBy" ;
+  rdfs:comment "Optional. The change-management resource (typically an oslc_cm:ChangeRequest) that authorized this Effectivity record. Provides the audit linkage required by many enterprise PLM workflows." .
+
+# Effectivity value-type identifiers (used as values of effectiveValueType).
+
+oslc_plm:Date a rdfs:Class ;
+    rdfs:label "Date" ;
+    rdfs:comment "Effectivity value-type identifier: range values are xsd:date." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:UnitNumber a rdfs:Class ;
+    rdfs:label "Unit Number" ;
+    rdfs:comment "Effectivity value-type identifier: range values are xsd:integer unit numbers, interpreted within the namespace of effectiveForEndItem." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:SerialNumber a rdfs:Class ;
+    rdfs:label "Serial Number" ;
+    rdfs:comment "Effectivity value-type identifier: range values are xsd:string serial numbers, interpreted within the namespace of effectiveForEndItem." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:Lot a rdfs:Class ;
+    rdfs:label "Lot" ;
+    rdfs:comment "Effectivity value-type identifier: range values are xsd:string lot identifiers." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:Model a rdfs:Class ;
+    rdfs:label "Model" ;
+    rdfs:comment "Effectivity value-type identifier: range values are xsd:string model identifiers." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+# Effectivity context resource and parameter properties.
+
+oslc_plm:EffectivityContext a rdfs:Class ;
+    rdfs:subClassOf oslc_am:Resource ;
+    rdfs:label "Effectivity Context" ;
+    rdfs:comment "A resource carrying the parameter values supplied to effectivity predicate evaluation. Referenced from a request via ?oslc_config.effectivity=<uri> per the OSLC Configuration Management Selections Extensions." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:effectivityDate
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectivityDate" ;
+  rdfs:comment "An xsd:date value for date-based effectivity predicate evaluation." .
+
+oslc_plm:effectivityEndItem
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectivityEndItem" ;
+  rdfs:comment "The end-item Part defining the serial/unit namespace for the unit/serial values in this context. REQUIRED when effectivityUnitNumber or effectivitySerialNumber is supplied." .
+
+oslc_plm:effectivityUnitNumber
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectivityUnitNumber" ;
+  rdfs:comment "An xsd:integer unit number, interpreted within the namespace of effectivityEndItem." .
+
+oslc_plm:effectivitySerialNumber
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectivitySerialNumber" ;
+  rdfs:comment "An xsd:string serial number, interpreted within the namespace of effectivityEndItem." .
+
+oslc_plm:effectivityLot
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectivityLot" ;
+  rdfs:comment "An xsd:string lot identifier." .
+
+oslc_plm:effectivityModel
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectivityModel" ;
+  rdfs:comment "An xsd:string model identifier." .
+
+
+# ── Variability ──────────────────────────────────────────────────────
+#
+# Variability resources express the configuration-option conditions
+# under which a Part or PartUsage version applies. Distinct from
+# Effectivity: variability addresses option choice ("Engine = V6"),
+# effectivity addresses instance/timing ("unit 100 onwards"). Evaluated
+# at request time against a VariabilityContext per the OSLC
+# Configuration Management Selections Extensions
+# (oslc_config:VariabilitySelections).
+
+oslc_plm:OptionSet a rdfs:Class ;
+    rdfs:subClassOf oslc_am:Resource ;
+    rdfs:label "Option Set" ;
+    rdfs:comment "A named collection of Options applicable to a product family. The basis for variability predicate evaluation." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:Option a rdfs:Class ;
+    rdfs:subClassOf oslc_am:Resource ;
+    rdfs:label "Option" ;
+    rdfs:comment "A variability option (e.g., Engine, Color) defined within an OptionSet, with one or more OptionValues." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:OptionValue a rdfs:Class ;
+    rdfs:subClassOf oslc_am:Resource ;
+    rdfs:label "Option Value" ;
+    rdfs:comment "A specific value for an Option (e.g., V6 for Engine, Red for Color)." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:hasOption
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "hasOption" ;
+  rdfs:comment "An OptionSet has an Option." .
+
+oslc_plm:hasOptionValue
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "hasOptionValue" ;
+  rdfs:comment "An Option has an OptionValue." .
+
+oslc_plm:VariabilityCondition a rdfs:Class ;
+    rdfs:subClassOf oslc_am:Resource ;
+    rdfs:label "Variability Condition" ;
+    rdfs:comment "A boolean expression over OptionValue equality. Carried by a Part or PartUsage version (via oslc_plm:variabilityCondition) to express the option-choice condition under which that version applies. A VariabilityCondition is either a terminal (oslc_plm:optionEquals) or an internal node combining sub-conditions (oslc_plm:and, oslc_plm:or, oslc_plm:not)." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:variabilityCondition
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "variabilityCondition" ;
+  rdfs:comment "A VariabilityCondition carried by a Part or PartUsage version. At most one variabilityCondition is permitted per version (use AND/OR composition to express compound conditions)." .
+
+oslc_plm:and a rdf:Property ;
+    rdfs:isDefinedBy oslc_plm: ;
+    rdfs:label "and" ;
+    rdfs:comment "Logical AND of sub-conditions. The value is an rdf:List whose members are VariabilityCondition resources." .
+
+oslc_plm:or a rdf:Property ;
+    rdfs:isDefinedBy oslc_plm: ;
+    rdfs:label "or" ;
+    rdfs:comment "Logical OR of sub-conditions. The value is an rdf:List whose members are VariabilityCondition resources." .
+
+oslc_plm:not a rdf:Property ;
+    rdfs:isDefinedBy oslc_plm: ;
+    rdfs:label "not" ;
+    rdfs:comment "Logical negation of a single sub-condition. The value is a VariabilityCondition resource." .
+
+oslc_plm:optionEquals
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "optionEquals" ;
+  rdfs:comment "Terminal of a VariabilityCondition: an Option has one of a specified set of OptionValues. The value is an rdf:List whose first member is an Option and whose remaining members are OptionValues belonging to that Option. Multiple OptionValues for the same Option in one optionEquals terminal are interpreted as an OR (any of these values satisfies the terminal)." .
+
+oslc_plm:VariabilityContext a rdfs:Class ;
+    rdfs:subClassOf oslc_am:Resource ;
+    rdfs:label "Variability Context" ;
+    rdfs:comment "A resource carrying the OptionValue choices supplied to variability predicate evaluation. Referenced from a request via ?oslc_config.variability=<uri> per the OSLC Configuration Management Selections Extensions." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:choice
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "choice" ;
+  rdfs:comment "An OptionValue chosen in this VariabilityContext. Multiple choice values represent the configurator's complete assignment across the OptionSet (each Option SHOULD appear via exactly one chosen OptionValue)." .
+
+oslc_plm:appliesToOptionSet
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "appliesToOptionSet" ;
+  rdfs:comment "The OptionSet whose Options this VariabilityContext makes assignments for." .

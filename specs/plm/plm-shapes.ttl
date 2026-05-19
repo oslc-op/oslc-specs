@@ -62,6 +62,8 @@
         # OSLC PLM properties
         :alignsPart,
         :composedOfPartUsage,
+        :effectivity,
+        :variabilityCondition,
 
         # Common link types
         :derives,
@@ -96,6 +98,8 @@
         # OSLC PLM properties
         :alignsPartUsage,
         :representsPart,
+        :effectivity,
+        :variabilityCondition,
 
         # Common link types
         :derives,
@@ -607,6 +611,322 @@ resource will be oslc_plm:Part."""^^rdf:XMLLiteral .
         oslc:range               oslc_plm:PartUsage ;
         oslc:representation      oslc:Reference ;
         oslc:valueType           oslc:Resource ;
-        dcterms:description      """A Test Case validates a PartUsage. It is likely that the target 
+        dcterms:description      """A Test Case validates a PartUsage. It is likely that the target
 resource will be oslc_plm:PartUsage."""^^rdf:XMLLiteral .
+
+
+# ── Effectivity property shapes ──────────────────────────────────────
+
+:effectivity  a         oslc:Property ;
+        oslc:name                "effectivity" ;
+        dcterms:title            "Effectivity" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_plm:effectivity ;
+        oslc:range               oslc_plm:Effectivity ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """An Effectivity record carried by a Part or PartUsage version. Multiple records on a single version are interpreted as logical OR. Evaluated against an EffectivityContext per the OSLC Configuration Management Selections Extensions."""^^rdf:XMLLiteral .
+
+:effectiveValueType  a   oslc:Property ;
+        oslc:name                "effectiveValueType" ;
+        dcterms:title            "Effective Value Type" ;
+        oslc:occurs              oslc:Exactly-one ;
+        oslc:propertyDefinition  oslc_plm:effectiveValueType ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """The type of value used in this Effectivity record's range. One of oslc_plm:Date, oslc_plm:UnitNumber, oslc_plm:SerialNumber, oslc_plm:Lot, or oslc_plm:Model."""^^rdf:XMLLiteral .
+
+:effectiveForEndItem  a  oslc:Property ;
+        oslc:name                "effectiveForEndItem" ;
+        dcterms:title            "Effective For End Item" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:effectiveForEndItem ;
+        oslc:range               oslc_plm:Part ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """The end-item Part whose serial/unit namespace this Effectivity's range values are interpreted within. REQUIRED for UnitNumber and SerialNumber effectivity."""^^rdf:XMLLiteral .
+
+:effectiveFrom  a        oslc:Property ;
+        oslc:name                "effectiveFrom" ;
+        dcterms:title            "Effective From" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:effectiveFrom ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      """Inclusive lower bound of the Effectivity record's range. Datatype matches effectiveValueType. Absence means open-ended-below."""^^rdf:XMLLiteral .
+
+:effectiveTo  a          oslc:Property ;
+        oslc:name                "effectiveTo" ;
+        dcterms:title            "Effective To" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:effectiveTo ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           rdf:XMLLiteral ;
+        dcterms:description      """Inclusive upper bound of the Effectivity record's range. Datatype matches effectiveValueType. Absence means open-ended-above."""^^rdf:XMLLiteral .
+
+:effectiveReplacement  a oslc:Property ;
+        oslc:name                "effectiveReplacement" ;
+        dcterms:title            "Effective Replacement" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:effectiveReplacement ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """Optional. When present, the predicate evaluates as substitution: matching contexts replace the candidate with the version named here. Target MUST be a different version of the same versioned resource."""^^rdf:XMLLiteral .
+
+:authorizedBy  a         oslc:Property ;
+        oslc:name                "authorizedBy" ;
+        dcterms:title            "Authorized By" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:authorizedBy ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """Optional. The change-management resource (typically oslc_cm:ChangeRequest) that authorized this Effectivity record."""^^rdf:XMLLiteral .
+
+
+# ── Effectivity context property shapes ──────────────────────────────
+
+:effectivityDate  a      oslc:Property ;
+        oslc:name                "effectivityDate" ;
+        dcterms:title            "Effectivity Date" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:effectivityDate ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           xsd:date ;
+        dcterms:description      """An xsd:date value for date-based effectivity evaluation."""^^rdf:XMLLiteral .
+
+:effectivityEndItem  a   oslc:Property ;
+        oslc:name                "effectivityEndItem" ;
+        dcterms:title            "Effectivity End Item" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:effectivityEndItem ;
+        oslc:range               oslc_plm:Part ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """The end-item Part defining the serial/unit namespace for this context. REQUIRED when effectivityUnitNumber or effectivitySerialNumber is supplied."""^^rdf:XMLLiteral .
+
+:effectivityUnitNumber  a oslc:Property ;
+        oslc:name                "effectivityUnitNumber" ;
+        dcterms:title            "Effectivity Unit Number" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:effectivityUnitNumber ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           xsd:integer ;
+        dcterms:description      """Unit number, interpreted within effectivityEndItem's namespace."""^^rdf:XMLLiteral .
+
+:effectivitySerialNumber  a oslc:Property ;
+        oslc:name                "effectivitySerialNumber" ;
+        dcterms:title            "Effectivity Serial Number" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:effectivitySerialNumber ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      """Serial number, interpreted within effectivityEndItem's namespace."""^^rdf:XMLLiteral .
+
+:effectivityLot  a       oslc:Property ;
+        oslc:name                "effectivityLot" ;
+        dcterms:title            "Effectivity Lot" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:effectivityLot ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      """Lot identifier."""^^rdf:XMLLiteral .
+
+:effectivityModel  a     oslc:Property ;
+        oslc:name                "effectivityModel" ;
+        dcterms:title            "Effectivity Model" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:effectivityModel ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           xsd:string ;
+        dcterms:description      """Model identifier."""^^rdf:XMLLiteral .
+
+
+# ── Variability property shapes ──────────────────────────────────────
+
+:variabilityCondition  a oslc:Property ;
+        oslc:name                "variabilityCondition" ;
+        dcterms:title            "Variability Condition" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:variabilityCondition ;
+        oslc:range               oslc_plm:VariabilityCondition ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """A VariabilityCondition carried by a Part or PartUsage version. Evaluated against a VariabilityContext per the OSLC Configuration Management Selections Extensions. Use AND/OR composition to express compound conditions."""^^rdf:XMLLiteral .
+
+:hasOption  a            oslc:Property ;
+        oslc:name                "hasOption" ;
+        dcterms:title            "Has Option" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_plm:hasOption ;
+        oslc:range               oslc_plm:Option ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """An OptionSet has an Option."""^^rdf:XMLLiteral .
+
+:hasOptionValue  a       oslc:Property ;
+        oslc:name                "hasOptionValue" ;
+        dcterms:title            "Has Option Value" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_plm:hasOptionValue ;
+        oslc:range               oslc_plm:OptionValue ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """An Option has an OptionValue."""^^rdf:XMLLiteral .
+
+:vc-and  a               oslc:Property ;
+        oslc:name                "and" ;
+        dcterms:title            "And" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:and ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """Logical AND of a list of sub-conditions. Value is an rdf:List of VariabilityCondition resources."""^^rdf:XMLLiteral .
+
+:vc-or  a                oslc:Property ;
+        oslc:name                "or" ;
+        dcterms:title            "Or" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:or ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """Logical OR of a list of sub-conditions. Value is an rdf:List of VariabilityCondition resources."""^^rdf:XMLLiteral .
+
+:vc-not  a               oslc:Property ;
+        oslc:name                "not" ;
+        dcterms:title            "Not" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:not ;
+        oslc:range               oslc_plm:VariabilityCondition ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """Logical negation of a single sub-condition."""^^rdf:XMLLiteral .
+
+:optionEquals  a         oslc:Property ;
+        oslc:name                "optionEquals" ;
+        dcterms:title            "Option Equals" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:optionEquals ;
+        oslc:representation      oslc:Either ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """Terminal of a VariabilityCondition. Value is an rdf:List whose first member is an Option and remaining members are OptionValues. Multiple OptionValues are OR-combined within the same Option."""^^rdf:XMLLiteral .
+
+:choice  a               oslc:Property ;
+        oslc:name                "choice" ;
+        dcterms:title            "Choice" ;
+        oslc:occurs              oslc:Zero-or-many ;
+        oslc:propertyDefinition  oslc_plm:choice ;
+        oslc:range               oslc_plm:OptionValue ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """An OptionValue chosen in this VariabilityContext."""^^rdf:XMLLiteral .
+
+:appliesToOptionSet  a   oslc:Property ;
+        oslc:name                "appliesToOptionSet" ;
+        dcterms:title            "Applies To Option Set" ;
+        oslc:occurs              oslc:Zero-or-one ;
+        oslc:propertyDefinition  oslc_plm:appliesToOptionSet ;
+        oslc:range               oslc_plm:OptionSet ;
+        oslc:representation      oslc:Reference ;
+        oslc:valueType           oslc:Resource ;
+        dcterms:description      """The OptionSet this VariabilityContext assigns choices from."""^^rdf:XMLLiteral .
+
+
+# ── Resource shapes for the new types ────────────────────────────────
+
+:EffectivityShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:Effectivity ;
+    dcterms:title  "Effectivity" ;
+    dcterms:description  """An effectivity record carried by a Part or PartUsage version. Expresses the instance/timing parameters (date, unit, serial, lot, model) under which the version applies, optionally with a replacement version (release effectivity)."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description,
+        :effectiveValueType,
+        :effectiveForEndItem,
+        :effectiveFrom,
+        :effectiveTo,
+        :effectiveReplacement,
+        :authorizedBy
+    .
+
+:EffectivityContextShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:EffectivityContext ;
+    dcterms:title  "Effectivity Context" ;
+    dcterms:description  """The parameter context supplied to effectivity predicate evaluation, referenced from a request via the oslc_config.effectivity query parameter or the Effectivity-Context header per the OSLC Configuration Management Selections Extensions."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description,
+        :effectivityDate,
+        :effectivityEndItem,
+        :effectivityUnitNumber,
+        :effectivitySerialNumber,
+        :effectivityLot,
+        :effectivityModel
+    .
+
+:OptionSetShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:OptionSet ;
+    dcterms:title  "Option Set" ;
+    dcterms:description  """A named collection of Options applicable to a product family."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description,
+        :hasOption
+    .
+
+:OptionShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:Option ;
+    dcterms:title  "Option" ;
+    dcterms:description  """A variability option (e.g., Engine, Color) within an OptionSet."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description,
+        :hasOptionValue
+    .
+
+:OptionValueShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:OptionValue ;
+    dcterms:title  "Option Value" ;
+    dcterms:description  """A specific value of an Option."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description
+    .
+
+:VariabilityConditionShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:VariabilityCondition ;
+    dcterms:title  "Variability Condition" ;
+    dcterms:description  """A boolean expression over OptionValue equality. Either a terminal (optionEquals) or an internal node (and / or / not)."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description,
+        :vc-and,
+        :vc-or,
+        :vc-not,
+        :optionEquals
+    .
+
+:VariabilityContextShape a oslc:ResourceShape ;
+    oslc:describes oslc_plm:VariabilityContext ;
+    dcterms:title  "Variability Context" ;
+    dcterms:description  """The OptionValue choices supplied to variability predicate evaluation, referenced from a request via the oslc_config.variability query parameter or the Variability-Context header per the OSLC Configuration Management Selections Extensions."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description,
+        :appliesToOptionSet,
+        :choice
+    .
 
