@@ -380,3 +380,89 @@ This document synthesizes findings from the research conducted during the design
 - **Aras**: *Aras Innovator 31 — Effectivity Services Programmer's Guide* (D-008103), *Aras Innovator 29 — Configurator Services Programmer's Guide*, *Aras Variant Management 33 Administrator Guide* (D-007881), the *Demystifying Effectivity with Aras Innovator Version 12* blog, and the ArasLabs effectivity-sample-application reference repository.
 
 Specific product-version coverage is current as of 2026 product releases; major-version changes in any of the three systems may require this mapping document to be revised.
+
+---
+
+## Prior Art — SysML v2 (OMG): Part / PartUsage and Variation
+
+OMG **SysML v2** (Final Adopted, July 2025; built on **KerML 1.0**) uses the terms `PartDefinition` and `PartUsage` for core metaclasses of its formal modelling language. The OSLC PLM specification uses `Part` and `PartUsage` for related-but-different concepts in a product-lifecycle / BOM context. Because the terminology overlaps and reviewers will reasonably ask how the two relate, this section records a side-by-side comparison as background.
+
+**There is no current business case for aligning OSLC PLM with SysML v2.** SysML v2 and PLM are distinct worlds today — different tool ecosystems, different vendor commitments, different problem framings (systems modelling vs product-lifecycle management). Neither the SysML v2 community nor the PLM community has expressed interest in converging the two data models. PLM vendors that ship SysML v2 modeller integrations (Siemens, PTC) do so at the *tool integration* layer — they connect their SysML v2 modellers to their PLM systems — not by aligning their PLM data models with SysML v2 semantics.
+
+If interest in integration emerged in the future, OSLC would be a natural interface for it: there are proposed OASIS OSLC vocabularies on both sides — the OASIS OSLC PLM specification under refinement here, and the OASIS OSLC SysML v2 vocabulary that renders the SysML v2 language in RDF. But this section does not anticipate or propose such an integration. It exists solely to clarify the terminology overlap and to record where the two models genuinely differ, so that a reader who works in both worlds is not misled by the shared vocabulary.
+
+### Class structure
+
+| Aspect | SysML v2 | OSLC PLM (current) |
+|---|---|---|
+| Definition (the *kind*) | `PartDefinition`, a KerML `Classifier` (transitively `ItemDefinition` → `OccurrenceDefinition` → `Class` → `Classifier` → `Type`) | `oslc_plm:Part` (subclass of `oslc_am:Resource`) |
+| Usage (the *occurrence in a context*) | `PartUsage`, a KerML `Feature` (transitively `ItemUsage` → `OccurrenceUsage` → `Usage` → `Feature`); MUST subset the base `parts` PartUsage in the Systems Model Library | `oslc_plm:PartUsage` (subclass of `oslc_am:Resource`) |
+| Definition / Usage separation | **Strict and pervasive** — every Definition metaclass (Part, Action, State, Item, Port, Attribute, …) has a matching Usage metaclass | **Conflated** — `oslc_plm:Part` plays both roles (the kind being versioned *and* the top-level "system as a whole" composed under no parent) |
+| Typing relationship | `PartUsage` is typed by *one or more* `PartDefinition`s (KerML `FeatureTyping`) | `oslc_plm:representsPart` links a `PartUsage` to *one* `Part` |
+| Multiplicity | Native — `wheel : Wheel[4]` | None — quantity must be an attribute or distinct PartUsage instances |
+| Composite vs reference | Explicit — composite Usage = lifecycle-owned (black-diamond mapping from SysML v1); reference Usage = pointer | Implicit at best |
+| Specialization | `PartDefinition`-to-`PartDefinition` subclassification with feature subsetting and redefinition (e.g., `Sedan extends Vehicle` redefines `engine : Engine` to `engine : V6Engine`) | Flat `oslc_plm:alignsPart` — no specialization semantics; usages don't inherit through Part-to-Part relationships |
+| Variation point | `PartDefinition.isVariation = true` + `VariantMembership` to variant Usages; configurations produced by *binding* variants — intensional, inside the type lattice | `oslc_plm:variabilityCondition` (Boolean over options) + `oslc_plm:effectivity` (date/serial/unit ranges) as records on PartUsage versions, resolved by *filtering* at query time — extensional, outside the type system |
+| Versioning of language elements | None at the language level (KerML/SysML are modelling languages, not configuration specs) — the *Systems Modeling API and Services 1.0* defines commit/branch at the repository/transaction layer, with an OSLC PSM | Per-element `oslc_config:VersionResource` selected by `oslc_config:Configuration` (OSLC CM) — finer-grained and lifecycle-oriented |
+
+### Definition vs Usage — mapping into OSLC PLM
+
+The natural mapping `oslc_plm:Part ≈ PartDefinition` and `oslc_plm:PartUsage ≈ PartUsage` is **directional but not isomorphic**. OSLC PLM's `Part` covers both the SysML v2 *definition* role (typing, library identity) and the role that a top-level PartUsage plays in SysML v2 (the system as a whole). A consumer crossing the boundary therefore needs to know whether a given `oslc_plm:Part` URI is being used as a kind or as a root occurrence — context the spec does not currently make explicit.
+
+### Variation models — fundamentally different posture
+
+The most consequential difference is in the variation model:
+
+- **SysML v2 is intensional.** Variation is part of the type/feature lattice. A `PartDefinition` flagged `isVariation = true` owns `VariantMembership`s pointing at variant `Usage`s. A *configuration* in SysML v2 terms is a *binding of variants* — a feature-subsetting/redefinition operation handled by KerML's semantic machinery.
+- **OSLC PLM is extensional.** Variation lives in *records on PartUsage versions* (`variabilityCondition` for option-space Booleans, `effectivity` for date/serial/unit ranges). A *configuration* in OSLC CM terms applies these as a *filter pass* against a Variability-Context and an Effectivity-Context at request time.
+
+Translating one to the other:
+
+- **SysML v2 → OSLC PLM** is reasonably clean: a variation point with N `VariantMembership`s maps to N alternative PartUsages each carrying a `variabilityCondition` keyed on the option dimension that selects between them.
+- **OSLC PLM → SysML v2** is *lossy*. Arbitrary Boolean `variabilityCondition` expressions do not factor cleanly into variant trees, and `oslc_plm:effectivity` — calendar/serial/unit ranges — has **no native SysML v2 counterpart**. Effectivity would have to be encoded as attributes on the Usage plus an external resolver, which puts the resolution *outside* the SysML v2 model rather than inside it.
+
+This asymmetry is significant: a PLM system that wants to surface its effectivity-resolved configuration to a SysML v2 consumer can do so (the SysML v2 side just sees the resolved, post-filter view), but a SysML v2 model with intensional variation cannot fully describe an OSLC PLM configuration's lifecycle/timing axis.
+
+### Versioning — the layers are complementary, not in conflict
+
+SysML v2 has no element-level version mechanism in the language. The SysML v2 API defines commit/branch at the *repository* level (granularity of an entire model), with an OSLC PSM in its specification. OSLC Configuration Management's per-element selection of Part and PartUsage versions sits **cleanly beneath** any SysML v2 model layer: a SysML v2 PartDefinition can be mapped to an OSLC PLM Part with its own version timeline, and OSLC CM's resolution mechanisms (including `EffectivitySelections`) compose with — not against — SysML v2's repository-level versioning.
+
+### Industry posture
+
+- **PTC** and **Siemens** ship tool-level integrations between their SysML v2 modellers and their PLM systems (Windchill, Teamcenter respectively). These are application integrations — connecting two distinct authoring environments — not commitments to align Windchill's or Teamcenter's *PLM data model* with SysML v2 semantics. PTC has cited OSLC as one possible interface for such integrations.
+- **Aras** stays tool-agnostic in its MBSE messaging; no public SysML v2-specific commitment was found in publicly available material.
+- **OASIS OSLC SysML v2 vocabulary** exists as an RDF rendering of the SysML v2 *language* itself. It is not a mapping into OSLC PLM concepts. No formal OMG- or OASIS-blessed SysML v2 ↔ OSLC PLM data-model mapping exists or is in progress at the time of this writing.
+- **No active community effort** (in either the SysML v2 or the PLM community) is pursuing alignment of the two data models. The SysML v2 side treats variation, multiplicity, and specialization through its KerML feature lattice; the PLM side treats variation, effectivity, and configuration through extensional records and configuration-management resolution. These remain different, deliberate design choices.
+
+### Bearing on the OSLC Configuration Management Selections Extensions
+
+Given the absence of an alignment agenda, this comparison has no direct consequence for the Selections Extensions. The points worth recording for the TC:
+
+1. **No conflict.** OSLC PLM's effectivity/variability filter pass adds capability that SysML v2 does not provide natively (especially effectivity); OSLC CM's per-element versioning composes cleanly beneath SysML v2's repository-level commit/branch model. The two designs do not constrain each other.
+2. **The shared term *PartUsage* refers to compatible intuitions.** SysML v2's treatment of `PartUsage` as a KerML `Feature` (an in-context occurrence) is consistent with the framing used here, where `oslc_plm:PartUsage` is the contribution unit and PartUsage versions are the post-filter survivors named in `EffectivitySelections.selects`. A reviewer familiar with SysML v2 will find the term reasonably orienting; the underlying constructs are different in expressiveness, but not in spirit.
+3. **Reviewers should not expect a mapping.** This document does not claim, and the TC should not assume, that the OSLC PLM model can round-trip with SysML v2. They are deliberately different designs serving different problem framings, and the asymmetry — particularly in the variability and effectivity dimensions — is intrinsic, not an accident of vocabulary choice.
+
+### Cross-domain linking via OSLC AM is already provided
+
+Although the *data models* are not aligned, the OSLC PLM specification already establishes a usable cross-domain *link* surface between PLM resources (Parts, PartUsages) and architecture-modelling resources (including SysML v2 model elements surfaced as `oslc_am:Resource`s). The mechanism splits into two complementary directions:
+
+- **PLM → anywhere (existing).** `oslc_plm:Part`, `oslc_plm:PartUsage`, `oslc_plm:LogicalDesign`, and `oslc_plm:PhysicalDesign` carry the OSLC AM common link types `derives`, `elaborates`, `external`, `refine`, `satisfy`, and `trace` (in the legacy `jazz_am:` namespace) as shape properties. A PLM resource can therefore point at any AM resource (or any other resource) via these link types — establishing relationships such as *Part satisfies Requirement*, *Part traces to Architecture Element*, *Part derives from Specification*, and so on.
+- **AM → PLM (new in this revision).** A new common link type `oslc_am:realizes` is contributed to the OASIS-standard `oslc_am:` namespace by the OSLC PLM specification, defined as a property on `oslc_am:Resource`. The canonical use is a SysML `PartDefinition` (exposed as an `oslc_am:Resource` via the OASIS OSLC SysML v2 vocabulary) realizing an `oslc_plm:Part` — i.e., the architecture-model element representing or fulfilling the PLM master record. The property is defined on `oslc_am:Resource` only; PLM resources are *targets* of `realizes` assertions, not bearers. The constraint is recorded in the PLM Shape spec under *Constraints on Other OSLC Domain Resources → `oslc_am:Resource`*.
+
+These link types do not align the SysML v2 and PLM data models — and aren't intended to. They give integrators a vocabulary for asserting *cross-model* relationships ("this SysML PartDefinition realizes this PLM Part," "this PLM Part satisfies this requirement") without requiring either side to know the structure of the other. This is exactly the integration role OSLC has historically played: not a translation layer between toolchains, but a stable surface for assertions across them.
+
+### Authoritative sources
+
+- OMG SysML v2 Final Adoption announcement (July 2025) — https://www.omg.org/news/releases/pr2025/07-21-25.htm
+- OMG SysML v2 Beta 2 landing — https://www.omg.org/spec/SysML/2.0/Beta2/About-SysML
+- OMG SysML v2 Part 1 (Language), Beta 1 PDF — https://www.omg.org/spec/SysML/2.0/Beta1/Language/PDF
+- OMG KerML 1.0 PDF — https://www.omg.org/spec/KerML/1.0/PDF
+- OMG Systems Modeling API and Services 1.0 — https://www.omg.org/spec/SystemsModelingAPI/1.0/Beta1/PDF
+- Systems-Modeling/SysML-v2-Release (Systems Library `SysML.sysml`) — https://github.com/Systems-Modeling/SysML-v2-Release
+- OASIS OSLC SysML v2 vocabulary — https://docs.oasis-open-projects.org/oslc-op/sysml/v2.0/sysml-vocab.html
+- PTC, *A guide to SysML v2* (notes OSLC + Windchill) — https://www.ptc.com/en/blogs/alm/guide-to-sysml-v2
+- Siemens Teamcenter SysML v2 guide — https://blogs.sw.siemens.com/teamcenter/sysml-v2-guide/
+- Friedenthal, *SysML v2 Basics*, INCOSE IW 2024 — https://www.omgwiki.org/MBSE/lib/exe/fetch.php?media=mbse%3Asysml_v2_transition%3Asysml_v2_basics-incose_iw-sfriedenthal-2024-01-28.pdf
+- *An Analysis of the Semantic Foundation of KerML and SysML v2* (NEMO/UFES, 2024) — https://nemo.inf.ufes.br/wp-content/papercite-data/pdf/an_analysis_of_the_semantic_foundation_of_kerml_and_sysml_v2_2024.pdf
+
+**Caveats.** SysML v2 went through Beta in 2023, Beta 2 in 2024, Final Adopted in July 2025, with an editorial update in March 2026 for ISO. Specific clause numbers cited from secondary citations may shift by a clause in the Final Adopted text; the metaclass names (`PartDefinition`, `PartUsage`) and the KerML lineage (Classifier, Feature) are stable across these revisions.

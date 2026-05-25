@@ -1051,6 +1051,165 @@ ex:ctx-v8-eu a oslc_plm:VariabilityContext ;
       </section>
     </section>
 
+    <section id="washing-machine-example" class="informative">
+      <h2>Worked Example — Eco Line Washing Machine</h2>
+
+      <p>
+        This non-normative worked example illustrates the principal resource classes and relationships defined by this
+        specification — <code>oslc_plm:Part</code>, <code>oslc_plm:PartUsage</code>, the composition properties between
+        them, and (for the dimensions covered in this revision) <code>oslc_plm:Effectivity</code> records on PartUsage
+        versions. The same example is referenced from the OSLC Configuration Management Selections Extensions to ground
+        the post-filter semantics of <code>oslc_config:EffectivitySelections</code>. Variability is not exercised here;
+        a parallel example may be added in a subsequent revision.
+      </p>
+
+      <p>
+        The Eco Line washing machine is composed of a Motor, a Housing, and a Control Unit. The Housing is in turn
+        composed of an Upper Housing and a Lower Housing. Each subsystem is an <code>oslc_plm:Part</code> with one or
+        more revisions; each parent→child usage is reified as an <code>oslc_plm:PartUsage</code> whose versions pin
+        specific child revisions and carry the effectivity records that determine which usage is active for a given
+        Effectivity-Context.
+      </p>
+
+      <section id="washing-machine-structure">
+        <h3>Product Structure</h3>
+
+        <pre>
+WashingMachine ("Eco Line") ─┬─ uses ──&gt; Motor
+                             ├─ uses ──&gt; Housing ─┬─ uses ──&gt; UpperHousing
+                             │                    └─ uses ──&gt; LowerHousing
+                             └─ uses ──&gt; ControlUnit
+        </pre>
+
+        <p>Part revisions:</p>
+        <ul>
+          <li><code>Motor</code> — V12.8, V12.9</li>
+          <li><code>Housing</code> — V4.1, V4.2, V4.3, V5.0</li>
+          <li><code>UpperHousing</code> — V8.6</li>
+          <li><code>LowerHousing</code> — V7.9</li>
+          <li><code>ControlUnit</code> — v1</li>
+        </ul>
+
+        <p>
+          PartUsage versions (each pinning a specific child Part revision; effectivity is carried by the PartUsage
+          version, not the child Part revision, so that the same child revision can be used under different
+          parent-side conditions):
+        </p>
+
+        <table>
+          <thead>
+            <tr><th>PartUsage</th><th>Version</th><th>Pins</th><th>Effectivity</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>WashingMachine → Motor</code></td>      <td><code>usage_pre27</code></td><td>Motor V12.8</td>      <td>until 2027-06-30</td></tr>
+            <tr><td><code>WashingMachine → Motor</code></td>      <td><code>usage_27on</code></td> <td>Motor V12.9</td>      <td>from 2027-07-01</td></tr>
+            <tr><td><code>WashingMachine → Housing</code></td>    <td><code>usage_pre27</code></td><td>Housing V4.1</td>     <td>until 2026-12-31</td></tr>
+            <tr><td><code>WashingMachine → Housing</code></td>    <td><code>usage_27</code></td>   <td>Housing V4.2</td>     <td>2027-01-01 to 2027-12-31</td></tr>
+            <tr><td><code>WashingMachine → Housing</code></td>    <td><code>usage_28h1</code></td> <td>Housing V4.3</td>     <td>2028-01-01 to 2028-06-30</td></tr>
+            <tr><td><code>WashingMachine → Housing</code></td>    <td><code>usage_28h2</code></td> <td>Housing V5.0</td>     <td>from 2028-07-01</td></tr>
+            <tr><td><code>WashingMachine → ControlUnit</code></td><td><code>v1</code></td>         <td>ControlUnit v1</td>   <td>always</td></tr>
+            <tr><td><code>Housing → UpperHousing</code></td>      <td><code>v1</code></td>         <td>UpperHousing V8.6</td><td>always</td></tr>
+            <tr><td><code>Housing → LowerHousing</code></td>      <td><code>v1</code></td>         <td>LowerHousing V7.9</td><td>always</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="washing-machine-rdf">
+        <h3>RDF</h3>
+
+        <p>
+          The Parts, PartUsages, their versions, and the effectivity records (sketched for two of the
+          <code>WashingMachine → Housing</code> PartUsage versions; the other rows in the table above follow the
+          same pattern):
+        </p>
+
+        <pre>
+@prefix oslc:        &lt;http://open-services.net/ns/core#&gt; .
+@prefix oslc_am:     &lt;http://open-services.net/ns/am#&gt; .
+@prefix oslc_config: &lt;http://open-services.net/ns/config#&gt; .
+@prefix oslc_plm:    &lt;http://open-services.net/ns/plm#&gt; .
+@prefix dcterms:     &lt;http://purl.org/dc/terms/&gt; .
+@prefix xsd:         &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+@prefix em:          &lt;https://example.com/ecoline/&gt; .
+
+# Parts (each is also an oslc_config:Component containing its own configurations).
+em:WashingMachine a oslc_plm:Part ; dcterms:title "Eco Line Washing Machine" .
+em:Motor          a oslc_plm:Part ; dcterms:title "Motor" .
+em:Housing        a oslc_plm:Part ; dcterms:title "Housing" .
+em:UpperHousing   a oslc_plm:Part ; dcterms:title "Upper Housing" .
+em:LowerHousing   a oslc_plm:Part ; dcterms:title "Lower Housing" .
+em:ControlUnit    a oslc_plm:Part ; dcterms:title "Control Unit" .
+
+# Part-level composition: which PartUsages each parent Part is composed of.
+em:WashingMachine oslc_plm:composedOfPartUsage em:Usage_WM_Motor ,
+                                               em:Usage_WM_Housing ,
+                                               em:Usage_WM_ControlUnit .
+em:Housing        oslc_plm:composedOfPartUsage em:Usage_Housing_Upper ,
+                                               em:Usage_Housing_Lower .
+
+# PartUsage concept resources point to the child Part they represent.
+em:Usage_WM_Motor       a oslc_plm:PartUsage ; oslc_plm:representsPart em:Motor .
+em:Usage_WM_Housing     a oslc_plm:PartUsage ; oslc_plm:representsPart em:Housing .
+em:Usage_WM_ControlUnit a oslc_plm:PartUsage ; oslc_plm:representsPart em:ControlUnit .
+em:Usage_Housing_Upper  a oslc_plm:PartUsage ; oslc_plm:representsPart em:UpperHousing .
+em:Usage_Housing_Lower  a oslc_plm:PartUsage ; oslc_plm:representsPart em:LowerHousing .
+
+# Example PartUsage versions with effectivity (sketched for Housing; same pattern
+# applies to the Motor PartUsage versions and to the ControlUnit PartUsage):
+em:Usage_WM_Housing_pre27 a oslc_config:VersionResource , oslc_plm:PartUsage ;
+  oslc_plm:effectivity [
+    a oslc_plm:Effectivity ;
+    oslc_plm:effectiveValueType oslc_plm:Date ;
+    oslc_plm:effectiveTo "2026-12-31"^^xsd:date
+  ] .
+
+em:Usage_WM_Housing_27 a oslc_config:VersionResource , oslc_plm:PartUsage ;
+  oslc_plm:effectivity [
+    a oslc_plm:Effectivity ;
+    oslc_plm:effectiveValueType oslc_plm:Date ;
+    oslc_plm:effectiveFrom "2027-01-01"^^xsd:date ;
+    oslc_plm:effectiveTo   "2027-12-31"^^xsd:date
+  ] .
+
+# Effectivity context: build date of 2027-06-01.
+em:Ctx_2027_06_01 a oslc_plm:EffectivityContext ;
+  oslc_plm:effectivityDate "2027-06-01"^^xsd:date .
+        </pre>
+      </section>
+
+      <section id="washing-machine-resolution">
+        <h3>Resolution under the supplied Effectivity-Context</h3>
+
+        <p>
+          A configuration of <code>em:WashingMachine</code> with
+          <code>oslc_config:effectivityContext em:Ctx_2027_06_01</code> drives the OSLC Configuration Management
+          Selections Extensions to populate the configuration's
+          <code>oslc_config:EffectivitySelections.selects</code> with the PartUsage versions whose effectivity
+          records evaluate to <code>true</code> against the context date:
+        </p>
+
+        <ul>
+          <li><code>em:Usage_WM_Motor_pre27</code> (effective until 2027-06-30) — ✓</li>
+          <li><code>em:Usage_WM_Housing_27</code> (effective 2027) — ✓</li>
+          <li><code>em:Usage_WM_ControlUnit_v1</code> (always effective) — ✓</li>
+        </ul>
+
+        <p>
+          All other PartUsage versions of the same three usages fail effectivity for this context and are absent
+          from <code>selects</code>. The Housing's own configuration (Housing V4.2, pinned by
+          <code>em:Usage_WM_Housing_27</code>) carries unconditional <code>Housing → UpperHousing</code> and
+          <code>Housing → LowerHousing</code> PartUsage versions in its own selections; recursive walking through
+          the configuration's PartUsage versions yields the resolved BOM.
+        </p>
+
+        <p>
+          See the OSLC Configuration Management Selections Extensions, <a href="../config/oslc-config-selections-extensions.md#worked-example-eco-line-washing-machine-effectivity">Worked Example — Eco Line Washing Machine</a>,
+          for the corresponding <code>oslc_config:EffectivitySelections</code> turtle, the stream/baseline distinction,
+          and the freeze semantics of a baseline.
+        </p>
+      </section>
+    </section>
+
     <section id="capabilities">
       <h2>PLM Server Capabilities</h2>
 

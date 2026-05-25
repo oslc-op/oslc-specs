@@ -346,6 +346,129 @@
       </section>
     </section>
 
+    <section id="effectivityVariabilityConstraints">
+      <h2>Effectivity and Variability Resources</h2>
+      <p>
+        Constraints for the resource classes introduced in the
+        <a href="plm-spec.html#effectivity-variability">Effectivity and Variability</a> section of the PLM specification.
+        These resources carry the effectivity and variability information that the OSLC Configuration Management
+        Selections Extensions use to compute <code>oslc_config:EffectivitySelections</code> and
+        <code>oslc_config:VariabilitySelections</code> against the configuration's attached
+        <code>oslc_config:effectivityContext</code> and <code>oslc_config:variabilityContext</code>.
+      </p>
+
+      <section id="effectivityConstraints">
+        <h2>Effectivity</h2>
+        <div
+          title="Constraints for Effectivity"
+          data-include="./plm-shapes.ttl#EffectivityShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="effectivityContextConstraints">
+        <h2>EffectivityContext</h2>
+        <div
+          title="Constraints for EffectivityContext"
+          data-include="./plm-shapes.ttl#EffectivityContextShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="optionSetConstraints">
+        <h2>OptionSet</h2>
+        <div
+          title="Constraints for OptionSet"
+          data-include="./plm-shapes.ttl#OptionSetShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="optionConstraints">
+        <h2>Option</h2>
+        <div
+          title="Constraints for Option"
+          data-include="./plm-shapes.ttl#OptionShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="optionValueConstraints">
+        <h2>OptionValue</h2>
+        <div
+          title="Constraints for OptionValue"
+          data-include="./plm-shapes.ttl#OptionValueShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="variabilityConditionConstraints">
+        <h2>VariabilityCondition</h2>
+        <div
+          title="Constraints for VariabilityCondition"
+          data-include="./plm-shapes.ttl#VariabilityConditionShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="variabilityContextConstraints">
+        <h2>VariabilityContext</h2>
+        <div
+          title="Constraints for VariabilityContext"
+          data-include="./plm-shapes.ttl#VariabilityContextShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="effectivityValueTypes">
+        <h2>EffectivityValueType enumeration</h2>
+        <p>
+          The <code>oslc_plm:effectiveValueType</code> property on an <code>oslc_plm:Effectivity</code> record names
+          the kind of range the record carries. <code>oslc_plm:EffectivityValueType</code> is an
+          <a href="https://docs.oasis-open-projects.org/oslc-op/core/v3.0/os/core-vocab.html#enumerations">OSLC
+          enumeration</a> defined in <a href="plm-vocab.ttl">plm-vocab.ttl</a>: the class itself is open in the
+          vocabulary, and the <a href="#effectivityConstraints">Effectivity shape</a> closes it via
+          <code>oslc:range oslc_plm:EffectivityValueType</code> together with an <code>oslc:allowedValue</code> list
+          of the five enumeration members below.
+        </p>
+        <p>The enumeration members:</p>
+        <ul>
+          <li><code>oslc_plm:Date</code> — range values are <code>xsd:date</code>.</li>
+          <li><code>oslc_plm:UnitNumber</code> — range values are <code>xsd:integer</code> unit numbers, interpreted within the namespace of <code>effectiveForEndItem</code>.</li>
+          <li><code>oslc_plm:SerialNumber</code> — range values are <code>xsd:string</code> serial numbers, interpreted within the namespace of <code>effectiveForEndItem</code>.</li>
+          <li><code>oslc_plm:Lot</code> — range values are <code>xsd:string</code> lot identifiers.</li>
+          <li><code>oslc_plm:Model</code> — range values are <code>xsd:string</code> model identifiers.</li>
+        </ul>
+        <p>
+          Each member is an individual of type <code>oslc_plm:EffectivityValueType</code> (per the OSLC enumeration
+          pattern, not its own <code>rdfs:Class</code>); the URI is the identifier and <code>rdfs:label</code>
+          carries the display name. Members have no properties of their own and therefore no
+          <code>oslc:ResourceShape</code>.
+        </p>
+      </section>
+    </section>
+
     <section id="otherConstraints">
       <h2>Constraints on Other OSLC Domain Resources</h2>
       <p>
@@ -370,6 +493,51 @@
         <div
           title="Constraints for TestCase"
           data-include="./plm-shapes.ttl#TestCaseShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="amResourceConstraints">
+        <h2>oslc_am:Resource</h2>
+        <p>
+          The OSLC PLM specification contributes a new common link type, <code>oslc_am:realizes</code>, as a property
+          on <code>oslc_am:Resource</code>. The link mirrors the UML and SysML notion of Realization: the source — an
+          architecture-modelling resource — is the realizer, and the target is the realized resource. The canonical
+          cross-domain use is a SysML <code>PartDefinition</code> (exposed as an <code>oslc_am:Resource</code> via the
+          OASIS OSLC SysML v2 vocabulary) realizing an <code>oslc_plm:Part</code>: the architecture-model element
+          represents or fulfils the PLM master record.
+        </p>
+        <p>The property is defined on <code>oslc_am:Resource</code> only. PLM resources
+          (<code>oslc_plm:Part</code>, <code>oslc_plm:PartUsage</code>, <code>oslc_plm:LogicalDesign</code>,
+          <code>oslc_plm:PhysicalDesign</code>) are <em>targets</em> of this link, not bearers — they appear as the
+          object of an <code>oslc_am:realizes</code> assertion made by an AM resource.</p>
+        <p>Typical uses include:</p>
+        <ul>
+          <li>A SysML <code>PartDefinition</code> realizing an <code>oslc_plm:Part</code>;</li>
+          <li>An architecture model element realizing a PLM <code>oslc_plm:PartUsage</code> that participates in a
+            specific BOM line;</li>
+          <li>A physical-architecture <code>oslc_am:Resource</code> realizing a logical-architecture
+            <code>oslc_am:Resource</code> (the ARCADIA Realization Link pattern, AM-internal).</li>
+        </ul>
+        <p>
+          OSLC AM implementations that wish to support the PLM domain SHOULD recognise the
+          <code>oslc_am:realizes</code> property on <code>oslc_am:Resource</code> and its subtypes.
+        </p>
+        <p class="note">
+          <strong>Note on namespacing.</strong> The other common link types referenced on PLM shapes
+          (<code>derives</code>, <code>elaborates</code>, <code>refine</code>, <code>external</code>,
+          <code>satisfy</code>, <code>trace</code>) live in the legacy <code>jazz_am:</code> namespace
+          (<code>http://jazz.net/ns/dm/linktypes#</code>). <code>realizes</code> is being introduced here in the
+          OASIS-standard <code>oslc_am:</code> namespace (<code>http://open-services.net/ns/am#</code>). The OASIS
+          OSLC-OP TC may at some point choose to migrate the legacy link types to <code>oslc_am:</code> for
+          consistency; that is a separate decision and is not pre-empted by this contribution.
+        </p>
+        <div
+          title="Constraints for oslc_am:Resource"
+          data-include="./plm-shapes.ttl#AmResourceShape"
           data-oninclude="shapeToSpec"
           data-include-sync="true"
           data-include-replace="true"

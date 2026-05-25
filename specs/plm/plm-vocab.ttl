@@ -259,31 +259,42 @@ oslc_plm:authorizedBy
   rdfs:label "authorizedBy" ;
   rdfs:comment "Optional. The change-management resource (typically an oslc_cm:ChangeRequest) that authorized this Effectivity record. Provides the audit linkage required by many enterprise PLM workflows." .
 
-# Effectivity value-type identifiers (used as values of effectiveValueType).
+# Effectivity value-type enumeration: identifies the kind of range an
+# oslc_plm:Effectivity record carries. Modelled as an OSLC enumeration per
+# https://docs.oasis-open-projects.org/oslc-op/core/v3.0/os/core-vocab.html#enumerations —
+# EffectivityValueType is the enumeration class, and Date / UnitNumber /
+# SerialNumber / Lot / Model are its enumeration instances. Shapes that
+# constrain effectiveValueType use oslc:range oslc_plm:EffectivityValueType
+# and oslc:allowedValue to enumerate the permitted members.
 
-oslc_plm:Date a rdfs:Class ;
+oslc_plm:EffectivityValueType a rdfs:Class ;
+    rdfs:label "Effectivity Value Type" ;
+    rdfs:comment "The kind of range an oslc_plm:Effectivity record carries. The enumeration is open in the vocabulary; shapes use oslc:allowedValue to close it for specific usages." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:Date a oslc_plm:EffectivityValueType ;
     rdfs:label "Date" ;
-    rdfs:comment "Effectivity value-type identifier: range values are xsd:date." ;
+    rdfs:comment "Effectivity value-type enumeration member: range values are xsd:date." ;
     rdfs:isDefinedBy oslc_plm: .
 
-oslc_plm:UnitNumber a rdfs:Class ;
+oslc_plm:UnitNumber a oslc_plm:EffectivityValueType ;
     rdfs:label "Unit Number" ;
-    rdfs:comment "Effectivity value-type identifier: range values are xsd:integer unit numbers, interpreted within the namespace of effectiveForEndItem." ;
+    rdfs:comment "Effectivity value-type enumeration member: range values are xsd:integer unit numbers, interpreted within the namespace of effectiveForEndItem." ;
     rdfs:isDefinedBy oslc_plm: .
 
-oslc_plm:SerialNumber a rdfs:Class ;
+oslc_plm:SerialNumber a oslc_plm:EffectivityValueType ;
     rdfs:label "Serial Number" ;
-    rdfs:comment "Effectivity value-type identifier: range values are xsd:string serial numbers, interpreted within the namespace of effectiveForEndItem." ;
+    rdfs:comment "Effectivity value-type enumeration member: range values are xsd:string serial numbers, interpreted within the namespace of effectiveForEndItem." ;
     rdfs:isDefinedBy oslc_plm: .
 
-oslc_plm:Lot a rdfs:Class ;
+oslc_plm:Lot a oslc_plm:EffectivityValueType ;
     rdfs:label "Lot" ;
-    rdfs:comment "Effectivity value-type identifier: range values are xsd:string lot identifiers." ;
+    rdfs:comment "Effectivity value-type enumeration member: range values are xsd:string lot identifiers." ;
     rdfs:isDefinedBy oslc_plm: .
 
-oslc_plm:Model a rdfs:Class ;
+oslc_plm:Model a oslc_plm:EffectivityValueType ;
     rdfs:label "Model" ;
-    rdfs:comment "Effectivity value-type identifier: range values are xsd:string model identifiers." ;
+    rdfs:comment "Effectivity value-type enumeration member: range values are xsd:string model identifiers." ;
     rdfs:isDefinedBy oslc_plm: .
 
 # Effectivity context resource and parameter properties.

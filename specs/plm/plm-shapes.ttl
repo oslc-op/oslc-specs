@@ -447,10 +447,27 @@ or its value are traced to a requirement)."""^^rdf:XMLLiteral ;
     oslc:valueType oslc:Resource ;
     oslc:representation oslc:Reference .
 
+:realizes a oslc:Property ;
+    oslc:name "realizes" ;
+    oslc:propertyDefinition oslc_am:realizes  ;
+    oslc:range oslc:Any ;
+    oslc:occurs oslc:Zero-or-many;
+    dcterms:description """An oslc_am:Resource realizes the target resource, mirroring the UML and SysML notion of Realization. The source (an architecture-modelling resource) is the realizer; the target is the realized resource. The canonical cross-domain use is a SysML PartDefinition (exposed as an oslc_am:Resource via the OASIS OSLC SysML v2 vocabulary) realizing an oslc_plm:Part — i.e., the architecture-model element representing or fulfilling the PLM master record. The property is defined on oslc_am:Resource only; PLM resources (Part, PartUsage, LogicalDesign, PhysicalDesign) are targets of this link, not bearers. This property is contributed by the OSLC PLM specification to the OASIS-standard oslc_am: namespace as a new common link type. (Note: the existing common link types carried on PLM shapes remain in the legacy jazz_am namespace; the OASIS-OP TC may at some point choose to migrate them to oslc_am for consistency, but that is a separate decision.)"""^^rdf:XMLLiteral ;
+    oslc:valueType oslc:Resource ;
+    oslc:representation oslc:Reference .
 
 
 
-# The following are additional PLM constraints on CM and QM resourch shapes
+
+# The following are additional PLM constraints on AM, CM, and QM resource shapes.
+
+:AmResourceShape a oslc:ResourceShape ;
+        oslc:describes  oslc_am:Resource ;
+        dcterms:title   "Architecture Management Resource (PLM-added constraint)." ;
+        dcterms:description """The OSLC PLM specification adds the realizes property to the OSLC Architecture Management domain. Implementations of OSLC AM that wish to support the PLM domain SHOULD recognise this property on oslc_am:Resource and its subtypes."""^^rdf:XMLLiteral ;
+        oslc:property
+            :realizes
+        .
 
 :ChangeRequestShape a oslc:ResourceShape ;
         oslc:describes  oslc_cm:ChangeRequest ;
@@ -634,7 +651,13 @@ resource will be oslc_plm:PartUsage."""^^rdf:XMLLiteral .
         oslc:propertyDefinition  oslc_plm:effectiveValueType ;
         oslc:representation      oslc:Reference ;
         oslc:valueType           oslc:Resource ;
-        dcterms:description      """The type of value used in this Effectivity record's range. One of oslc_plm:Date, oslc_plm:UnitNumber, oslc_plm:SerialNumber, oslc_plm:Lot, or oslc_plm:Model."""^^rdf:XMLLiteral .
+        oslc:range               oslc_plm:EffectivityValueType ;
+        oslc:allowedValue        oslc_plm:Date ,
+                                 oslc_plm:UnitNumber ,
+                                 oslc_plm:SerialNumber ,
+                                 oslc_plm:Lot ,
+                                 oslc_plm:Model ;
+        dcterms:description      """The kind of value used in this Effectivity record's range. The value MUST be a member of the oslc_plm:EffectivityValueType enumeration: one of oslc_plm:Date, oslc_plm:UnitNumber, oslc_plm:SerialNumber, oslc_plm:Lot, or oslc_plm:Model."""^^rdf:XMLLiteral .
 
 :effectiveForEndItem  a  oslc:Property ;
         oslc:name                "effectiveForEndItem" ;

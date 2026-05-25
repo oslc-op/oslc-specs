@@ -36,98 +36,112 @@ The version resolution mechanism defined in [Section 12](#vresolution) selects, 
 Some domains — notably Product Lifecycle Management — require an additional binding step in which the membership of selected versions depends on the evaluation of predicates carried by those versions against a context of effectivity parameters (for example, date, serial number, lot, unit, model, or end-item). In such domains, two distinct selection questions arise:
 
 1. *Which version of each versioned resource is structurally in scope?* This is answered by the version resolution defined in Section 12, including the selection of PartUsage versions for BOM lines as described above.
-2. *Given the versions chosen in (1), which are actually members of the resolved structure under the current effectivity context, and which, if any, must be re-bound to a different version on the basis of release effectivity?*
+2. *Of the candidate versions chosen in (1), which are actually effective under the current effectivity context, and which, if any, must be re-bound to a different version on the basis of release effectivity?*
 
-This section defines `oslc_config:EffectivitySelections`, a selection type that names the second question explicitly and integrates its result with the resolution defined in Section 12. The predicate language used to express effectivity, and the structure of effectivity parameters, are not defined by this specification and *SHOULD* be defined by domain specifications that import this mechanism. [CONFIG-RES-N1] The proposed OSLC-OP Product Lifecycle Management specification is the intended location for the effectivity-predicate language and the effectivity-context resource shape; existing PLM vocabularies and standards (including concepts borrowed from STEP and EXPRESS) are candidate sources.
+This section defines `oslc_config:EffectivitySelections`, a selection type whose `oslc_config:selects` triples name the version resources that have survived both phases — those selected as candidates by the Configuration-Context and evaluated as effective by the Effectivity-Context attached to the containing configuration. A baseline holds frozen `selects` values; a stream's `selects` values are server-maintained against the stream's currently-attached contexts. The predicate language used to express effectivity, and the structure of effectivity parameters, are not defined by this specification and *SHOULD* be defined by domain specifications that import this mechanism. [CONFIG-RES-N1] The proposed OSLC-OP Product Lifecycle Management specification is the intended location for the effectivity-predicate language and the effectivity-context resource shape; existing PLM vocabularies and standards (including concepts borrowed from STEP and EXPRESS) are candidate sources.
 
-This mechanism is independent of, and *MAY* be combined with, `oslc_config:UnboundSelections` and `oslc_config:VariabilitySelections` (Section M). Where multiple selection types are present in a configuration, `oslc_config:UnboundSelections` is resolved first (by mechanisms outside the scope of this specification) to produce concrete version bindings; `oslc_config:VariabilitySelections` is then applied to determine which option-conditioned bindings survive; and `oslc_config:EffectivitySelections` is applied last to refine the surviving bindings against the supplied effectivity context. The composition order is normative because effectivity expressions on a Part revision MAY presuppose option choices already resolved by variability.
+This mechanism is independent of, and *MAY* be combined with, `oslc_config:UnboundSelections` and `oslc_config:VariabilitySelections` (Section M). Where multiple selection types are present in a configuration, `oslc_config:UnboundSelections` is resolved first (by mechanisms outside the scope of this specification) to produce concrete version candidates; `oslc_config:VariabilitySelections.selects` then names those candidates that also survive variability evaluation; and `oslc_config:EffectivitySelections.selects` names those that additionally survive effectivity evaluation. The composition order is normative because effectivity expressions on a Part or PartUsage version MAY presuppose option choices already resolved by variability.
 
 ### N.2 Resource Shape for EffectivitySelections
 
 - **Describes:** `http://open-services.net/ns/config#EffectivitySelections`
-- **Summary:** A selections resource whose selected version resources participate in effectivity-based binding refinement.
-- **Description:** An `oslc_config:EffectivitySelections` resource is a specialization of `oslc_config:Selections` whose `oslc_config:selects` triples reference version resources that carry effectivity predicates. At resolution time, these predicates are evaluated against an effectivity context supplied with the request (see N.4), and the result either confirms the selected version, replaces it with a different version of the same versioned resource, or removes the selection entirely.
+- **Summary:** A selections resource whose `oslc_config:selects` triples name the version resources that have survived both the Configuration-Context candidate selection (Section 12) and effectivity-predicate evaluation against the Effectivity-Context attached to the containing configuration.
+- **Description:** An `oslc_config:EffectivitySelections` resource is a specialization of `oslc_config:Selections` whose `oslc_config:selects` triples reference version resources that have already been determined to be effective for the Effectivity-Context identified by the containing configuration's `oslc_config:effectivityContext` property (see N.4). The Effectivity-Context is not stored on the `EffectivitySelections` resource itself; it is a property of the configuration that contains the `EffectivitySelections`, ensuring that a baseline (which freezes both its `selects` triples and its `effectivityContext` reference) is self-describing.
 
 **EffectivitySelections Properties**
 
 | *Prefixed Name* | *Occurs* | *Read-only* | *Value-type* | *Representation* | *Range* | *Description* |
 | --- | --- | --- | --- | --- | --- | --- |
-| `oslc_config:selects` | Zero-or-many | unspecified | Resource | Reference | `oslc_config:VersionResource` | The target resource *MUST* be a version resource [CONFIG-RES-N2]. Targets *MUST NOT* be of type `oslc_config:Configuration` or `oslc_config:Component` [CONFIG-RES-N3]. The version resource targeted by this property is a *candidate*: it is the version that would be selected by normal version resolution (Section 12) and that will be subjected to effectivity evaluation before final binding. Targets MAY be of any versioned resource type that carries effectivity predicates, including (in the PLM domain) `oslc_plm:Part` and `oslc_plm:PartUsage` versions. This property is read-only for selections of a baseline, but *MAY* be modifiable for selections of a stream [CONFIG-RES-N4]. |
+| `oslc_config:selects` | Zero-or-many | see description | Resource | Reference | `oslc_config:VersionResource` | The target resource *MUST* be a version resource [CONFIG-RES-N2]. Targets *MUST NOT* be of type `oslc_config:Configuration` or `oslc_config:Component` [CONFIG-RES-N3]. Each targeted version is one that (a) has been selected as a candidate by the Configuration-Context of the containing configuration through the version resolution defined in Section 12, and (b) has been evaluated as effective by its effectivity predicates against the Effectivity-Context identified by the containing configuration's `oslc_config:effectivityContext` property. Targets *MAY* be of any versioned resource type that carries effectivity predicates, including (in the PLM domain) `oslc_plm:Part` and `oslc_plm:PartUsage` versions. In a baseline, this property is read-only and frozen at baseline-creation time. In a stream, this property is server-maintained: the server re-computes its values when either the stream's candidate pool or the stream's `oslc_config:effectivityContext` reference changes [CONFIG-RES-N4]. |
 | `rdf:type` | One-or-many | unspecified | Resource | Reference | `rdfs:Class` | A resource type URI. An `EffectivitySelections` resource *MUST* have at least the resource types `oslc_config:Selections` and `oslc_config:EffectivitySelections` [CONFIG-RES-N5]. An `EffectivitySelections` resource *MUST NOT* also have the type `oslc_config:UnboundSelections` or `oslc_config:VariabilitySelections` [CONFIG-RES-N6]; these selection mechanisms are independent and apply at different stages of resolution. |
 
-Servers *MAY* define additional properties on `EffectivitySelections` resources, including domain-specific properties that constrain or annotate the effectivity evaluation (for example, the version of an effectivity predicate language assumed by the selections, or a reference to an effectivity-parameter schema). [CONFIG-RES-N7]
+Servers *MAY* define additional properties on `EffectivitySelections` resources, including domain-specific properties that annotate the effectivity evaluation (for example, the version of an effectivity predicate language assumed by the selections, or a reference to an effectivity-parameter schema). [CONFIG-RES-N7]
 
-### N.3 Effectivity Predicates on Version Resources
+### N.3 Effectivity Predicates on Candidate Version Resources
 
-The version resources referenced by `oslc_config:EffectivitySelections.selects` are expected to carry effectivity information that the server can evaluate against an effectivity context. This specification does not define the form of that information; it *MUST* be defined by a domain specification. [CONFIG-RES-N8] In the PLM domain, this definition is expected to appear in `plm-spec.html`, covering at minimum:
+Candidate version resources that participate in effectivity filtering carry effectivity information that the server evaluates against the Effectivity-Context attached to the containing configuration (N.4). The form of that information is not defined by this specification; it *MUST* be defined by a domain specification. [CONFIG-RES-N8] In the PLM domain, this definition is expected to appear in `plm-spec.html`, covering at minimum:
 
 - The effectivity-predicate vocabulary supported on `oslc_plm:Part` versions (revision effectivity: which revision applies under a given date/serial/unit context).
 - The effectivity-predicate vocabulary supported on `oslc_plm:PartUsage` versions (occurrence effectivity: whether and which version of a PartUsage participates in a BOM under a given context).
 - The form of effectivity context values (date, serial range, unit range, model, end-item namespace).
 
-A version resource referenced from an `EffectivitySelections` resource *MAY* declare effectivity that:
+A candidate version resource *MAY* declare effectivity that:
 
-1. **Conditions its membership** — the predicate yields a Boolean value that, if false, causes the selection to be removed (see N.5).
-2. **Conditions the selection of a sibling version** — the predicate yields a version URI for a different version of the same versioned resource, which replaces the selected version. This is the form taken by *release effectivity* on revisions of a versioned resource, where the candidate version is replaced by the version released as of the effectivity date or serial/unit value.
+1. **Conditions its membership** — the predicate yields a Boolean value. If true, the version is included in the containing configuration's `EffectivitySelections.selects`; if false, it is excluded (see N.5).
+2. **Conditions the selection of a sibling version** — the predicate yields a version URI for a different version of the same versioned resource. The sibling, rather than the candidate, is included in `EffectivitySelections.selects`. This is the form taken by *release effectivity* on revisions of a versioned resource, where the candidate is replaced by the version released as of the effectivity date or serial/unit value.
 
 Domain specifications *MUST* define which of these forms (or both) apply to each kind of versioned resource they describe. [CONFIG-RES-N9]
 
-Multiple effectivity predicates *MAY* apply to a single version resource — for example, a Part revision may be effective on Product ABC for units 1–5 and on Product XYZ for units 9–11 simultaneously. Domain specifications *MUST* define how multiple effectivity records on a single version interact under evaluation (typically a logical OR across records keyed by end-item context). [CONFIG-RES-N9a]
+Multiple effectivity records *MAY* apply to a single version resource — for example, a Part revision may be effective on Product ABC for units 1–5 and on Product XYZ for units 9–11 simultaneously. Domain specifications *MUST* define how multiple effectivity records on a single version interact under evaluation (typically a logical OR across records keyed by end-item context). [CONFIG-RES-N9a]
 
 ### N.4 Effectivity Context
 
-Effectivity evaluation requires a context of parameter assignments (for example, date, serial number, unit number, end-item, option set). This context is distinct from the configuration context defined in Section 4, although the two are evaluated together when resolving requests.
+An effectivity context is a resource that carries the parameter assignments (for example, date, serial number, unit number, end-item, option set) against which effectivity predicates are evaluated. The structure of this resource is defined by a domain specification; for the PLM domain, see `plm-spec.html` for `oslc_plm:EffectivityContext`.
 
-A client requests an effectivity context by adding a query string `oslc_config.effectivity` to the request URI, whose value is an angle-bracket-delimited URI reference to an effectivity context resource, escaped as defined in [[OSLCCore3]]:
+This specification introduces an `oslc_config:effectivityContext` property on `oslc_config:Configuration` that identifies the effectivity context applicable to the configuration's `EffectivitySelections` resources. A configuration whose selections include one or more `oslc_config:EffectivitySelections` *MUST* carry exactly one `oslc_config:effectivityContext` property naming the context against which those selections' post-filter `selects` values were computed. [CONFIG-RES-N10]
+
+**effectivityContext on Configuration**
+
+| *Prefixed Name* | *Occurs* | *Read-only* | *Value-type* | *Representation* | *Range* | *Description* |
+| --- | --- | --- | --- | --- | --- | --- |
+| `oslc_config:effectivityContext` | Zero-or-one | see description | Resource | Reference | domain-defined | The effectivity context whose parameters were supplied to effectivity predicate evaluation when computing the `EffectivitySelections.selects` triples of this configuration. *MUST* be present on any configuration whose selections include one or more `oslc_config:EffectivitySelections`. On a baseline, this property is read-only and frozen. On a stream, this property *MAY* be modified by an authorized client; modification causes the server to re-compute the affected `EffectivitySelections.selects` against the new context. |
+
+The property attaches the effectivity context to the configuration rather than to individual `EffectivitySelections` resources so that a baseline is self-describing: reading a baseline yields both its frozen `selects` triples and the context reference that produced them, without any external lookup. Re-pointing or editing the referenced context resource has no effect on a baseline's `selects` (which are frozen) but causes re-computation in a stream.
+
+**Request-time conveyance.** A request *MAY* carry an `Effectivity-Context` request header, or an equivalent `oslc_config.effectivity` query parameter, whose value is an angle-bracket-delimited URI reference (escaped as defined in [[OSLCCore3]]) to an effectivity context resource:
 
 ```
 ?oslc_config.effectivity=uri_ref_esc
 ```
 
-The referenced resource *MUST* be of a type defined by a domain specification, and *MUST* carry the parameter assignments to be supplied to effectivity predicate evaluation. [CONFIG-RES-N10] The PLM domain specification is expected to define the effectivity-context resource shape, including the parameter types it admits (date, serial range, unit range, model, end-item) and any namespace requirements (for example, that unit numbers be qualified by an end-item reference, since the same unit number is meaningful only within an end-item's serial namespace).
+The semantics differ by configuration kind:
 
-A configuration context and an effectivity context *MAY* be supplied on the same request. If both are supplied, the configuration context is evaluated first (per Sections 4 and 12), and the effectivity context is then applied to refine the resulting bindings as defined in N.5.
-
-A server that supports effectivity-based resolution *MUST* support the `oslc_config.effectivity` query parameter. [CONFIG-RES-N11] Servers *MAY* additionally support conveying effectivity context through a request header `Effectivity-Context`, using the same syntax as the `Configuration-Context` header. [CONFIG-RES-N12]
+- **Baseline.** A baseline's `oslc_config:effectivityContext` is immutable and applies to all requests. If a request supplies an `Effectivity-Context` header or `oslc_config.effectivity` query parameter, the value *MUST* match the baseline's `effectivityContext` or the request *MUST* fail with 400 Bad Request. [CONFIG-RES-N15]
+- **Stream.** A stream's `oslc_config:effectivityContext` identifies the default context whose computed `selects` is currently stored on the stream. A request *MAY* supply an alternative context via header or query parameter, in which case the server *MUST* either (a) re-compute the affected `EffectivitySelections.selects` against the supplied context for the scope of the request (without persisting the change), or (b) fail with 400 Bad Request if it does not support per-request override.
 
 Where the `oslc_config.effectivity` query parameter or `Effectivity-Context` header is used, a server *SHOULD* include in the response a `Vary` header that names whichever mechanism was used, so that responses are not incorrectly cached across different effectivity contexts. [CONFIG-RES-N13]
 
-If a configuration contains one or more `oslc_config:EffectivitySelections` resources and a request supplies no effectivity context, the server *MUST* either:
+If a configuration is created with `EffectivitySelections` but no `oslc_config:effectivityContext`, the server *MUST* fail the create operation with a 400 Bad Request indicating that an effectivity context is required. [CONFIG-RES-N14]
 
-1. Apply a default effectivity context defined by the server or the configuration, if such a default exists, or
-2. Fail the request with a 400 Bad Request response indicating that an effectivity context is required.
+### N.5 Computation of EffectivitySelections.selects
 
-[CONFIG-RES-N14]
+This section defines the algorithm by which a server populates the `oslc_config:selects` triples of an `oslc_config:EffectivitySelections` resource. The algorithm is invoked:
 
-A baseline *MAY* declare an immutable effectivity context as part of its definition, by referencing an effectivity context resource through a property defined by the relevant domain specification. Where a baseline declares such a context, requests against that baseline *MUST* use the declared context, and the `oslc_config.effectivity` query parameter, if supplied, *MUST* either match the declared context or cause the request to fail with 400 Bad Request. [CONFIG-RES-N15] A stream *MUST NOT* declare an immutable effectivity context; effectivity for streams is always supplied per-request.
+- When an `EffectivitySelections` resource is first created in a stream;
+- When the stream's `oslc_config:effectivityContext` reference is changed or the referenced context resource is edited;
+- When the stream's candidate pool changes (a `oslc_config:Selections` or `oslc_config:UnboundSelections` contributing to the same configuration is created, updated, or removed);
+- At baseline-creation time, to materialize the frozen `selects` triples that the baseline will record;
+- Optionally, transiently, when a request supplies an alternative effectivity context per N.4 (the computed `selects` is used for the response only and is not persisted).
 
-### N.5 Resolution Algorithm
+A baseline's `selects` triples *MUST NOT* be re-computed after baseline creation; the algorithm runs once and the result is frozen on the baseline (N.4). [CONFIG-RES-N16]
 
-When resolving a request for a versioned resource in the context of a configuration containing one or more `oslc_config:EffectivitySelections` resources, the server *MUST* apply the following algorithm. [CONFIG-RES-N16]
+**Inputs.** The server *MUST* take as inputs:
 
-**Step 1 — Candidate version resolution.** Apply the version resolution algorithm defined in Section 12 across all selections in the configuration and its recursive contributions, treating `oslc_config:EffectivitySelections` resources identically to `oslc_config:Selections` resources for the purposes of candidate selection. The result is, for each concept URI in scope, either a single candidate version resource or no candidate. Where `oslc_config:VariabilitySelections` is also present (see Section M), variability resolution *MUST* be applied before this step.
+1. The candidate pool — the version resources in scope for the containing configuration's Configuration-Context, as determined by Section 12 version resolution across the configuration's `oslc_config:Selections` and `oslc_config:UnboundSelections` and recursive contributions. Where `oslc_config:VariabilitySelections` is also present (Section M), the candidate pool is restricted to those candidates that also appear in the surviving `VariabilitySelections.selects` (variability is applied before effectivity; see N.7 and M.7).
+2. The effectivity context identified by the containing configuration's `oslc_config:effectivityContext` property (N.4).
 
-**Step 2 — Effectivity binding.** For each candidate version resource produced by Step 1 that was contributed by an `oslc_config:EffectivitySelections` resource:
+**Procedure.** For each candidate version resource `v` in the input pool:
 
-1. Evaluate the effectivity predicate carried by the candidate version against the effectivity context supplied with the request.
-2. If the predicate yields a Boolean true, the candidate version is the final binding.
-3. If the predicate yields a Boolean false, the binding is removed (no version is selected for the corresponding concept URI).
-4. If the predicate yields a version URI for a different version of the same versioned resource, that version becomes the final binding, replacing the candidate.
-5. If the predicate yields any other value, the server *MUST* return a 500 Internal Server Error with an `oslc:Error` describing the failure. [CONFIG-RES-N17]
+1. If `v` carries no `oslc_plm:effectivity` (or domain-equivalent) records, include `v` in `EffectivitySelections.selects` unchanged.
+2. Otherwise, evaluate each effectivity record carried by `v` against the effectivity context. Records combine by logical OR: `v` is effective if any one of its records evaluates to a positive outcome. Each record yields one of:
+   - **Boolean true** — `v` is effective; include `v` in `EffectivitySelections.selects`.
+   - **Boolean false** — the record does not apply to this context; continue to the next record.
+   - **Version URI** — release-effectivity substitution: include the named replacement version (not `v`) in `EffectivitySelections.selects`. The replacement *MUST* be a version of the same versioned resource as `v`; otherwise the record is malformed and the server *MUST* fail the computation with a 500 Internal Server Error referencing an `oslc:Error` describing the failure. [CONFIG-RES-N17]
+3. If every record carried by `v` evaluates to Boolean false, `v` is not included in `EffectivitySelections.selects`. The concept URI of `v` is left unbound by this `EffectivitySelections`.
 
-Candidate version resources contributed by selections that are *not* of type `oslc_config:EffectivitySelections` are passed through Step 2 unchanged.
+The resulting set of version URIs is the `oslc_config:selects` value of the `EffectivitySelections`. A baseline freezes this set; a stream stores it as the current materialization, refreshed on the triggers listed above.
 
-**Step 3 — Final resolution.** Apply the outcomes defined in Section 12 to the final bindings:
+**Resolved-resource access.** A subsequent request for a versioned resource by concept URI in the context of this configuration *MUST* return:
 
-- If no version is bound for the requested concept URI, the request *MUST* fail with 404 Resource Not Found. This case includes both (a) no candidate version was selected in Step 1, and (b) a candidate version was selected in Step 1 but its effectivity predicate evaluated to false in Step 2. [CONFIG-RES-N18]
-- If exactly one version is bound for the requested concept URI, the request *MUST* return that version.
-- If multiple versions are bound for the requested concept URI (which *MAY* occur if multiple `EffectivitySelections` resources in different contributions evaluate to different version URIs in Step 2 for the same concept URI), the rules of Section 12 for multiple matches apply, with `oslc_config:contributionOrder` used to determine the chosen version where applicable. Servers *SHOULD* document their resolution behavior in this case. [CONFIG-RES-N19]
+- The version named in `EffectivitySelections.selects` for that concept URI, if exactly one is present;
+- 404 Resource Not Found, if no version is named (the concept URI is unbound by effectivity); [CONFIG-RES-N18]
+- The outcome determined by the multi-match rules of Section 12 (`oslc_config:contributionOrder` and equivalents), if more than one version is named across contributing `EffectivitySelections`. Servers *SHOULD* document their resolution behavior in this case. [CONFIG-RES-N19]
 
 ### N.6 Independence of Concerns
 
 This specification deliberately preserves the separation of concerns between configurations and versioned resources established in Sections 3 and 12, while accommodating the domain reality that some versioned resources carry information that participates in selection.
 
-The configuration is the selector: it identifies *which* version resources are in scope and *which* of those participate in effectivity-based binding. The version resources are the selected: they carry both their domain content and, where domain specifications permit, the effectivity predicates evaluated during Step 2 of N.5. The configuration does not embed the predicates; the version resources do not embed the parameter context. The resolution algorithm composes them at request time.
+The configuration is the selector: it identifies *which* version resources are in scope (its candidate pool) and *which* effectivity context applies (via `oslc_config:effectivityContext`). The candidate version resources are the selected: they carry both their domain content and, where domain specifications permit, the effectivity predicates that the server evaluates when populating `EffectivitySelections.selects`. The configuration does not embed the predicates; the version resources do not embed the parameter context. The server composes them when computing `selects` (N.5).
 
 This factoring permits a configuration to be authored, baselined, and queried using the standard mechanisms of this specification, while supporting domain-specific effectivity logic without that logic being standardized here.
 
@@ -136,30 +150,32 @@ This factoring permits a configuration to be authored, baselined, and queried us
 This section interacts with the existing resolution mechanisms of the specification as follows:
 
 - Where a configuration contains only `oslc_config:Selections` resources (and no `EffectivitySelections`, `VariabilitySelections`, or `UnboundSelections`), resolution proceeds exactly as defined in Section 12. Effectivity and variability contexts, if supplied, have no effect.
-- Where a configuration contains `oslc_config:UnboundSelections`, those are resolved as defined in Section 3.7 before Step 1 of N.5 is performed. Bindings produced by unbound-selection resolution are not subjected to effectivity refinement unless the resolved version also appears in an `EffectivitySelections` resource.
-- Where a configuration contains `oslc_config:VariabilitySelections`, those are resolved as defined in Section M before Step 1 of N.5 is performed.
-- Where a configuration contains `oslc_config:EffectivitySelections`, those participate in Step 1 of N.5 as candidates and are refined in Step 2.
-- Where a change set overrides a configuration containing `EffectivitySelections` resources, the change set's selections are applied as defined in Section 13 before Step 1 of N.5 is performed. A change set *MAY* itself contain `EffectivitySelections` resources, in which case those participate in Step 2.
+- Where a configuration contains `oslc_config:UnboundSelections`, those name concept URIs that the candidate-pool computation in N.5 binds to specific version resources before effectivity evaluation. The base specification names "effectivity parameters" and "variability parameters" as canonical mechanisms for binding `UnboundSelections`; this specification supplies the former.
+- Where a configuration contains `oslc_config:VariabilitySelections`, those are computed first (per Section M and §M.7). The surviving `VariabilitySelections.selects` set defines the candidate pool that N.5 then refines by effectivity.
+- Where a configuration contains `oslc_config:EffectivitySelections`, those `selects` triples are populated as defined in N.5, against the configuration's `oslc_config:effectivityContext`.
+- Where a change set overrides a configuration containing `EffectivitySelections` resources, the change set's selections contribute to the candidate pool. A change set *MAY* itself contain `EffectivitySelections` resources, in which case those `selects` triples are populated against the change set's own `oslc_config:effectivityContext` if present, or the overridden configuration's `effectivityContext` otherwise.
 
 ### N.8 Caching, Tracked Resource Sets, and Compact Rendering
 
 Implementations *SHOULD* note the following operational considerations:
 
-- Cached responses *MUST* be keyed on the configuration context, the variability context (where applicable), and the effectivity context. Servers *SHOULD* return appropriate `Vary` headers on responses to requests that supplied an effectivity or variability context. [CONFIG-RES-N20]
-- Tracked Resource Sets (Section 16) only track version resources. It is the responsibility of the TRS consumer to provide an appropriate Configuration-Context, Variability-Context (where applicable), and Effectivity-Context to resolve tracked version resources to a selected version.
-- Compact rendering (Section 15) of resources resolved through `EffectivitySelections` *MUST* reflect the effectivity context (and, where applicable, the variability context) supplied with the initial request for the compact resource, and the response *MUST* be valid under that combination of contexts. [CONFIG-RES-N22]
+- A baseline's stored `EffectivitySelections.selects` triples are effectively a server-side cache of the resolution; no additional response-cache keying is needed for baselines beyond the configuration URI itself. A stream's stored `EffectivitySelections.selects` is refreshed on context or candidate-pool change; responses that derive from it *SHOULD* carry a `Vary` header naming the request mechanism (`Effectivity-Context` header or `oslc_config.effectivity` query parameter) where one was used to override the stream's default context. [CONFIG-RES-N20]
+- Tracked Resource Sets (Section 16) only track version resources. It is the responsibility of the TRS consumer to provide an appropriate Configuration-Context (which carries with it the configuration's attached `effectivityContext` and, where applicable, `variabilityContext`) to resolve tracked version resources to a selected version.
+- Compact rendering (Section 15) of resources resolved through `EffectivitySelections` *MUST* reflect the effectivity context attached to the containing configuration (and, where applicable, the variability context) at the time of the initial request for the compact resource, and the response *MUST* be valid under that combination of contexts. [CONFIG-RES-N22]
 
 ### N.9 Conformance
 
 A configuration server claiming conformance to this section *MUST*:
 
 1. Support `oslc_config:EffectivitySelections` resources in configurations as defined in N.2.
-2. Support the `oslc_config.effectivity` query parameter as defined in N.4.
-3. Implement the resolution algorithm defined in N.5.
-4. Honor declared effectivity contexts on baselines, where present, as defined in N.4.
+2. Support the `oslc_config:effectivityContext` property on `oslc_config:Configuration` as defined in N.4, enforcing the read-only/frozen behavior for baselines and the mutable behavior for streams.
+3. Implement the computation of `EffectivitySelections.selects` defined in N.5, including the triggers for re-computation on streams and the freeze on baselines.
+4. Freeze a baseline's `EffectivitySelections.selects` and `effectivityContext` at baseline creation, and reject subsequent modifications.
 5. Provide caching headers consistent with N.8.
 
-A configuration server *MAY* claim conformance to the base specification (Sections 1–20) without conforming to this section. Servers that do not conform to this section *MUST* reject any configuration POSTed to them that contains `oslc_config:EffectivitySelections` resources with a 400 Bad Request response, and *MUST NOT* honor the `oslc_config.effectivity` query parameter.
+A configuration server *MAY* claim conformance to the base specification (Sections 1–20) without conforming to this section. Servers that do not conform to this section *MUST* reject any configuration POSTed to them that contains `oslc_config:EffectivitySelections` resources or an `oslc_config:effectivityContext` property with a 400 Bad Request response.
+
+A server that supports the optional request-time `Effectivity-Context` header or `oslc_config.effectivity` query parameter (N.4) *MUST* honor the matching and override semantics defined there.
 
 ---
 
@@ -178,126 +194,191 @@ Variability is distinct from effectivity:
 
 In practice all major PLM systems (PTC Windchill, Siemens Teamcenter, Aras Innovator) treat these as separate filtering passes with separate predicate languages — option-set boolean expressions (Teamcenter's Modular Variant Language, Windchill's assigned-expression filter, Aras's Configurator rules) for variability; range comparisons over date/serial/unit for effectivity. This specification preserves that separation by defining `oslc_config:VariabilitySelections` as a sibling to `oslc_config:EffectivitySelections` rather than collapsing both into one mechanism.
 
-This section defines `oslc_config:VariabilitySelections`. The predicate language used to express variability conditions, and the structure of variability parameters (option sets, feature trees, variant rules), are not defined by this specification and *MUST* be defined by domain specifications that import this mechanism. [CONFIG-RES-M1] The proposed OSLC-OP Product Lifecycle Management specification is the intended location for the variability-predicate language and the variability-context resource shape.
+This section defines `oslc_config:VariabilitySelections`, a selection type whose `oslc_config:selects` triples name the version resources that have survived both phases — those selected as candidates by the Configuration-Context and evaluated as variant-applicable by the Variability-Context attached to the containing configuration. The mechanism parallels `oslc_config:EffectivitySelections` (Section N) and uses the same post-filter framing: a baseline holds frozen `selects` values; a stream's `selects` is server-maintained against the stream's currently-attached contexts. The predicate language used to express variability conditions, and the structure of variability parameters (option sets, feature trees, variant rules), are not defined by this specification and *MUST* be defined by domain specifications that import this mechanism. [CONFIG-RES-M1] The proposed OSLC-OP Product Lifecycle Management specification is the intended location for the variability-predicate language and the variability-context resource shape.
 
 ### M.2 Resource Shape for VariabilitySelections
 
 - **Describes:** `http://open-services.net/ns/config#VariabilitySelections`
-- **Summary:** A selections resource whose selected version resources participate in variability-based binding refinement against a context of configuration option choices.
-- **Description:** An `oslc_config:VariabilitySelections` resource is a specialization of `oslc_config:Selections` whose `oslc_config:selects` triples reference version resources that carry variability predicates over a configuration option set. At resolution time, these predicates are evaluated against a variability context supplied with the request (see M.4), and the result either confirms the selected version or removes the selection entirely.
+- **Summary:** A selections resource whose `oslc_config:selects` triples name the version resources that have survived both the Configuration-Context candidate selection (Section 12) and variability-predicate evaluation against the Variability-Context attached to the containing configuration.
+- **Description:** An `oslc_config:VariabilitySelections` resource is a specialization of `oslc_config:Selections` whose `oslc_config:selects` triples reference version resources that have already been determined to apply under the Variability-Context identified by the containing configuration's `oslc_config:variabilityContext` property (see M.4). The Variability-Context is not stored on the `VariabilitySelections` resource itself; it is a property of the configuration that contains the `VariabilitySelections`, ensuring that a baseline (which freezes both its `selects` triples and its `variabilityContext` reference) is self-describing.
 
 **VariabilitySelections Properties**
 
 | *Prefixed Name* | *Occurs* | *Read-only* | *Value-type* | *Representation* | *Range* | *Description* |
 | --- | --- | --- | --- | --- | --- | --- |
-| `oslc_config:selects` | Zero-or-many | unspecified | Resource | Reference | `oslc_config:VersionResource` | The target resource *MUST* be a version resource [CONFIG-RES-M2]. Targets *MUST NOT* be of type `oslc_config:Configuration` or `oslc_config:Component` [CONFIG-RES-M3]. The version resource targeted by this property is a *candidate*: it is the version that would be selected by normal version resolution and that will be subjected to variability evaluation before final binding. Targets MAY be of any versioned resource type that carries variability predicates, including (in the PLM domain) `oslc_plm:Part` and `oslc_plm:PartUsage` versions. This property is read-only for selections of a baseline, but *MAY* be modifiable for selections of a stream [CONFIG-RES-M4]. |
+| `oslc_config:selects` | Zero-or-many | see description | Resource | Reference | `oslc_config:VersionResource` | The target resource *MUST* be a version resource [CONFIG-RES-M2]. Targets *MUST NOT* be of type `oslc_config:Configuration` or `oslc_config:Component` [CONFIG-RES-M3]. Each targeted version is one that (a) has been selected as a candidate by the Configuration-Context of the containing configuration through the version resolution defined in Section 12, and (b) has been evaluated as variant-applicable by its variability predicate against the Variability-Context identified by the containing configuration's `oslc_config:variabilityContext` property. Targets *MAY* be of any versioned resource type that carries variability predicates, including (in the PLM domain) `oslc_plm:Part` and `oslc_plm:PartUsage` versions. In a baseline, this property is read-only and frozen at baseline-creation time. In a stream, this property is server-maintained: the server re-computes its values when either the stream's candidate pool or the stream's `oslc_config:variabilityContext` reference changes [CONFIG-RES-M4]. |
 | `rdf:type` | One-or-many | unspecified | Resource | Reference | `rdfs:Class` | A resource type URI. A `VariabilitySelections` resource *MUST* have at least the resource types `oslc_config:Selections` and `oslc_config:VariabilitySelections` [CONFIG-RES-M5]. A `VariabilitySelections` resource *MUST NOT* also have the type `oslc_config:UnboundSelections` or `oslc_config:EffectivitySelections` [CONFIG-RES-M6]. |
 
-Servers *MAY* define additional properties on `VariabilitySelections` resources, including domain-specific properties that constrain or annotate the variability evaluation (for example, the version of a variability predicate language assumed by the selections, or a reference to an option-set schema). [CONFIG-RES-M7]
+Servers *MAY* define additional properties on `VariabilitySelections` resources, including domain-specific properties that annotate the variability evaluation (for example, the version of a variability predicate language assumed by the selections, or a reference to an option-set schema). [CONFIG-RES-M7]
 
-### M.3 Variability Predicates on Version Resources
+### M.3 Variability Predicates on Candidate Version Resources
 
-The version resources referenced by `oslc_config:VariabilitySelections.selects` are expected to carry variability information that the server can evaluate against a variability context. This specification does not define the form of that information; it *MUST* be defined by a domain specification. [CONFIG-RES-M8] In the PLM domain, this definition is expected to appear in `plm-spec.html`, covering at minimum:
+Candidate version resources that participate in variability filtering carry variability information that the server evaluates against the Variability-Context attached to the containing configuration (M.4). The form of that information is not defined by this specification; it *MUST* be defined by a domain specification. [CONFIG-RES-M8] In the PLM domain, this definition is expected to appear in `plm-spec.html`, covering at minimum:
 
 - The variability-predicate vocabulary supported on `oslc_plm:Part` versions and `oslc_plm:PartUsage` versions (boolean expressions over named option values).
 - The form of the variability context (a set of option-value assignments, optionally with a variant rule reference).
 - Constraints on the option set itself (typed options, named values, cross-option exclusions).
 
-A version resource referenced from a `VariabilitySelections` resource *MAY* declare a variability predicate that yields a Boolean value. If the predicate yields true, the candidate version is included in the resolved binding; if false, the binding is removed.
+A candidate version resource *MAY* declare a variability predicate that yields a Boolean value. If the predicate yields true (or the candidate carries no predicate), the candidate is included in `VariabilitySelections.selects`; if false, it is excluded.
 
 Variability predicates are *not* expected to yield substitute version URIs; the question variability answers is "is this version included?" and not "which sibling version applies?". Substitution between revisions of the same versioned resource based on lifecycle progression is the domain of effectivity (Section N), not variability.
 
 ### M.4 Variability Context
 
-Variability evaluation requires a context of option-value assignments. This context is distinct from both the configuration context defined in Section 4 and the effectivity context defined in N.4.
+A variability context is a resource that carries the option-value assignments against which variability predicates are evaluated. The structure of this resource is defined by a domain specification; for the PLM domain, see `plm-spec.html` for `oslc_plm:VariabilityContext`.
 
-A client requests a variability context by adding a query string `oslc_config.variability` to the request URI, whose value is an angle-bracket-delimited URI reference to a variability context resource, escaped as defined in [[OSLCCore3]]:
+This specification introduces an `oslc_config:variabilityContext` property on `oslc_config:Configuration` that identifies the variability context applicable to the configuration's `VariabilitySelections` resources. A configuration whose selections include one or more `oslc_config:VariabilitySelections` *MUST* carry exactly one `oslc_config:variabilityContext` property naming the context against which those selections' post-filter `selects` values were computed. [CONFIG-RES-M10]
 
-```
-?oslc_config.variability=uri_ref_esc
-```
+**variabilityContext on Configuration**
 
-The referenced resource *MUST* be of a type defined by a domain specification, and *MUST* carry the option-value assignments to be supplied to variability predicate evaluation. [CONFIG-RES-M10]
+| *Prefixed Name* | *Occurs* | *Read-only* | *Value-type* | *Representation* | *Range* | *Description* |
+| --- | --- | --- | --- | --- | --- | --- |
+| `oslc_config:variabilityContext` | Zero-or-one | see description | Resource | Reference | domain-defined | The variability context whose option-value assignments were supplied to variability predicate evaluation when computing the `VariabilitySelections.selects` triples of this configuration. *MUST* be present on any configuration whose selections include one or more `oslc_config:VariabilitySelections`. On a baseline, this property is read-only and frozen. On a stream, this property *MAY* be modified by an authorized client; modification causes the server to re-compute the affected `VariabilitySelections.selects` against the new context. |
 
-A configuration context, a variability context, and an effectivity context *MAY* all be supplied on the same request. If multiple are supplied, the configuration context is evaluated first (per Sections 4 and 12), the variability context is then applied to filter option-conditioned candidates, and the effectivity context is applied last to refine the surviving bindings against instance/timing parameters.
+The property attaches the variability context to the configuration so that a baseline is self-describing: reading a baseline yields both its frozen `selects` triples and the context reference that produced them, with no external lookup.
 
-A server that supports variability-based resolution *MUST* support the `oslc_config.variability` query parameter. [CONFIG-RES-M11] Servers *MAY* additionally support conveying variability context through a request header `Variability-Context`, using the same syntax as the `Configuration-Context` header. [CONFIG-RES-M12]
+**Request-time conveyance.** A request *MAY* carry a `Variability-Context` request header, or an equivalent `oslc_config.variability` query parameter, with the same matching/override semantics defined for Effectivity-Context in N.4: a baseline's request *MUST* match the baseline's stored `variabilityContext` or fail with 400 Bad Request [CONFIG-RES-M15]; a stream's request *MAY* supply an alternative context to drive a transient re-computation for that request only.
 
 Where the `oslc_config.variability` query parameter or `Variability-Context` header is used, a server *SHOULD* include in the response a `Vary` header that names whichever mechanism was used. [CONFIG-RES-M13]
 
-If a configuration contains one or more `oslc_config:VariabilitySelections` resources and a request supplies no variability context, the server *MUST* either:
+If a configuration is created with `VariabilitySelections` but no `oslc_config:variabilityContext`, the server *MUST* fail the create operation with a 400 Bad Request indicating that a variability context is required. [CONFIG-RES-M14]
 
-1. Apply a default variability context defined by the server or the configuration, if such a default exists, or
-2. Fail the request with a 400 Bad Request response indicating that a variability context is required.
+### M.5 Computation of VariabilitySelections.selects
 
-[CONFIG-RES-M14]
+This section defines the algorithm by which a server populates the `oslc_config:selects` triples of an `oslc_config:VariabilitySelections` resource. The triggers and freeze-vs-refresh semantics parallel those of N.5 exactly; substitute "variability" for "effectivity" and "variabilityContext" for "effectivityContext" throughout. [CONFIG-RES-M16]
 
-A baseline *MAY* declare an immutable variability context as part of its definition, by referencing a variability context resource through a property defined by the relevant domain specification. Where a baseline declares such a context, requests against that baseline *MUST* use the declared context, and the `oslc_config.variability` query parameter, if supplied, *MUST* either match the declared context or cause the request to fail with 400 Bad Request. [CONFIG-RES-M15] A stream *MUST NOT* declare an immutable variability context; variability for streams is always supplied per-request.
+**Inputs.** The server *MUST* take as inputs:
 
-### M.5 Resolution Algorithm
+1. The candidate pool — the version resources in scope for the containing configuration's Configuration-Context, as determined by Section 12 version resolution across the configuration's `oslc_config:Selections` and `oslc_config:UnboundSelections` and recursive contributions.
+2. The variability context identified by the containing configuration's `oslc_config:variabilityContext` property (M.4).
 
-When resolving a request for a versioned resource in the context of a configuration containing one or more `oslc_config:VariabilitySelections` resources, the server *MUST* apply the following algorithm. [CONFIG-RES-M16]
+**Procedure.** For each candidate version resource `v` in the input pool:
 
-**Step 1 — Candidate version resolution.** Apply the version resolution algorithm defined in Section 12 across all selections in the configuration and its recursive contributions, treating `oslc_config:VariabilitySelections` resources identically to `oslc_config:Selections` resources for the purposes of candidate selection. The result is, for each concept URI in scope, either a single candidate version resource or no candidate.
+1. If `v` carries no `oslc_plm:variabilityCondition` (or domain-equivalent) record, include `v` in `VariabilitySelections.selects` unchanged.
+2. Otherwise, evaluate the variability predicate carried by `v` against the variability context. The predicate yields one of:
+   - **Boolean true** — `v` is variant-applicable; include `v` in `VariabilitySelections.selects`.
+   - **Boolean false** — `v` is excluded from `VariabilitySelections.selects`.
+   - **Any other value** — the predicate is malformed; the server *MUST* fail the computation with a 500 Internal Server Error referencing an `oslc:Error` describing the failure. [CONFIG-RES-M17]
 
-**Step 2 — Variability binding.** For each candidate version resource produced by Step 1 that was contributed by an `oslc_config:VariabilitySelections` resource:
+The resulting set is the `oslc_config:selects` value of the `VariabilitySelections`. Baselines freeze it; streams refresh it on the same triggers as N.5.
 
-1. Evaluate the variability predicate carried by the candidate version against the variability context supplied with the request.
-2. If the predicate yields a Boolean true, the candidate version is the final binding (subject to subsequent effectivity refinement, if applicable; see N.5).
-3. If the predicate yields a Boolean false, the binding is removed (no version is selected for the corresponding concept URI).
-4. If the predicate yields any other value, the server *MUST* return a 500 Internal Server Error with an `oslc:Error` describing the failure. [CONFIG-RES-M17]
-
-Candidate version resources contributed by selections that are *not* of type `oslc_config:VariabilitySelections` are passed through Step 2 unchanged.
-
-**Step 3 — Final resolution.** As in N.5 Step 3, with effectivity refinement (where present) applied to the surviving bindings before final resolution.
+When `oslc_config:EffectivitySelections` is also present in the configuration, the surviving `VariabilitySelections.selects` defines the candidate pool that N.5 then refines (see M.7).
 
 ### M.6 Independence of Concerns
 
-As with N.6, this specification preserves the separation between configurations (selectors) and version resources (selected). The configuration identifies which version resources are in scope and which participate in variability-based binding. The version resources carry their own variability predicates. The variability context is supplied separately at request time.
+As with N.6, this specification preserves the separation between configurations (selectors and context-bearers) and version resources (selected, predicate-bearers). The configuration identifies the candidate pool, the variability context (via `oslc_config:variabilityContext`), and which selections participate in variability-based filtering. The version resources carry their own variability predicates. The server composes them when populating `VariabilitySelections.selects`.
 
-### M.7 Interaction with Existing Resolution and with EffectivitySelections
+### M.7 Interaction with EffectivitySelections
 
 `VariabilitySelections` and `EffectivitySelections` are independent and *MAY* coexist in a single configuration. When both are present:
 
-1. Candidate version resolution (M.5 Step 1 / N.5 Step 1) is performed identically — both selection types contribute candidates to the version-resolution pass of Section 12.
-2. Variability binding (M.5 Step 2) is performed *before* effectivity binding (N.5 Step 2). This order is normative: effectivity predicates on a Part revision MAY presuppose option choices that variability has already resolved, but the reverse is not expected. [CONFIG-RES-M18]
-3. The surviving bindings from variability are then subjected to effectivity refinement.
-4. Step 3 final resolution is performed once at the end.
+1. The candidate pool used by `VariabilitySelections` computation is the configuration's Section-12 candidates.
+2. `VariabilitySelections.selects` is computed first per M.5.
+3. The surviving `VariabilitySelections.selects` set defines the candidate pool that `EffectivitySelections` computation per N.5 then refines.
+4. `EffectivitySelections.selects` is the final filtered set for the configuration.
 
-A change set *MAY* contain `VariabilitySelections` resources alongside `EffectivitySelections` resources; both participate in their respective resolution steps.
+This order is normative: effectivity records on a Part or PartUsage version *MAY* presuppose option choices that variability has already resolved, but the reverse is not expected. [CONFIG-RES-M18]
+
+A change set *MAY* contain `VariabilitySelections` resources alongside `EffectivitySelections` resources; both participate in their respective computation steps under the change set's own context properties (or the overridden configuration's, if not present on the change set).
 
 ### M.8 Caching, Tracked Resource Sets, and Compact Rendering
 
-Same considerations as N.8: cached responses *MUST* be keyed on every context supplied (configuration, variability, effectivity), `Vary` headers should reflect every mechanism used, and Compact rendering must reflect the full context combination.
+Same considerations as N.8: baselines store their frozen `selects` as the resolution cache; streams refresh on context or candidate-pool change. Where a request supplies a `Variability-Context` header or `oslc_config.variability` query parameter to drive a transient re-computation, the server *SHOULD* return a `Vary` header naming the mechanism used. Tracked Resource Sets and Compact rendering must reflect the configuration's attached `variabilityContext` (and `effectivityContext`) at request time.
 
 ### M.9 Conformance
 
 A configuration server claiming conformance to this section *MUST*:
 
 1. Support `oslc_config:VariabilitySelections` resources in configurations as defined in M.2.
-2. Support the `oslc_config.variability` query parameter as defined in M.4.
-3. Implement the resolution algorithm defined in M.5.
-4. When also conforming to Section N, apply variability binding before effectivity binding as defined in M.7.
-5. Honor declared variability contexts on baselines, where present, as defined in M.4.
+2. Support the `oslc_config:variabilityContext` property on `oslc_config:Configuration` as defined in M.4.
+3. Implement the computation of `VariabilitySelections.selects` defined in M.5.
+4. When also conforming to Section N, perform variability computation before effectivity computation as defined in M.7.
+5. Freeze a baseline's `VariabilitySelections.selects` and `variabilityContext` at baseline creation, and reject subsequent modifications.
 6. Provide caching headers consistent with M.8.
 
-A configuration server *MAY* claim conformance to the base specification (Sections 1–20) without conforming to this section. Servers that do not conform to this section *MUST* reject any configuration POSTed to them that contains `oslc_config:VariabilitySelections` resources with a 400 Bad Request response, and *MUST NOT* honor the `oslc_config.variability` query parameter.
+A configuration server *MAY* claim conformance to the base specification (Sections 1–20) without conforming to this section. Servers that do not conform to this section *MUST* reject any configuration POSTed to them that contains `oslc_config:VariabilitySelections` resources or an `oslc_config:variabilityContext` property with a 400 Bad Request response.
+
+A server that supports the optional request-time `Variability-Context` header or `oslc_config.variability` query parameter (M.4) *MUST* honor the matching and override semantics defined there.
 
 A server *MAY* conform to Section N alone, to Section M alone, or to both.
 
 ---
 
+## Worked Example — Eco Line Washing Machine (Effectivity)
+
+This non-normative example illustrates how the mechanisms defined in Section N populate the `oslc_config:selects` triples of an `oslc_config:EffectivitySelections` resource from a candidate pool of `oslc_plm:Part` and `oslc_plm:PartUsage` versions. The product structure and the effectivity records on the PartUsage versions are defined in `plm-spec.html`, [§ Worked Example — Eco Line Washing Machine](../plm/plm-spec.html#washing-machine-example); only the OSLC Configuration Management side of the story is shown here.
+
+### Inputs
+
+- **Configuration.** An `oslc_config:Stream` named `em:Stream_EcoLine` whose component is `em:WashingMachine` and whose `oslc_config:selections` includes the candidate pool of `WashingMachine→Motor`, `WashingMachine→Housing`, and `WashingMachine→ControlUnit` PartUsage versions defined in the PLM spec example. (The Housing's internal PartUsages to `UpperHousing` and `LowerHousing` are unconditional and live in the Housing's own configuration, one level down.)
+- **Effectivity-Context.** A resource `em:Ctx_2027_06_01` attached to the stream via `oslc_config:effectivityContext`. It carries `oslc_plm:effectivityDate "2027-06-01"^^xsd:date`.
+
+### Server-computed EffectivitySelections.selects
+
+Applying the procedure in N.5 against the candidate pool — for each PartUsage version, evaluate the `oslc_plm:effectivity` records carried by the version against the date `2027-06-01`:
+
+| PartUsage version           | Effectivity record           | Outcome     |
+|-----------------------------|------------------------------|-------------|
+| `Usage_WM_Motor_pre27`      | until 2027-06-30             | true        |
+| `Usage_WM_Motor_27on`       | from 2027-07-01              | false       |
+| `Usage_WM_Housing_pre27`    | until 2026-12-31             | false       |
+| `Usage_WM_Housing_27`       | 2027-01-01 to 2027-12-31     | true        |
+| `Usage_WM_Housing_28h1`     | 2028-01-01 to 2028-06-30     | false       |
+| `Usage_WM_Housing_28h2`     | from 2028-07-01              | false       |
+| `Usage_WM_ControlUnit_v1`   | always                       | true        |
+
+The server populates the stream's `EffectivitySelections.selects` with the three survivors:
+
+```turtle
+em:Stream_EcoLine a oslc_config:Stream ;
+  oslc_config:component          em:WashingMachine ;
+  oslc_config:effectivityContext em:Ctx_2027_06_01 ;
+  oslc_config:selections         em:sel_effectivity_stream .
+
+em:sel_effectivity_stream a oslc_config:EffectivitySelections ;
+  oslc_config:selects em:Usage_WM_Motor_pre27,
+                      em:Usage_WM_Housing_27,
+                      em:Usage_WM_ControlUnit_v1 .
+```
+
+The Housing's own configuration (the one pinned by `Usage_WM_Housing_27`, namely Housing V4.2) is itself a configuration whose own `selects` includes the unconditional `Housing→UpperHousing` and `Housing→LowerHousing` PartUsage versions. Recursive walking through PartUsage versions yields the resolved BOM.
+
+### Freezing the result as a baseline
+
+A baseline of the stream taken at this moment freezes both the `selects` triples and the `effectivityContext` reference:
+
+```turtle
+em:Baseline_EcoLine_2027_06 a oslc_config:Baseline ;
+  oslc_config:component          em:WashingMachine ;
+  oslc_config:baselineOfStream   em:Stream_EcoLine ;
+  oslc_config:effectivityContext em:Ctx_2027_06_01 ;     # frozen
+  oslc_config:selections         em:sel_effectivity_bl .
+
+em:sel_effectivity_bl a oslc_config:EffectivitySelections ;
+  oslc_config:selects em:Usage_WM_Motor_pre27,
+                      em:Usage_WM_Housing_27,
+                      em:Usage_WM_ControlUnit_v1 .
+```
+
+Editing `em:Ctx_2027_06_01` or replacing the reference on `em:Stream_EcoLine` re-triggers the N.5 computation for the stream; the baseline is unaffected. The baseline carries its own audit trail — the `effectivityContext` reference identifies exactly which context produced its survivors.
+
+A parallel example showing `oslc_config:VariabilitySelections` and `oslc_config:variabilityContext` is left for a future revision (Section M is normative; the example will be added when the variability surface is exercised).
+
+---
+
 ## Open Questions for the OSLC-OP Configuration Management TC
 
-1. **Resolution order normativity.** Section M.7 specifies variability-before-effectivity binding. Is this the right normative order, or should the spec leave composition order to domain specs? Existing PLM systems differ in framing — Windchill applies the option filter first, then ConfigSpec for revisions; Teamcenter treats Revision Rule and Variant Rule as independent and the order is effectively client-driven; Aras runs Configurator Services and Effectivity Services separately, composed by the calling application. A normative order simplifies interoperability at the cost of ruling out a small number of edge cases.
+1. **Resolution order normativity.** Section M.7 specifies variability-before-effectivity computation. Is this the right normative order, or should the spec leave composition order to domain specs? Existing PLM systems differ in framing — Windchill applies the option filter first, then ConfigSpec for revisions; Teamcenter treats Revision Rule and Variant Rule as independent and the order is effectively client-driven; Aras runs Configurator Services and Effectivity Services separately, composed by the calling application. A normative order simplifies interoperability at the cost of ruling out a small number of edge cases.
 
-2. **Context as URI reference vs. inline.** The query parameter mechanism (`?oslc_config.effectivity=<uri>`) requires the client to first create a context resource on the server. Should an inline context (a small RDF body in the request, perhaps via a header containing a Turtle blob) also be permitted for short-lived per-request contexts? The current spec mirrors the existing `Configuration-Context` pattern for consistency.
+2. **Is the request-time header/query mechanism needed at all?** Sections N.4 and M.4 attach the effectivity and variability contexts to the configuration via `oslc_config:effectivityContext` / `oslc_config:variabilityContext` properties. This covers baselines (frozen) and streams (default context with server-maintained `selects`). A request-time `Effectivity-Context` / `Variability-Context` header (or `?oslc_config.effectivity=` / `?oslc_config.variability=` query parameter) is currently described as an optional secondary mechanism for transient overrides on streams. Is this still useful, or does the property mechanism alone suffice? Removing the header simplifies the spec but loses the ability to do one-off resolutions without persisting the context on the stream.
 
-3. **Predicate validation.** The spec says invalid predicate evaluations result in 500 errors. Should there be a lightweight conformance check that domain specifications can require, so authoring tools catch malformed predicates at creation time rather than at resolution time?
+3. **Inline vs. resource-by-reference contexts.** Both attachment mechanisms (property and request-time) require the context to be a server-resident resource referenced by URI. Should an inline context (a small RDF body) be permitted for one-off resolutions, particularly in the header/query case if it is retained?
 
-4. **Authorization metadata.** PLM domains (notably Windchill) require every effectivity record to be tied to an authorizing Change Notice. Should `oslc_config:authorizedBy` be a defined property of `EffectivitySelections` and `VariabilitySelections` (pointing to a change-management resource), or is this best left to the domain spec?
+4. **Predicate validation.** The spec says malformed predicate evaluations result in 500 errors. Should there be a lightweight conformance check that domain specifications can require, so authoring tools catch malformed predicates at creation time rather than at computation time?
 
-5. **Override semantics.** Teamcenter Revision Rules support `Override` and `Precise` clauses that pin a specific revision regardless of effectivity. Should the spec define a "pinned" outcome — a way for the predicate to express "use this version regardless of context" — or rely on domain spec conventions?
+5. **Authorization metadata.** PLM domains (notably Windchill) require every effectivity record to be tied to an authorizing Change Notice. Should `oslc_config:authorizedBy` be a defined property of `EffectivitySelections` and `VariabilitySelections` (pointing to a change-management resource), or is this best left to the domain spec?
+
+6. **Override semantics.** Teamcenter Revision Rules support `Override` and `Precise` clauses that pin a specific revision regardless of effectivity. Should the spec define a "pinned" outcome — a way for the predicate to express "use this version regardless of context" — or rely on domain spec conventions?
 
 ## Coordination with the OSLC PLM Specification
 
