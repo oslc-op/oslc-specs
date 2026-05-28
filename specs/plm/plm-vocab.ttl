@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-@prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix oslc_am: <http://open-services.net/ns/am#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix vann: <http://purl.org/vocab/vann/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix oslc_am:     <http://open-services.net/ns/am#> .
+@prefix oslc_config: <http://open-services.net/ns/config#> .
+@prefix owl:         <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann:        <http://purl.org/vocab/vann/> .
+@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
 
-@prefix oslc_plm: <http://open-services.net/ns/plm#> .
+@prefix oslc_plm:    <http://open-services.net/ns/plm#> .
 
 oslc_plm: a owl:Ontology ;
     rdfs:label "OSLC PLM Vocabulary" ;
@@ -207,14 +208,29 @@ oslc_plm:validatesPartUsage
 #
 # Effectivity resources express the instance/timing parameters (date,
 # unit, serial, lot, model) under which a Part or PartUsage version
-# applies. Carried by the version resource and evaluated at request
-# time against an EffectivityContext per the OSLC Configuration
-# Management Selections Extensions (oslc_config:EffectivitySelections).
+# applies. Carried by the version resource and evaluated by the server
+# when computing oslc_plm:EffectivitySelections.selects against the
+# EffectivityContext identified by the containing configuration's
+# oslc_plm:effectivityContext property. This is a PLM-domain extension
+# of oslc_config:Selections; no changes to OSLC Configuration
+# Management are required.
+
+oslc_plm:EffectivitySelections a rdfs:Class ;
+    rdfs:subClassOf oslc_config:Selections ;
+    rdfs:label "Effectivity Selections" ;
+    rdfs:comment "A specialization of oslc_config:Selections whose oslc_config:selects triples name the Part and PartUsage version resources that have survived both the Configuration-Context candidate selection (per the OSLC CM base spec, Section 12) and the evaluation of their oslc_plm:effectivity records against the EffectivityContext identified by the containing configuration's oslc_plm:effectivityContext property. Baselines hold frozen selects; streams' selects are server-maintained." ;
+    rdfs:isDefinedBy oslc_plm: .
+
+oslc_plm:effectivityContext
+  a rdf:Property ;
+  rdfs:isDefinedBy oslc_plm: ;
+  rdfs:label "effectivityContext" ;
+  rdfs:comment "The EffectivityContext whose parameters were supplied to effectivity predicate evaluation when computing the oslc_plm:EffectivitySelections.selects triples of this configuration. Carried by an oslc_config:Configuration as a PLM-domain extension property. MUST be present on any configuration whose selections include one or more oslc_plm:EffectivitySelections. On a baseline the property is read-only and frozen; on a stream the property is mutable and modification causes re-computation of the affected EffectivitySelections.selects." .
 
 oslc_plm:Effectivity a rdfs:Class ;
     rdfs:subClassOf oslc_am:Resource ;
     rdfs:label "Effectivity" ;
-    rdfs:comment "An effectivity record carried by a Part or PartUsage version, expressing the instance/timing parameters (date range, unit range, serial range, lot, end-item) under which the version applies. Evaluated against an EffectivityContext supplied by oslc_config.effectivity per the OSLC Configuration Management Selections Extensions." ;
+    rdfs:comment "An effectivity record carried by a Part or PartUsage version, expressing the instance/timing parameters (date range, unit range, serial range, lot, end-item) under which the version applies. Evaluated against an EffectivityContext attached to the containing oslc_config:Configuration via oslc_plm:effectivityContext when the server computes oslc_plm:EffectivitySelections.selects." ;
     rdfs:isDefinedBy oslc_plm: .
 
 oslc_plm:effectivity
@@ -341,94 +357,9 @@ oslc_plm:effectivityModel
   rdfs:label "effectivityModel" ;
   rdfs:comment "An xsd:string model identifier." .
 
-
-# ── Variability ──────────────────────────────────────────────────────
-#
-# Variability resources express the configuration-option conditions
-# under which a Part or PartUsage version applies. Distinct from
-# Effectivity: variability addresses option choice ("Engine = V6"),
-# effectivity addresses instance/timing ("unit 100 onwards"). Evaluated
-# at request time against a VariabilityContext per the OSLC
-# Configuration Management Selections Extensions
-# (oslc_config:VariabilitySelections).
-
-oslc_plm:OptionSet a rdfs:Class ;
-    rdfs:subClassOf oslc_am:Resource ;
-    rdfs:label "Option Set" ;
-    rdfs:comment "A named collection of Options applicable to a product family. The basis for variability predicate evaluation." ;
-    rdfs:isDefinedBy oslc_plm: .
-
-oslc_plm:Option a rdfs:Class ;
-    rdfs:subClassOf oslc_am:Resource ;
-    rdfs:label "Option" ;
-    rdfs:comment "A variability option (e.g., Engine, Color) defined within an OptionSet, with one or more OptionValues." ;
-    rdfs:isDefinedBy oslc_plm: .
-
-oslc_plm:OptionValue a rdfs:Class ;
-    rdfs:subClassOf oslc_am:Resource ;
-    rdfs:label "Option Value" ;
-    rdfs:comment "A specific value for an Option (e.g., V6 for Engine, Red for Color)." ;
-    rdfs:isDefinedBy oslc_plm: .
-
-oslc_plm:hasOption
-  a rdf:Property ;
-  rdfs:isDefinedBy oslc_plm: ;
-  rdfs:label "hasOption" ;
-  rdfs:comment "An OptionSet has an Option." .
-
-oslc_plm:hasOptionValue
-  a rdf:Property ;
-  rdfs:isDefinedBy oslc_plm: ;
-  rdfs:label "hasOptionValue" ;
-  rdfs:comment "An Option has an OptionValue." .
-
-oslc_plm:VariabilityCondition a rdfs:Class ;
-    rdfs:subClassOf oslc_am:Resource ;
-    rdfs:label "Variability Condition" ;
-    rdfs:comment "A boolean expression over OptionValue equality. Carried by a Part or PartUsage version (via oslc_plm:variabilityCondition) to express the option-choice condition under which that version applies. A VariabilityCondition is either a terminal (oslc_plm:optionEquals) or an internal node combining sub-conditions (oslc_plm:and, oslc_plm:or, oslc_plm:not)." ;
-    rdfs:isDefinedBy oslc_plm: .
-
-oslc_plm:variabilityCondition
-  a rdf:Property ;
-  rdfs:isDefinedBy oslc_plm: ;
-  rdfs:label "variabilityCondition" ;
-  rdfs:comment "A VariabilityCondition carried by a Part or PartUsage version. At most one variabilityCondition is permitted per version (use AND/OR composition to express compound conditions)." .
-
-oslc_plm:and a rdf:Property ;
-    rdfs:isDefinedBy oslc_plm: ;
-    rdfs:label "and" ;
-    rdfs:comment "Logical AND of sub-conditions. The value is an rdf:List whose members are VariabilityCondition resources." .
-
-oslc_plm:or a rdf:Property ;
-    rdfs:isDefinedBy oslc_plm: ;
-    rdfs:label "or" ;
-    rdfs:comment "Logical OR of sub-conditions. The value is an rdf:List whose members are VariabilityCondition resources." .
-
-oslc_plm:not a rdf:Property ;
-    rdfs:isDefinedBy oslc_plm: ;
-    rdfs:label "not" ;
-    rdfs:comment "Logical negation of a single sub-condition. The value is a VariabilityCondition resource." .
-
-oslc_plm:optionEquals
-  a rdf:Property ;
-  rdfs:isDefinedBy oslc_plm: ;
-  rdfs:label "optionEquals" ;
-  rdfs:comment "Terminal of a VariabilityCondition: an Option has one of a specified set of OptionValues. The value is an rdf:List whose first member is an Option and whose remaining members are OptionValues belonging to that Option. Multiple OptionValues for the same Option in one optionEquals terminal are interpreted as an OR (any of these values satisfies the terminal)." .
-
-oslc_plm:VariabilityContext a rdfs:Class ;
-    rdfs:subClassOf oslc_am:Resource ;
-    rdfs:label "Variability Context" ;
-    rdfs:comment "A resource carrying the OptionValue choices supplied to variability predicate evaluation. Referenced from a request via ?oslc_config.variability=<uri> per the OSLC Configuration Management Selections Extensions." ;
-    rdfs:isDefinedBy oslc_plm: .
-
-oslc_plm:choice
-  a rdf:Property ;
-  rdfs:isDefinedBy oslc_plm: ;
-  rdfs:label "choice" ;
-  rdfs:comment "An OptionValue chosen in this VariabilityContext. Multiple choice values represent the configurator's complete assignment across the OptionSet (each Option SHOULD appear via exactly one chosen OptionValue)." .
-
-oslc_plm:appliesToOptionSet
-  a rdf:Property ;
-  rdfs:isDefinedBy oslc_plm: ;
-  rdfs:label "appliesToOptionSet" ;
-  rdfs:comment "The OptionSet whose Options this VariabilityContext makes assignments for." .
+# Variability is not a PLM-domain concept; it applies to any OSLC
+# resource. See the OSLC Variability specification at
+# specs/core/oslc-variability-spec.html for VariabilitySelections,
+# OptionSet, Option, OptionValue, VariabilityCondition,
+# VariabilityContext, and the oslc:variabilityContext property on
+# oslc_config:Configuration.

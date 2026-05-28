@@ -1,0 +1,143 @@
+# Copyright 2026 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:         <http://www.w3.org/2002/07/owl#> .
+@prefix vann:        <http://purl.org/vocab/vann/> .
+@prefix oslc:        <http://open-services.net/ns/core#> .
+@prefix oslc_config: <http://open-services.net/ns/config#> .
+
+# ── OSLC Variability vocabulary ──────────────────────────────────────
+#
+# These terms extend the OSLC Core namespace (oslc:) with a vocabulary
+# for expressing configuration-option variability — option sets, option
+# values, boolean conditions over option choices, and the request-time
+# variability context against which conditions are evaluated.
+#
+# Variability is orthogonal to effectivity (see oslc_plm:Effectivity in
+# the OSLC PLM specification): variability addresses option choice
+# ("Engine = V6"), while effectivity addresses instance/timing ("unit
+# 100 onwards"). Both are evaluated during the computation of
+# Selections.selects per the OSLC Configuration Management base spec.
+#
+# A configuration whose selections include one or more
+# oslc:VariabilitySelections carries an oslc:variabilityContext
+# property identifying the option-value assignments that produced the
+# post-filter survivors named in VariabilitySelections.selects.
+#
+# This vocabulary does not modify the OSLC Configuration Management
+# specification. VariabilitySelections is a subclass of
+# oslc_config:Selections declared in the OSLC Variability namespace
+# (which is the OSLC Core namespace); the subclassing is an outgoing
+# reference to OSLC CM rather than a change to it.
+
+# ── VariabilitySelections — Selections refined by variability ────────
+
+oslc:VariabilitySelections a rdfs:Class ;
+    rdfs:subClassOf oslc_config:Selections ;
+    rdfs:label "Variability Selections" ;
+    rdfs:comment "A specialization of oslc_config:Selections whose oslc_config:selects triples name the version resources that have survived both the Configuration-Context candidate selection (per the OSLC CM base spec, Section 12) and the evaluation of their variability conditions against the Variability-Context identified by the containing configuration's oslc:variabilityContext property. Baselines hold frozen selects; streams' selects are server-maintained." ;
+    rdfs:isDefinedBy oslc: .
+
+# ── variabilityContext — property on oslc_config:Configuration ───────
+
+oslc:variabilityContext
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc: ;
+    rdfs:label "variabilityContext" ;
+    rdfs:comment "The variability context whose option-value assignments were supplied to variability predicate evaluation when computing the VariabilitySelections.selects triples of this configuration. Carried by an oslc_config:Configuration as an extension property. MUST be present on any configuration whose selections include one or more oslc:VariabilitySelections. On a baseline the property is read-only and frozen; on a stream the property is mutable and modification causes re-computation of the affected VariabilitySelections.selects." .
+
+# ── OptionSet, Option, OptionValue — the option model ────────────────
+
+oslc:OptionSet a rdfs:Class ;
+    rdfs:label "Option Set" ;
+    rdfs:comment "A named collection of Options applicable to a product family or other variability domain. The basis for variability predicate evaluation." ;
+    rdfs:isDefinedBy oslc: .
+
+oslc:Option a rdfs:Class ;
+    rdfs:label "Option" ;
+    rdfs:comment "A variability option (e.g., Engine, Color, Market) defined within an OptionSet, with one or more OptionValues." ;
+    rdfs:isDefinedBy oslc: .
+
+oslc:OptionValue a rdfs:Class ;
+    rdfs:label "Option Value" ;
+    rdfs:comment "A specific value of an Option (e.g., V6 for Engine, Red for Color)." ;
+    rdfs:isDefinedBy oslc: .
+
+oslc:hasOption
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc: ;
+    rdfs:label "hasOption" ;
+    rdfs:comment "An OptionSet has an Option." .
+
+oslc:hasOptionValue
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc: ;
+    rdfs:label "hasOptionValue" ;
+    rdfs:comment "An Option has an OptionValue." .
+
+# ── VariabilityCondition — boolean expression carried by a version ───
+
+oslc:VariabilityCondition a rdfs:Class ;
+    rdfs:label "Variability Condition" ;
+    rdfs:comment "A boolean expression over OptionValue equality. Carried by a version resource (via oslc:variabilityCondition) to express the option-choice condition under which that version applies. A VariabilityCondition is either a terminal (oslc:optionEquals) or an internal node combining sub-conditions (oslc:and, oslc:or, oslc:not). VariabilityCondition is applicable to any versioned resource that carries variability — not exclusive to any OSLC domain." ;
+    rdfs:isDefinedBy oslc: .
+
+oslc:variabilityCondition
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc: ;
+    rdfs:label "variabilityCondition" ;
+    rdfs:comment "A VariabilityCondition carried by a versioned resource. At most one variabilityCondition is permitted per version (use AND / OR composition to express compound conditions). Applicable to any versioned resource regardless of OSLC domain." .
+
+oslc:and a rdf:Property ;
+    rdfs:isDefinedBy oslc: ;
+    rdfs:label "and" ;
+    rdfs:comment "Logical AND of sub-conditions. The value is an rdf:List whose members are VariabilityCondition resources." .
+
+oslc:or a rdf:Property ;
+    rdfs:isDefinedBy oslc: ;
+    rdfs:label "or" ;
+    rdfs:comment "Logical OR of sub-conditions. The value is an rdf:List whose members are VariabilityCondition resources." .
+
+oslc:not a rdf:Property ;
+    rdfs:isDefinedBy oslc: ;
+    rdfs:label "not" ;
+    rdfs:comment "Logical negation of a single sub-condition. The value is a VariabilityCondition resource." .
+
+oslc:optionEquals
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc: ;
+    rdfs:label "optionEquals" ;
+    rdfs:comment "Terminal of a VariabilityCondition: an Option has one of a specified set of OptionValues. The value is an rdf:List whose first member is an Option and whose remaining members are OptionValues belonging to that Option. Multiple OptionValues for the same Option in one optionEquals terminal are interpreted as an OR (any of these values satisfies the terminal)." .
+
+# ── VariabilityContext — the per-Configuration option assignment ─────
+
+oslc:VariabilityContext a rdfs:Class ;
+    rdfs:label "Variability Context" ;
+    rdfs:comment "A resource carrying the OptionValue choices supplied to variability predicate evaluation. Referenced from an oslc_config:Configuration via the oslc:variabilityContext property. The Configuration's URL therefore identifies all the information needed to evaluate variability against its selections, with no additional request-time mechanism required." ;
+    rdfs:isDefinedBy oslc: .
+
+oslc:choice
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc: ;
+    rdfs:label "choice" ;
+    rdfs:comment "An OptionValue chosen in this VariabilityContext. Multiple choice values represent the configurator's complete assignment across the OptionSet (each Option SHOULD appear via exactly one chosen OptionValue)." .
+
+oslc:appliesToOptionSet
+    a rdf:Property ;
+    rdfs:isDefinedBy oslc: ;
+    rdfs:label "appliesToOptionSet" ;
+    rdfs:comment "The OptionSet whose Options this VariabilityContext makes assignments for." .

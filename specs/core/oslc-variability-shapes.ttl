@@ -1,0 +1,258 @@
+# Copyright 2026 OASIS Open
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+@prefix :            <http://open-services.net/ns/variability/shapes/1.0#> .
+@prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms:     <http://purl.org/dc/terms/> .
+@prefix oslc:        <http://open-services.net/ns/core#> .
+@prefix oslc_config: <http://open-services.net/ns/config#> .
+
+
+:
+  a oslc:ResourceShapeConstraints ;
+  dcterms:title "The OSLC Variability Constraints" ;
+  dcterms:description "Constraints on the variability vocabulary terms (VariabilitySelections, OptionSet, Option, OptionValue, VariabilityCondition, VariabilityContext) defined in the OSLC Core namespace by the OSLC Variability specification."^^rdf:XMLLiteral ;
+  rdfs:label "The OSLC Variability Constraints" ;
+  dcterms:publisher <https://open-services.net/about/> .
+
+
+# ── Common property declarations ─────────────────────────────────────
+
+:type a oslc:Property ;
+    oslc:name                "type" ;
+    oslc:propertyDefinition  rdf:type ;
+    oslc:occurs              oslc:One-or-many ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    oslc:range               rdfs:Class ;
+    dcterms:description      "The RDF type(s) of the resource."^^rdf:XMLLiteral .
+
+:identifier a oslc:Property ;
+    oslc:name                "identifier" ;
+    oslc:propertyDefinition  dcterms:identifier ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           xsd:string ;
+    dcterms:description      "A unique identifier for the resource."^^rdf:XMLLiteral .
+
+:title a oslc:Property ;
+    oslc:name                "title" ;
+    oslc:propertyDefinition  dcterms:title ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           rdf:XMLLiteral ;
+    dcterms:description      "A short, human-readable title."^^rdf:XMLLiteral .
+
+:description a oslc:Property ;
+    oslc:name                "description" ;
+    oslc:propertyDefinition  dcterms:description ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           rdf:XMLLiteral ;
+    dcterms:description      "Descriptive text for the resource."^^rdf:XMLLiteral .
+
+
+# ── Variability properties ───────────────────────────────────────────
+
+:variabilityCondition a oslc:Property ;
+    oslc:name                "variabilityCondition" ;
+    dcterms:title            "Variability Condition" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:variabilityCondition ;
+    oslc:range               oslc:VariabilityCondition ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """A VariabilityCondition carried by a versioned resource. Evaluated against the VariabilityContext identified by the containing configuration's oslc:variabilityContext property when the server computes VariabilitySelections.selects. Use AND/OR composition to express compound conditions. Applicable to any versioned resource regardless of OSLC domain."""^^rdf:XMLLiteral .
+
+:variabilityContext a oslc:Property ;
+    oslc:name                "variabilityContext" ;
+    dcterms:title            "Variability Context" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:variabilityContext ;
+    oslc:range               oslc:VariabilityContext ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """The variability context whose option-value assignments were supplied to variability predicate evaluation when computing the VariabilitySelections.selects triples of this configuration. Carried by an oslc_config:Configuration as an extension property. MUST be present on any configuration whose selections include one or more oslc:VariabilitySelections. On a baseline the property is read-only and frozen; on a stream the property is mutable and modification causes re-computation of the affected VariabilitySelections.selects."""^^rdf:XMLLiteral .
+
+:hasOption a oslc:Property ;
+    oslc:name                "hasOption" ;
+    dcterms:title            "Has Option" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc:hasOption ;
+    oslc:range               oslc:Option ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """An OptionSet has an Option."""^^rdf:XMLLiteral .
+
+:hasOptionValue a oslc:Property ;
+    oslc:name                "hasOptionValue" ;
+    dcterms:title            "Has Option Value" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc:hasOptionValue ;
+    oslc:range               oslc:OptionValue ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """An Option has an OptionValue."""^^rdf:XMLLiteral .
+
+:vc-and a oslc:Property ;
+    oslc:name                "and" ;
+    dcterms:title            "And" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:and ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """Logical AND of a list of sub-conditions. Value is an rdf:List of VariabilityCondition resources."""^^rdf:XMLLiteral .
+
+:vc-or a oslc:Property ;
+    oslc:name                "or" ;
+    dcterms:title            "Or" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:or ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """Logical OR of a list of sub-conditions. Value is an rdf:List of VariabilityCondition resources."""^^rdf:XMLLiteral .
+
+:vc-not a oslc:Property ;
+    oslc:name                "not" ;
+    dcterms:title            "Not" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:not ;
+    oslc:range               oslc:VariabilityCondition ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """Logical negation of a single sub-condition."""^^rdf:XMLLiteral .
+
+:optionEquals a oslc:Property ;
+    oslc:name                "optionEquals" ;
+    dcterms:title            "Option Equals" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:optionEquals ;
+    oslc:representation      oslc:Either ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """Terminal of a VariabilityCondition. Value is an rdf:List whose first member is an Option and whose remaining members are OptionValues. Multiple OptionValues are OR-combined within the same Option."""^^rdf:XMLLiteral .
+
+:choice a oslc:Property ;
+    oslc:name                "choice" ;
+    dcterms:title            "Choice" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc:choice ;
+    oslc:range               oslc:OptionValue ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """An OptionValue chosen in this VariabilityContext."""^^rdf:XMLLiteral .
+
+:appliesToOptionSet a oslc:Property ;
+    oslc:name                "appliesToOptionSet" ;
+    dcterms:title            "Applies To Option Set" ;
+    oslc:occurs              oslc:Zero-or-one ;
+    oslc:propertyDefinition  oslc:appliesToOptionSet ;
+    oslc:range               oslc:OptionSet ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """The OptionSet this VariabilityContext assigns choices from."""^^rdf:XMLLiteral .
+
+:selects a oslc:Property ;
+    oslc:name                "selects" ;
+    dcterms:title            "Selects" ;
+    oslc:occurs              oslc:Zero-or-many ;
+    oslc:propertyDefinition  oslc_config:selects ;
+    oslc:range               oslc_config:VersionResource ;
+    oslc:representation      oslc:Reference ;
+    oslc:valueType           oslc:Resource ;
+    dcterms:description      """The target resource MUST be a version resource. Each targeted version is one that (a) has been selected as a candidate by the Configuration-Context of the containing configuration through the version resolution defined in the OSLC CM base spec (Section 12), and (b) has been evaluated as variant-applicable by its variability predicate against the Variability-Context identified by the containing configuration's oslc:variabilityContext property. Targets MUST NOT be of type oslc_config:Configuration or oslc_config:Component. In a baseline, this property is read-only and frozen at baseline-creation time. In a stream, this property is server-maintained: the server re-computes its values when either the stream's candidate pool or the stream's oslc:variabilityContext reference changes."""^^rdf:XMLLiteral .
+
+
+# ── Resource shapes ──────────────────────────────────────────────────
+
+:VariabilitySelectionsShape a oslc:ResourceShape ;
+    oslc:describes oslc:VariabilitySelections ;
+    dcterms:title  "Variability Selections" ;
+    dcterms:description  """A specialization of oslc_config:Selections whose selects triples name the version resources that have survived both the Configuration-Context candidate selection and the evaluation of their variability conditions against the Variability-Context identified by the containing configuration's oslc:variabilityContext property."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :selects
+    .
+
+:OptionSetShape a oslc:ResourceShape ;
+    oslc:describes oslc:OptionSet ;
+    dcterms:title  "Option Set" ;
+    dcterms:description  """A named collection of Options applicable to a product family or other variability domain."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description,
+        :hasOption
+    .
+
+:OptionShape a oslc:ResourceShape ;
+    oslc:describes oslc:Option ;
+    dcterms:title  "Option" ;
+    dcterms:description  """A variability option (e.g., Engine, Color) within an OptionSet."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description,
+        :hasOptionValue
+    .
+
+:OptionValueShape a oslc:ResourceShape ;
+    oslc:describes oslc:OptionValue ;
+    dcterms:title  "Option Value" ;
+    dcterms:description  """A specific value of an Option."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description
+    .
+
+:VariabilityConditionShape a oslc:ResourceShape ;
+    oslc:describes oslc:VariabilityCondition ;
+    dcterms:title  "Variability Condition" ;
+    dcterms:description  """A boolean expression over OptionValue equality. Either a terminal (optionEquals) or an internal node (and / or / not)."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description,
+        :vc-and,
+        :vc-or,
+        :vc-not,
+        :optionEquals
+    .
+
+:VariabilityContextShape a oslc:ResourceShape ;
+    oslc:describes oslc:VariabilityContext ;
+    dcterms:title  "Variability Context" ;
+    dcterms:description  """The OptionValue choices supplied to variability predicate evaluation. Referenced from an oslc_config:Configuration via the oslc:variabilityContext property."""^^rdf:XMLLiteral ;
+    oslc:property
+        :type,
+        :identifier,
+        :title,
+        :description,
+        :appliesToOptionSet,
+        :choice
+    .
+
+:ConfigurationShape a oslc:ResourceShape ;
+    oslc:describes oslc_config:Configuration ;
+    dcterms:title  "Configuration (Variability extension)" ;
+    dcterms:description  """The OSLC Variability specification adds the variabilityContext property to oslc_config:Configuration. Implementations of OSLC Configuration Management that support variability SHOULD recognise this property."""^^rdf:XMLLiteral ;
+    oslc:property
+        :variabilityContext
+    .

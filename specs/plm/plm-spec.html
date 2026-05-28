@@ -300,10 +300,13 @@ services interface for lifecycle management of product resources."
       <p>
         The following is an overview of the PLM specification. The specification includes classes: Part, PartUsage,
         LogicalDesign and PhysicalDesign, and Dimension; links between these within the PLM domain and links to classes
-        in other OSLC domains. The specification also defines the resources, predicate languages, and request-time
-        contexts used to compute a resolved Bill of Materials view from a configured product structure: Effectivity,
-        EffectivityContext, OptionSet, Option, OptionValue, VariabilityCondition, and VariabilityContext (see
-        <a href="#effectivity-variability">Effectivity and Variability</a>).
+        in other OSLC domains. The specification also defines the PLM effectivity model: Effectivity,
+        EffectivityContext, the <code>oslc_plm:EffectivitySelections</code> specialization of
+        <code>oslc_config:Selections</code>, the <code>oslc_plm:effectivityContext</code> extension property on
+        <code>oslc_config:Configuration</code>, and the algorithm for computing
+        <code>EffectivitySelections.selects</code> (see <a href="#effectivity-resolution">Effectivity</a>).
+        Variability — the orthogonal configuration-option dimension — is not part of this specification; it is defined
+        by the OSLC Variability specification under <code>specs/core/</code>.
       </p>
       <figure id="PLMModel">
         <img src="images/PLM.svg" />
@@ -644,45 +647,52 @@ services interface for lifecycle management of product resources."
       </p>
     </section>
 
-    <section id="effectivity-variability">
-      <h2>Effectivity and Variability</h2>
+    <section id="effectivity-resolution">
+      <h2>Effectivity</h2>
 
       <p>
         A resolved Bill of Materials view is, in OSLC terms, a configuration in which the selected
         <code>oslc_plm:Part</code> and <code>oslc_plm:PartUsage</code> versions have been further refined against
-        request-time parameters. Two distinct refinement dimensions are recognized in industrial PLM practice:
+        the instance / timing parameters under which the product is being built or analysed. This section defines:
       </p>
 
       <ul>
-        <li>
-          <strong>Effectivity</strong> — the instance/timing dimension: date, serial number, unit number, lot, model,
-          end-item. Used to ask "given this date / serial / unit, which revision of the part applies, and does this
-          usage line participate at all?"
-        </li>
-        <li>
-          <strong>Variability</strong> — the configuration-option dimension: feature and option-value selections used to
-          configure a product family. Used to ask "given the customer chose Engine = V6 and Market = EU, which of the
-          candidate parts and usages survive?"
-        </li>
+        <li><strong>Effectivity records</strong> carried by Part and PartUsage versions, expressing the date / unit /
+          serial / lot / model parameters under which the version applies;</li>
+        <li>The <strong>EffectivityContext</strong> resource carrying the parameter values supplied to predicate
+          evaluation;</li>
+        <li>The <strong>oslc_plm:effectivityContext</strong> property on <code>oslc_config:Configuration</code> that
+          identifies which EffectivityContext applies to the configuration's selections;</li>
+        <li><code>oslc_plm:EffectivitySelections</code>, a specialization of <code>oslc_config:Selections</code> whose
+          <code>oslc_config:selects</code> triples name the Part and PartUsage version resources that have survived
+          effectivity evaluation;</li>
+        <li>The <strong>computation algorithm</strong> by which a server populates
+          <code>EffectivitySelections.selects</code> from the candidate pool and the effectivity context.</li>
       </ul>
 
-      <p>
-        These two dimensions are mechanically related (both refine version bindings against a request-time context) but
-        use different parameter schemas and different predicate languages. This specification defines vocabulary, shapes,
-        and a predicate language for each, and specifies how the predicates are evaluated against contexts supplied via
-        the OSLC Configuration Management Selections Extensions
-        (<code>oslc_config:EffectivitySelections</code> and <code>oslc_config:VariabilitySelections</code>).
+      <p class="note">
+        <strong>Variability is not covered here.</strong> Variability — the configuration-option dimension (feature
+        choices, option values) — is orthogonal to effectivity and is specified by the OSLC Variability specification
+        in <code>specs/core/</code>. A configuration MAY combine PLM effectivity with OSLC variability; this PLM
+        specification does not depend on variability being present.
+      </p>
+
+      <p class="note">
+        <strong>No changes to OSLC Configuration Management.</strong> <code>oslc_plm:EffectivitySelections</code> is a
+        subclass of <code>oslc_config:Selections</code>, and <code>oslc_plm:effectivityContext</code> is a property
+        carried on <code>oslc_config:Configuration</code> as a PLM-domain extension. Both are outgoing references to
+        OSLC CM, not changes to it.
       </p>
 
       <p>
         Because <code>oslc_plm:PartUsage</code> is a first-class, versioned reification of the "uses / used-by"
         relationship between Parts, BOM-line participation is expressed by including or excluding a PartUsage version
-        through the same effectivity and variability mechanisms used for Part versions. No separate
-        "effectivity on relationships" mechanism is required.
+        through the same effectivity mechanism used for Part versions. No separate "effectivity on relationships"
+        mechanism is required.
       </p>
 
       <section id="effectivity">
-        <h3>Effectivity</h3>
+        <h3>Effectivity Records, Predicates, and Context</h3>
 
         <section id="effectivity-records">
           <h4>Effectivity Records on Part and PartUsage Versions</h4>
@@ -750,16 +760,17 @@ services interface for lifecycle management of product resources."
             </li>
             <li>
               <strong>Outcome.</strong> If <code>effectiveReplacement</code> is absent, the record contributes the
-              Boolean result of the range comparison to the OR. If <code>effectiveReplacement</code> is present and the
-              range comparison is true, the record yields the replacement version URI; this preempts the Boolean OR
-              with a substitution outcome per
-              <a href="oslc-config-selections-extensions.md">CONFIG-RES-N17</a> step 2 outcome (4).
+              Boolean result of the range comparison to the OR. If <code>effectiveReplacement</code> is present and
+              the range comparison is true, the record yields the replacement version URI; this preempts the
+              Boolean OR with a substitution outcome (see
+              <a href="#effectivity-computation">Computation of EffectivitySelections.selects</a>, Procedure step 2,
+              the version-URI outcome).
             </li>
           </ol>
 
           <p>
-            If no records contribute a positive outcome (Boolean true or substitution), the version is removed from the
-            resolved binding (CONFIG-RES-N17 step 2 outcome (3)).
+            If no records contribute a positive outcome (Boolean true or substitution), the version is removed from
+            the resolved binding.
           </p>
         </section>
 
@@ -768,22 +779,25 @@ services interface for lifecycle management of product resources."
 
           <p>
             An <code>oslc_plm:EffectivityContext</code> resource carries the parameter values supplied to effectivity
-            predicate evaluation. It is referenced from a request via the <code>oslc_config.effectivity</code> query
-            parameter or the <code>Effectivity-Context</code> request header defined in the OSLC Configuration
-            Management Selections Extensions.
+            predicate evaluation. It is referenced from an <code>oslc_config:Configuration</code> via the
+            <code>oslc_plm:effectivityContext</code> extension property defined by this specification (see
+            <a href="#effectivity-selections">EffectivitySelections and the effectivityContext Property</a>). The
+            Configuration's URL is the single entry point that identifies all information needed to evaluate effectivity
+            against the configuration's selections; no request-time header or query parameter mechanism is defined or
+            needed.
           </p>
 
           <p>
             The shape <a href="plm-shapes.ttl#EffectivityContextShape"><code>:EffectivityContextShape</code></a>
             permits any combination of: <code>oslc_plm:effectivityDate</code>, <code>oslc_plm:effectivityEndItem</code>,
             <code>oslc_plm:effectivityUnitNumber</code>, <code>oslc_plm:effectivitySerialNumber</code>,
-            <code>oslc_plm:effectivityLot</code>, <code>oslc_plm:effectivityModel</code>. A client SHOULD supply only
+            <code>oslc_plm:effectivityLot</code>, <code>oslc_plm:effectivityModel</code>. A context SHOULD supply only
             the parameters relevant to the predicates it expects the configuration's selected versions to evaluate
             against; missing parameters cause records of the corresponding type to be skipped as described above.
           </p>
 
           <p class="conformance">
-            When a <code>VariabilityContext</code> resource carries <code>effectivityUnitNumber</code> or
+            When an <code>EffectivityContext</code> resource carries <code>effectivityUnitNumber</code> or
             <code>effectivitySerialNumber</code>, it <em>MUST</em> also carry an <code>effectivityEndItem</code>; a
             server <em>MUST</em> reject contexts that lack the required end-item with 400 Bad Request.
           </p>
@@ -852,121 +866,163 @@ ex:ctx-abc-7
         </section>
       </section>
 
-      <section id="variability">
-        <h3>Variability</h3>
+      <section id="effectivity-selections">
+        <h3>EffectivitySelections and the effectivityContext Property</h3>
 
-        <section id="option-model">
-          <h4>Option Sets, Options, and Option Values</h4>
+        <p>
+          This specification defines <code>oslc_plm:EffectivitySelections</code> as a specialization of
+          <code>oslc_config:Selections</code>, and <code>oslc_plm:effectivityContext</code> as an extension property
+          on <code>oslc_config:Configuration</code>. Together they integrate PLM effectivity into the OSLC
+          Configuration Management resolution model without modifying the OSLC CM specification itself.
+        </p>
+
+        <section id="effectivity-selections-resource">
+          <h4>oslc_plm:EffectivitySelections</h4>
 
           <p>
-            Variability is described against an <code>oslc_plm:OptionSet</code> — a named container of
-            <code>oslc_plm:Option</code> resources, each of which has one or more <code>oslc_plm:OptionValue</code>
-            members. A product family typically has a single OptionSet (with Options such as Engine, Transmission,
-            Color, Market). OptionSets, Options, and OptionValues are versioned resources (subclasses of
-            <code>oslc_am:Resource</code>) so their evolution can be managed by the OSLC Configuration Management
-            mechanisms.
+            An <code>oslc_plm:EffectivitySelections</code> resource is a specialization of
+            <code>oslc_config:Selections</code> whose <code>oslc_config:selects</code> triples reference Part and
+            PartUsage version resources that have already been determined to be effective under the EffectivityContext
+            identified by the containing configuration's <code>oslc_plm:effectivityContext</code> property. The
+            EffectivityContext is not stored on the <code>EffectivitySelections</code> resource itself — it is a
+            property of the containing configuration, ensuring that a baseline (which freezes both its
+            <code>selects</code> triples and its <code>effectivityContext</code> reference) is self-describing.
+          </p>
+
+          <p>
+            The target of <code>oslc_config:selects</code> on an <code>EffectivitySelections</code> resource
+            <em class="rfc2119">MUST</em> be a version resource. Each targeted version is one that:
+          </p>
+          <ol>
+            <li>has been selected as a candidate by the Configuration-Context of the containing configuration through
+              the version resolution defined in the OSLC CM base specification, Section 12; and</li>
+            <li>has been evaluated as effective by its <code>oslc_plm:effectivity</code> records against the
+              EffectivityContext identified by the containing configuration's
+              <code>oslc_plm:effectivityContext</code> property.</li>
+          </ol>
+
+          <p>
+            Targets <em class="rfc2119">MUST NOT</em> be of type <code>oslc_config:Configuration</code> or
+            <code>oslc_config:Component</code>. Typical targets are <code>oslc_plm:Part</code> and
+            <code>oslc_plm:PartUsage</code> versions, but any versioned resource carrying
+            <code>oslc_plm:effectivity</code> records is admissible.
+          </p>
+
+          <p>
+            In a baseline, this property is read-only and frozen at baseline-creation time. In a stream, this property
+            is server-maintained: the server re-computes its values when either the stream's candidate pool or the
+            stream's <code>oslc_plm:effectivityContext</code> reference changes.
           </p>
         </section>
 
-        <section id="variability-condition">
-          <h4>Variability Conditions on Part and PartUsage Versions</h4>
+        <section id="effectivity-context-property">
+          <h4>oslc_plm:effectivityContext Property on Configuration</h4>
 
           <p>
-            A <code>oslc_plm:Part</code> or <code>oslc_plm:PartUsage</code> version <em>MAY</em> carry at most one
-            <code>oslc_plm:VariabilityCondition</code> via the <code>oslc_plm:variabilityCondition</code> property. The
-            condition is a tree of boolean operators (<code>oslc_plm:and</code>, <code>oslc_plm:or</code>,
-            <code>oslc_plm:not</code>) over terminals (<code>oslc_plm:optionEquals</code>). Each terminal asserts that a
-            named Option equals one of a set of OptionValues; multiple values within one terminal are OR-combined.
+            <code>oslc_plm:effectivityContext</code> is a property on <code>oslc_config:Configuration</code>
+            identifying the EffectivityContext applicable to the configuration's <code>EffectivitySelections</code>
+            resources. A configuration whose selections include one or more
+            <code>oslc_plm:EffectivitySelections</code> <em class="rfc2119">MUST</em> carry exactly one
+            <code>oslc_plm:effectivityContext</code> property naming the context against which those selections'
+            post-filter <code>selects</code> values were computed.
           </p>
 
           <p>
-            A Part or PartUsage version with no variabilityCondition is treated as unconditionally present (the
-            condition evaluates to <code>true</code> for every VariabilityContext).
-          </p>
-        </section>
-
-        <section id="variability-context">
-          <h4>Variability Context</h4>
-
-          <p>
-            An <code>oslc_plm:VariabilityContext</code> resource carries the OptionValue choices supplied to
-            variability predicate evaluation. It is referenced from a request via the
-            <code>oslc_config.variability</code> query parameter or the <code>Variability-Context</code> request
-            header defined in the OSLC Configuration Management Selections Extensions.
+            The property attaches the EffectivityContext to the configuration so that a baseline is self-describing:
+            reading the baseline yields both its frozen <code>selects</code> triples and the context reference that
+            produced them, with no external lookup. The Configuration's URL is therefore the single entry point that
+            identifies all information needed to evaluate effectivity against its selections; no request-time header
+            or query parameter mechanism is defined or needed.
           </p>
 
           <p>
-            The context names the <code>oslc_plm:appliesToOptionSet</code> it makes assignments over and lists the
-            chosen OptionValues via <code>oslc_plm:choice</code>. A complete context <em>SHOULD</em> carry exactly one
-            OptionValue per Option in the OptionSet. A partial context (some Options unassigned) is permitted; terminals
-            referring to unassigned Options evaluate to <em>neither true nor false</em>, and the surrounding boolean is
-            handled per three-valued logic (<code>true OR ?</code> = <code>true</code>, <code>false AND ?</code> =
-            <code>false</code>, otherwise the candidate is retained pending fuller resolution).
+            On a baseline, <code>oslc_plm:effectivityContext</code> is read-only and frozen. On a stream, the property
+            is mutable and modification causes re-computation of the affected
+            <code>EffectivitySelections.selects</code>.
           </p>
-        </section>
-
-        <section id="variability-example">
-          <h4>Example</h4>
-
-          <pre>
-# Option model
-ex:OptionSet/v1 a oslc_plm:OptionSet ;
-  dcterms:title "MyProductFamily Options" ;
-  oslc_plm:hasOption ex:Option/Engine , ex:Option/Market .
-
-ex:Option/Engine a oslc_plm:Option ; dcterms:title "Engine" ;
-  oslc_plm:hasOptionValue ex:OV/Engine-V6 , ex:OV/Engine-V8 .
-
-ex:Option/Market a oslc_plm:Option ; dcterms:title "Market" ;
-  oslc_plm:hasOptionValue ex:OV/Market-EU , ex:OV/Market-US .
-
-# A turbocharger PartUsage that only applies when Engine = V8 AND Market = EU
-&lt;http://example.com/oslc/Usage/turbo&gt;
-  a oslc_plm:PartUsage ;
-  oslc_plm:variabilityCondition ex:vc-turbo .
-
-ex:vc-turbo a oslc_plm:VariabilityCondition ;
-  oslc_plm:and (
-    [ a oslc_plm:VariabilityCondition ;
-      oslc_plm:optionEquals ( ex:Option/Engine ex:OV/Engine-V8 ) ]
-    [ a oslc_plm:VariabilityCondition ;
-      oslc_plm:optionEquals ( ex:Option/Market ex:OV/Market-EU ) ]
-  ) .
-
-# Request context: V8 + EU
-ex:ctx-v8-eu a oslc_plm:VariabilityContext ;
-  oslc_plm:appliesToOptionSet ex:OptionSet/v1 ;
-  oslc_plm:choice ex:OV/Engine-V8 , ex:OV/Market-EU .
-          </pre>
 
           <p>
-            Resolving a configuration that selects <code>Usage/turbo</code> as a candidate against
-            <code>ex:ctx-v8-eu</code> evaluates the AND of two terminals: both match the supplied choices, so the
-            condition is <code>true</code> and the usage participates in the resolved BOM. A request against a
-            <code>V6 + EU</code> context yields <code>false</code> on the first terminal, the AND is <code>false</code>,
-            and the usage is removed.
+            If a configuration is created with <code>EffectivitySelections</code> but no
+            <code>oslc_plm:effectivityContext</code>, the server <em class="rfc2119">MUST</em> fail the create
+            operation with a 400 Bad Request indicating that an effectivity context is required.
           </p>
         </section>
       </section>
 
-      <section id="combined-resolution">
-        <h3>Combined Resolution Example</h3>
+      <section id="effectivity-computation">
+        <h3>Computation of EffectivitySelections.selects</h3>
 
         <p>
-          When a configuration declares both <code>oslc_config:EffectivitySelections</code> and
-          <code>oslc_config:VariabilitySelections</code>, the Configuration Management Selections Extensions specify
-          that variability resolution is performed first, then effectivity refinement. A candidate Part or PartUsage
-          version's variability condition is evaluated against the VariabilityContext; if false, the candidate is
-          removed before effectivity refinement runs. If true (or absent), the candidate's Effectivity records are
-          evaluated against the EffectivityContext, with the outcomes (Boolean, substitution, or removal) defined in
-          this specification.
+          This section defines the algorithm by which a server populates the <code>oslc_config:selects</code>
+          triples of an <code>oslc_plm:EffectivitySelections</code> resource. The algorithm is invoked when:
         </p>
 
+        <ul>
+          <li>An <code>EffectivitySelections</code> resource is first created in a stream;</li>
+          <li>The stream's <code>oslc_plm:effectivityContext</code> reference is changed or the referenced context
+            resource is edited;</li>
+          <li>The stream's candidate pool changes (a contributing <code>oslc_config:Selections</code> or
+            <code>oslc_config:UnboundSelections</code> is created, updated, or removed);</li>
+          <li>A baseline is created from the stream — the algorithm runs once to materialize the frozen
+            <code>selects</code> triples that the baseline will record.</li>
+        </ul>
+
         <p>
-          The order is normative because effectivity records on a Part revision <em>MAY</em> presuppose option choices
-          already resolved by variability — for example, "this revision is effective starting unit 50 only when Market
-          = EU" can be expressed as a variability condition gating the Effectivity record's presence, with the
-          Effectivity record itself carrying just the unit-number range.
+          A baseline's <code>selects</code> triples <em class="rfc2119">MUST NOT</em> be re-computed after baseline
+          creation.
+        </p>
+
+        <h4>Inputs</h4>
+        <p>The server <em class="rfc2119">MUST</em> take as inputs:</p>
+        <ol>
+          <li>The candidate pool — the version resources in scope for the containing configuration's
+            Configuration-Context, as determined by Section 12 version resolution across the configuration's
+            <code>oslc_config:Selections</code>, <code>oslc_config:UnboundSelections</code>, and recursive
+            contributions. Where the OSLC Variability specification's
+            <code>oslc:VariabilitySelections</code> is also present, the candidate pool is restricted to those
+            candidates that also appear in the surviving <code>VariabilitySelections.selects</code> (variability is
+            applied before effectivity).</li>
+          <li>The EffectivityContext identified by the containing configuration's
+            <code>oslc_plm:effectivityContext</code> property.</li>
+        </ol>
+
+        <h4>Procedure</h4>
+        <p>For each candidate version resource <code>v</code> in the input pool:</p>
+        <ol>
+          <li>If <code>v</code> carries no <code>oslc_plm:effectivity</code> records, include <code>v</code> in
+            <code>EffectivitySelections.selects</code> unchanged.</li>
+          <li>Otherwise, evaluate each effectivity record carried by <code>v</code> against the EffectivityContext per
+            <a href="#effectivity-predicate">Predicate Evaluation</a>. Records combine by logical OR: <code>v</code>
+            is effective if any one record yields a positive outcome.
+            <ul>
+              <li><strong>Boolean true</strong> — include <code>v</code> in
+                <code>EffectivitySelections.selects</code>.</li>
+              <li><strong>Boolean false</strong> — the record does not apply; continue to the next record.</li>
+              <li><strong>Version URI (release-effectivity substitution)</strong> — include the named replacement
+                version (not <code>v</code>) in <code>EffectivitySelections.selects</code>. The replacement
+                <em class="rfc2119">MUST</em> be a version of the same versioned resource as <code>v</code>;
+                otherwise the record is malformed and the server <em class="rfc2119">MUST</em> fail the computation
+                with a 500 Internal Server Error.</li>
+            </ul>
+          </li>
+          <li>If every record carried by <code>v</code> evaluates to Boolean false, <code>v</code> is not included
+            in <code>EffectivitySelections.selects</code>.</li>
+        </ol>
+
+        <h4>Cross-Contribution boundaries</h4>
+        <p>
+          Where a configuration is contributed to a higher-level configuration via
+          <code>oslc_config:contribution</code>, the <code>EffectivitySelections.selects</code> of the contributing
+          configuration appears in the higher-level view as an already-computed survivor set. Effectivity is evaluated
+          <em>within</em> each contributing configuration against that configuration's own
+          <code>oslc_plm:effectivityContext</code>; the context does not propagate across
+          <code>oslc_config:contribution</code> boundaries. A higher-level configuration that wishes to impose a
+          single effectivity context across all contributors <em class="rfc2119">MUST</em> arrange for each
+          contributing configuration to declare a compatible <code>effectivityContext</code>; this specification does
+          not provide automatic cross-contribution context propagation. See
+          <a href="#partusage-vs-contribution">PartUsage Hierarchy vs Cross-Component Composition via
+          Contribution</a> for design guidance on choosing between in-Component PartUsage composition and
+          cross-Component Contribution composition.
         </p>
       </section>
 
@@ -974,7 +1030,7 @@ ex:ctx-v8-eu a oslc_plm:VariabilityContext ;
         <h3>Alignment with Industry Practice</h3>
 
         <p>
-          The vocabulary defined in this section is designed to map cleanly to the effectivity and variability concepts
+          The effectivity vocabulary defined in this section is designed to map cleanly to the effectivity concepts
           used in widely-deployed PLM systems:
         </p>
 
@@ -982,24 +1038,21 @@ ex:ctx-v8-eu a oslc_plm:VariabilityContext ;
           <li>
             <strong>PTC Windchill.</strong> An <code>oslc_plm:Effectivity</code> record corresponds to a Windchill
             Effectivity object (<code>WTDatedEffectivity</code>, <code>WTSerialNumberedEffectivity</code>,
-            <code>ProductBlockEffectivity</code>, <code>ProductLotNumberEffectivity</code>, <code>ProductSerialNumberEffectivity</code>)
-            attached to a WTPart revision. <code>effectiveForEndItem</code> corresponds to Windchill's
-            <code>EffContext</code>. <code>effectiveReplacement</code> corresponds to the supersedes/supersededBy
-            replacement that an Effectivity ConfigSpec resolves through. Windchill's Option Filter for configurable
-            modules corresponds to <code>oslc_plm:VariabilityCondition</code>.
+            <code>ProductBlockEffectivity</code>, <code>ProductLotNumberEffectivity</code>,
+            <code>ProductSerialNumberEffectivity</code>) attached to a WTPart revision.
+            <code>effectiveForEndItem</code> corresponds to Windchill's <code>EffContext</code>.
+            <code>effectiveReplacement</code> corresponds to the supersedes/supersededBy replacement that an
+            Effectivity ConfigSpec resolves through.
           </li>
           <li>
             <strong>Siemens Teamcenter.</strong> An <code>oslc_plm:Effectivity</code> record corresponds to an
             Effectivity object on a ReleaseStatus of an ItemRevision (revision effectivity) or to an occurrence
             effectivity on a BOM line — handled here via effectivity on a PartUsage version.
             <code>effectiveForEndItem</code> corresponds to Teamcenter's End Item / Configuration Item.
-            <code>oslc_plm:VariabilityCondition</code> corresponds to Teamcenter's Variant Condition; the AND/OR/NOT/EQ
-            structure mirrors Modular Variant Language (MVL).
           </li>
           <li>
             <strong>Aras Innovator.</strong> An <code>oslc_plm:Effectivity</code> record corresponds to an Aras
-            Effectivity Expression on a Part BOM relationship row. The OptionSet / Option / OptionValue model
-            corresponds to Aras's Features / Options structure in Configurator Services and Variant Management.
+            Effectivity Expression on a Part BOM relationship row.
           </li>
         </ul>
 
@@ -1010,44 +1063,43 @@ ex:ctx-v8-eu a oslc_plm:VariabilityContext ;
         </p>
       </section>
 
-      <section id="effectivity-variability-conformance">
+      <section id="effectivity-conformance">
         <h3>Conformance</h3>
 
         <p class="conformance">
-          A PLM Server that claims conformance to this section <em>MUST</em>:
+          A PLM Server that claims conformance to this section <em class="rfc2119">MUST</em>:
         </p>
 
         <ul>
           <li class="conformance">
-            Accept <code>oslc_plm:Effectivity</code> and <code>oslc_plm:VariabilityCondition</code> resources as values
-            of <code>oslc_plm:effectivity</code> and <code>oslc_plm:variabilityCondition</code> on
+            Accept <code>oslc_plm:Effectivity</code> resources as values of <code>oslc_plm:effectivity</code> on
             <code>oslc_plm:Part</code> and <code>oslc_plm:PartUsage</code> versions per the shapes defined in
             <a href="plm-shapes.ttl">plm-shapes.ttl</a>.
           </li>
           <li class="conformance">
-            Accept <code>oslc_plm:EffectivityContext</code> resources at URIs referenced by the
-            <code>oslc_config.effectivity</code> query parameter, and <code>oslc_plm:VariabilityContext</code>
-            resources at URIs referenced by the <code>oslc_config.variability</code> query parameter, per the OSLC
-            Configuration Management Selections Extensions.
+            Support the <code>oslc_plm:EffectivitySelections</code> resource class and the
+            <code>oslc_plm:effectivityContext</code> property on <code>oslc_config:Configuration</code> as defined in
+            <a href="#effectivity-selections">EffectivitySelections and the effectivityContext Property</a>.
           </li>
           <li class="conformance">
-            Implement effectivity predicate evaluation as defined in <a href="#effectivity-predicate">Predicate
-            Evaluation</a>, including the substitution outcome when <code>effectiveReplacement</code> is present.
+            Implement effectivity predicate evaluation as defined in
+            <a href="#effectivity-predicate">Predicate Evaluation</a>, including the substitution outcome when
+            <code>effectiveReplacement</code> is present.
           </li>
           <li class="conformance">
-            Implement variability predicate evaluation as defined in <a href="#variability-condition">Variability
-            Conditions</a>, using three-valued logic when the supplied VariabilityContext is partial.
+            Implement the computation of <code>EffectivitySelections.selects</code> defined in
+            <a href="#effectivity-computation">Computation of EffectivitySelections.selects</a>, including the
+            triggers for re-computation on streams and the freeze on baselines.
+          </li>
+          <li class="conformance">
+            Freeze a baseline's <code>EffectivitySelections.selects</code> and <code>effectivityContext</code> at
+            baseline creation, and reject subsequent modifications.
           </li>
           <li class="conformance">
             Reject EffectivityContext resources that carry <code>effectivityUnitNumber</code> or
             <code>effectivitySerialNumber</code> without <code>effectivityEndItem</code> with 400 Bad Request.
           </li>
         </ul>
-
-        <p>
-          A PLM Server <em>MAY</em> claim conformance to one of effectivity or variability in isolation, omitting the
-          conformance items for the other.
-        </p>
       </section>
     </section>
 
@@ -1057,10 +1109,10 @@ ex:ctx-v8-eu a oslc_plm:VariabilityContext ;
       <p>
         This non-normative worked example illustrates the principal resource classes and relationships defined by this
         specification — <code>oslc_plm:Part</code>, <code>oslc_plm:PartUsage</code>, the composition properties between
-        them, and (for the dimensions covered in this revision) <code>oslc_plm:Effectivity</code> records on PartUsage
-        versions. The same example is referenced from the OSLC Configuration Management Selections Extensions to ground
-        the post-filter semantics of <code>oslc_config:EffectivitySelections</code>. Variability is not exercised here;
-        a parallel example may be added in a subsequent revision.
+        them, <code>oslc_plm:Effectivity</code> records on PartUsage versions, and the post-filter
+        <code>oslc_plm:EffectivitySelections</code> mechanism that consumes them. Variability is the orthogonal
+        configuration-option dimension defined by the OSLC Variability specification under <code>specs/core/</code>;
+        it is not exercised here, and a parallel example may be added in a subsequent revision.
       </p>
 
       <p>
@@ -1181,11 +1233,10 @@ em:Ctx_2027_06_01 a oslc_plm:EffectivityContext ;
         <h3>Resolution under the supplied Effectivity-Context</h3>
 
         <p>
-          A configuration of <code>em:WashingMachine</code> with
-          <code>oslc_config:effectivityContext em:Ctx_2027_06_01</code> drives the OSLC Configuration Management
-          Selections Extensions to populate the configuration's
-          <code>oslc_config:EffectivitySelections.selects</code> with the PartUsage versions whose effectivity
-          records evaluate to <code>true</code> against the context date:
+          A configuration of <code>em:WashingMachine</code> with the
+          <code>oslc_plm:effectivityContext em:Ctx_2027_06_01</code> property attached drives the server to populate
+          the configuration's <code>oslc_plm:EffectivitySelections.selects</code> with the PartUsage versions whose
+          effectivity records evaluate to <code>true</code> against the context date:
         </p>
 
         <ul>
@@ -1203,9 +1254,161 @@ em:Ctx_2027_06_01 a oslc_plm:EffectivityContext ;
         </p>
 
         <p>
-          See the OSLC Configuration Management Selections Extensions, <a href="../config/oslc-config-selections-extensions.md#worked-example-eco-line-washing-machine-effectivity">Worked Example — Eco Line Washing Machine</a>,
-          for the corresponding <code>oslc_config:EffectivitySelections</code> turtle, the stream/baseline distinction,
-          and the freeze semantics of a baseline.
+          Equivalent turtle for the configuration and its <code>EffectivitySelections</code> would look like:
+        </p>
+
+        <pre>
+em:Stream_EcoLine a oslc_config:Stream ;
+  oslc_config:component         em:WashingMachine ;
+  oslc_plm:effectivityContext   em:Ctx_2027_06_01 ;
+  oslc_config:selections        em:sel_effectivity_stream .
+
+em:sel_effectivity_stream a oslc_plm:EffectivitySelections ;
+  oslc_config:selects em:Usage_WM_Motor_pre27 ,
+                      em:Usage_WM_Housing_27 ,
+                      em:Usage_WM_ControlUnit_v1 .
+        </pre>
+
+        <p>
+          A baseline of this stream freezes both <code>oslc_config:selects</code> and
+          <code>oslc_plm:effectivityContext</code> at baseline-creation time; subsequent changes to the referenced
+          EffectivityContext do not re-resolve the baseline.
+        </p>
+      </section>
+    </section>
+
+    <section id="partusage-vs-contribution" class="informative">
+      <h2>PartUsage Hierarchy vs Cross-Component Composition via Contribution</h2>
+
+      <p>
+        This informative section addresses a design question that surfaces whenever an OSLC PLM model is
+        assembled into a configuration: a product's structure can be expressed as an
+        <code>oslc_plm:PartUsage</code> hierarchy <em>within</em> a single <code>oslc_config:Component</code>, or
+        as a composition of multiple PLM Components stitched together by OSLC Configuration Management's
+        <code>oslc_config:contribution</code> mechanism. The two hierarchies look superficially similar — both
+        are compositional assembly — but they answer different questions and operate at different scales.
+      </p>
+
+      <section id="partusage-hierarchy-role">
+        <h3>The PartUsage hierarchy</h3>
+
+        <p>
+          An <code>oslc_plm:Part</code> with <code>oslc_plm:composedOfPartUsage</code> targets defines the
+          <strong>product structure</strong> within a single PLM Component. The hierarchy is the BOM: each
+          PartUsage version reifies a parent→child usage relationship and may carry
+          <code>oslc_plm:effectivity</code> records (PLM domain) and, where applicable,
+          <code>oslc:variabilityCondition</code> records (from the OSLC Variability specification in
+          <code>specs/core/</code>) that participate in resolution. All Parts and PartUsage versions in the
+          hierarchy are <strong>versioned within the same Component</strong> and are co-authored as parts of the
+          same product family. The Effectivity-Context (via <code>oslc_plm:effectivityContext</code>) and
+          Variability-Context (via <code>oslc:variabilityContext</code>) attached to the containing
+          <code>oslc_config:Configuration</code> drive computation <em>within</em> the Component over the
+          Component's own PartUsage versions.
+        </p>
+
+        <p>Use the PartUsage hierarchy when:</p>
+        <ul>
+          <li>The parent Part and its child Parts are co-authored within one PLM Component;</li>
+          <li>The subsystems share a single versioning lifecycle, governance, and effectivity context;</li>
+          <li>The product structure is internal to the product family (no separately-governed supplier or
+            third-party PLM Component is involved);</li>
+          <li>Effectivity and variability should apply uniformly across the structure as a single filter pass.</li>
+        </ul>
+      </section>
+
+      <section id="contribution-composition-role">
+        <h3>The Configuration / Contribution hierarchy</h3>
+
+        <p>
+          An <code>oslc_config:Configuration</code> with <code>oslc_config:contribution</code> targets composes
+          <strong>separately-governed configurations</strong>, potentially across multiple Components and
+          across multiple OSLC domains. Each Contribution references a local Configuration of some governed
+          source — a PLM Component, an RM module, a QM test plan, an AM architecture model. The global
+          Configuration does not <em>define</em> its contributed configurations; it references them.
+        </p>
+
+        <p>Use Configuration / Contribution composition when:</p>
+        <ul>
+          <li>Subsystems are <strong>separately governed</strong> — different teams, different product lines,
+            different versioning lifecycles, possibly different organisations or tools;</li>
+          <li>Each subsystem is its own PLM Component with its own configurations and baselines;</li>
+          <li>The view crosses domains (PLM + RM + QM + AM + CM) — the Configuration hierarchy is the
+            cross-domain assembly surface;</li>
+          <li>Configurations of resources hosted on different OSLC servers must be composed.</li>
+        </ul>
+      </section>
+
+      <section id="partusage-contribution-distinguishing-rule">
+        <h3>The distinguishing rule</h3>
+
+        <p>Two complementary tests separate the cases:</p>
+        <ol>
+          <li><strong>Governance / authorship boundary.</strong> If the parent and child are co-authored within
+            the same Component, use PartUsage. If the child is separately governed, use Contribution.</li>
+          <li><strong>Identity scope.</strong> A PartUsage targets a child Part <em>within the same
+            Component</em>. A Contribution targets a Configuration <em>of a different Component</em>
+            (potentially on a different server).</li>
+        </ol>
+      </section>
+
+      <section id="partusage-contribution-layering">
+        <h3>The two hierarchies layer; they do not compete</h3>
+
+        <p>
+          In a realistic system both appear, at different scales. The PartUsage hierarchy is the internal
+          anatomy of one PLM Component. Contributions assemble across Components and domains.
+        </p>
+
+        <pre>
+Global Configuration
+├── Contribution → RM local Configuration   (Requirements selections)
+├── Contribution → QM local Configuration   (Test case selections)
+├── Contribution → AM local Configuration   (Architecture model selections)
+└── Contribution → PLM local Configuration   ← single PLM Component
+                   └── EffectivitySelections.selects → PartUsage versions
+                       └── (the PartUsage hierarchy that defines the
+                           product structure lives entirely here)
+        </pre>
+
+        <p>
+          The PLM Component contributes to the global Configuration as a single unit. The internal PartUsage
+          structure of the Component is <strong>opaque to the global level</strong>: the global Configuration's
+          Contribution references the Component's local Configuration, whose
+          <code>EffectivitySelections.selects</code> names the surviving PartUsage versions. The global
+          Configuration does not impose effectivity or variability across Contribution boundaries; those
+          contexts apply within each contributing Component.
+        </p>
+      </section>
+
+      <section id="choosing-between-partusage-and-contribution">
+        <h3>When the choice is real: subsystems of a complex product</h3>
+
+        <p>
+          A complex product's subsystems can be modelled either way. The choice is a system-engineering
+          decision, not two ways to express the same thing:
+        </p>
+
+        <ul>
+          <li><strong>Subsystems as PartUsages inside one PLM Component.</strong> Pick this when the
+            subsystems are co-owned and versioned together, share an effectivity context, and the whole
+            product family is governed as one. The
+            <a href="#washing-machine-example">Eco Line washing-machine worked example</a> uses this pattern:
+            Motor, Housing, Upper/Lower Housing, and Control Unit are all PartUsages of one WashingMachine
+            Part within a single Component.</li>
+          <li><strong>Subsystems as separate Components, assembled via Contributions.</strong> Pick this when
+            subsystems have independent product lines, separate teams, supplier-provided assemblies, or each
+            subsystem is independently configured for many products. The "Configuration / Configuration Item /
+            Work Product" pattern from MID's Cross Domain Configuration Management is closer to this shape:
+            each subsystem is a distinct Configuration that contributes to the top-level product
+            configuration.</li>
+        </ul>
+
+        <p>
+          The first models a <em>single configurable product</em>. The second models an <em>assembly of
+          configurable products</em>. Adapter authors and PLM implementers should make this choice
+          deliberately, recognising that the two patterns also <em>compose</em>: a Component that uses the
+          PartUsage pattern internally can still be one Contribution among several in a higher-level global
+          Configuration.
         </p>
       </section>
     </section>

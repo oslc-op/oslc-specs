@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>OSLC Variability Version 1.0</title>
+    <meta
+      name="description"
+      content="OSLC Variability defines a vocabulary and resource model for expressing configuration-option variability over any OSLC resource, and a specialization of oslc_config:Selections that names the version resources surviving variability evaluation against a configuration-attached Variability-Context."
+    />
+    <script src="./config.js" class="remove"></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/oasis-tcs/tab-respec@v2.1.32/builds/respec-oasis-common.min.js"
+      async
+      class="remove"
+    ></script>
+    <script class="remove">
+      var fileName = "oslc-variability-spec.html";
+      var respecConfig = {
+        specStatus: specConfig.status,
+        revision: specConfig.revision,
+        publishDate: specConfig.publishDate,
+
+        thisVersion: thisBase + fileName,
+        latestVersion: oasisBase + fileName,
+        latestSpecVersion: "https://open-services.net/spec/variability/latest",
+        edDraftURI: "https://open-services.net/spec/variability/latest-draft",
+
+        additionalArtifacts: [
+          { title: "OSLC Variability Vocabulary", href: thisBase + "oslc-variability-vocab.ttl" },
+          { title: "OSLC Variability Constraints", href: thisBase + "oslc-variability-shapes.ttl" },
+        ],
+
+        shortName: "oslc-variability",
+        conformanceLabelPrefix: "VAR",
+        citationLabel: "OSLC-Variability-1.0",
+        maxTocLevel: 3,
+
+        oslcVersion: "3.0",
+
+        namespaces: [
+          { href: "http://open-services.net/ns/core#", prefix: "oslc" },
+          { href: "http://open-services.net/ns/config#", prefix: "oslc_config" },
+          { href: "http://purl.org/dc/terms/", prefix: "dcterms" },
+          { href: "http://www.w3.org/2000/01/rdf-schema#", prefix: "rdfs" },
+        ],
+        editors: [
+          {
+            name: "Jim Amsden",
+            mailto: "jamsden@us.ibm.com",
+            company: "IBM",
+            companyURL: "https://www.ibm.com/",
+          },
+          {
+            name: "Andrii Berezovskyi",
+            mailto: "andriib@kth.se",
+            company: "KTH",
+            companyURL: "https://www.kth.se/",
+          },
+        ],
+        license: "cc-by-4",
+        additionalLicenses: [
+          {
+            licenseName: "Apache License 2.0",
+            licenseURI: "https://www.apache.org/licenses/LICENSE-2.0",
+          },
+        ],
+
+        wg: "OASIS Open Services for Lifecycle Collaboration (OSLC) OP",
+        wgShortName: "oslc-op",
+        wgURI: "https://open-services.net/about/",
+
+        chairs: [
+          { name: "Jim Amsden", company: "MID GmbH" },
+          { name: "Andrii Berezovskyi", company: "KTH" },
+        ],
+      };
+    </script>
+  </head>
+  <body>
+    <section id="abstract">
+      <p>
+        This specification defines an OSLC vocabulary and resource model for expressing
+        <strong>configuration-option variability</strong> over OSLC resources, and a specialization of
+        <code>oslc_config:Selections</code> — <code>oslc:VariabilitySelections</code> — whose
+        <code>oslc_config:selects</code> triples name the version resources that have survived variability
+        evaluation against a Variability-Context attached to the containing configuration. The variability
+        predicate (a boolean expression over option-value equality) is applicable to <em>any</em> versioned
+        OSLC resource, regardless of domain.
+      </p>
+    </section>
+
+    <section id="toc"></section>
+    <section id="sotd"></section>
+
+    <section id="introduction" class="informative">
+      <h2>Introduction</h2>
+
+      <p>
+        A configurable product, requirement set, or any other family of resources may admit many variants —
+        each variant produced by a choice of option values (Engine = V6 vs Engine = V8, Market = EU vs Market =
+        NA, Tier = Premium vs Tier = Standard, and so on). The set of all candidate resources spanning all
+        possible variants is sometimes called a <strong>150% structure</strong>. The set of resources that
+        actually applies under a specific choice of option values is the corresponding 100% structure.
+      </p>
+
+      <p>
+        This specification provides a vocabulary for expressing the 150% structure (Options, OptionValues,
+        OptionSets, and boolean VariabilityConditions carried by candidate versions) plus the mechanism by
+        which the OSLC Configuration Management base specification's <code>oslc_config:Selections</code> is
+        specialised to name the 100% survivors: <code>oslc:VariabilitySelections</code>.
+      </p>
+
+      <p>
+        Variability in this specification is <strong>orthogonal</strong> to effectivity. Variability addresses
+        option choice ("Engine = V6"); effectivity addresses instance/timing ("unit 100 onwards"). The OSLC
+        PLM specification's <code>oslc_plm:Effectivity</code> is the canonical effectivity mechanism in OSLC
+        and is a peer to the variability mechanism defined here. A single configuration MAY combine both.
+      </p>
+
+      <p class="note">
+        <strong>No changes to OSLC Configuration Management.</strong> This specification does not modify the
+        OSLC Configuration Management base specification. <code>oslc:VariabilitySelections</code> is a
+        subclass of <code>oslc_config:Selections</code>, and <code>oslc:variabilityContext</code> is an
+        extension property carried on <code>oslc_config:Configuration</code> — both are outgoing references to
+        OSLC CM, not changes to it.
+      </p>
+
+      <section id="terminology"></section>
+      <section id="references"><h3>References</h3></section>
+      <section id="conventions"></section>
+    </section>
+
+    <section id="variabilitySelections">
+      <h2>VariabilitySelections</h2>
+
+      <p>
+        <code>oslc:VariabilitySelections</code> is a specialization of <code>oslc_config:Selections</code>
+        whose <code>oslc_config:selects</code> triples name the version resources that have already been
+        determined to apply under the Variability-Context identified by the containing configuration's
+        <code>oslc:variabilityContext</code> property. The Variability-Context is not stored on the
+        <code>VariabilitySelections</code> resource itself; it is a property of the containing configuration,
+        ensuring that a baseline (which freezes both its <code>selects</code> triples and its
+        <code>variabilityContext</code> reference) is self-describing.
+      </p>
+
+      <section id="variabilitySelectionsShape">
+        <h3>VariabilitySelections Resource Constraints</h3>
+        <div
+          title="Constraints for VariabilitySelections"
+          data-include="./oslc-variability-shapes.ttl#VariabilitySelectionsShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="selects-semantics">
+        <h3>selects semantics</h3>
+
+        <p>
+          The target of <code>oslc_config:selects</code> on a <code>VariabilitySelections</code> resource
+          <em class="rfc2119">MUST</em> be a version resource. Each targeted version is one that:
+        </p>
+        <ol>
+          <li>has been selected as a candidate by the Configuration-Context of the containing configuration
+            through the version resolution defined in the OSLC CM base specification, Section 12; and</li>
+          <li>has been evaluated as variant-applicable by its <code>oslc:variabilityCondition</code> against
+            the Variability-Context identified by the containing configuration's
+            <code>oslc:variabilityContext</code> property.</li>
+        </ol>
+
+        <p>
+          Targets <em class="rfc2119">MUST NOT</em> be of type <code>oslc_config:Configuration</code> or
+          <code>oslc_config:Component</code>. Targets <em class="rfc2119">MAY</em> be of any versioned
+          resource type that carries variability conditions; this specification places no domain restriction
+          on the targets.
+        </p>
+
+        <p>
+          In a baseline, this property is read-only and frozen at baseline-creation time. In a stream, this
+          property is server-maintained: the server re-computes its values when either the stream's candidate
+          pool or the stream's <code>oslc:variabilityContext</code> reference changes.
+        </p>
+      </section>
+    </section>
+
+    <section id="variabilityConditions">
+      <h2>Variability Conditions on Candidate Version Resources</h2>
+
+      <p>
+        Candidate version resources that participate in variability filtering carry a
+        <code>oslc:variabilityCondition</code> — a boolean expression over the equality of named Options to
+        OptionValues — which the server evaluates against the Variability-Context attached to the containing
+        configuration.
+      </p>
+
+      <p>
+        A <code>oslc:VariabilityCondition</code> is either a <strong>terminal</strong>
+        (<code>oslc:optionEquals</code>) or an <strong>internal node</strong> combining sub-conditions
+        (<code>oslc:and</code>, <code>oslc:or</code>, <code>oslc:not</code>). A version with no
+        <code>variabilityCondition</code> is treated as unconditionally present (the condition evaluates to
+        <code>true</code> for every VariabilityContext).
+      </p>
+
+      <p>
+        A version resource carries at most one <code>oslc:variabilityCondition</code> per version; use AND/OR
+        composition to express compound conditions.
+      </p>
+
+      <section id="conditionEvaluation">
+        <h3>Predicate Evaluation</h3>
+
+        <p>For each candidate version <code>v</code> in the input pool:</p>
+        <ol>
+          <li>If <code>v</code> carries no <code>oslc:variabilityCondition</code>, include <code>v</code> in
+            <code>VariabilitySelections.selects</code>.</li>
+          <li>Otherwise, evaluate the condition against the Variability-Context:
+            <ul>
+              <li><strong>Boolean true</strong> — include <code>v</code> in
+                <code>VariabilitySelections.selects</code>.</li>
+              <li><strong>Boolean false</strong> — exclude <code>v</code>.</li>
+              <li><strong>Three-valued (unassigned terminal)</strong> — terminals that reference Options not
+                assigned in the VariabilityContext evaluate to neither true nor false; the surrounding
+                boolean handles this per three-valued logic (<code>true OR ?</code> = <code>true</code>,
+                <code>false AND ?</code> = <code>false</code>, otherwise the candidate is retained pending
+                fuller resolution).</li>
+              <li><strong>Any other value</strong> — the predicate is malformed; the server
+                <em class="rfc2119">MUST</em> fail the computation with a 500 Internal Server Error
+                referencing an <code>oslc:Error</code> describing the failure. [VAR-VC-EVAL]</li>
+            </ul>
+          </li>
+        </ol>
+
+        <p>
+          Variability predicates are <strong>not</strong> expected to yield substitute version URIs; the
+          question variability answers is "is this version included?" and not "which sibling version
+          applies?". Substitution between revisions based on lifecycle progression is the domain of
+          effectivity (see the OSLC PLM specification's <code>oslc_plm:Effectivity</code>), not variability.
+        </p>
+      </section>
+    </section>
+
+    <section id="variabilityContext">
+      <h2>Variability Context</h2>
+
+      <p>
+        A <strong>Variability-Context</strong> is a resource that carries the OptionValue choices supplied to
+        variability predicate evaluation. It is referenced from an <code>oslc_config:Configuration</code> via
+        the <code>oslc:variabilityContext</code> extension property defined by this specification.
+      </p>
+
+      <p>
+        A configuration whose selections include one or more <code>oslc:VariabilitySelections</code>
+        <em class="rfc2119">MUST</em> carry exactly one <code>oslc:variabilityContext</code> property naming
+        the context against which those selections' post-filter <code>selects</code> values were computed.
+        [VAR-CTX-REQ]
+      </p>
+
+      <p>
+        The property attaches the variability context to the configuration rather than to individual
+        <code>VariabilitySelections</code> resources so that a baseline is self-describing: reading the
+        baseline yields both its frozen <code>selects</code> triples and the context reference that produced
+        them, with no external lookup. The Configuration's URL is therefore the single entry point that
+        identifies all information needed to evaluate variability against its selections; no request-time
+        header or query parameter mechanism is defined or needed.
+      </p>
+
+      <section id="contextShape">
+        <h3>VariabilityContext Resource Constraints</h3>
+        <div
+          title="Constraints for VariabilityContext"
+          data-include="./oslc-variability-shapes.ttl#VariabilityContextShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="configurationExtension">
+        <h3>Configuration Extension Property</h3>
+        <div
+          title="Configuration extension for variability"
+          data-include="./oslc-variability-shapes.ttl#ConfigurationShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+    </section>
+
+    <section id="optionModel">
+      <h2>Option Model</h2>
+
+      <p>
+        Variability is described against an <code>oslc:OptionSet</code> — a named container of
+        <code>oslc:Option</code> resources, each of which has one or more <code>oslc:OptionValue</code>
+        members. A product family or other variability domain typically has a single OptionSet with Options
+        such as Engine, Transmission, Color, Market.
+      </p>
+
+      <section id="optionSetShape">
+        <h3>OptionSet</h3>
+        <div
+          title="Constraints for OptionSet"
+          data-include="./oslc-variability-shapes.ttl#OptionSetShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="optionShape">
+        <h3>Option</h3>
+        <div
+          title="Constraints for Option"
+          data-include="./oslc-variability-shapes.ttl#OptionShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="optionValueShape">
+        <h3>OptionValue</h3>
+        <div
+          title="Constraints for OptionValue"
+          data-include="./oslc-variability-shapes.ttl#OptionValueShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+
+      <section id="variabilityConditionShape">
+        <h3>VariabilityCondition</h3>
+        <div
+          title="Constraints for VariabilityCondition"
+          data-include="./oslc-variability-shapes.ttl#VariabilityConditionShape"
+          data-oninclude="shapeToSpec"
+          data-include-sync="true"
+          data-include-replace="true"
+          data-include-format="html"
+        ></div>
+      </section>
+    </section>
+
+    <section id="computation">
+      <h2>Computation of VariabilitySelections.selects</h2>
+
+      <p>
+        This section defines the algorithm by which a server populates the <code>oslc_config:selects</code>
+        triples of an <code>oslc:VariabilitySelections</code> resource. The algorithm is invoked when:
+      </p>
+
+      <ul>
+        <li>An <code>oslc:VariabilitySelections</code> resource is first created in a stream;</li>
+        <li>The stream's <code>oslc:variabilityContext</code> reference is changed or the referenced
+          context resource is edited;</li>
+        <li>The stream's candidate pool changes (a contributing <code>oslc_config:Selections</code> or
+          <code>oslc_config:UnboundSelections</code> is created, updated, or removed);</li>
+        <li>A baseline is created from the stream — the algorithm runs once to materialize the frozen
+          <code>selects</code> triples that the baseline records.</li>
+      </ul>
+
+      <p>
+        A baseline's <code>selects</code> triples <em class="rfc2119">MUST NOT</em> be re-computed after
+        baseline creation. [VAR-BL-FROZEN]
+      </p>
+
+      <h3>Inputs</h3>
+      <p>The server <em class="rfc2119">MUST</em> take as inputs:</p>
+      <ol>
+        <li>The candidate pool — the version resources in scope for the containing configuration's
+          Configuration-Context, as determined by Section 12 version resolution across the configuration's
+          <code>oslc_config:Selections</code>, <code>oslc_config:UnboundSelections</code>, and recursive
+          contributions.</li>
+        <li>The Variability-Context identified by the containing configuration's
+          <code>oslc:variabilityContext</code> property.</li>
+      </ol>
+
+      <h3>Procedure</h3>
+      <p>
+        For each candidate version <code>v</code> in the input pool, evaluate the
+        <code>oslc:variabilityCondition</code> carried by <code>v</code> as defined in §Predicate
+        Evaluation, and include <code>v</code> in <code>VariabilitySelections.selects</code> if and only if
+        the result is Boolean true (or <code>v</code> carries no condition). The resulting set of version
+        URIs is the <code>oslc_config:selects</code> value of the <code>VariabilitySelections</code>.
+      </p>
+
+      <h3>Interaction with effectivity</h3>
+      <p>
+        When the containing configuration also carries <code>oslc_plm:effectivityContext</code> (per the
+        OSLC PLM specification) and contains an <code>oslc_plm:EffectivitySelections</code>, variability is
+        computed first; the surviving <code>VariabilitySelections.selects</code> set defines the candidate
+        pool that effectivity computation then refines. This composition order is normative: effectivity
+        records on a version <em class="rfc2119">MAY</em> presuppose option choices that variability has
+        already resolved, but the reverse is not expected. [VAR-VS-EFF-ORDER]
+      </p>
+
+      <h3>Cross-Contribution boundaries</h3>
+      <p>
+        Where a configuration is contributed to a higher-level configuration via
+        <code>oslc_config:contribution</code>, the <code>VariabilitySelections.selects</code> of the
+        contributing configuration appears in the higher-level view as an already-computed survivor set.
+        Variability is evaluated <em>within</em> each contributing configuration against that configuration's
+        own <code>oslc:variabilityContext</code>; the context does not propagate across
+        <code>oslc_config:contribution</code> boundaries. A higher-level configuration that wishes to impose
+        a single variability context across all contributors <em class="rfc2119">MUST</em> arrange for each
+        contributing configuration to declare a compatible <code>variabilityContext</code>; this
+        specification does not provide automatic cross-contribution context propagation.
+      </p>
+    </section>
+
+    <section id="caching" class="informative">
+      <h2>Caching, Tracked Resource Sets, and Compact Rendering</h2>
+      <ul>
+        <li>A baseline's stored <code>VariabilitySelections.selects</code> triples are effectively a
+          server-side cache of the resolution; no additional response-cache keying is needed beyond the
+          configuration URI itself.</li>
+        <li>A stream's stored <code>VariabilitySelections.selects</code> is refreshed on context or
+          candidate-pool change.</li>
+        <li>Tracked Resource Sets (per the OSLC Core TRS specification) only track version resources. It is
+          the responsibility of the TRS consumer to provide an appropriate Configuration-Context — which
+          carries with it the configuration's attached <code>variabilityContext</code> — to resolve tracked
+          version resources to a selected version.</li>
+        <li>Compact rendering of resources resolved through <code>VariabilitySelections</code>
+          <em class="rfc2119">MUST</em> reflect the variability context attached to the containing
+          configuration at the time of the initial request.</li>
+      </ul>
+    </section>
+
+    <section id="conformance">
+      <h2>Conformance</h2>
+
+      <p>
+        A configuration server claiming conformance to this specification <em class="rfc2119">MUST</em>:
+      </p>
+      <ol>
+        <li>Support <code>oslc:VariabilitySelections</code> resources in configurations as defined in
+          §VariabilitySelections.</li>
+        <li>Support the <code>oslc:variabilityContext</code> property on <code>oslc_config:Configuration</code>
+          as defined in §Variability Context, enforcing the read-only/frozen behaviour for baselines and the
+          mutable behaviour for streams.</li>
+        <li>Implement the computation of <code>VariabilitySelections.selects</code> defined in §Computation
+          of VariabilitySelections.selects.</li>
+        <li>Freeze a baseline's <code>VariabilitySelections.selects</code> and <code>variabilityContext</code>
+          at baseline creation, and reject subsequent modifications.</li>
+      </ol>
+
+      <p>
+        A configuration server <em class="rfc2119">MAY</em> claim conformance to the OSLC Configuration
+        Management base specification without conforming to this specification. Servers that do not conform
+        <em class="rfc2119">MUST</em> reject any configuration POSTed to them that contains
+        <code>oslc:VariabilitySelections</code> resources or an <code>oslc:variabilityContext</code> property
+        with a 400 Bad Request response.
+      </p>
+    </section>
+
+    <section id="open-questions" class="informative">
+      <h2>Open Questions for the OASIS OSLC-OP TC</h2>
+
+      <ol>
+        <li><strong>Composition order with effectivity.</strong> §Computation specifies
+          variability-before-effectivity binding when an <code>oslc_plm:EffectivitySelections</code> is also
+          present in the configuration. Existing PLM systems differ in framing (Windchill applies the option
+          filter first, then ConfigSpec for revisions; Teamcenter treats Revision Rule and Variant Rule as
+          independent; Aras runs Configurator Services and Effectivity Services separately). Is the
+          variability-first order the right normative choice, or should the spec leave it to domain
+          specs?</li>
+        <li><strong>Predicate validation.</strong> The spec says malformed predicate evaluations result in
+          500 errors. Should there be a lightweight authoring-time conformance check that domain
+          specifications can require, so malformed predicates are caught at creation rather than at
+          computation?</li>
+        <li><strong>VariationPoint / VariantMembership layer.</strong> SysML v2 supports an explicit
+          variation-point model (<code>isVariation</code> + <code>VariantMembership</code>). Should this
+          specification optionally provide a thin variation-point layer over the existing
+          <code>variabilityCondition</code> so SysML v2 VariantMembership structures can round-trip?
+          (Reference and motivation: see the PLM mapping doc's SysML v2 prior-art section in the PLM
+          specification.)</li>
+      </ol>
+    </section>
+  </body>
+</html>

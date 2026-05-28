@@ -1,29 +1,29 @@
-# PLM Product Conformance Mapping for OSLC Configuration Management Selections Extensions
+# Existing PLM Product Conformance Mapping
 
-*This document is informative. It is a companion to the normative `oslc-config-selections-extensions.md` and the Effectivity/Variability sections of `plm-spec.html`.*
+*This document is informative. It is a companion to the normative `plm-spec.html` (PLM effectivity, `oslc_plm:EffectivitySelections`, `oslc_plm:effectivityContext`) and the normative `specs/core/oslc-variability-spec.html` (OSLC Variability — `oslc:VariabilitySelections`, the option model, `oslc:variabilityContext`).*
 
 ## Scope and Purpose
 
-This document maps the abstract resources, predicates, and resolution algorithm defined by the OSLC Configuration Management Selections Extensions and the OSLC PLM specification onto the configuration-management concepts of three widely-deployed commercial PLM systems:
+This document maps the abstract resources, predicates, and resolution algorithm defined by the OSLC PLM Effectivity model and the OSLC Variability specification onto the configuration-management concepts of three widely-deployed commercial PLM systems:
 
 - **PTC Windchill** (12.x / 13.x)
 - **Siemens Teamcenter** (Active Workspace / 14.x)
 - **Aras Innovator** (current releases, including Configurator Services / Variant Management)
 
-The purpose is to demonstrate to the OSLC-OP Configuration Management TC that the proposed extensions can be implemented as an adapter or native server against each of these products without doing violence to the product's data model. Where a clean mapping exists, this document records it. Where the spec or the product would need adjustment, the gap is named explicitly so the TC can decide whether to refine the spec or accept that adapter authors handle it.
+The purpose is to demonstrate to the OSLC-OP Configuration Management TC and to the OSLC PLM working group that the proposed mechanisms can be implemented as an adapter or native server against each of these products without doing violence to the product's data model. Where a clean mapping exists, this document records it. Where the spec or the product would need adjustment, the gap is named explicitly so the TC can decide whether to refine the spec or accept that adapter authors handle it.
 
 This document is *not* a Project Note in the OASIS sense and carries no normative weight; it is reviewer support material.
 
 ## The Common Adapter Pattern
 
-All three products share a structural pattern that maps cleanly to the two-step resolution defined in the extensions:
+All three products share a structural pattern that maps cleanly to the OSLC PLM + OSLC Variability resolution model:
 
 1. **Master record** — `oslc_plm:Part` (concept resource URI per the OSLC CM base spec): the identity layer.
 2. **Revisions / iterations** — `oslc_plm:Part` version resources: the versioned content layer.
 3. **BOM line / occurrence** — `oslc_plm:PartUsage` version resources: the relationship layer (reified).
 4. **A filter pass** that consumes (a) a configuration / change-state, (b) variant option choices, (c) effectivity parameters, and yields a single revision of each in-scope part and the surviving usage links.
 
-The OSLC CM extensions describe this filter pass in resource-oriented terms: a configuration that contains `EffectivitySelections` and/or `VariabilitySelections` is resolved by walking the selections, computing candidates via Section 12, then evaluating predicates carried by the candidate versions against per-request contexts. The product-specific work below shows how each vendor's existing model lands on that pattern.
+The OSLC specs describe this filter pass in resource-oriented terms: a configuration that contains `oslc_plm:EffectivitySelections` and/or `oslc:VariabilitySelections` is resolved by the server, which computes candidates via the base CM spec's Section 12, evaluates the effectivity records and variability conditions carried by the candidate versions against the contexts named by the configuration's `oslc_plm:effectivityContext` and `oslc:variabilityContext` properties, and populates the post-filter `selects` triples on the corresponding `EffectivitySelections` and `VariabilitySelections` resources. The product-specific work below shows how each vendor's existing model lands on that pattern.
 
 ---
 
